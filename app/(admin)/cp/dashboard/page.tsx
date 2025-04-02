@@ -1,9 +1,9 @@
-// import MatchCard from "@/components/admin/Card/MatchCard";
+import MatchCard from "@/components/admin/Card/MatchCard";
 import MatchStats from "@/components/admin/Card/MatchStats";
 import StatCard from "@/components/admin/Card/StatCard";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-// import Scorers from "@/components/admin/Scorers/Scorers";
-// import Standing from "@/components/admin/Standing/Standing";
+import Scorers from "@/components/admin/Scorers/Scorers";
+import Standing from "@/components/admin/Standing/Standing";
 // import { leagues, matches, standing } from "@/lib/placeholder-data";
 import { Box, HStack, SimpleGrid, GridItem } from "@chakra-ui/react";
 import React from "react";
@@ -30,10 +30,10 @@ function Dashboard() {
           <GridItem colSpan={{ base: 1, xl: 5 }}>
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={"10px"}>
               <GridItem colSpan={{ base: 1 }}>
-                {/* <MatchCard match={matches[1]} showMenu={false} /> */}
+                <MatchCard match={matches[1]} showMenu={false} />
               </GridItem>
               <GridItem colSpan={{ base: 1 }}>
-                {/* <MatchCard match={matches[0]} showMenu={false} /> */}
+                <MatchCard match={matches[0]} showMenu={false} />
               </GridItem>
             </SimpleGrid>
           </GridItem>
