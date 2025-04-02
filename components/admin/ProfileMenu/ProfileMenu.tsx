@@ -7,9 +7,9 @@ import {
   Circle,
 } from "@chakra-ui/react";
 import React from "react";
-import CustomMenu from "../admin/CustomMenu/CustomMenu";
-import CustomMenuItem from "../admin/CustomMenu/CustomMenuItem";
-import Logout from "../Auth/Logout";
+import CustomMenu from "../CustomMenu/CustomMenu";
+import CustomMenuItem from "../CustomMenu/CustomMenuItem";
+import Logout from "@/components/Auth/Logout";
 
 interface IUser {
   name: string;
