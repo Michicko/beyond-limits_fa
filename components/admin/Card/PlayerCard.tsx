@@ -1,4 +1,4 @@
-// import { IPlayer } from "@/lib/definitions";
+import { IPlayer } from "@/lib/definitions";
 import {
   Box,
   Card,
@@ -11,8 +11,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-// import CustomMenu from "../CustomMenu/CustomMenu";
-// import CustomMenuItem from "../CustomMenu/CustomMenuItem";
+import CustomMenu from "../CustomMenu/CustomMenu";
+import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 
 function PlayerCard({ player }: { player: IPlayer }) {
@@ -111,7 +111,7 @@ function PlayerCard({ player }: { player: IPlayer }) {
             <HStack gap={"6"}>
               <Box mb={"sm"}>
                 <Text css={infoTitle}>Position</Text>
-                <Text css={infoValue}>{player.position?.short_name}</Text>
+                <Text css={infoValue}>{player.position?.shortName}</Text>
               </Box>
               <Box mb={"sm"}>
                 <Text css={infoTitle}>Foot</Text>
@@ -135,14 +135,14 @@ function PlayerCard({ player }: { player: IPlayer }) {
           </GridItem>
         </Grid>
       </Card.Body>
-      {/* <CustomMenu position="absolute">
+      <CustomMenu position="absolute">
         <>
           <CustomMenuItem label="Edit" showBorder={true}>
             <Link href={`/cp/players/${player.id}/edit`}>Edit</Link>
           </CustomMenuItem>
           <CustomMenuItem label="Delete" showBorder={false} />
         </>
-      </CustomMenu> */}
+      </CustomMenu>
     </Card.Root>
   );
 }

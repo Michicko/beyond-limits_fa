@@ -1,7 +1,7 @@
 import { Box, Card, Grid, GridItem, Heading, Image } from "@chakra-ui/react";
 import React from "react";
-// import CustomMenu from "../CustomMenu/CustomMenu";
-// import CustomMenuItem from "../CustomMenu/CustomMenuItem";
+import CustomMenu from "../CustomMenu/CustomMenu";
+import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 
 function TrophyCard({
   trophy,
@@ -27,21 +27,6 @@ function TrophyCard({
     "& img": {
       objectPosition: "top center",
     },
-  };
-
-  const infoTitle = {
-    fontSize: { base: "xs", sm: "sm" },
-    color: "text_base",
-    fontWeight: "medium",
-    textTransform: "uppercase",
-    mb: "2.5",
-  };
-
-  const infoValue = {
-    fontSize: { base: "sm", sm: "md" },
-    color: "text_md",
-    fontWeight: "medium",
-    textTransform: "uppercase",
   };
   return (
     <Card.Root
@@ -104,11 +89,11 @@ function TrophyCard({
           </GridItem>
         </Grid>
       </Card.Body>
-      {/* <CustomMenu position="absolute">
+      <CustomMenu position="absolute">
         <>
           <CustomMenuItem label="Delete" showBorder={false} />
         </>
-      </CustomMenu> */}
+      </CustomMenu>
     </Card.Root>
   );
 }

@@ -4,10 +4,10 @@ import MatchIcon from "./MatchIcon";
 import MatchScores from "./MatchScores";
 import MatchTeam from "./MatchTeam";
 import MatchDetails from "./MatchDetails";
-// import CustomMenu from "../CustomMenu/CustomMenu";
-// import CustomMenuItem from "../CustomMenu/CustomMenuItem";
+import CustomMenu from "../CustomMenu/CustomMenu";
+import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
-// import { IMatch } from "@/lib/definitions";
+import { IMatch } from "@/lib/definitions";
 
 function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
   return (
@@ -44,14 +44,14 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
               {match.date}
             </Text>
             {showMenu && (
-              // <CustomMenu>
-              //   <>
-              //     <CustomMenuItem label="Edit" showBorder={true}>
-              //       <Link href={`/cp/matches/${match.id}/edit`}>Edit</Link>
-              //     </CustomMenuItem>
-              //     <CustomMenuItem label="Delete" showBorder={false} />
-              //   </>
-              // </CustomMenu>
+              <CustomMenu>
+                <>
+                  <CustomMenuItem label="Edit" showBorder={true}>
+                    <Link href={`/cp/matches/${match.id}/edit`}>Edit</Link>
+                  </CustomMenuItem>
+                  <CustomMenuItem label="Delete" showBorder={false} />
+                </>
+              </CustomMenu>
             )}
           </HStack>
         </HStack>
@@ -71,8 +71,8 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
         {match.home.team && match.away.team && (
           <HStack justify={"space-between"}>
             <MatchTeam
-              short_name={match.home.team?.short_name}
-              long_name={match.home.team?.long_name}
+              short_name={match.home.team?.shortName}
+              long_name={match.home.team?.longName}
               team="home"
               team_icon={match.home.team.logo}
             />
@@ -81,8 +81,8 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
               status={match.status}
             />
             <MatchTeam
-              short_name={match.away.team?.short_name}
-              long_name={match.away.team?.long_name}
+              short_name={match.away.team?.shortName}
+              long_name={match.away.team?.longName}
               team="away"
               team_icon={match.away.team.logo}
             />
