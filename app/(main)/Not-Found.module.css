@@ -1,0 +1,41 @@
+.not-found__container {
+  height: auto;
+  width: 100%;
+}
+
+.container {
+  text-align: center;
+  padding: 0 20px;
+  margin-top: var(--v);
+}
+
+.error-code {
+  font-size: 6rem;
+  color: var(--secondary-light);
+  margin: var(--md);
+}
+
+.error-message {
+  font-size: var(--xxl);
+  color: var(--white);
+  letter-spacing: 1px;
+  margin-bottom: var(--base);
+}
+
+.home-link {
+  display: inline-block;
+  margin-top: var(--md);
+  padding: var(--xxs) var(--xs);
+  padding-top: var(--xs);
+  background-color: var(--blue-500);
+  color: var(--white);
+  border-radius: var(--xxs);
+  text-decoration: none;
+  font-size: var(--base);
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.home-link:hover {
+  background-color: var(--primary-dark);
+}

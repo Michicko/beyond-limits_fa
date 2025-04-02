@@ -1,0 +1,15 @@
+.layout {
+	background-image: url(/images/bg.svg);
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	width: 100%;
+	min-height: 100vh;
+	padding: 0 var(--md);
+}
+
+@media only screen and (min-width: 64rem) {
+	.layout {
+		padding: 0 var(--xxl);
+	}
+}
