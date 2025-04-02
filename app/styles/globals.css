@@ -1,0 +1,362 @@
+:root {
+  --primary-light: #327bc0;
+  --primary-dark: #01305b;
+  --secondary-light: #ffd700;
+  --secondary-dark: #d79b00;
+  --white: #fff;
+  --black: #000;
+  --font: var(--formula-condensed);
+  --font-body: var(--roboto);
+  --blue-200: #79beff;
+  --blue-300: var(--primary-light);
+  --blue-400: #1a6dbb;
+  --blue-500: #025099;
+  --blue-600: var(--primary-dark);
+  --gray-100: #f8f7f7;
+  --gray-200: #d8dce2;
+  --gray-300: #656b74;
+  --gray-400: #30353b;
+  --gray-500: #1e2227;
+  --yellow-100: #fff7e1;
+  --yellow-300: #ffc93f;
+  --yellow-500: var(--secondary-dark);
+  --red-100: #ffe1e8;
+  --red-200: #ff92a9;
+  --red-400: #ea1f2d;
+  --red-500: #d7002c;
+  --green-100: #b9ffd5;
+  --green-200: #8affb9;
+  --green-300: #5bff9d;
+  --green-400: #00a341;
+  --green-500: #198754;
+  --overlay: rgba(0, 25, 48, 0.4);
+  --spacing: 0.25rem;
+  --xxs: 0.5rem;
+  --xs: 0.75rem;
+  --sm: 0.875rem;
+  --base: 1rem;
+  --md: 1.125rem;
+  --lg: 1.25rem;
+  --xl: 1.5rem;
+  --xxl: 1.875rem;
+  --xxxl: 2.25rem;
+  --iv: 3rem;
+  --v: 3.75rem;
+  --vi: 4.5rem;
+  --vii: 6rem;
+  --viii: 6.75rem;
+  --bp-xs: 36rem;
+  --bp-sm: 40rem;
+  --bp-md: 48rem;
+  --bp-lg: 64rem;
+  --bp-xl: 80rem;
+  --bp-2xl: 96rem;
+  --t-border: rgba(121, 190, 255, 0.45);
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  text-decoration: none;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-light) transparent;
+}
+
+html {
+  box-sizing: border-box;
+  font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  font-family: var(--font-body);
+  line-height: 1;
+}
+
+.main {
+  margin-top: 2rem;
+}
+
+.main > *:not(:last-child) {
+  margin-bottom: var(--iv);
+}
+
+.matchcards {
+  display: grid;
+  gap: var(--md);
+}
+
+/* tiptap */
+/* Basic editor styles */
+.control-group {
+  margin-top: var(--sm);
+}
+
+.tiptap {
+  outline: transparent;
+  border: transparent;
+  min-height: 10rem;
+  padding: var(--xs);
+  font-family: var(--font-body);
+}
+
+/* List styles */
+.tiptap ul,
+.tiptap ol {
+  padding: 0 1rem;
+  margin: 1.25rem 1rem 1.25rem 0.4rem;
+}
+
+.tiptap li p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+/* Heading styles */
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1.1;
+  margin-top: 1rem;
+  text-wrap: pretty;
+}
+
+.tiptap h1,
+.tiptap h2 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.tiptap h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.tiptap h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.tiptap p {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.tiptap strong {
+  font-weight: 700;
+}
+
+.tiptap em {
+  font-style: italic;
+}
+
+.tiptap s {
+  text-decoration: line-through;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap hr {
+  height: 1px;
+  background: gray;
+}
+
+/* Code and preformatted text styles */
+.tiptap code {
+  background-color: var(--purple-light);
+  border-radius: 0.4rem;
+  color: var(--black);
+  font-size: 0.85rem;
+  padding: 0.25em 0.3em;
+}
+
+.tiptap pre {
+  background: var(--black);
+  border-radius: 0.5rem;
+  color: var(--white);
+  font-family: "JetBrainsMono", monospace;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid var(--gray-3);
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 1px solid var(--gray-2);
+  margin: 0.5rem 0;
+}
+
+.close-btn {
+  background: var(--secondary-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: transparent;
+  outline: transparent;
+  border-radius: 0.2rem;
+}
+
+.close-btn svg {
+  height: 1.7rem;
+  width: 1.7rem;
+  color: var(--primary-dark);
+}
+
+@media only screen and (min-width: 64rem) {
+  .matchcards {
+    grid-template-columns: 4fr 3fr;
+  }
+}
