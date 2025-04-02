@@ -8,10 +8,10 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { ColorModeButton } from "@/components/ui/color-mode";
-// import Notification from "../Notification/Notification";
+import Notification from "../Notification/Notification";
 import { getIcon } from "@/lib/icons";
 import { usePageContext } from "@/contexts/pageContext";
-// import ProfileMenu from "@/components/ProfileMenu/ProfileMenu";
+import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 function Navbar({
   setIsOpen,
@@ -58,8 +58,8 @@ function Navbar({
         </HStack>
         <HStack gap={{ base: "1", sm: "3" }} align={"center"}>
           <ColorModeButton />
-          {/* <Notification count={5} /> */}
-          {/* <ProfileMenu user={user} /> */}
+          <Notification count={5} />
+          <ProfileMenu user={user} />
         </HStack>
       </Flex>
     </Box>
