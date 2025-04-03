@@ -23,6 +23,7 @@ async function Positions() {
       selectionSet: ["id", "longName", "attributes"],
       authMode: "identityPool",
     });
+
   console.log("positions: ", positions);
 
   // {loading && positions.length < 1 ? (
