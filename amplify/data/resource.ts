@@ -38,6 +38,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -47,6 +48,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -61,6 +63,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -78,6 +81,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -95,6 +99,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -111,6 +116,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -130,6 +136,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -146,6 +153,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -161,6 +169,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -212,6 +221,7 @@ const schema = a.schema({
     ])
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -224,6 +234,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -247,6 +258,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("ageGroup")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -259,6 +271,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -269,6 +282,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow
         .groups(["Admin", "Writer"])
         .to(["create", "read", "delete", "update"]),
@@ -286,6 +300,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
       allow
         .groups(["Admin", "Writer"])
         .to(["create", "read", "delete", "update"]),
