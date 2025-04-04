@@ -2,8 +2,8 @@
 import BackButton from "@/components/admin/BackButton";
 import MatchForm from "@/components/admin/Forms/MatchForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
-import { getDefaultSeason } from "@/lib/helper";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
+import { getDefaultSeason } from "@/lib/helpers";
 import { seasons } from "@/lib/placeholder-data";
 import { Box, HStack, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
