@@ -28,7 +28,7 @@ function LeagueStanding({
   return (
     <>
       <PageTitle
-        pageTitle={`${league.competition?.long_name} - ${league.season?.season} Standing`}
+        pageTitle={`${league.competition?.longName} - ${league.season?.season} Standing`}
       />
       <HStack mb={8}>
         <BackButton />
