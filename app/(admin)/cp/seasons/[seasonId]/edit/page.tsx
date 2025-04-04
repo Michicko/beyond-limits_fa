@@ -1,12 +1,11 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import SeasonForm from "@/components/admin/Forms/SeasonForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import { seasons } from "@/lib/placeholder-data";
 import { Box, Text } from "@chakra-ui/react";
 import React from "react";
 
 function EditSeason({ params }: { params: { seasonId: string } }) {
-  const season = seasons.find((season) => season.id === params.seasonId);
+  const season = {};
   return (
     <>
       <PageTitle pageTitle="Edit Season" />
