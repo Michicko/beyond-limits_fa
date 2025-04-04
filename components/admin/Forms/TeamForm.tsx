@@ -2,16 +2,16 @@
 import { Field, Input, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import FormLabel from "./FormLabel";
-import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
-import CheckBox from "@/components/CheckBox/CheckBox";
+import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
+import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import FormBtn from "./FormBtn";
 import MatchIcon from "../Card/MatchIcon";
 import { ITeam } from "@/lib/definitions";
 
 function TeamForm({ team }: { team?: ITeam }) {
   const [formData, setFormData] = useState({
-    short_name: team?.short_name || "",
-    long_name: team?.long_name || "",
+    shortName: team?.shortName || "",
+    longName: team?.longName || "",
     logo: team?.logo || "",
     isBeyondLimits: team?.isBeyondLimits || false,
     stadium: team?.stadium || "",
@@ -30,7 +30,11 @@ function TeamForm({ team }: { team?: ITeam }) {
         ) : (
           <Field.Root required>
             <FormLabel>Team Logo</FormLabel>
-            <CustomFileUpload description="team logo" />
+            <CustomFileUpload
+              description="Team logo"
+              onUploaded={() => console.log("hello")}
+              filename="logo"
+            />
           </Field.Root>
         )}
         <Field.Root required>
@@ -44,7 +48,7 @@ function TeamForm({ team }: { team?: ITeam }) {
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={formData.short_name}
+            value={formData.shortName}
             onChange={handleOnChange}
           />
           <Field.HelperText
@@ -66,7 +70,7 @@ function TeamForm({ team }: { team?: ITeam }) {
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={formData.long_name}
+            value={formData.longName}
             onChange={handleOnChange}
           />
           <Field.HelperText
