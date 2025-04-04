@@ -402,24 +402,24 @@ export const seasons = [
 export const competitions = [
   {
     id: "cd5ae10f-1f1f-46b4-abe6-7fba3891fc45",
-    short_name: "nnl",
-    long_name: "nigerian national league",
+    shortName: "nnl",
+    longName: "nigerian national league",
     logo: "/images/nnl.png",
-    competition_type: Competition_type.LEAGUE,
+    competitionType: Competition_type.LEAGUE,
   },
   {
     id: "bc5ae10f-1f1f-46b4-abe6-7fba3891fc45",
-    short_name: "tccc",
-    long_name: "the creative championship league",
+    shortName: "tccc",
+    longName: "the creative championship league",
     logo: "/images/tccc.png",
-    competition_type: Competition_type.LEAGUE,
+    competitionType: Competition_type.LEAGUE,
   },
   {
     id: "bc3ae20f-1f1f-46b4-abe6-7fba3891fc42",
-    short_name: "vc",
-    long_name: "Viareggio cup",
+    shortName: "vc",
+    longName: "Viareggio cup",
     logo: "/images/vc.png",
-    competition_type: Competition_type.MIXEDCUP,
+    competitionType: Competition_type.MIXEDCUP,
   },
 ];
 

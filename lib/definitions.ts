@@ -85,12 +85,12 @@ export interface ISeason {
 }
 
 export interface IHonor {
-  competition_id: string;
+  competitionId: string;
   competition?: ICompetition;
-  trophy_image: string;
-  numbers_won: number;
-  years_won: number[];
-  article_id: string;
+  trophyImage: string;
+  numbersWon: number;
+  yearsWon: number[];
+  articleId: string;
   article?: IArticle;
 }
 
