@@ -15,11 +15,13 @@ function CustomMenuItem({
   const otherStyles = {
     w: "full",
     h: "full",
+    p: "0 10px",
     outline: "transparent",
     textDecoration: "none",
     border: "none",
-    display: "block",
     position: "absolute",
+    display: "flex",
+    alignItems: "center",
     top: 0,
     left: 0,
     right: 0,
@@ -27,7 +29,8 @@ function CustomMenuItem({
   };
 
   const menuItemStyles = {
-    p: "15px 10px",
+    p: "0 10px",
+    h: "40px",
     cursor: "pointer",
     position: "relative",
     "& a": otherStyles,

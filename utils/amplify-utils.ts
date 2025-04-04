@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-
 import { createServerRunner } from "@aws-amplify/adapter-nextjs";
 import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
 import { getCurrentUser } from "aws-amplify/auth/server";

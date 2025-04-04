@@ -32,7 +32,7 @@ function CustomMenu({
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content py={"5px"}>{children}</Menu.Content>
+          <Menu.Content>{children}</Menu.Content>
         </Menu.Positioner>
       </Portal>
     </Menu.Root>

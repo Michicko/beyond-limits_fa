@@ -11,16 +11,13 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import { getIcon } from "@/lib/icons";
 import FormBtn from "./FormBtn";
-import type { Schema } from "@/amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
+import { createPosition, updatePosition } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
-import { createPosition } from "@/app/_actions/actions";
-
-const client = generateClient<Schema>();
+import { getButtonStatus } from "@/lib/helpers";
 
 type Nullable<T> = T | null;
 
@@ -31,100 +28,62 @@ interface IPosition {
   attributes?: Nullable<string>[] | null;
 }
 
-function PlayerPositionForm({
-  position,
-  loading,
-}: {
-  position: IPosition | null;
-  loading?: boolean;
-}) {
-  const { toast } = useToast({
-    loading: {
-      title: `${position ? "Updating" : "Creating"} position...`,
-      description: "Please wait",
-    },
-    success: {
-      title: `Position ${position ? "updated" : "created"} successfully!`,
-      description: "Looks great",
-    },
-    error: {
-      title: `Failed to ${position ? "update" : "create"} position`,
-      description: "Something wrong please try again.",
-    },
-  });
+type IAttributes = string[] | Nullable<string>[];
 
-  const [formData, setFormData] = useState({
-    shortName: position?.shortName || "",
-    longName: position?.longName || "",
-    attributes: position?.attributes || ([] as string[]),
-  });
-
+function PlayerPositionForm({ position }: { position: IPosition | null }) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [isPending, startTransition] = useTransition();
   const [attribute, setAttribute] = useState("");
+  const [attributes, setAttributes] = useState<Nullable<string>[] | string[]>(
+    position ? (position.attributes as IAttributes) : []
+  );
+  const { errorToast, mutationToast } = useToast();
 
-  const handleOnChange = (e: { target: { name: string; value: string } }) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const attributeChange = (e: React.ChangeEvent) => {
-    const target = e.target as HTMLInputElement;
-    setAttribute(target.value);
-  };
-
-  const addAttribute = () => {
-    setFormData({
-      ...formData,
-      attributes: [...formData.attributes, attribute],
-    });
+  const handleAddAttribute = () => {
+    const trimmed = attribute.trim();
+    if (trimmed && !attributes.includes(trimmed)) {
+      setAttributes([...attributes, trimmed]);
+    }
     setAttribute("");
   };
 
-  const removeAttribute = (attr: Nullable<string>) => {
-    let attributes = formData.attributes;
-    attributes = attributes.filter((el) => el !== attr);
-    setFormData({
-      ...formData,
-      attributes,
-    });
+  const removeAttribute = (attr: string) => {
+    setAttributes(attributes.filter((attribute) => attribute !== attr));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    const positionFormData = new FormData();
-    positionFormData.set("shortName", formData.shortName);
-    positionFormData.set("longName", formData.longName);
-    positionFormData.set("attributes", JSON.stringify(formData.attributes));
-
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await createPosition(positionFormData);
-    // const promise = new Promise(async function (resolve, reject) {
-    //   let res;
-    //   if (!position) {
-    //     // res = await client.models.PlayerPosition.create(formData);
-    //   } else {
-    //     res = await createPosition(positionFormData);
-    //   }
-    //   if (res && res.data) {
-    //     resolve(res.data);
-    //   } else {
-    //     reject(res);
-    //   }
-    // });
+    const formData = new FormData(e.currentTarget);
 
-    // toast(promise);
-
-    // promise.then(() => {
-    //   if (!position) {
-    //     setFormData({
-    //       shortName: "",
-    //       longName: "",
-    //       attributes: [] as string[],
-    //     });
-    //   }
-    // });
+    if (position) {
+      startTransition(() => {
+        updatePosition(position.id, formData, attributes)
+          .then((data: any) => {
+            mutationToast(data.longName, "update");
+          })
+          .catch((err) => {
+            console.log(err);
+            errorToast(err);
+          });
+      });
+    } else {
+      startTransition(() => {
+        createPosition(formData, attributes)
+          .then((data: any) => {
+            mutationToast(data.longName, "create");
+            setAttributes([]);
+            formRef.current?.reset();
+          })
+          .catch((err) => {
+            console.log(err);
+            errorToast(err);
+          });
+      });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap={5} mb={10}>
         <Skeleton asChild loading={false}>
           <Field.Root required>
@@ -138,8 +97,7 @@ function PlayerPositionForm({
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.shortName}
-              onChange={handleOnChange}
+              defaultValue={position ? position.shortName : ""}
             />
           </Field.Root>
         </Skeleton>
@@ -154,8 +112,7 @@ function PlayerPositionForm({
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={formData.longName}
-            onChange={handleOnChange}
+            defaultValue={position ? position.longName : ""}
           />
         </Field.Root>
         <Stack>
@@ -171,7 +128,9 @@ function PlayerPositionForm({
                 fontSize={"sm"}
                 fontWeight={"medium"}
                 value={attribute}
-                onChange={attributeChange}
+                onChange={(e: { target: HTMLInputElement }) =>
+                  setAttribute(e.target.value)
+                }
               />
             </Field.Root>
             <Button
@@ -179,15 +138,16 @@ function PlayerPositionForm({
               variant={"outline"}
               colorPalette={"blue"}
               type="button"
-              onClick={addAttribute}
+              onClick={handleAddAttribute}
             >
               Add Attribue
             </Button>
           </Flex>
           <HStack gap={3}>
-            {formData.attributes.map((attribue) => {
+            {attributes.map((attribute) => {
+              if (!attribute) return;
               return (
-                <Card.Root key={attribue} maxW={"200px"} p={3}>
+                <Card.Root key={attribute} maxW={"200px"} p={3}>
                   <Card.Body>
                     <HStack justifyContent={"space-between"}>
                       <Text
@@ -196,13 +156,13 @@ function PlayerPositionForm({
                         color={"text_lg"}
                         textTransform={"capitalize"}
                       >
-                        {attribue}
+                        {attribute}
                       </Text>
                       <IconButton
                         size={"2xs"}
                         variant={"solid"}
                         colorPalette={"red"}
-                        onClick={() => removeAttribute(attribue)}
+                        onClick={() => removeAttribute(attribute)}
                       >
                         {getIcon("close")}
                       </IconButton>
@@ -213,8 +173,8 @@ function PlayerPositionForm({
             })}
           </HStack>
         </Stack>
-        <FormBtn>
-          {position ? "Update player position" : "Create Player Position"}
+        <FormBtn disabled={isPending}>
+          {getButtonStatus(position, "Player Position", isPending)}
         </FormBtn>
       </Stack>
     </form>

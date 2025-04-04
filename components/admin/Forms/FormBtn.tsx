@@ -29,6 +29,7 @@ function FormBtn({
       fontWeight={"400"}
       disabled={disabled}
       _hover={{ bg: "primary_variant" }}
+      _disabled={{ bg: "primary_variant" }}
       loading={loading}
       loadingText={loadingText}
     >

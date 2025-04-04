@@ -13,3 +13,22 @@ export const getDefaultSeason = (seasons: { id: string; season: string }[]) => {
   )?.season;
   return defaultSeason || currentYear - 1 + "/" + currentYear;
 };
+
+export const isInAuthorizedGroup = (
+  userGroups: any,
+  authorizedGroups: string[]
+) => {
+  const includesAny = (arr: any, values: string[]) =>
+    values.some((v) => arr.includes(v));
+  return includesAny(userGroups, authorizedGroups);
+};
+
+export const getButtonStatus = (
+  entity: any,
+  entityName: string,
+  isPending: boolean
+) => {
+  return entity
+    ? `${isPending ? `Updating ${entityName}` : `Update ${entityName}`}`
+    : `${isPending ? `Creating ${entityName}` : `Create ${entityName}`}`;
+};

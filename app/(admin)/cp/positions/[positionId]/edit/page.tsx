@@ -2,12 +2,20 @@ import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import PlayerPositionForm from "@/components/admin/Forms/PlayerPositionForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
+import { cookiesClient } from "@/utils/amplify-utils";
 import { Box, HStack } from "@chakra-ui/react";
-import React from "react";
+import React, { Suspense } from "react";
 
-function EditPosition({ params }: { params: { positionId: string } }) {
-  const loading = false;
-  const position = null;
+async function EditPosition({ params }: { params: { positionId: string } }) {
+  const position = await cookiesClient.models.PlayerPosition.get(
+    {
+      id: params.positionId,
+    },
+    {
+      selectionSet: ["id", "shortName", "longName", "attributes"],
+    }
+  );
+
   return (
     <>
       <PageTitle pageTitle="Edit Position" />
@@ -15,11 +23,9 @@ function EditPosition({ params }: { params: { positionId: string } }) {
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        {loading || position ? (
-          <PlayerPositionForm position={position} loading={loading} />
-        ) : (
-          <CustomAlert title="Something went wrong" status="error" />
-        )}
+        <Suspense fallback={null}>
+          <PlayerPositionForm position={position.data} />
+        </Suspense>
       </Box>
     </>
   );

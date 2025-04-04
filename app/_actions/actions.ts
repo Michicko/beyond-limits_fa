@@ -3,33 +3,68 @@ import { cookiesClient } from "@/utils/amplify-utils";
 
 type Nullable<T> = T | null;
 
-export async function createPosition(formData: FormData) {
-  const attrs = formData.get("attributes")?.toString();
+export async function createPosition(
+  formData: FormData,
+  attrs: string[] | Nullable<string>[]
+) {
+  const shortName = formData.get("shortName")?.toString() || "";
 
-  try {
-    const { data, errors } = await cookiesClient.models.PlayerPosition.create(
-      {
-        shortName: formData.get("shortName")?.toString() || "",
-        longName: formData.get("longName")?.toString() || "",
-        attributes: attrs ? JSON.parse(attrs) : ([] as Nullable<string>[]),
-      },
-      { authMode: "userPool" }
-    );
+  // Query to check if `shortName` already exists
+  const existingPosition =
+    await cookiesClient.models.PlayerPosition.listPlayerPositionByShortName({
+      shortName,
+    });
 
-    if (data) {
-      console.log("position created", data);
-      //   return {
-      //     message: "created successfully",
-      //     status: "success",
-      //     data,
-      //   };
-    }
-
-    if (errors) {
-      console.log(errors);
-    }
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to create task");
+  // If a record with the same shortName exists, throw an error
+  if (existingPosition.data.length > 0) {
+    throw new Error("player position with this short name already exists.");
   }
+
+  const { data } = await cookiesClient.models.PlayerPosition.create(
+    {
+      shortName,
+      longName: formData.get("longName")?.toString() || "",
+      attributes: attrs ? attrs : ([] as Nullable<string>[]),
+    },
+    { authMode: "userPool" }
+  );
+
+  return data
+    ? {
+        id: data.id,
+        shortName: data.shortName,
+        longName: data.longName,
+        attributes: data.attributes,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      }
+    : null;
+}
+
+export async function updatePosition(
+  id: string,
+  formData: FormData,
+  attrs: string[] | Nullable<string>[]
+) {
+  const shortName = formData.get("shortName")?.toString() || "";
+  const { data } = await cookiesClient.models.PlayerPosition.update(
+    {
+      id,
+      shortName,
+      longName: formData.get("longName")?.toString() || "",
+      attributes: attrs ? attrs : ([] as Nullable<string>[]),
+    },
+    { authMode: "userPool" }
+  );
+
+  return data
+    ? {
+        id: data.id,
+        shortName: data.shortName,
+        longName: data.longName,
+        attributes: data.attributes,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      }
+    : null;
 }

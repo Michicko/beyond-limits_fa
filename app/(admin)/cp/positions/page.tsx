@@ -9,7 +9,6 @@ import {
   HStack,
   List,
   ListItem,
-  Skeleton,
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -21,18 +20,8 @@ async function Positions() {
   const { data: positions, errors } =
     await cookiesClient.models.PlayerPosition.list({
       selectionSet: ["id", "longName", "attributes"],
-      authMode: "identityPool",
+      authMode: "userPool",
     });
-
-  console.log("positions: ", positions);
-
-  // {loading && positions.length < 1 ? (
-  //       <Flex wrap={"wrap"} gap={"5"}>
-  //         <Skeleton w={"full"} maxW={"250px"} height={"100px"} />
-  //         <Skeleton w={"full"} maxW={"250px"} height={"100px"} />
-  //         <Skeleton w={"full"} maxW={"250px"} height={"100px"} />
-  //       </Flex>
-  //     ) :
 
   return (
     <>
@@ -82,15 +71,15 @@ async function Positions() {
                     </HStack>
                     {position.attributes && (
                       <List.Root listStyleType={"disc"}>
-                        <HStack flexWrap={"wrap"}>
+                        <HStack flexWrap={"wrap"} columnGap={3.5}>
                           {position.attributes.map((attribute) => {
                             return (
                               <ListItem
                                 key={attribute}
-                                ml={"5"}
+                                ml={2.5}
                                 fontSize={"sm"}
                                 fontWeight={"500"}
-                                color={"text_mg"}
+                                color={"text_md"}
                               >
                                 {attribute}
                               </ListItem>

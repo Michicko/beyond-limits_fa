@@ -46,6 +46,7 @@ const schema = a.schema({
     .model({
       season: a.string().required(),
     })
+    .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -61,6 +62,7 @@ const schema = a.schema({
       competitionSeasons: a.hasMany("CompetitionSeason", "competitionId"),
       trophy: a.hasOne("Trophy", "competitionId"),
     })
+    .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -232,6 +234,7 @@ const schema = a.schema({
       competition: a.belongsTo("Competition", "competitionId"),
       aricleId: a.id(),
     })
+    .secondaryIndexes((index) => [index("competitionId")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -269,6 +272,7 @@ const schema = a.schema({
       players: a.hasMany("Player", "playerPositionId"),
       attributes: a.string().array(),
     })
+    .secondaryIndexes((index) => [index("shortName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -280,6 +284,7 @@ const schema = a.schema({
       category: a.string().required(),
       articles: a.hasMany("Article", "articleCategoryId"),
     })
+    .secondaryIndexes((index) => [index("category")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),

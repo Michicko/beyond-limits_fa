@@ -7,10 +7,17 @@ async function Home() {
       selectionSet: ["id", "longName", "attributes"],
       authMode: "identityPool",
     });
-  console.log("positions: ", positions);
+  console.log(errors ? `errors: ${errors}` : `positions: ${positions}`);
   return (
     <div>
       <h1>Welcome to Beyond limits</h1>
+      {
+        <div>
+          {positions.map((el) => {
+            return <h3 key={el.id}>{el.longName}</h3>;
+          })}
+        </div>
+      }
     </div>
   );
 }

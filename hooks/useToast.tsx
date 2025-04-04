@@ -1,32 +1,30 @@
 import { toaster } from "@/components/ui/toaster";
 
-function useToast({
-  loading,
-  success,
-  error,
-}: {
-  loading: { title: string; description: string };
-  success: { title: string; description: string };
-  error: { title: string; description: string };
-}) {
-  const toast = (promise: Promise<unknown>) => {
-    toaster.promise(promise, {
-      success: {
-        title: success.title,
-        description: success.description,
-      },
-      error: {
-        title: error.title,
-        description: error.description,
-      },
-      loading: {
-        title: loading.title,
-        description: loading.description,
-      },
+function useToast() {
+  const createToast = (title: string, description: string, type: string) => {
+    return toaster.create({
+      title,
+      description,
+      type,
+      duration: 4000,
     });
   };
 
-  return { toast };
+  const errorToast = (err: any) => {
+    createToast("Error", err?.message || "Something went wrong.", "error");
+  };
+
+  const mutationToast = (longName: string, method: "update" | "create") => {
+    createToast(
+      "Success",
+      `${
+        method === "create" ? "Created" : "Updated"
+      } player position: ${longName}`,
+      "success"
+    );
+  };
+
+  return { createToast, errorToast, mutationToast };
 }
 
 export default useToast;
