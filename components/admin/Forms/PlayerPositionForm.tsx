@@ -59,7 +59,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
       startTransition(() => {
         updatePosition(position.id, formData, attributes)
           .then((data: any) => {
-            mutationToast(data.longName, "update");
+            mutationToast("player Position", data.longName, "update");
           })
           .catch((err) => {
             console.log(err);
@@ -70,7 +70,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
       startTransition(() => {
         createPosition(formData, attributes)
           .then((data: any) => {
-            mutationToast(data.longName, "create");
+            mutationToast("player Position", data.longName, "create");
             setAttributes([]);
             formRef.current?.reset();
           })

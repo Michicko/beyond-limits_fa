@@ -15,6 +15,7 @@ import Link from "next/link";
 import React from "react";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import { cookiesClient } from "@/utils/amplify-utils";
+import DeletePositionBtn from "@/components/admin/DeleteBtn/DeletePositionBtn";
 
 async function Positions() {
   const { data: positions, errors } =
@@ -65,7 +66,10 @@ async function Positions() {
                               Edit
                             </Link>
                           </CustomMenuItem>
-                          <CustomMenuItem label="Delete" showBorder={false} />
+                          <DeletePositionBtn
+                            name={position.longName}
+                            id={position.id}
+                          />
                         </>
                       </CustomMenu>
                     </HStack>

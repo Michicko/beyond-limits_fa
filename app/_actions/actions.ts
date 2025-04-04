@@ -1,5 +1,6 @@
 "use server";
 import { cookiesClient } from "@/utils/amplify-utils";
+import { revalidatePath } from "next/cache";
 
 type Nullable<T> = T | null;
 
@@ -67,4 +68,26 @@ export async function updatePosition(
         updatedAt: data.updatedAt,
       }
     : null;
+}
+
+export async function deletePosition(id: string) {
+  try {
+    await cookiesClient.models.PlayerPosition.delete(
+      {
+        id,
+      },
+      { authMode: "userPool" }
+    );
+
+    revalidatePath("/cp/positions");
+    return {
+      status: "success",
+      message: "deleted successfully",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      error: (error as Error).message || "Something went wrong",
+    };
+  }
 }
