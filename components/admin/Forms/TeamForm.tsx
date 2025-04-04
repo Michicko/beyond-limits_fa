@@ -2,11 +2,7 @@
 import { Field, Input, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import FormLabel from "./FormLabel";
-<<<<<<< HEAD
-import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
-=======
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
->>>>>>> dev
 import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import FormBtn from "./FormBtn";
 import MatchIcon from "../Card/MatchIcon";
@@ -35,15 +31,9 @@ function TeamForm({ team }: { team?: ITeam }) {
           <Field.Root required>
             <FormLabel>Team Logo</FormLabel>
             <CustomFileUpload
-<<<<<<< HEAD
-              description="Team logo"
-              onUploaded={() => console.log("hello")}
-              filename="logo"
-=======
               description="team logo"
               filename={"logo"}
               onUploaded={() => console.log("helloe")}
->>>>>>> dev
             />
           </Field.Root>
         )}
