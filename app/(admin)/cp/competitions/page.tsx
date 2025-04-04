@@ -3,16 +3,13 @@ import MatchIcon from "@/components/admin/Card/MatchIcon";
 import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
-import FormDialog from "@/components/admin/FormDialog/FormDialog";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
-import Pagination from "@/components/Pagination/Pagination";
-import Table from "@/components/Table/Table";
-import TableBody from "@/components/Table/TableBody";
-import TableCell from "@/components/Table/TableCell";
-import TableColumnHeader from "@/components/Table/TableColumnHeader";
-import TableHeader from "@/components/Table/TableHeader";
-import TableRows from "@/components/Table/TableRows";
+import Table from "@/components/admin/Table/Table";
+import TableBody from "@/components/admin/Table/TableBody";
+import TableCell from "@/components/admin/Table/TableCell";
+import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
+import TableHeader from "@/components/admin/Table/TableHeader";
+import TableRows from "@/components/admin/Table/TableRows";
 import { competitions, leagues, mixed_cups } from "@/lib/placeholder-data";
 import {
   Box,
