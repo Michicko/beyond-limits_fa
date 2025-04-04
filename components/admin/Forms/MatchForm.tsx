@@ -1,9 +1,9 @@
 "use client";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
-import CustomTabContent from "@/components/Tabs/CustomTabContent";
-import CustomTabList from "@/components/Tabs/CustomTabList";
-import CustomTabs from "@/components/Tabs/CustomTabs";
-import CustomTabTrigger from "@/components/Tabs/CustomTabTrigger";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
+import CustomTabContent from "@/components/admin/Tabs/CustomTabContent";
+import CustomTabList from "@/components/admin/Tabs/CustomTabList";
+import CustomTabs from "@/components/admin/Tabs/CustomTabs";
+import CustomTabTrigger from "@/components/admin/Tabs/CustomTabTrigger";
 import {
   competitions,
   leagues,
@@ -126,7 +126,7 @@ function MatchForm({ match }: { match?: IMatch }) {
 
   const competitionOptions = competitions.map((el) => {
     return {
-      label: el.long_name,
+      label: el.longName,
       value: el.id,
     };
   });
