@@ -1,0 +1,45 @@
+.editor,
+.editor-dummy {
+  border: 1px solid gray;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  width: 100%;
+  min-height: 211px;
+}
+
+.editor.read-only {
+  border: transparent;
+}
+
+.menubar {
+  border-bottom: 1px solid gray;
+  padding: var(--xxs);
+}
+
+.menubar button svg {
+  height: var(--sm);
+  width: var(--sm);
+}
+
+.menubar button.is-active {
+  background: var(--gray-300);
+  color: var(--white);
+}
+
+.menubar button {
+  height: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.menubar__btns {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+}

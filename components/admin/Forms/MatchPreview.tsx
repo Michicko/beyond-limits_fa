@@ -1,8 +1,8 @@
 "use client";
 import { Box, Field, SimpleGrid, Textarea } from "@chakra-ui/react";
 import React from "react";
-import TextEditor from "../TextEditor/TextEditor";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import TextEditor from "@/components/TextEditor/TextEditor";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { players } from "@/lib/placeholder-data";
 import { JSONContent } from "@tiptap/react";
 import { IMatch, IStackStyles } from "@/lib/definitions";
