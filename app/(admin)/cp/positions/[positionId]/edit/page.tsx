@@ -1,3 +1,4 @@
+import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import PlayerPositionForm from "@/components/admin/Forms/PlayerPositionForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
@@ -6,7 +7,7 @@ import React from "react";
 
 function EditPosition({ params }: { params: { positionId: string } }) {
   const loading = false;
-  const position = {};
+  const position = null;
   return (
     <>
       <PageTitle pageTitle="Edit Position" />
@@ -14,7 +15,7 @@ function EditPosition({ params }: { params: { positionId: string } }) {
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        {loading || data ? (
+        {loading || position ? (
           <PlayerPositionForm position={position} loading={loading} />
         ) : (
           <CustomAlert title="Something went wrong" status="error" />

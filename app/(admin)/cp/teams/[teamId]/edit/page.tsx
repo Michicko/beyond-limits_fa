@@ -1,12 +1,12 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
+import TeamForm from "@/components/admin/Forms/TeamForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import { teams } from "@/lib/placeholder-data";
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
 
 function EditTeam({ params }: { params: { teamId: string } }) {
-  const team = {};
+  const team = null;
   return (
     <>
       <PageTitle pageTitle="Edit Team" />
@@ -20,7 +20,7 @@ function EditTeam({ params }: { params: { teamId: string } }) {
             title={`No team with id ${params.teamId}`}
           />
         ) : (
-          <TeamForm team={team} />
+          <TeamForm />
         )}
       </Box>
     </>

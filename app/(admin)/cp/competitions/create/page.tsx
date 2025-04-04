@@ -1,21 +1,21 @@
 import BackButton from "@/components/admin/BackButton";
-import TeamForm from "@/components/admin/Forms/TeamForm";
+import CompetitionForm from "@/components/admin/Forms/CompetitionForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
 
-function CreateTeam() {
+function CreateCompetition() {
   return (
     <>
-      <PageTitle pageTitle="Create Team" />
+      <PageTitle pageTitle="Create Competition" />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        <TeamForm />
+        <CompetitionForm />
       </Box>
     </>
   );
 }
 
-export default CreateTeam;
+export default CreateCompetition;
