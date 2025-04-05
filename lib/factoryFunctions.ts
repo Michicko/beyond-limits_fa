@@ -27,7 +27,7 @@ export async function createEntity<T>({
   const uniqueValue = formData.get(uniqueFieldName)?.toString() || "";
   const existing = await uniqueCheckFn(uniqueValue);
 
-  if (existing.data.length > 0) {
+  if (existing.data && existing.data.length > 0) {
     throw new Error(
       `${modelName} with this ${uniqueFieldName} already exists.`
     );
@@ -58,6 +58,8 @@ export async function createEntity<T>({
     if (pathToRevalidate) {
       revalidatePath(pathToRevalidate);
     }
+
+    console.log("data: ***", data);
 
     return data ?? null;
   } catch (error) {

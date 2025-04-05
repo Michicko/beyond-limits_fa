@@ -11,6 +11,7 @@ type Nullable<T> = T | null;
 type PlayerPosition = Schema["PlayerPosition"]["type"];
 type Season = Schema["Season"]["type"];
 type Competition = Schema["Competition"]["type"];
+type Team = Schema["Team"]["type"];
 
 export async function createPosition(
   formData: FormData,
@@ -141,5 +142,61 @@ export async function deleteCompetition(id: string) {
     id,
     modelName: "Competition",
     pathToRevalidate: "/cp/competitions",
+  });
+}
+
+export async function createTeam(formData: FormData) {
+  return await createEntity<Team>({
+    modelName: "Team",
+    formData,
+    uniqueFieldName: "longName",
+    uniqueCheckFn: (longName) =>
+      cookiesClient.models.Team.listTeamByLongName({
+        longName,
+      }),
+    selectionSet: [
+      "id",
+      "logo",
+      "shortName",
+      "longName",
+      "isBeyondLimits",
+      "stadium",
+    ],
+    revalidatePath: "/cp/teams",
+  });
+}
+
+export async function updateTeam(
+  id: string,
+  formData: FormData,
+  currentUniqueValue: string
+) {
+  return await updateEntity<Team>({
+    modelName: "Team",
+    id,
+    formData,
+    uniqueFieldName: "longName",
+    uniqueCheckFn: (longName) =>
+      cookiesClient.models.Team.listTeamByLongName({
+        longName,
+      }),
+    currentUniqueValue,
+    selectionSet: [
+      "id",
+      "logo",
+      "shortName",
+      "longName",
+      "isBeyondLimits",
+      "stadium",
+    ],
+    revalidatePath: "/cp/teams",
+  });
+}
+
+export async function deleteTeam(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Team",
+    pathToRevalidate: "/cp/teams",
   });
 }

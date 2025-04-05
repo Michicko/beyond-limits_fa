@@ -28,7 +28,6 @@ const schema = a.schema({
 
   Team: a
     .model({
-      teamId: a.id().required(),
       logo: a.string().required(),
       shortName: a.string().required(),
       longName: a.string().required(),
