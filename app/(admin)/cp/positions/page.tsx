@@ -37,6 +37,14 @@ async function Positions() {
             title="Something went wrong."
             message={errors[0].message}
           />
+        ) : positions.length < 1 ? (
+          <CustomAlert
+            status="info"
+            title="No Positions."
+            message={
+              "No player position available, create some to get started."
+            }
+          />
         ) : (
           <Flex wrap={"wrap"} gap={"5"}>
             {positions.map((position) => {

@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getObjectValue = <T extends Object>(
   obj: T,
   key: string | number | symbol
@@ -31,4 +33,8 @@ export const getButtonStatus = (
   return entity
     ? `${isPending ? `Updating ${entityName}` : `Update ${entityName}`}`
     : `${isPending ? `Creating ${entityName}` : `Create ${entityName}`}`;
+};
+
+export const formatDate = (date: string) => {
+  return moment(date).startOf("minutes").fromNow();
 };

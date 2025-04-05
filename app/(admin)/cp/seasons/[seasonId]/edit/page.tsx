@@ -1,11 +1,19 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import SeasonForm from "@/components/admin/Forms/SeasonForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
+import { cookiesClient } from "@/utils/amplify-utils";
 import { Box } from "@chakra-ui/react";
-import React from "react";
+import React, { Suspense } from "react";
 
-function EditSeason({ params }: { params: { seasonId: string } }) {
-  const season = null;
+async function EditSeason({ params }: { params: { seasonId: string } }) {
+  const season = await cookiesClient.models.Season.get(
+    {
+      id: params.seasonId,
+    },
+    {
+      selectionSet: ["id", "season"],
+    }
+  );
   return (
     <>
       <PageTitle pageTitle="Edit Season" />
@@ -16,7 +24,9 @@ function EditSeason({ params }: { params: { seasonId: string } }) {
             status="error"
           />
         ) : (
-          <SeasonForm />
+          <Suspense fallback={null}>
+            <SeasonForm season={season.data} />
+          </Suspense>
         )}
       </Box>
     </>

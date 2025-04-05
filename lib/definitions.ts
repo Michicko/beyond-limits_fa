@@ -80,6 +80,7 @@ export interface IArticle {
 }
 
 export interface ISeason {
+  id: string;
   season: string;
   competitions?: ICompetition[];
 }
