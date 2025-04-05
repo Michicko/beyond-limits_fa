@@ -15,8 +15,6 @@ export async function POST(request: Request) {
     const file = formData.get("file") as File;
     const filename = formData.get("name") as string;
 
-    console.log(filename);
-
     if (!file) {
       return Response.json({ error: "No file uploaded" }, { status: 400 });
     }
@@ -35,7 +33,6 @@ export async function POST(request: Request) {
 
     return Response.json({ data: result });
   } catch (error) {
-    console.error("Error uploading file:", error);
     return Response.json({ error: "Error uploading file" }, { status: 500 });
   }
 }

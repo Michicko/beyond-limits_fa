@@ -1,10 +1,13 @@
 import BackButton from "@/components/admin/BackButton";
 import CompetitionForm from "@/components/admin/Forms/CompetitionForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
+import { cookiesClient } from "@/utils/amplify-utils";
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
 
-function CreateCompetition() {
+async function CreateCompetition() {
+  const competitionTypes = cookiesClient.enums.CompetitionType.values();
+
   return (
     <>
       <PageTitle pageTitle="Create Competition" />
@@ -12,7 +15,9 @@ function CreateCompetition() {
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        <CompetitionForm />
+        {competitionTypes && (
+          <CompetitionForm competitionTypes={competitionTypes} />
+        )}
       </Box>
     </>
   );

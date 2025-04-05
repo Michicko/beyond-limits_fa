@@ -11,7 +11,7 @@ async function EditSeason({ params }: { params: { seasonId: string } }) {
       id: params.seasonId,
     },
     {
-      selectionSet: ["id", "season"],
+      selectionSet: ["id", "season", "createdAt"],
     }
   );
   return (

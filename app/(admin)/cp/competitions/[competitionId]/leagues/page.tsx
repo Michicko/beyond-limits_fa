@@ -3,26 +3,19 @@ import BackButton from "@/components/admin/BackButton";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import Pagination from "@/components/Pagination/Pagination";
-import Table from "@/components/Table/Table";
-import TableBody from "@/components/Table/TableBody";
-import TableCell from "@/components/Table/TableCell";
-import TableColumnHeader from "@/components/Table/TableColumnHeader";
-import TableHeader from "@/components/Table/TableHeader";
-import TableRows from "@/components/Table/TableRows";
+import Pagination from "@/components/admin/Pagination/Pagination";
+import Table from "@/components/admin/Table/Table";
+import TableBody from "@/components/admin/Table/TableBody";
+import TableCell from "@/components/admin/Table/TableCell";
+import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
+import TableHeader from "@/components/admin/Table/TableHeader";
+import TableRows from "@/components/admin/Table/TableRows";
 import { competitions, leagues } from "@/lib/placeholder-data";
 import { Box, HStack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 
-function Leagues({ params }: { params: { competitionId: string } }) {
-  const competition = competitions.find((el) => el.id === params.competitionId);
-  if (!competition) return <div>No competition</div>;
-
-  const competition_leagues = leagues.filter(
-    (league) => league.competition_id === competition.id
-  );
-
+async function Leagues({ params }: { params: { competitionId: string } }) {
   return (
     <>
       <PageTitle

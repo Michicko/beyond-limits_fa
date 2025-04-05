@@ -26,8 +26,10 @@ function DeleteBtn({
   const { promiseToast } = useToast();
 
   const handleDelete = async () => {
-    const promise = onDelete(id);
-    promiseToast(promise, name);
+    if (confirm("Are you sure?")) {
+      const promise = onDelete(id);
+      promiseToast(promise, name);
+    }
   };
 
   return (

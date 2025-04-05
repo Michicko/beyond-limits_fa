@@ -10,6 +10,13 @@ function useToast() {
     });
   };
 
+  const sendError = (name: string, type: "delete" | "upload") => {
+    return {
+      title: `Failed ${type === "delete" ? "Deleting" : "Uploading"} ${name}!`,
+      description: "Something went wrong",
+    };
+  };
+
   const promiseToast = (promise: Promise<any>, name: string) => {
     toaster.promise(promise, {
       success: (res) => {
@@ -19,17 +26,33 @@ function useToast() {
             description: "Looks great",
           };
         } else {
-          return {
-            title: `Failed Deleting ${name}!`,
-            description: "Something went wrong",
-          };
+          return sendError(name, "delete");
         }
       },
-      error: {
-        title: `Failed Deleting ${name}`,
-        description: "Something wrong deleting",
-      },
+      error: sendError(name, "delete"),
       loading: { title: `Deleting ${name}...`, description: "Please wait" },
+    });
+  };
+
+  const uploadPromiseToast = (
+    promise: Promise<any>,
+    name: string,
+    onUploaded: (res: string) => void
+  ) => {
+    toaster.promise(promise, {
+      success: (res) => {
+        if (res.data) {
+          onUploaded(res.data.url);
+          return {
+            title: `Successfully Uploaded ${name}!`,
+            description: "Looks great",
+          };
+        } else {
+          return sendError(name, "upload");
+        }
+      },
+      error: sendError(name, "upload"),
+      loading: { title: `Uploading ${name}...`, description: "Please wait" },
     });
   };
 
@@ -61,6 +84,7 @@ function useToast() {
     mutationToast,
     toaster,
     promiseToast,
+    uploadPromiseToast,
   };
 }
 

@@ -7,14 +7,21 @@ import { Box, HStack } from "@chakra-ui/react";
 import React, { Suspense } from "react";
 
 async function EditPosition({ params }: { params: { positionId: string } }) {
-  const position = await cookiesClient.models.PlayerPosition.get(
-    {
-      id: params.positionId,
-    },
-    {
-      selectionSet: ["id", "shortName", "longName", "attributes"],
-    }
-  );
+  const { data: position, errors } =
+    await cookiesClient.models.PlayerPosition.get(
+      {
+        id: params.positionId,
+      },
+      {
+        selectionSet: [
+          "id",
+          "shortName",
+          "longName",
+          "attributes",
+          "createdAt",
+        ],
+      }
+    );
 
   return (
     <>
@@ -23,9 +30,16 @@ async function EditPosition({ params }: { params: { positionId: string } }) {
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        <Suspense fallback={null}>
-          <PlayerPositionForm position={position.data} />
-        </Suspense>
+        {errors ? (
+          <CustomAlert
+            title={`No season with id ${params.positionId}`}
+            status="error"
+          />
+        ) : (
+          <Suspense fallback={null}>
+            <PlayerPositionForm position={position} />
+          </Suspense>
+        )}
       </Box>
     </>
   );

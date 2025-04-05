@@ -10,6 +10,7 @@ import { cookiesClient } from "@/utils/amplify-utils";
 type Nullable<T> = T | null;
 type PlayerPosition = Schema["PlayerPosition"]["type"];
 type Season = Schema["Season"]["type"];
+type Competition = Schema["Competition"]["type"];
 
 export async function createPosition(
   formData: FormData,
@@ -98,5 +99,47 @@ export async function deleteSeason(id: string) {
     id,
     modelName: "Season",
     pathToRevalidate: "/cp/seasons",
+  });
+}
+
+export async function createCompetition(formData: FormData) {
+  return await createEntity<Competition>({
+    modelName: "Competition",
+    formData,
+    uniqueFieldName: "longName",
+    uniqueCheckFn: (longName) =>
+      cookiesClient.models.Competition.listCompetitionByLongName({
+        longName,
+      }),
+    selectionSet: ["id", "logo", "shortName", "longName", "competitionType"],
+    revalidatePath: "/cp/competitions",
+  });
+}
+
+export async function updateCompetition(
+  id: string,
+  formData: FormData,
+  currentUniqueValue: string
+) {
+  return await updateEntity<Competition>({
+    modelName: "Competition",
+    id,
+    formData,
+    uniqueFieldName: "longName",
+    uniqueCheckFn: (longName) =>
+      cookiesClient.models.Competition.listCompetitionByLongName({
+        longName,
+      }),
+    currentUniqueValue,
+    selectionSet: ["id", "logo", "shortName", "longName", "competitionType"],
+    revalidatePath: "/cp/competitions",
+  });
+}
+
+export async function deleteCompetition(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Competition",
+    pathToRevalidate: "/cp/competitions",
   });
 }

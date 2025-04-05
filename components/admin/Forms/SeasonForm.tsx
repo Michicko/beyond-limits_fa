@@ -10,7 +10,7 @@ import { Schema } from "@/amplify/data/resource";
 
 type ISeason = Pick<Schema["Season"]["type"], "id" | "season" | "createdAt">;
 
-function SeasonForm({ season }: { season?: ISeason }) {
+function SeasonForm({ season }: { season?: ISeason | null }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { errorToast, mutationToast } = useToast();
@@ -41,7 +41,6 @@ function SeasonForm({ season }: { season?: ISeason }) {
             }
           })
           .catch((err) => {
-            console.log(err);
             errorToast(err);
           });
       });

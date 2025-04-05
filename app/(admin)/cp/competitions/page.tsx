@@ -1,7 +1,9 @@
+import { deleteCompetition } from "@/app/_actions/actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import MatchIcon from "@/components/admin/Card/MatchIcon";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
+import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import Table from "@/components/admin/Table/Table";
 import TableBody from "@/components/admin/Table/TableBody";
@@ -27,143 +29,152 @@ async function Competitions() {
       <PageTitle pageTitle="Competitions" />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <Container maxW={"4xl"} fluid margin={"0 auto"}>
-          <HStack justify={"flex-end"} mb={"20px"} gap="2">
-            <CreateButton
-              link="/cp/competitions/create"
-              text="Create Competition"
-            />
-          </HStack>
-          {errors ? (
-            <CustomAlert
-              status="error"
-              title="Something went wrong."
-              message={errors[0].message}
-            />
-          ) : competitions.length < 1 ? (
-            <CustomAlert
-              status="info"
-              title="No Competition."
-              message={"No competition available, create some to get started."}
-            />
-          ) : (
-            <Table>
-              <>
-                <TableHeader>
-                  <TableRows>
+          <>
+            <HStack justify={"flex-end"} mb={"20px"} gap="2">
+              <CreateButton
+                link="/cp/competitions/create"
+                text="Create Competition"
+              />
+            </HStack>
+            {errors ? (
+              <CustomAlert
+                status="error"
+                title="Something went wrong."
+                message={errors[0].message}
+              />
+            ) : competitions.length < 1 ? (
+              <CustomAlert
+                status="info"
+                title="No Competition."
+                message={
+                  "No competition available, create some to get started."
+                }
+              />
+            ) : (
+              <Table>
+                <>
+                  <TableHeader>
+                    <TableRows>
+                      <>
+                        {["competition", "competition type", ""]
+                          .filter((el) => el !== "id")
+                          .map((head, i) => {
+                            return (
+                              <TableColumnHeader
+                                key={head}
+                                pl={i === 0 ? "10px" : "0"}
+                              >
+                                {head}
+                              </TableColumnHeader>
+                            );
+                          })}
+                      </>
+                    </TableRows>
+                  </TableHeader>
+                  <TableBody>
                     <>
-                      {["competition", "competition type", ""]
-                        .filter((el) => el !== "id")
-                        .map((head, i) => {
-                          return (
-                            <TableColumnHeader
-                              key={head}
-                              pl={i === 0 ? "10px" : "0"}
-                            >
-                              {head}
-                            </TableColumnHeader>
-                          );
-                        })}
-                    </>
-                  </TableRows>
-                </TableHeader>
-                <TableBody>
-                  <>
-                    {competitions.map((competition) => {
-                      return (
-                        <TableRows key={competition.shortName}>
-                          <>
-                            <TableCell pl={"10px"}>
-                              <HStack align={"center"}>
-                                <MatchIcon
-                                  src={competition.logo}
-                                  size={"xl"}
-                                  radius={true}
-                                />
-                                {competition.longName}
-                              </HStack>
-                            </TableCell>
-                            <TableCell>{competition.competitionType}</TableCell>
-                            <TableCell>
-                              <CustomMenu>
-                                <>
-                                  {/* {(competition.competition_type === "LEAGUE" ||
-                                  competition.competition_type ===
-                                    "MIXEDCUP") && (
-                                  <>
-                                    <CustomMenuItem
-                                      label="Create League"
-                                      showBorder={true}
-                                    >
-                                      <Link
-                                        href={`/cp/competitions/${competition.id}/leagues/create`}
-                                      >
-                                        Create League
-                                      </Link>
-                                    </CustomMenuItem>
-                                    <CustomMenuItem
-                                      label="View Leagues"
-                                      showBorder={true}
-                                    >
-                                      <Link
-                                        href={`/cp/competitions/${competition.id}/leagues`}
-                                      >
-                                        View Leagues
-                                      </Link>
-                                    </CustomMenuItem>
-                                  </>
-                                )} */}
-
-                                  {/* {competition.competition_type ===
-                                  "MIXEDCUP" && (
-                                  <>
-                                    <CustomMenuItem
-                                      label="Create cup"
-                                      showBorder={true}
-                                    >
-                                      <Link
-                                        href={`/cp/competitions/${competition.id}/cups/create`}
-                                      >
-                                        Create cup
-                                      </Link>
-                                    </CustomMenuItem>
-                                    <CustomMenuItem
-                                      label="View cups"
-                                      showBorder={true}
-                                    >
-                                      <Link
-                                        href={`/cp/competitions/${competition.id}/cups`}
-                                      >
-                                        View cups
-                                      </Link>
-                                    </CustomMenuItem>
-                                  </>
-                                )} */}
-                                  <CustomMenuItem
-                                    label="Edit"
-                                    showBorder={true}
-                                  >
-                                    <Link
-                                      href={`/cp/competitions/${competition.id}/edit`}
-                                    >
-                                      Edit
-                                    </Link>
-                                  </CustomMenuItem>
-                                  <CustomMenuItem
-                                    label="Delete"
-                                    showBorder={false}
+                      {competitions.map((competition) => {
+                        return (
+                          <TableRows key={competition.shortName}>
+                            <>
+                              <TableCell pl={"10px"}>
+                                <HStack align={"center"}>
+                                  <MatchIcon
+                                    src={competition.logo}
+                                    size={"xl"}
+                                    radius={true}
                                   />
-                                </>
-                              </CustomMenu>
-                            </TableCell>
-                          </>
-                        </TableRows>
-                      );
-                    })}
-                  </>
-                </TableBody>
-              </>
-            </Table>
-          )}
+                                  {competition.longName}
+                                </HStack>
+                              </TableCell>
+                              <TableCell>
+                                {competition.competitionType}
+                              </TableCell>
+                              <TableCell>
+                                <CustomMenu>
+                                  <>
+                                    {(competition.competitionType ===
+                                      "LEAGUE" ||
+                                      competition.competitionType ===
+                                        "MIXED") && (
+                                      <>
+                                        <CustomMenuItem
+                                          label="Create League"
+                                          showBorder={true}
+                                        >
+                                          <Link
+                                            href={`/cp/competitions/${competition.id}/leagues/create`}
+                                          >
+                                            Create League
+                                          </Link>
+                                        </CustomMenuItem>
+                                        <CustomMenuItem
+                                          label="View Leagues"
+                                          showBorder={true}
+                                        >
+                                          <Link
+                                            href={`/cp/competitions/${competition.id}/leagues`}
+                                          >
+                                            View Leagues
+                                          </Link>
+                                        </CustomMenuItem>
+                                      </>
+                                    )}
+
+                                    {competition.competitionType ===
+                                      "MIXED" && (
+                                      <>
+                                        <CustomMenuItem
+                                          label="Create cup"
+                                          showBorder={true}
+                                        >
+                                          <Link
+                                            href={`/cp/competitions/${competition.id}/cups/create`}
+                                          >
+                                            Create cup
+                                          </Link>
+                                        </CustomMenuItem>
+                                        <CustomMenuItem
+                                          label="View cups"
+                                          showBorder={true}
+                                        >
+                                          <Link
+                                            href={`/cp/competitions/${competition.id}/cups`}
+                                          >
+                                            View cups
+                                          </Link>
+                                        </CustomMenuItem>
+                                      </>
+                                    )}
+
+                                    <CustomMenuItem
+                                      label="Edit"
+                                      showBorder={true}
+                                    >
+                                      <Link
+                                        href={`/cp/competitions/${competition.id}/edit`}
+                                      >
+                                        Edit
+                                      </Link>
+                                    </CustomMenuItem>
+                                    <DeleteBtn
+                                      name={competition.longName}
+                                      id={competition.id}
+                                      onDelete={deleteCompetition}
+                                    />
+                                  </>
+                                </CustomMenu>
+                              </TableCell>
+                            </>
+                          </TableRows>
+                        );
+                      })}
+                    </>
+                  </TableBody>
+                </>
+              </Table>
+            )}
+          </>
         </Container>
       </Box>
     </>

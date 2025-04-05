@@ -27,7 +27,7 @@ type IPosition = Pick<
   "id" | "shortName" | "longName" | "attributes" | "createdAt"
 >;
 
-function PlayerPositionForm({ position }: { position: IPosition }) {
+function PlayerPositionForm({ position }: { position: IPosition | null }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const [attribute, setAttribute] = useState("");
@@ -62,7 +62,6 @@ function PlayerPositionForm({ position }: { position: IPosition }) {
             }
           })
           .catch((err) => {
-            console.log(err);
             errorToast(err);
           });
       });
@@ -77,7 +76,6 @@ function PlayerPositionForm({ position }: { position: IPosition }) {
             }
           })
           .catch((err) => {
-            console.log(err);
             errorToast(err);
           });
       });

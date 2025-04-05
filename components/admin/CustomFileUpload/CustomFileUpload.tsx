@@ -15,17 +15,7 @@ function CustomFileUpload({
   onUploaded: (path: string) => void;
   filename: string;
 }) {
-  const { toast } = useToast({
-    loading: { title: "Uploading Image...", description: "Please wait" },
-    success: {
-      title: "Successfully uploaded!",
-      description: "Looks great",
-    },
-    error: {
-      title: "Upload failed",
-      description: "Something wrong with the upload",
-    },
-  });
+  const { uploadPromiseToast } = useToast();
 
   const handleFileUpload = async (e: React.FormEvent) => {
     const target = e.target as HTMLInputElement;
@@ -47,13 +37,7 @@ function CustomFileUpload({
       }
     });
 
-    toast(promise);
-
-    promise
-      .then((res: any) => {
-        onUploaded(res.data.url);
-      })
-      .catch((error) => console.log(error));
+    uploadPromiseToast(promise, filename, onUploaded);
   };
 
   return (
