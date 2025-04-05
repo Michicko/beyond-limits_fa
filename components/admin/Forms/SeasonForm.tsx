@@ -3,12 +3,14 @@ import { Field, Input, Stack } from "@chakra-ui/react";
 import React, { useRef, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import FormBtn from "./FormBtn";
-import { ISeason } from "@/lib/definitions";
 import useToast from "@/hooks/useToast";
 import { createSeason, updateSeason } from "@/app/_actions/actions";
 import { getButtonStatus } from "@/lib/helpers";
+import { Schema } from "@/amplify/data/resource";
 
-function SeasonForm({ season }: { season?: ISeason | null }) {
+type ISeason = Pick<Schema["Season"]["type"], "id" | "season" | "createdAt">;
+
+function SeasonForm({ season }: { season?: ISeason }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { errorToast, mutationToast } = useToast();
@@ -19,9 +21,11 @@ function SeasonForm({ season }: { season?: ISeason | null }) {
 
     if (season) {
       startTransition(() => {
-        updateSeason(season.id, formData)
-          .then((data: any) => {
-            mutationToast("season", data.season, "update");
+        updateSeason(season.id, formData, season.season)
+          .then((data: ISeason | null) => {
+            if (data) {
+              mutationToast("season", data.season, "update");
+            }
           })
           .catch((err) => {
             errorToast(err);
@@ -30,9 +34,11 @@ function SeasonForm({ season }: { season?: ISeason | null }) {
     } else {
       startTransition(() => {
         createSeason(formData)
-          .then((data: any) => {
-            mutationToast("season", data.season, "create");
-            formRef.current?.reset();
+          .then((data: ISeason | null) => {
+            if (data) {
+              mutationToast("season", data.season, "create");
+              formRef.current?.reset();
+            }
           })
           .catch((err) => {
             console.log(err);

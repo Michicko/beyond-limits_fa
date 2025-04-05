@@ -18,19 +18,16 @@ import FormBtn from "./FormBtn";
 import { createPosition, updatePosition } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
+import { Schema } from "@/amplify/data/resource";
 
 type Nullable<T> = T | null;
-
-interface IPosition {
-  id: string;
-  shortName: string;
-  longName: string;
-  attributes?: Nullable<string>[] | null;
-}
-
 type IAttributes = string[] | Nullable<string>[];
+type IPosition = Pick<
+  Schema["PlayerPosition"]["type"],
+  "id" | "shortName" | "longName" | "attributes" | "createdAt"
+>;
 
-function PlayerPositionForm({ position }: { position: IPosition | null }) {
+function PlayerPositionForm({ position }: { position: IPosition }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const [attribute, setAttribute] = useState("");
@@ -54,12 +51,15 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    formData.delete("attribute");
 
     if (position) {
       startTransition(() => {
-        updatePosition(position.id, formData, attributes)
-          .then((data: any) => {
-            mutationToast("player Position", data.longName, "update");
+        updatePosition(position.id, formData, attributes, position.shortName)
+          .then((data: IPosition | null) => {
+            if (data) {
+              mutationToast("player Position", data.longName, "update");
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -69,10 +69,12 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
     } else {
       startTransition(() => {
         createPosition(formData, attributes)
-          .then((data: any) => {
-            mutationToast("player Position", data.longName, "create");
-            setAttributes([]);
-            formRef.current?.reset();
+          .then((data: IPosition | null) => {
+            if (data) {
+              mutationToast("player Position", data.longName, "create");
+              setAttributes([]);
+              formRef.current?.reset();
+            }
           })
           .catch((err) => {
             console.log(err);

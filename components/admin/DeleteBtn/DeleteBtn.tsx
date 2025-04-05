@@ -1,43 +1,47 @@
 "use client";
-import React, { useEffect, useTransition } from "react";
-import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import useToast from "@/hooks/useToast";
+import { Menu } from "@chakra-ui/react";
+import React from "react";
 
 function DeleteBtn({
   id,
-  entityName,
-  deletedItemName,
+  name,
+  onDelete,
 }: {
   id: string;
-  entityName: string;
-  deletedItemName: string;
+  name: string;
+  onDelete: (id: string) => Promise<{
+    status: string;
+    message: string;
+    error?: string;
+  }>;
 }) {
-  const [isPending, startTransition] = useTransition();
-  const { errorToast, mutationToast, pendingToast, deleteToastId, toaster } =
-    useToast();
+  const styles = {
+    p: "0 10px",
+    h: "40px",
+    cursor: "pointer",
+    position: "relative",
+  };
 
-  //   const handleDelete = () => {
-  //     startTransition(async () => {
-  //       const result = await handleOnClick(id);
-  //       try {
-  //         if (result?.status === "success") {
-  //           mutationToast(entityName, deletedItemName, "delete");
-  //         }
-  //       } catch (error) {
-  //         errorToast(error);
-  //       }
-  //     });
-  //   };
+  const { promiseToast } = useToast();
 
-  useEffect(() => {
-    if (isPending) {
-      pendingToast(`Deleting ${entityName}`, `Please wait.`);
-    } else {
-      toaster.remove(deleteToastId);
-    }
-  }, [isPending]);
+  const handleDelete = async () => {
+    const promise = onDelete(id);
+    promiseToast(promise, name);
+  };
 
-  return <CustomMenuItem label="Delete" showBorder={false} />;
+  return (
+    <Menu.Item
+      value={"Delete"}
+      css={styles}
+      color={"fg.error"}
+      borderColor={"transparent"}
+      disabled={false}
+      onClick={async () => await handleDelete()}
+    >
+      Delete
+    </Menu.Item>
+  );
 }
 
 export default DeleteBtn;

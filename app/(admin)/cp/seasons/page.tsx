@@ -14,7 +14,9 @@ import Link from "next/link";
 import { cookiesClient } from "@/utils/amplify-utils";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import { formatDate } from "@/lib/helpers";
-import DeleteSeason from "@/components/admin/DeleteBtn/DeleteSeason";
+import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
+import useToast from "@/hooks/useToast";
+import { deleteSeason } from "@/app/_actions/actions";
 
 async function Seasons() {
   const btnStyles = {
@@ -27,6 +29,13 @@ async function Seasons() {
     selectionSet: ["id", "season", "createdAt"],
     authMode: "userPool",
   });
+
+  const { promiseToast } = useToast();
+
+  const handleDelete = (id: string, name: string) => {
+    const promise = deleteSeason(id);
+    promiseToast(promise, name);
+  };
 
   return (
     <>
@@ -101,9 +110,10 @@ async function Seasons() {
                                         Edit
                                       </Link>
                                     </CustomMenuItem>
-                                    <DeleteSeason
+                                    <DeleteBtn
                                       name={season.season}
                                       id={season.id}
+                                      onDelete={deleteSeason}
                                     />
                                   </>
                                 </CustomMenu>

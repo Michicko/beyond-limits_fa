@@ -1,57 +1,79 @@
 "use client";
 import { Field, Input, Stack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import FormLabel from "./FormLabel";
-import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import FormBtn from "./FormBtn";
-import { ICompetition } from "@/lib/definitions";
+
 import MatchIcon from "../Card/MatchIcon";
+import { cookiesClient } from "@/utils/amplify-utils";
+import { Schema } from "@/amplify/data/resource";
 
-function CompetitionForm({ competition }: { competition?: ICompetition }) {
-  const [formData, setFormData] = useState({
-    logo: competition?.logo || "",
-    short_name: competition?.short_name || "",
-    long_name: competition?.long_name || "",
-    competition_type: competition?.competition_type || "",
-  });
+type ICompetition = Pick<
+  Schema["Competition"]["type"],
+  "id" | "logo" | "shortName" | "longName" | "competitionType"
+>;
 
-  const handleOnChange = (e: { target: { name: string; value: string } }) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+function CompetitionForm({ competition }: { competition: ICompetition }) {
+  const competitionTypes = cookiesClient.enums.CompetitionType.values();
+  const [logo, setLogo] = useState(competition?.logo || "");
+  const [competitionType, setCompetitionType] = useState(
+    competition?.competitionType || ""
+  );
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const arr = Array.from(formData.entries(), ([key, value]) => [
+      key,
+      value.toString(),
+    ]);
+    console.log(arr);
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <Stack gap="4">
-        {competition && formData.logo ? (
-          <MatchIcon size="xl" src={formData.logo} />
+        {competition && logo ? (
+          <MatchIcon size="xl" src={logo} />
         ) : (
           <Field.Root required>
             <FormLabel>Competition Logo</FormLabel>
-            <CustomFileUpload description="competition logo" />
+            <CustomFileUpload
+              description="competition logo"
+              onUploaded={(path: string) => {
+                setLogo(path);
+              }}
+              id="competition-logo"
+              filename={"competition logo"}
+            />
           </Field.Root>
         )}
         <Field.Root required>
           <FormLabel>Competition Type</FormLabel>
           <CustomSelect
-            options={["league", "cup", "mixed"].map((el) => {
+            options={competitionTypes.map((el) => {
               return {
                 label: el,
                 value: el,
               };
             })}
-            name="competition_type"
-            description="competition type"
-            selectedValue={formData.competition_type}
-            handleOnChange={handleOnChange}
+            name="competitionType"
+            description="competition Type"
+            selectedValue={competitionType}
+            handleOnChange={(e: { target: { value: string } }) => {
+              const { value } = e.target;
+              setCompetitionType(value);
+            }}
             fixedWidth={true}
           />
         </Field.Root>
         <Field.Root required>
           <FormLabel>short name</FormLabel>
           <Input
-            name={"short_name"}
+            name={"shortName"}
             type={"text"}
             placeholder="Enter Short name"
             px={"2"}
@@ -59,8 +81,6 @@ function CompetitionForm({ competition }: { competition?: ICompetition }) {
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={formData.short_name}
-            onChange={handleOnChange}
           />
           <Field.HelperText
             fontSize={"sm"}
@@ -73,7 +93,7 @@ function CompetitionForm({ competition }: { competition?: ICompetition }) {
         <Field.Root required>
           <FormLabel>long name</FormLabel>
           <Input
-            name={"long_name"}
+            name={"longName"}
             type={"text"}
             placeholder="Enter long name"
             px={"2"}
@@ -81,8 +101,6 @@ function CompetitionForm({ competition }: { competition?: ICompetition }) {
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={formData.long_name}
-            onChange={handleOnChange}
           />
           <Field.HelperText
             fontSize={"sm"}
