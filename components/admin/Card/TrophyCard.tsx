@@ -1,20 +1,18 @@
 import { Box, Card, Grid, GridItem, Heading, Image } from "@chakra-ui/react";
 import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
-import CustomMenuItem from "../CustomMenu/CustomMenuItem";
+import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { deleteTrophy } from "@/app/_actions/actions";
 
-function TrophyCard({
-  trophy,
-}: {
-  trophy: {
-    id: string;
-    competition: { short: string; long: string };
-    trophy: string;
-    numbers_won: number;
-    years: number[];
-    article_id: number;
+type TrophyWithCompetition = {
+  id: string;
+  image: string;
+  competition: {
+    longName: string;
   };
-}) {
+};
+
+function TrophyCard({ trophy }: { trophy: TrophyWithCompetition }) {
   const cardStyles = {
     bg: `linear-gradient(217deg, rgba(50, 123, 192, 0.8), rgba(26, 65, 101, 0) 70.71%), linear-gradient(127deg, rgba(50, 123, 192, 0.8), rgba(0, 255, 0, 0) 70.71%),
   linear-gradient(336deg, rgba(50, 123, 192, 0.8), rgba(255, 255, 255, 0) 70.71%)`,
@@ -54,8 +52,8 @@ function TrophyCard({
           >
             <Image
               rounded="md"
-              src={trophy.trophy}
-              alt={trophy.competition.long}
+              src={trophy.image}
+              alt={trophy.competition.longName}
               aspectRatio={4 / 3}
               width="300px"
               objectFit={"contain"}
@@ -73,7 +71,7 @@ function TrophyCard({
                 fontWeight={"bold"}
                 textTransform={"capitalize"}
               >
-                {trophy.competition.long}
+                {trophy.competition.longName}
               </Heading>
             </Box>
           </GridItem>
@@ -90,9 +88,11 @@ function TrophyCard({
         </Grid>
       </Card.Body>
       <CustomMenu position="absolute">
-        <>
-          <CustomMenuItem label="Delete" showBorder={false} />
-        </>
+        <DeleteBtn
+          name={trophy.competition.longName}
+          id={trophy.id}
+          onDelete={deleteTrophy}
+        />
       </CustomMenu>
     </Card.Root>
   );

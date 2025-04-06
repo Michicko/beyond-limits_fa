@@ -10,6 +10,8 @@ const authorizedGroups = ["Admin", "Editor"];
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
+  let url = request.nextUrl.clone();
+
   const authenticationSesion = await runWithAmplifyServerContext({
     nextServerContext: { request, response },
     operation: async (contextSpec) => {
@@ -48,6 +50,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
-    return NextResponse.redirect(new URL("/cp/login", request.url));
+    url.pathname = "/cp/login";
+    url.searchParams.set("redirectTo", request.nextUrl.pathname);
+    return NextResponse.redirect(new URL(url, request.url));
   }
 }

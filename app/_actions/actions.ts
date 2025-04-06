@@ -13,6 +13,8 @@ type Season = Schema["Season"]["type"];
 type Competition = Schema["Competition"]["type"];
 type Team = Schema["Team"]["type"];
 type Player = Schema["Player"]["type"];
+type Article = Schema["Article"]["type"];
+type Trophy = Schema["Trophy"]["type"];
 
 export async function createPosition(
   formData: FormData,
@@ -250,5 +252,83 @@ export async function deletePlayer(id: string) {
     id,
     modelName: "Player",
     pathToRevalidate: "/cp/players",
+  });
+}
+
+export async function createArticle(formData: FormData) {
+  return await createEntity<Article>({
+    modelName: "Article",
+    formData,
+    uniqueFieldName: "title",
+    uniqueCheckFn: (title) =>
+      cookiesClient.models.Article.listArticleByTitle({
+        title,
+      }),
+    selectionSet: [
+      "id",
+      "title",
+      "coverImage",
+      "content",
+      "createdAt",
+      "status",
+    ],
+    revalidatePath: "/cp/articles",
+  });
+}
+
+export async function updateArticle(
+  id: string,
+  formData: FormData,
+  currentUniqueValue: string
+) {
+  return await updateEntity<Article>({
+    modelName: "Article",
+    id,
+    formData,
+    uniqueFieldName: "title",
+    uniqueCheckFn: (title) =>
+      cookiesClient.models.Article.listArticleByTitle({
+        title,
+      }),
+    currentUniqueValue,
+    selectionSet: [
+      "id",
+      "title",
+      "coverImage",
+      "content",
+      "createdAt",
+      "status",
+    ],
+    revalidatePath: "/cp/articles",
+  });
+}
+
+export async function deleteArticle(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Article",
+    pathToRevalidate: "/cp/articles",
+  });
+}
+
+export async function createTrophy(formData: FormData) {
+  return await createEntity<Trophy>({
+    modelName: "Trophy",
+    formData,
+    uniqueFieldName: "trophyName",
+    uniqueCheckFn: (trophyName) =>
+      cookiesClient.models.Trophy.listTrophyByTrophyName({
+        trophyName,
+      }),
+    selectionSet: ["id", "image"],
+    revalidatePath: "/cp/trophies",
+  });
+}
+
+export async function deleteTrophy(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Trophy",
+    pathToRevalidate: "/cp/trophies",
   });
 }

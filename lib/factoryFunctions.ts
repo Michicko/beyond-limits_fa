@@ -44,6 +44,8 @@ export async function createEntity<T>({
     input["attributes"] = attributes;
   }
 
+  console.log("input: ***", input);
+
   try {
     const model = cookiesClient.models[modelName] as {
       create: (
@@ -61,7 +63,10 @@ export async function createEntity<T>({
       revalidatePath(pathToRevalidate);
     }
 
+    console.log("data: **", data);
+
     return data ?? null;
+    // return null;
   } catch (error) {
     console.error("Error during create operation:", error);
     throw error;

@@ -2,6 +2,7 @@ import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
+  ArticleStatus: a.enum(["UNPUBLISHED", "PUBLISHED"]),
   RoundResult: a.enum(["WIN", "DRAW", "LOSE"]),
   AgeGroup: a.enum(["UNDER_17", "UNDER_19"]),
   GoalType: a.enum(["NORMAL", "OWNGOAL", "PENALTY"]),
@@ -93,11 +94,13 @@ const schema = a.schema({
         "CompetitionSeason",
         "competitionSeasonId"
       ),
+      competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       leagueRounds: a.hasMany("LeagueRound", "leagueId"),
       standings: a.hasMany("Standing", "leagueId"),
       winnerId: a.id(),
     })
+    .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -148,10 +151,12 @@ const schema = a.schema({
         "CompetitionSeason",
         "competitionSeasonId"
       ),
+      competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       playOffs: a.hasMany("PlayOff", "cupId"),
       winnerId: a.id(),
     })
+    .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -217,9 +222,7 @@ const schema = a.schema({
       }),
       scorers: a.ref("Scorer").array(),
     })
-    .secondaryIndexes((index) => [
-      index("competitionSeasonId").sortKeys(["date", "status"]),
-    ])
+    .secondaryIndexes((index) => [index("date").sortKeys(["status"])])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -229,11 +232,12 @@ const schema = a.schema({
   Trophy: a
     .model({
       image: a.string().required(),
+      trophyName: a.string().required(),
       competitionId: a.id(),
       competition: a.belongsTo("Competition", "competitionId"),
-      aricleId: a.id(),
+      articleId: a.id(),
     })
-    .secondaryIndexes((index) => [index("competitionId")])
+    .secondaryIndexes((index) => [index("trophyName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -283,7 +287,6 @@ const schema = a.schema({
       category: a.string().required(),
       articles: a.hasMany("Article", "articleCategoryId"),
     })
-    .secondaryIndexes((index) => [index("category")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -294,12 +297,13 @@ const schema = a.schema({
 
   Article: a
     .model({
-      articleCategoryId: a.id().required(),
+      articleCategoryId: a.id(),
       articleCategory: a.belongsTo("ArticleCategory", "articleCategoryId"),
       title: a.string().required(),
       coverImage: a.string(),
-      content: a.json().required(),
+      content: a.json(),
       tags: a.string().array(),
+      status: a.ref("ArticleStatus"),
     })
     .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [

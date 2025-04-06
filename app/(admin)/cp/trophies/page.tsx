@@ -1,91 +1,75 @@
-"use client";
 import TrophyCard from "@/components/admin/Card/TrophyCard";
-import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
-import FormDialog from "@/components/admin/FormDialog/FormDialog";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
-import { competitions, honors } from "@/lib/placeholder-data";
-import {
-  Box,
-  Button,
-  Field,
-  Flex,
-  HStack,
-  Input,
-  Stack,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
+import React from "react";
+import TrophyFormDialog from "@/components/admin/Forms/TrophyFormDialog";
+import { cookiesClient } from "@/utils/amplify-utils";
+import CustomAlert from "@/components/admin/Alert/CustomAlert";
 
-function Trophies() {
-  const btnStyles = {
-    p: "10px 20px",
-    fontSize: "md",
-    fontWeight: "semibold",
-  };
+async function Trophies() {
+  const [trophiesResult, articlesResult, competitionsResult] =
+    await Promise.all([
+      cookiesClient.models.Trophy.list({
+        selectionSet: ["id", "image", "competition.longName", "trophyName"],
+        authMode: "userPool",
+      }),
+      cookiesClient.models.Article.list({
+        selectionSet: ["title", "id"],
+        authMode: "userPool",
+      }),
+      cookiesClient.models.Competition.list({
+        selectionSet: ["id", "longName"],
+        authMode: "userPool",
+      }),
+    ]);
 
-  const [competition, setCompetition] = useState("");
-
-  const handleOnChange = (e: { target: { name: string; value: string } }) => {
-    const { value } = e.target;
-    setCompetition(value);
-  };
+  const { data: trophies, errors: trophiesErrors } = trophiesResult;
+  const { data: articles, errors: articleErrors } = articlesResult;
+  const { data: competitions, errors: competitionsErrors } = competitionsResult;
 
   return (
     <>
       <PageTitle pageTitle="Trophies" />
       <Box w={"full"} h={"full"} mt={"20px"}>
-        <HStack justify={"flex-end"} mb={"20px"} gap="2">
-          <FormDialog
-            btn={
-              <Button
-                colorPalette={"blue"}
-                variant={"solid"}
-                css={btnStyles}
-                size={"md"}
-              >
-                Create Trophy
-              </Button>
+        {articleErrors || competitionsErrors ? (
+          <CustomAlert
+            status="error"
+            title="Something went wrong."
+            message={
+              (articleErrors && articleErrors[0].message) ||
+              (competitionsErrors && competitionsErrors[0].message)
             }
-            scrollable={true}
-            name="Player"
-          >
-            <form>
-              <Stack gap="2">
-                <Field.Root required>
-                  <Field.Label color={"text_lg"}>Trophy</Field.Label>
-                  <CustomFileUpload
-                    description="trophy"
-                    filename="trophy"
-                    onUploaded={() => console.log("upload")}
-                  />
-                </Field.Root>
-                <Field.Root required>
-                  <Field.Label color={"text_lg"}>Competition</Field.Label>
-                  <CustomSelect
-                    options={competitions.map((el) => {
-                      return {
-                        label: el.longName,
-                        value: el.longName,
-                      };
-                    })}
-                    name="Competition"
-                    description="competition"
-                    selectedValue={competition}
-                    handleOnChange={handleOnChange}
-                  />
-                </Field.Root>
-                <Button type="submit" css={btnStyles} colorPalette={"blue"}>
-                  Save
-                </Button>
-              </Stack>
-            </form>
-          </FormDialog>
-        </HStack>
-        <Flex my={"20px"} direction={"column"} gap={"4"}>
-          {honors.map((trophy) => {
-            return <TrophyCard key={trophy.id} trophy={trophy} />;
-          })}
-        </Flex>
+          />
+        ) : (
+          competitions &&
+          articles && (
+            <HStack justify={"flex-end"} mb={"20px"} gap="2">
+              <TrophyFormDialog
+                competitions={competitions}
+                articles={articles}
+              />
+            </HStack>
+          )
+        )}
+        {trophiesErrors ? (
+          <CustomAlert
+            status="error"
+            title="Something went wrong."
+            message={trophiesErrors[0].message}
+          />
+        ) : trophies.length < 1 ? (
+          <CustomAlert
+            status="info"
+            title="No Trophy."
+            message={"No trophy available, create some to get started."}
+          />
+        ) : (
+          <Flex my={"20px"} direction={"column"} gap={"4"}>
+            {trophies.map((trophy) => {
+              return <TrophyCard key={trophy.id} trophy={trophy} />;
+            })}
+          </Flex>
+        )}
       </Box>
     </>
   );

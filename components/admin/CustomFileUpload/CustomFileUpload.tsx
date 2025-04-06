@@ -1,5 +1,5 @@
 import { getIcon } from "@/lib/icons";
-import { Button, FileUpload, Icon } from "@chakra-ui/react";
+import { Box, Button, FileUpload, Icon } from "@chakra-ui/react";
 import React from "react";
 import useToast from "@/hooks/useToast";
 import slugify from "slugify";
@@ -9,11 +9,13 @@ function CustomFileUpload({
   id,
   onUploaded,
   filename,
+  type,
 }: {
   description: string;
   id?: string;
   onUploaded: (path: string) => void;
   filename: string;
+  type?: "drag-drop" | "select";
 }) {
   const { uploadPromiseToast } = useToast();
 
@@ -41,26 +43,53 @@ function CustomFileUpload({
   };
 
   return (
-    <FileUpload.Root
-      accept={["image/png", "image/jpeg", "image/webp"]}
-      w={"full"}
-      maxFiles={1}
-      p={"10px"}
-      mt={"5px"}
-      id={id}
-      onChange={handleFileUpload}
-    >
-      <FileUpload.HiddenInput />
-      <FileUpload.Trigger asChild>
-        <Button variant="outline" size="sm" px={"20px"}>
-          <Icon size="md" color="fg.muted">
-            {getIcon("upload")}
-          </Icon>
-          Select {description}
-        </Button>
-      </FileUpload.Trigger>
-      <FileUpload.List />
-    </FileUpload.Root>
+    <>
+      {type === "drag-drop" ? (
+        <FileUpload.Root
+          alignItems="stretch"
+          maxFiles={1}
+          border={"2px dashed gray"}
+          borderRadius={"sm"}
+          accept={["image/jpeg", "image/webp", "image/png"]}
+          mb={"5"}
+          id={id}
+          onChange={handleFileUpload}
+        >
+          <FileUpload.HiddenInput />
+          <FileUpload.Dropzone>
+            <Icon size="md" color="fg.muted">
+              {getIcon("upload")}
+            </Icon>
+            <FileUpload.DropzoneContent>
+              <Box>Drag and drop a {description} here</Box>
+              <Box color="fg.muted">.png, .webp, .jpg up to 5MB</Box>
+            </FileUpload.DropzoneContent>
+          </FileUpload.Dropzone>
+          <FileUpload.List />
+        </FileUpload.Root>
+      ) : (
+        <FileUpload.Root
+          accept={["image/png", "image/jpeg", "image/webp"]}
+          w={"full"}
+          maxFiles={1}
+          p={"10px"}
+          mt={"5px"}
+          id={id}
+          onChange={handleFileUpload}
+        >
+          <FileUpload.HiddenInput />
+          <FileUpload.Trigger asChild>
+            <Button variant="outline" size="sm" px={"20px"}>
+              <Icon size="md" color="fg.muted">
+                {getIcon("upload")}
+              </Icon>
+              Select {description}
+            </Button>
+          </FileUpload.Trigger>
+          <FileUpload.List />
+        </FileUpload.Root>
+      )}
+    </>
   );
 }
 
