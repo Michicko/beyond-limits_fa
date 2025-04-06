@@ -12,6 +12,7 @@ type PlayerPosition = Schema["PlayerPosition"]["type"];
 type Season = Schema["Season"]["type"];
 type Competition = Schema["Competition"]["type"];
 type Team = Schema["Team"]["type"];
+type Player = Schema["Player"]["type"];
 
 export async function createPosition(
   formData: FormData,
@@ -198,5 +199,56 @@ export async function deleteTeam(id: string) {
     id,
     modelName: "Team",
     pathToRevalidate: "/cp/teams",
+  });
+}
+
+export async function createPlayer(formData: FormData) {
+  return await createEntity<Player>({
+    modelName: "Player",
+    formData,
+    selectionSet: [
+      "id",
+      "firstname",
+      "lastname",
+      "ageGroup",
+      "homeKit",
+      "squadNo",
+      "dob",
+      "dominantFoot",
+      "status",
+      "isTwoFooted",
+      "awayKit",
+    ],
+    revalidatePath: "/cp/players",
+  });
+}
+
+export async function updatePlayer(id: string, formData: FormData) {
+  return await updateEntity<Player>({
+    modelName: "Player",
+    id,
+    formData,
+    selectionSet: [
+      "id",
+      "firstname",
+      "lastname",
+      "ageGroup",
+      "homeKit",
+      "squadNo",
+      "dob",
+      "dominantFoot",
+      "status",
+      "isTwoFooted",
+      "awayKit",
+    ],
+    revalidatePath: "/cp/players",
+  });
+}
+
+export async function deletePlayer(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Player",
+    pathToRevalidate: "/cp/players",
   });
 }

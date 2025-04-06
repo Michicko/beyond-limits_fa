@@ -1,60 +1,124 @@
 "use client";
 import { Field, Input, SimpleGrid, Stack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import FormBtn from "./FormBtn";
-import { player_positions } from "@/lib/placeholder-data";
-import { IPlayer } from "@/lib/definitions";
+import { IPlayer, IPosition } from "@/lib/definitions";
 import { CldImage } from "next-cloudinary";
+import slugify from "slugify";
+import useToast from "@/hooks/useToast";
+import { createPlayer, updatePlayer } from "@/app/_actions/actions";
+import { Schema } from "@/amplify/data/resource";
+import { getButtonStatus } from "@/lib/helpers";
 
-function PlayerForm({ player }: { player?: IPlayer }) {
-  const [formData, setFormData] = useState({
+function PlayerForm({
+  player,
+  positions,
+  statuses,
+  ageGroups,
+  dominantFoots,
+}: {
+  player?: IPlayer | null;
+  positions: IPosition[];
+  statuses: string[];
+  ageGroups: string[];
+  dominantFoots: string[];
+}) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [tempData, setTempData] = useState({
     firstname: player?.firstname || "",
     lastname: player?.lastname || "",
-    positionId: player?.positionId || "",
-    squadNo: player?.squadNo || "",
-    dob: player?.dob || "",
-    height: player?.height || "",
-    weight: player?.weight || "",
-    dominantFoot: player?.dominantFoot || "",
-    isTwoFooted: player?.isTwoFooted || false,
     homeKit: player?.homeKit || "",
     awayKit: player?.awayKit || "",
-    ageGroup: player?.ageGroup || "",
+    isTwoFooted: player?.isTwoFooted || false,
     status: player?.status || "",
+    ageGroup: player?.ageGroup || "",
+    dominantFoot: player?.dominantFoot || "",
+    playerPositionId: player?.playerPosition?.id || "",
+  });
+
+  const positionOptions = positions.map((el) => {
+    return {
+      label: el.longName,
+      value: el.id,
+    };
   });
 
   const handleOnChange = (e: { target: { name: string; value: any } }) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setTempData({ ...tempData, [name]: value });
   };
+  const [isPending, startTransition] = useTransition();
+  const { errorToast, mutationToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submitting");
-  };
+    const formData = new FormData(e.currentTarget);
+    formData.append("homeKit", tempData.homeKit);
+    formData.append("awayKit", tempData.awayKit);
+    formData.append("isTwoFooted", String(tempData.isTwoFooted));
 
-  console.log(formData);
+    if (player) {
+      startTransition(() => {
+        updatePlayer(player.id, formData)
+          .then((data: Schema["Player"]["type"] | null) => {
+            if (data) {
+              mutationToast(
+                "player",
+                `${data.firstname} ${data.lastname}`,
+                "update"
+              );
+            }
+          })
+          .catch((err) => {
+            errorToast(err);
+          });
+      });
+    } else {
+      startTransition(() => {
+        createPlayer(formData)
+          .then((data: Schema["Player"]["type"] | null) => {
+            if (data) {
+              mutationToast(
+                "player",
+                `${data.firstname} ${data.lastname}`,
+                "create"
+              );
+              formRef.current?.reset();
+              setTempData({
+                firstname: "",
+                lastname: "",
+                homeKit: "",
+                awayKit: "",
+                isTwoFooted: false,
+                status: "",
+                ageGroup: "",
+                dominantFoot: "",
+                playerPositionId: "",
+              });
+            }
+          })
+          .catch((err) => {
+            errorToast(err);
+          });
+      });
+    }
+  };
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} ref={formRef}>
         <Stack gap="4">
           <Field.Root required>
             <FormLabel>Position</FormLabel>
             <CustomSelect
-              options={player_positions.map((el) => {
-                return {
-                  label: el.longName,
-                  value: el.id,
-                };
-              })}
-              name="positionId"
+              options={positionOptions}
+              name="playerPositionId"
               description="player position"
-              selectedValue={formData.positionId}
+              selectedValue={tempData.playerPositionId}
               handleOnChange={handleOnChange}
             />
           </Field.Root>
@@ -69,7 +133,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.firstname}
+              value={tempData.firstname}
               onChange={handleOnChange}
             />
           </Field.Root>
@@ -84,7 +148,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.lastname}
+              value={tempData.lastname}
               onChange={handleOnChange}
             />
             <Field.HelperText
@@ -98,44 +162,52 @@ function PlayerForm({ player }: { player?: IPlayer }) {
           <SimpleGrid gap={5} columns={{ base: 1, md: 2 }}>
             <Field.Root required>
               <FormLabel>Home kit</FormLabel>
-              {formData.homeKit ? (
+              {tempData.homeKit && (
                 <CldImage
-                  src={formData.homeKit}
+                  src={tempData.homeKit}
                   width="600"
                   height="600"
                   alt=""
                 />
-              ) : (
+              )}
+              {!tempData.homeKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
                   description="home kit"
                   id="home_kit"
-                  filename={
-                    formData.firstname + " " + formData.lastname + " home-kit"
-                  }
+                  filename={slugify(
+                    `${tempData.firstname} ${tempData.lastname} homekit`,
+                    {
+                      lower: true,
+                    }
+                  )}
                   onUploaded={(path) =>
-                    setFormData({ ...formData, homeKit: path })
+                    setTempData({ ...tempData, homeKit: path })
                   }
                 />
               )}
             </Field.Root>
             <Field.Root required>
               <FormLabel>Away kit</FormLabel>
-              {formData.awayKit ? (
+              {tempData.awayKit && (
                 <CldImage
-                  src={formData.awayKit}
+                  src={tempData.awayKit}
                   width="600"
                   height="600"
                   alt=""
                 />
-              ) : (
+              )}
+              {!tempData.awayKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
                   description="away kit"
                   id="away_kit"
-                  filename={
-                    formData.firstname + " " + formData.lastname + " away-kit"
-                  }
+                  filename={slugify(
+                    `${tempData.firstname} ${tempData.lastname} awaykit`,
+                    {
+                      lower: true,
+                    }
+                  )}
                   onUploaded={(path) =>
-                    setFormData({ ...formData, awayKit: path })
+                    setTempData({ ...tempData, awayKit: path })
                   }
                 />
               )}
@@ -151,8 +223,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.dob}
-              onChange={handleOnChange}
+              defaultValue={player?.dob || ""}
             />
             <Field.HelperText
               fontSize={"sm"}
@@ -165,7 +236,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
           <Field.Root required>
             <FormLabel>squad number</FormLabel>
             <Input
-              name={"squad number"}
+              name={"squadNo"}
               type={"number"}
               placeholder="Enter squad number"
               px={"2"}
@@ -173,8 +244,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.squadNo}
-              onChange={handleOnChange}
+              defaultValue={player?.squadNo || ""}
             />
             <Field.HelperText
               fontSize={"sm"}
@@ -195,8 +265,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.weight}
-              onChange={handleOnChange}
+              defaultValue={player?.weight || ""}
             />
             <Field.HelperText
               fontSize={"sm"}
@@ -217,8 +286,7 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              value={formData.height}
-              onChange={handleOnChange}
+              defaultValue={player?.height || ""}
             />
             <Field.HelperText
               fontSize={"sm"}
@@ -231,22 +299,22 @@ function PlayerForm({ player }: { player?: IPlayer }) {
           <Field.Root required>
             <FormLabel>Age Group</FormLabel>
             <CustomSelect
-              options={["under-17", "under-19"].map((el) => {
+              options={ageGroups.map((el) => {
                 return {
                   label: el,
                   value: el.toUpperCase(),
                 };
               })}
-              name="age_group"
+              name="ageGroup"
               description="age group"
-              selectedValue={formData.ageGroup}
+              selectedValue={tempData.ageGroup}
               handleOnChange={handleOnChange}
             />
           </Field.Root>
           <Field.Root required>
             <FormLabel>Player status</FormLabel>
             <CustomSelect
-              options={["active", "loan", "inactive"].map((el) => {
+              options={statuses.map((el) => {
                 return {
                   label: el,
                   value: el.toUpperCase(),
@@ -254,36 +322,36 @@ function PlayerForm({ player }: { player?: IPlayer }) {
               })}
               name="status"
               description="player status"
-              selectedValue={formData.status}
+              selectedValue={tempData.status}
               handleOnChange={handleOnChange}
             />
           </Field.Root>
           <Field.Root required>
             <FormLabel>Dominant Foot</FormLabel>
             <CustomSelect
-              options={["Left", "Right"].map((el) => {
+              options={dominantFoots.map((el) => {
                 return {
                   label: el,
-                  value: el.toUpperCase(),
+                  value: el,
                 };
               })}
-              name="dominant_foot"
+              name="dominantFoot"
               description="dominant foot"
-              selectedValue={formData.dominantFoot}
+              selectedValue={tempData.dominantFoot}
               handleOnChange={handleOnChange}
             />
           </Field.Root>
           <CheckBox
             name={"isTwoFooted"}
-            checked={formData.isTwoFooted}
+            checked={tempData.isTwoFooted}
             size="xs"
             label="Is Two Footed"
             onCheckedChange={(e) => {
-              setFormData({ ...formData, isTwoFooted: e.checked });
+              setTempData({ ...tempData, isTwoFooted: e.checked });
             }}
             showLabel={true}
           />
-          <FormBtn>Create Player</FormBtn>
+          <FormBtn>{getButtonStatus(player, "Player", isPending)}</FormBtn>
         </Stack>
       </form>
     </>

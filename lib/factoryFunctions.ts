@@ -7,8 +7,8 @@ type EntityOptions<T> = {
   modelName: keyof typeof cookiesClient.models;
   id?: string;
   formData: FormData;
-  uniqueCheckFn: (value: string) => Promise<{ data: T[] }>;
-  uniqueFieldName: string;
+  uniqueCheckFn?: (value: string) => Promise<{ data: T[] }>;
+  uniqueFieldName?: string;
   currentUniqueValue?: string;
   attributes?: string[] | Nullable<string>[];
   selectionSet?: (keyof T)[];
@@ -24,13 +24,15 @@ export async function createEntity<T>({
   selectionSet = ["id"] as (keyof T)[],
   revalidatePath: pathToRevalidate,
 }: EntityOptions<T>): Promise<T | null> {
-  const uniqueValue = formData.get(uniqueFieldName)?.toString() || "";
-  const existing = await uniqueCheckFn(uniqueValue);
+  if (uniqueFieldName && uniqueCheckFn) {
+    const uniqueValue = formData.get(uniqueFieldName)?.toString() || "";
+    const existing = await uniqueCheckFn(uniqueValue);
 
-  if (existing.data && existing.data.length > 0) {
-    throw new Error(
-      `${modelName} with this ${uniqueFieldName} already exists.`
-    );
+    if (existing.data && existing.data.length > 0) {
+      throw new Error(
+        `${modelName} with this ${uniqueFieldName} already exists.`
+      );
+    }
   }
 
   const input: Record<string, any> = Object.fromEntries(
@@ -59,8 +61,6 @@ export async function createEntity<T>({
       revalidatePath(pathToRevalidate);
     }
 
-    console.log("data: ***", data);
-
     return data ?? null;
   } catch (error) {
     console.error("Error during create operation:", error);
@@ -79,18 +79,20 @@ export async function updateEntity<T>({
   selectionSet = ["id"] as (keyof T)[],
   revalidatePath: pathToRevalidate,
 }: EntityOptions<T>): Promise<T | null> {
-  const uniqueValue = formData.get(uniqueFieldName)?.toString() || "";
+  if (uniqueFieldName && uniqueCheckFn) {
+    const uniqueValue = formData.get(uniqueFieldName)?.toString() || "";
 
-  // Only run the unique check if the unique value has changed
-  if (uniqueValue !== currentUniqueValue) {
-    const existing = await uniqueCheckFn(uniqueValue);
-    if (existing.data.length > 0) {
-      console.log(
-        `Found existing ${modelName} with the same ${uniqueFieldName}`
-      );
-      throw new Error(
-        `${modelName} with this ${uniqueFieldName} already exists.`
-      );
+    // Only run the unique check if the unique value has changed
+    if (uniqueValue !== currentUniqueValue) {
+      const existing = await uniqueCheckFn(uniqueValue);
+      if (existing.data.length > 0) {
+        console.log(
+          `Found existing ${modelName} with the same ${uniqueFieldName}`
+        );
+        throw new Error(
+          `${modelName} with this ${uniqueFieldName} already exists.`
+        );
+      }
     }
   }
 

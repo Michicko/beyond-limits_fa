@@ -1,5 +1,39 @@
 import { ReactNode } from "react";
 import { JSONContent } from "@tiptap/react";
+import { Schema } from "@/amplify/data/resource";
+
+export type RawPlayer = Schema["Player"]["type"];
+
+export type IPlayer = Omit<
+  Pick<
+    RawPlayer,
+    | "id"
+    | "firstname"
+    | "lastname"
+    | "ageGroup"
+    | "homeKit"
+    | "awayKit"
+    | "dominantFoot"
+    | "squadNo"
+    | "dob"
+    | "status"
+    | "isTwoFooted"
+    | "weight"
+    | "height"
+  >,
+  never
+> & {
+  playerPosition: {
+    id: string;
+    shortName: string;
+    longName: string;
+  } | null;
+};
+
+export type IPosition = Pick<
+  Schema["PlayerPosition"]["type"],
+  "id" | "shortName" | "longName" | "attributes" | "createdAt"
+>;
 
 export interface IStackStyles {
   border: string;
@@ -218,23 +252,23 @@ export enum Player_status {
   INACTIVE = "INACTIVE",
 }
 
-export interface IPlayer {
-  id: string;
-  firstname: string;
-  lastname: string;
-  positionId: string;
-  position?: IPlayerPosition;
-  squadNo: number;
-  dob: string;
-  height: number;
-  weight: number;
-  dominantFoot: Dominant_foot;
-  isTwoFooted: boolean;
-  homeKit: string;
-  awayKit: string;
-  ageGroup: Age_group;
-  status: Player_status;
-}
+// export interface IPlayer {
+//   id: string;
+//   firstname: string;
+//   lastname: string;
+//   positionId: string;
+//   position?: IPlayerPosition;
+//   squadNo: number;
+//   dob: string;
+//   height: number;
+//   weight: number;
+//   dominantFoot: Dominant_foot;
+//   isTwoFooted: boolean;
+//   homeKit: string;
+//   awayKit: string;
+//   ageGroup: Age_group;
+//   status: Player_status;
+// }
 
 interface IStaff {
   name: string;

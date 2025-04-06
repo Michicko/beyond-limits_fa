@@ -32,7 +32,7 @@ async function EditPosition({ params }: { params: { positionId: string } }) {
         </HStack>
         {errors ? (
           <CustomAlert
-            title={`No season with id ${params.positionId}`}
+            title={`No player position with id ${params.positionId}`}
             status="error"
           />
         ) : (

@@ -1,4 +1,4 @@
-import { IPlayer } from "@/lib/definitions";
+"use client";
 import {
   Box,
   Card,
@@ -14,6 +14,10 @@ import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
+import { CldImage } from "next-cloudinary";
+import { IPlayer } from "../../../lib/definitions";
+import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { deletePlayer } from "@/app/_actions/actions";
 
 function PlayerCard({ player }: { player: IPlayer }) {
   const cardStyles = {
@@ -63,20 +67,22 @@ function PlayerCard({ player }: { player: IPlayer }) {
           gap={"4"}
           rowGap={"6"}
         >
-          <GridItem
-            css={gridStyles}
-            order={{ base: 1, lg: 1 }}
-            position={"relative"}
-            colSpan={1}
-          >
-            <Image
-              rounded="md"
-              src={player.homeKit}
-              alt={player.firstname}
-              aspectRatio={4 / 3}
-              width="300px"
-            />
-          </GridItem>
+          {player.homeKit && (
+            <GridItem
+              css={gridStyles}
+              order={{ base: 1, lg: 1 }}
+              position={"relative"}
+              colSpan={1}
+            >
+              <CldImage
+                src={player.homeKit}
+                width="300"
+                height="300"
+                alt={player.firstname}
+                loading="lazy"
+              />
+            </GridItem>
+          )}
           <GridItem
             order={{ base: 3, lg: 2 }}
             alignSelf={"center"}
@@ -111,7 +117,7 @@ function PlayerCard({ player }: { player: IPlayer }) {
             <HStack gap={"6"}>
               <Box mb={"sm"}>
                 <Text css={infoTitle}>Position</Text>
-                <Text css={infoValue}>{player.position?.shortName}</Text>
+                <Text css={infoValue}>{player.playerPosition?.shortName}</Text>
               </Box>
               <Box mb={"sm"}>
                 <Text css={infoTitle}>Foot</Text>
@@ -140,7 +146,11 @@ function PlayerCard({ player }: { player: IPlayer }) {
           <CustomMenuItem label="Edit" showBorder={true}>
             <Link href={`/cp/players/${player.id}/edit`}>Edit</Link>
           </CustomMenuItem>
-          <CustomMenuItem label="Delete" showBorder={false} />
+          <DeleteBtn
+            name={`${player.firstname} ${player.lastname}`}
+            id={player.id}
+            onDelete={deletePlayer}
+          />
         </>
       </CustomMenu>
     </Card.Root>
