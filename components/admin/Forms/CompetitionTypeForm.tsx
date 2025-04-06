@@ -3,7 +3,7 @@ import { Field, HStack, Input, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { competitions, seasons } from "@/lib/placeholder-data";
 
 function CompetitionTypeForm({

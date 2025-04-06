@@ -1,23 +1,46 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
-import ArticleForm from "@/components/admin/Forms/ArticleForm";
+import BackButton from "@/components/admin/BackButton";
+import ArticleFormWrapper from "@/components/admin/Forms/ArticleFormWrapper";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import { articles } from "@/lib/placeholder-data";
-import { Box } from "@chakra-ui/react";
+import { cookiesClient } from "@/utils/amplify-utils";
+import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
 
-function EditArticle({ params }: { params: { articleId: string } }) {
-  const article = articles.find((article) => article.id === params.articleId);
+async function EditArticle({ params }: { params: { articleId: string } }) {
+  const { data: article, errors } = await cookiesClient.models.Article.get(
+    { id: params.articleId },
+    {
+      selectionSet: [
+        "id",
+        "title",
+        "articleCategory.category",
+        "coverImage",
+        "content",
+        "articleCategoryId",
+      ],
+      authMode: "userPool",
+    }
+  );
   return (
     <>
       <PageTitle pageTitle="Edit Article" />
       <Box w={"full"} h={"full"} mt={"20px"}>
-        {!article ? (
+        <HStack mb={"3"} justifyContent={"space-between"} gap={"4"} w={"full"}>
+          <BackButton />
+        </HStack>
+        {errors ? (
+          <CustomAlert
+            status="error"
+            title="Something went wrong."
+            message={errors[0].message}
+          />
+        ) : !article ? (
           <CustomAlert
             status="error"
             title={`No article with id ${params.articleId}`}
           />
         ) : (
-          <ArticleForm article={article} />
+          <ArticleFormWrapper article={article} />
         )}
       </Box>
     </>

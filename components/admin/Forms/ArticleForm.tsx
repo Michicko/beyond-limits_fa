@@ -12,14 +12,25 @@ import useToast from "@/hooks/useToast";
 import { createArticle, updateArticle } from "@/app/_actions/actions";
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
-import { Key } from "aws-cdk-lib/aws-kms";
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
-  "id" | "title" | "coverImage" | "content" | "status"
+  "id" | "title" | "coverImage" | "content" | "status" | "articleCategoryId"
 >;
 
-function ArticleForm({ article }: { article?: IArticle }) {
+type IArticleCategory = Pick<
+  Schema["ArticleCategory"]["type"],
+  "id" | "category" | "createdAt"
+>;
+
+function ArticleForm({
+  article,
+  articleCategories,
+}: {
+  article?: IArticle | null;
+  articleCategories: IArticleCategory[];
+}) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const btnStyles = {
     p: "4px 20px",
@@ -32,9 +43,16 @@ function ArticleForm({ article }: { article?: IArticle }) {
   const [tempData, setTempData] = useState({
     title: article?.title || "",
     coverImage: article?.coverImage || "",
-    content: (article?.content as JSONContent) || ({} as JSONContent),
-    status: "UNPUBLISHED",
+    content: article
+      ? JSON.parse(article.content as string)
+      : ({} as JSONContent),
+    status: article?.status || "UNPUBLISHED",
+    articleCategoryId: article?.articleCategoryId || "",
   });
+
+  const handleArticleContent = (json: JSONContent) => {
+    setTempData({ ...tempData, content: json });
+  };
 
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
@@ -45,6 +63,8 @@ function ArticleForm({ article }: { article?: IArticle }) {
     Object.entries(tempData).forEach(([Key, value]) => {
       formData.append(Key, value.toString());
     });
+    formData.delete("content");
+    formData.append("content", JSON.stringify(tempData.content));
 
     if (article) {
       startTransition(() => {
@@ -70,7 +90,9 @@ function ArticleForm({ article }: { article?: IArticle }) {
                 coverImage: "",
                 content: {},
                 status: "UNPUBLISHED",
+                articleCategoryId: "",
               });
+              handleArticleContent({});
             }
           })
           .catch((err) => {
@@ -78,10 +100,6 @@ function ArticleForm({ article }: { article?: IArticle }) {
           });
       });
     }
-  };
-
-  const handleArticleContent = (json: JSONContent) => {
-    setTempData({ ...tempData, content: json });
   };
 
   return (
@@ -124,6 +142,7 @@ function ArticleForm({ article }: { article?: IArticle }) {
           {getIcon("trash")} Trash
         </Button>
       </HStack>
+
       <Field.Root required mb={"5"}>
         <Input
           placeholder="Add Title"
@@ -137,8 +156,24 @@ function ArticleForm({ article }: { article?: IArticle }) {
           onChange={(e) => setTempData({ ...tempData, title: e.target.value })}
         />
       </Field.Root>
-
-      <Field.Root required>
+      <Field.Root required mb={"5"}>
+        <FormLabel>Category</FormLabel>
+        <CustomSelect
+          options={articleCategories.map((el) => {
+            return {
+              label: el.category,
+              value: el.id,
+            };
+          })}
+          name="articleCategoryId"
+          description="article category"
+          selectedValue={tempData.articleCategoryId}
+          handleOnChange={(e) =>
+            setTempData({ ...tempData, articleCategoryId: e.target.value })
+          }
+        />
+      </Field.Root>
+      <Field.Root required mb={"5"}>
         <FormLabel>Cover Image</FormLabel>
         {tempData.coverImage && (
           <HStack gap={4}>

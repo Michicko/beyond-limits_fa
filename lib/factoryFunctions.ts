@@ -35,21 +35,24 @@ export async function createEntity<T>({
     }
   }
 
-  const input: Record<string, any> = Object.fromEntries(
+  // const input: Record<string, any> = Object.fromEntries(
+  //   Array.from(formData.entries(), ([key, value]) => [key, value.toString()])
+  // );
+
+  // Dynamically type the input object
+  const input: T = Object.fromEntries(
     Array.from(formData.entries(), ([key, value]) => [key, value.toString()])
-  );
+  ) as T;
 
   // Conditionally include attributes
   if (attributes) {
-    input["attributes"] = attributes;
+    (input as any).attributes = attributes;
   }
-
-  console.log("input: ***", input);
 
   try {
     const model = cookiesClient.models[modelName] as {
       create: (
-        input: Record<string, any>,
+        input: T,
         options: { authMode: "userPool"; selectionSet: string[] }
       ) => Promise<{ data: T | null }>;
     };
@@ -63,12 +66,9 @@ export async function createEntity<T>({
       revalidatePath(pathToRevalidate);
     }
 
-    console.log("data: **", data);
-
     return data ?? null;
     // return null;
   } catch (error) {
-    console.error("Error during create operation:", error);
     throw error;
   }
 }
@@ -101,16 +101,25 @@ export async function updateEntity<T>({
     }
   }
 
-  const input: Record<string, any> = Object.fromEntries(
-    Array.from(formData.entries(), ([key, value]) => [key, value.toString()])
-  );
+  // const input: Record<string, any> = Object.fromEntries(
+  //   Array.from(formData.entries(), ([key, value]) => [key, value.toString()])
+  // );
 
-  input["id"] = id;
+  const input: T = Object.fromEntries(
+    Array.from(formData.entries(), ([key, value]) => [key, value.toString()])
+  ) as T;
 
   // Conditionally include attributes
   if (attributes) {
-    input["attributes"] = attributes;
+    (input as any).attributes = attributes;
   }
+
+  (input as any).id = id;
+
+  // Conditionally include attributes
+  // if (attributes) {
+  //   input["attributes"] = attributes;
+  // }
 
   try {
     const model = cookiesClient.models[modelName] as {
@@ -131,7 +140,6 @@ export async function updateEntity<T>({
 
     return data ?? null;
   } catch (error) {
-    console.error("Error during create operation:", error);
     throw error;
   }
 }

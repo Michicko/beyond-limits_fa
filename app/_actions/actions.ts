@@ -15,6 +15,7 @@ type Team = Schema["Team"]["type"];
 type Player = Schema["Player"]["type"];
 type Article = Schema["Article"]["type"];
 type Trophy = Schema["Trophy"]["type"];
+type ArticleCategory = Schema["ArticleCategory"]["type"];
 
 export async function createPosition(
   formData: FormData,
@@ -330,5 +331,47 @@ export async function deleteTrophy(id: string) {
     id,
     modelName: "Trophy",
     pathToRevalidate: "/cp/trophies",
+  });
+}
+
+export async function createArticleCategory(formData: FormData) {
+  return await createEntity<ArticleCategory>({
+    modelName: "ArticleCategory",
+    formData,
+    uniqueFieldName: "category",
+    uniqueCheckFn: (category) =>
+      cookiesClient.models.ArticleCategory.listArticleCategoryByCategory({
+        category,
+      }),
+    selectionSet: ["id", "category", "createdAt"],
+    revalidatePath: "/cp/article-categories",
+  });
+}
+
+export async function updateArticleCategory(
+  id: string,
+  formData: FormData,
+  currentUniqueValue: string
+) {
+  return await updateEntity<ArticleCategory>({
+    modelName: "ArticleCategory",
+    id,
+    formData,
+    uniqueFieldName: "category",
+    uniqueCheckFn: (category) =>
+      cookiesClient.models.ArticleCategory.listArticleCategoryByCategory({
+        category,
+      }),
+    currentUniqueValue,
+    selectionSet: ["id", "category", "createdAt"],
+    revalidatePath: "/cp/article-categories",
+  });
+}
+
+export async function deleteArticleCategory(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "ArticleCategory",
+    pathToRevalidate: "/cp/article-categories",
   });
 }

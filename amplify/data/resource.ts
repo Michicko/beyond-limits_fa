@@ -287,6 +287,7 @@ const schema = a.schema({
       category: a.string().required(),
       articles: a.hasMany("Article", "articleCategoryId"),
     })
+    .secondaryIndexes((index) => [index("category")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
