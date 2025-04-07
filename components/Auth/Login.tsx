@@ -13,10 +13,10 @@ function Login({ user }: { user?: AuthUser }) {
   console.log(authStatus);
 
   useEffect(() => {
-    if (user) {
+    if (authStatus === "authenticated" && user) {
       redirect(redirectPath);
     }
-  }, [user]);
+  }, [authStatus, user, redirectPath]);
 
   return null;
 }

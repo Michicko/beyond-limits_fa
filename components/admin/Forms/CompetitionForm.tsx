@@ -39,32 +39,32 @@ function CompetitionForm({
     formData.append("logo", logo);
 
     if (competition) {
-      startTransition(() => {
-        updateCompetition(competition.id, formData, competition.longName)
-          .then((data: ICompetition | null) => {
-            if (data) {
-              mutationToast("competition", data.longName, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await updateCompetition(
+          competition.id,
+          formData,
+          competition.longName
+        );
+        if (res.status === "success" && res.data) {
+          mutationToast("competition", res.data.longName, "update");
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createCompetition(formData)
-          .then((data: ICompetition | null) => {
-            if (data) {
-              mutationToast("competition", data.longName, "create");
-              formRef.current?.reset();
-              setLogo("");
-              setShortName("");
-              setCompetitionType("");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await createCompetition(formData);
+        if (res.status === "success" && res.data) {
+          mutationToast("competition", res.data.longName, "create");
+          formRef.current?.reset();
+          setLogo("");
+          setShortName("");
+          setCompetitionType("");
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };

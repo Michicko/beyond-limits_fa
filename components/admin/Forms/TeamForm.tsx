@@ -37,32 +37,30 @@ function TeamForm({ team }: { team?: ITeam | null }) {
     formData.append("isBeyondLimits", String(isBeyondLimits));
 
     if (team) {
-      startTransition(() => {
-        updateTeam(team.id, formData, team.longName)
-          .then((data: ITeam | null) => {
-            if (data) {
-              mutationToast("team", data.longName, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await updateTeam(team.id, formData, team.longName);
+
+        if (res.status === "success" && res.data) {
+          mutationToast("team", res.data.longName, "update");
+        }
+
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createTeam(formData)
-          .then((data: ITeam | null) => {
-            if (data) {
-              mutationToast("team", data.longName, "create");
-              formRef.current?.reset();
-              setLogo("");
-              setShortName("");
-              setIsBeyondLimits(false);
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await createTeam(formData);
+        if (res.status === "success" && res.data) {
+          mutationToast("team", res.data.longName, "create");
+          formRef.current?.reset();
+          setLogo("");
+          setShortName("");
+          setIsBeyondLimits(false);
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };

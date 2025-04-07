@@ -57,7 +57,11 @@ function useToast() {
   };
 
   const errorToast = (err: any) => {
-    createToast("Error", err?.message || "Something went wrong.", "error");
+    createToast(
+      "Error",
+      typeof err === "string" ? err : err?.message || "Something went wrong.",
+      "error"
+    );
   };
 
   const mutationToast = (

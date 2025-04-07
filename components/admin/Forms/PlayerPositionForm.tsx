@@ -52,32 +52,36 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     formData.delete("attribute");
+    formData.append("attributes", JSON.stringify(attributes));
 
     if (position) {
-      startTransition(() => {
-        updatePosition(position.id, formData, attributes, position.shortName)
-          .then((data: IPosition | null) => {
-            if (data) {
-              mutationToast("player Position", data.longName, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await updatePosition(
+          position.id,
+          formData,
+          position.shortName
+        );
+
+        if (res.status === "success" && res.data) {
+          mutationToast("player Position", res.data.longName, "update");
+        }
+
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createPosition(formData, attributes)
-          .then((data: IPosition | null) => {
-            if (data) {
-              mutationToast("player Position", data.longName, "create");
-              setAttributes([]);
-              formRef.current?.reset();
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await createPosition(formData);
+
+        if (res.status === "success" && res.data) {
+          mutationToast("player Position", res.data.longName, "create");
+          setAttributes([]);
+          formRef.current?.reset();
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };

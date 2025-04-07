@@ -20,29 +20,27 @@ function SeasonForm({ season }: { season?: ISeason | null }) {
     const formData = new FormData(e.currentTarget);
 
     if (season) {
-      startTransition(() => {
-        updateSeason(season.id, formData, season.season)
-          .then((data: ISeason | null) => {
-            if (data) {
-              mutationToast("season", data.season, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      // Start transition for updating season
+      startTransition(async () => {
+        const res = await updateSeason(season.id, formData, season.season);
+        if (res.status === "success" && res.data) {
+          mutationToast("season", res.data.season, "update");
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createSeason(formData)
-          .then((data: ISeason | null) => {
-            if (data) {
-              mutationToast("season", data.season, "create");
-              formRef.current?.reset();
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      // Start transition for creating season
+      startTransition(async () => {
+        const res = await createSeason(formData);
+        if (res.status === "success" && res.data) {
+          mutationToast("season", res.data.season, "create");
+          formRef.current?.reset();
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };
