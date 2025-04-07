@@ -20,7 +20,6 @@ function SeasonForm({ season }: { season?: ISeason | null }) {
     const formData = new FormData(e.currentTarget);
 
     if (season) {
-      // Start transition for updating season
       startTransition(async () => {
         const res = await updateSeason(season.id, formData, season.season);
         if (res.status === "success" && res.data) {
@@ -31,7 +30,6 @@ function SeasonForm({ season }: { season?: ISeason | null }) {
         }
       });
     } else {
-      // Start transition for creating season
       startTransition(async () => {
         const res = await createSeason(formData);
         if (res.status === "success" && res.data) {

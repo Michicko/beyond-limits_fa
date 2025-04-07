@@ -62,48 +62,45 @@ function PlayerForm({
     formData.append("isTwoFooted", String(tempData.isTwoFooted));
 
     if (player) {
-      startTransition(() => {
-        updatePlayer(player.id, formData)
-          .then((data: Schema["Player"]["type"] | null) => {
-            if (data) {
-              mutationToast(
-                "player",
-                `${data.firstname} ${data.lastname}`,
-                "update"
-              );
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await updatePlayer(player.id, formData);
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "player",
+            `${res.data.firstname} ${res.data.lastname}`,
+            "update"
+          );
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createPlayer(formData)
-          .then((data: Schema["Player"]["type"] | null) => {
-            if (data) {
-              mutationToast(
-                "player",
-                `${data.firstname} ${data.lastname}`,
-                "create"
-              );
-              formRef.current?.reset();
-              setTempData({
-                firstname: "",
-                lastname: "",
-                homeKit: "",
-                awayKit: "",
-                isTwoFooted: false,
-                status: "",
-                ageGroup: "",
-                dominantFoot: "",
-                playerPositionId: "",
-              });
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
+      startTransition(async () => {
+        const res = await createPlayer(formData);
+
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "player",
+            `${res.data.firstname} ${res.data.lastname}`,
+            "create"
+          );
+          formRef.current?.reset();
+          setTempData({
+            firstname: "",
+            lastname: "",
+            homeKit: "",
+            awayKit: "",
+            isTwoFooted: false,
+            status: "",
+            ageGroup: "",
+            dominantFoot: "",
+            playerPositionId: "",
           });
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };

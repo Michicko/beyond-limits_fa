@@ -67,37 +67,34 @@ function ArticleForm({
     formData.append("content", JSON.stringify(tempData.content));
 
     if (article) {
-      startTransition(() => {
-        updateArticle(article.id, formData, article.title)
-          .then((data: Schema["Article"]["type"] | null) => {
-            if (data) {
-              mutationToast("article", data.title, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await updateArticle(article.id, formData, article.title);
+
+        if (res.status === "success" && res.data) {
+          mutationToast("article", res.data.title, "update");
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createArticle(formData)
-          .then((data: Schema["Article"]["type"] | null) => {
-            if (data) {
-              mutationToast("article", data.title, "create");
-              formRef.current?.reset();
-              setTempData({
-                title: "",
-                coverImage: "",
-                content: {},
-                status: "UNPUBLISHED",
-                articleCategoryId: "",
-              });
-              handleArticleContent({});
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
+      startTransition(async () => {
+        const res = await createArticle(formData);
+        if (res.status === "success" && res.data) {
+          mutationToast("article", res.data.title, "create");
+          formRef.current?.reset();
+          setTempData({
+            title: "",
+            coverImage: "",
+            content: {},
+            status: "UNPUBLISHED",
+            articleCategoryId: "",
           });
+          handleArticleContent({});
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };

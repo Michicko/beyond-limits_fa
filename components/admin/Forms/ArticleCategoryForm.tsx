@@ -30,33 +30,31 @@ function ArticleCategoryForm({
     const formData = new FormData(e.currentTarget);
 
     if (articleCategory) {
-      startTransition(() => {
-        updateArticleCategory(
+      startTransition(async () => {
+        const res = await updateArticleCategory(
           articleCategory.id,
           formData,
           articleCategory.category
-        )
-          .then((data: IArticleCategory | null) => {
-            if (data) {
-              mutationToast("category", data.category, "update");
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+        );
+
+        if (res.status === "success" && res.data) {
+          mutationToast("category", res.data.category, "update");
+        }
+
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     } else {
-      startTransition(() => {
-        createArticleCategory(formData)
-          .then((data: IArticleCategory | null) => {
-            if (data) {
-              mutationToast("category", data.category, "create");
-              formRef.current?.reset();
-            }
-          })
-          .catch((err) => {
-            errorToast(err);
-          });
+      startTransition(async () => {
+        const res = await createArticleCategory(formData);
+        if (res.status === "success" && res.data) {
+          mutationToast("category", res.data.category, "create");
+          formRef.current?.reset();
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
       });
     }
   };
