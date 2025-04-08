@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAuthSession } from "aws-amplify/auth/server";
 import { runWithAmplifyServerContext } from "@/utils/amplify-utils";
-import { isInAuthorizedGroup } from "./lib/helpers";
+import { isInAuthorizedGroup } from "@/lib/helpers";
 import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
+
+interface CognitoJwtPayload {
+  sub: string;
+  exp: number;
+  iat: number;
+  "cognito:groups"?: string[];
+  [key: string]: any;
+}
 
 const unAuthenticatedRoutes = [
   "/cp/login",
@@ -12,11 +20,16 @@ const unAuthenticatedRoutes = [
   "_next/image",
   "api",
 ];
+
 const authorizedGroups = ["Admin", "Editor"];
 
 export async function middleware(request: NextRequest) {
+  const allCookies = cookies(); // ← this is a function that returns ReadonlyRequestCookies
+
+  console.log("🔍 All cookies in middleware:", allCookies);
+
   const response = NextResponse.next();
-  let url = request.nextUrl.clone();
+  const url = request.nextUrl.clone();
 
   const isCpRoute = request.nextUrl.pathname.startsWith("/cp");
   const isUnAuthenticatedRoute = unAuthenticatedRoutes.some((route) =>
@@ -29,49 +42,43 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const { isAuthenticated, session } = await runWithAmplifyServerContext({
-    // nextServerContext: { request, response },
+  const { isAuthenticated, userGroups } = await runWithAmplifyServerContext({
     nextServerContext: { cookies: () => cookies() },
     operation: async (contextSpec) => {
+      const rawToken = contextSpec.token?.value;
+
+      if (!rawToken || typeof rawToken !== "string") {
+        return { isAuthenticated: false, userGroups: [] };
+      }
+
       try {
-        console.log("Cookies in middleware:", request.cookies.getAll());
-        console.log("===============================================");
-        const session = await fetchAuthSession(contextSpec, {});
+        const decoded = jwtDecode<CognitoJwtPayload>(rawToken);
+        const groups = decoded["cognito:groups"] || [];
         return {
-          isAuthenticated:
-            session.tokens?.accessToken !== undefined &&
-            session.tokens?.idToken !== undefined,
-          session,
+          isAuthenticated: true,
+          userGroups: groups,
         };
       } catch (error) {
-        console.log(error);
+        console.error("JWT decode failed", error);
         return {
           isAuthenticated: false,
-          session: null,
+          userGroups: [],
         };
       }
     },
   });
 
   if (isAuthenticated) {
-    const tokens = session?.tokens;
-    const userGroups =
-      (tokens && tokens.accessToken.payload["cognito:groups"]) || [];
-
-    // if user is in authorized group
     if (isInAuthorizedGroup(userGroups, authorizedGroups)) {
       return response;
     }
-
-    // User is authenticated but not authorizedS
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // User not authenticated → redirect to login if not already there
   if (url.pathname !== "/cp/login") {
     url.pathname = "/cp/login";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
-    return NextResponse.redirect(new URL(url, request.url));
+    return NextResponse.redirect(url);
   }
 
   return response;

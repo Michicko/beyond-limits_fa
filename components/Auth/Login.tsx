@@ -14,7 +14,9 @@ function Login({ user }: { user?: AuthUser }) {
 
   useEffect(() => {
     if (authStatus === "authenticated" && user) {
-      redirect(redirectPath);
+      setTimeout(() => {
+        redirect(redirectPath);
+      }, 1000);
     }
   }, [authStatus, user, redirectPath]);
 

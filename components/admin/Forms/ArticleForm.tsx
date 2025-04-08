@@ -1,6 +1,13 @@
 "use client";
 import { getIcon } from "@/lib/icons";
-import { Button, Field, HStack, IconButton, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Field,
+  HStack,
+  IconButton,
+  Input,
+  Stack,
+} from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import { JSONContent } from "@tiptap/react";
 import TextEditor from "@/components/TextEditor/TextEditor";
@@ -13,6 +20,9 @@ import { createArticle, updateArticle } from "@/app/_actions/actions";
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
+import CreateButton from "@/components/Buttons/CreateButton";
+import Link from "next/link";
+import ArticleCategory from "@/components/Article/ArticleCategory";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -100,114 +110,137 @@ function ArticleForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
-      <HStack justifyContent={"flex-end"} gap={4} flexWrap={"wrap"} mb={"6"}>
-        <Button
-          size={"sm"}
-          css={btnStyles}
-          variant={"subtle"}
-          bg={"gray.200"}
-          color={"primary_variant"}
-          _hover={{ bg: "primary_variant", color: "gray.100" }}
-          _disabled={{ bg: "primary_variant", color: "gray.100" }}
-          disabled={isPending}
-          type="submit"
-        >
-          {getButtonStatus(article, "Article", isPending)}
-        </Button>
-        <Button
-          size={"sm"}
-          css={btnStyles}
-          variant={"solid"}
-          bg={"primary"}
-          _hover={{ bg: "primary_variant", color: "gray.100" }}
-          disabled={!article || article.status === "PUBLISHED"}
-          type="button"
-        >
-          Publish
-        </Button>
-        <Button
-          size={"sm"}
-          css={btnStyles}
-          variant={"plain"}
-          bg={"red.100"}
-          color={"error"}
-          _hover={{ bg: "red.600", color: "red.100" }}
-          disabled={!article}
-          type="button"
-        >
-          {getIcon("trash")} Trash
-        </Button>
-      </HStack>
-
-      <Field.Root required mb={"5"}>
-        <Input
-          placeholder="Add Title"
-          border={"transparent"}
-          p={"0 10px"}
-          _placeholder={{
-            fontSize: "lg",
-            fontWeight: "700",
-          }}
-          value={tempData.title}
-          onChange={(e) => setTempData({ ...tempData, title: e.target.value })}
-        />
-      </Field.Root>
-      <Field.Root required mb={"5"}>
-        <FormLabel>Category</FormLabel>
-        <CustomSelect
-          options={articleCategories.map((el) => {
-            return {
-              label: el.category,
-              value: el.id,
-            };
-          })}
-          name="articleCategoryId"
-          description="article category"
-          selectedValue={tempData.articleCategoryId}
-          handleOnChange={(e) =>
-            setTempData({ ...tempData, articleCategoryId: e.target.value })
-          }
-        />
-      </Field.Root>
-      <Field.Root required mb={"5"}>
-        <FormLabel>Cover Image</FormLabel>
-        {tempData.coverImage && (
-          <HStack gap={4}>
-            <CldImage
-              src={tempData.coverImage}
-              width="400"
-              height="400"
-              alt={tempData.title}
-            />
-            <IconButton
-              size={"2xs"}
-              title="delete"
-              colorPalette={"red"}
-              alignSelf={"flex-start"}
-              onClick={() => setTempData({ ...tempData, coverImage: "" })}
-            >
-              {getIcon("close")}
-            </IconButton>
-          </HStack>
-        )}
-        {!tempData.coverImage && tempData.title && (
-          <CustomFileUpload
-            description="cover image"
-            onUploaded={(path: string) => {
-              setTempData({ ...tempData, coverImage: path });
-            }}
-            id="cover-image"
-            filename={slugify(tempData.title, { lower: true })}
-            type="drag-drop"
+    <>
+      <Stack mb={"10"}>
+        <HStack justify={"flex-end"} mb={4}>
+          <CreateButton
+            link="/cp/article-categories/create"
+            text={"Create Category"}
           />
-        )}
-      </Field.Root>
-      <TextEditor
-        content={tempData.content}
-        handleOnUpdate={handleArticleContent}
-      />
-    </form>
+        </HStack>
+        <HStack flexWrap={"wrap"} columnGap={"3"} rowGap={"2"}>
+          {articleCategories.map((category) => {
+            return (
+              <ArticleCategory
+                key={category.id}
+                category={category.category}
+                link={`/cp/article-categories/${category.id}/edit`}
+              />
+            );
+          })}
+        </HStack>
+      </Stack>
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <HStack justifyContent={"flex-end"} gap={4} flexWrap={"wrap"} mb={"6"}>
+          <Button
+            size={"sm"}
+            css={btnStyles}
+            variant={"subtle"}
+            bg={"gray.200"}
+            color={"primary_variant"}
+            _hover={{ bg: "primary_variant", color: "gray.100" }}
+            _disabled={{ bg: "primary_variant", color: "gray.100" }}
+            disabled={isPending}
+            type="submit"
+          >
+            {getButtonStatus(article, "Article", isPending)}
+          </Button>
+          <Button
+            size={"sm"}
+            css={btnStyles}
+            variant={"solid"}
+            bg={"primary"}
+            _hover={{ bg: "primary_variant", color: "gray.100" }}
+            disabled={!article || article.status === "PUBLISHED"}
+            type="button"
+          >
+            Publish
+          </Button>
+          <Button
+            size={"sm"}
+            css={btnStyles}
+            variant={"plain"}
+            bg={"red.100"}
+            color={"error"}
+            _hover={{ bg: "red.600", color: "red.100" }}
+            disabled={!article}
+            type="button"
+          >
+            {getIcon("trash")} Trash
+          </Button>
+        </HStack>
+
+        <Field.Root required mb={"5"}>
+          <Input
+            placeholder="Add Title"
+            border={"transparent"}
+            p={"0 10px"}
+            _placeholder={{
+              fontSize: "lg",
+              fontWeight: "700",
+            }}
+            value={tempData.title}
+            onChange={(e) =>
+              setTempData({ ...tempData, title: e.target.value })
+            }
+          />
+        </Field.Root>
+        <Field.Root required mb={"5"}>
+          <FormLabel>Category</FormLabel>
+          <CustomSelect
+            options={articleCategories.map((el) => {
+              return {
+                label: el.category,
+                value: el.id,
+              };
+            })}
+            name="articleCategoryId"
+            description="article category"
+            selectedValue={tempData.articleCategoryId}
+            handleOnChange={(e) =>
+              setTempData({ ...tempData, articleCategoryId: e.target.value })
+            }
+          />
+        </Field.Root>
+        <Field.Root required mb={"5"}>
+          <FormLabel>Cover Image</FormLabel>
+          {tempData.coverImage && (
+            <HStack gap={4}>
+              <CldImage
+                src={tempData.coverImage}
+                width="400"
+                height="400"
+                alt={tempData.title}
+              />
+              <IconButton
+                size={"2xs"}
+                title="delete"
+                colorPalette={"red"}
+                alignSelf={"flex-start"}
+                onClick={() => setTempData({ ...tempData, coverImage: "" })}
+              >
+                {getIcon("close")}
+              </IconButton>
+            </HStack>
+          )}
+          {!tempData.coverImage && tempData.title && (
+            <CustomFileUpload
+              description="cover image"
+              onUploaded={(path: string) => {
+                setTempData({ ...tempData, coverImage: path });
+              }}
+              id="cover-image"
+              filename={slugify(tempData.title, { lower: true })}
+              type="drag-drop"
+            />
+          )}
+        </Field.Root>
+        <TextEditor
+          content={tempData.content}
+          handleOnUpdate={handleArticleContent}
+        />
+      </form>
+    </>
   );
 }
 
