@@ -3,7 +3,7 @@ import { Field, HStack, Stack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { matches } from "@/lib/placeholder-data";
 import { ICup } from "@/lib/definitions";
 

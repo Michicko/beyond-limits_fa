@@ -93,60 +93,16 @@ async function Competitions() {
                               <TableCell>
                                 <CustomMenu>
                                   <>
-                                    {(competition.competitionType ===
-                                      "LEAGUE" ||
-                                      competition.competitionType ===
-                                        "MIXED") && (
-                                      <>
-                                        <CustomMenuItem
-                                          label="Create League"
+                                    <CustomMenuItem
+                                      label="View seasons"
                                           showBorder={true}
                                         >
                                           <Link
-                                            href={`/cp/competitions/${competition.id}/leagues/create`}
+                                            href={`/cp/competitions/${competition.id}/competition-seasons`}
                                           >
-                                            Create League
+                                            View Seasons
                                           </Link>
                                         </CustomMenuItem>
-                                        <CustomMenuItem
-                                          label="View Leagues"
-                                          showBorder={true}
-                                        >
-                                          <Link
-                                            href={`/cp/competitions/${competition.id}/leagues`}
-                                          >
-                                            View Leagues
-                                          </Link>
-                                        </CustomMenuItem>
-                                      </>
-                                    )}
-
-                                    {competition.competitionType ===
-                                      "MIXED" && (
-                                      <>
-                                        <CustomMenuItem
-                                          label="Create cup"
-                                          showBorder={true}
-                                        >
-                                          <Link
-                                            href={`/cp/competitions/${competition.id}/cups/create`}
-                                          >
-                                            Create cup
-                                          </Link>
-                                        </CustomMenuItem>
-                                        <CustomMenuItem
-                                          label="View cups"
-                                          showBorder={true}
-                                        >
-                                          <Link
-                                            href={`/cp/competitions/${competition.id}/cups`}
-                                          >
-                                            View cups
-                                          </Link>
-                                        </CustomMenuItem>
-                                      </>
-                                    )}
-
                                     <CustomMenuItem
                                       label="Edit"
                                       showBorder={true}

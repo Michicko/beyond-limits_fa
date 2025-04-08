@@ -13,6 +13,7 @@ type Player = Schema["Player"]["type"];
 type Article = Schema["Article"]["type"];
 type Trophy = Schema["Trophy"]["type"];
 type ArticleCategory = Schema["ArticleCategory"]["type"];
+type CompetitionSeason = Schema["CompetitionSeason"]["type"];
 
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
@@ -74,6 +75,15 @@ const checkUniqueTrophyName = async (trophyName: string) => {
   const { data: existing } =
     await cookiesClient.models.Trophy.listTrophyByTrophyName({
       trophyName,
+    });
+
+  return existing;
+};
+
+const checkUniqueCompetitionSeason = async (season: string) => {
+  const { data: existing } =
+    await cookiesClient.models.CompetitionSeason.listCompetitionSeasonBySeason({
+      season,
     });
 
   return existing;
@@ -513,7 +523,7 @@ export async function deleteArticle(id: string) {
 export async function createTrophy(formData: FormData) {
   const body = formDataToObject<Trophy>(formData);
 
-  if ((await checkUniqueTeamName(body.trophyName)).length > 0) {
+  if ((await checkUniqueTrophyName(body.trophyName)).length > 0) {
     return {
       status: "error",
       message: `trophyName "${body.trophyName}" already exists.`,
@@ -619,5 +629,79 @@ export async function deleteArticleCategory(id: string) {
     id,
     modelName: "ArticleCategory",
     pathToRevalidate: "/cp/article-categories",
+  });
+}
+
+export async function createCompetitionSeason(formData: FormData) {
+  const body = formDataToObject<CompetitionSeason>(formData);
+
+  if ((await checkUniqueCompetitionSeason(body.season)).length > 0) {
+    return {
+      status: "error",
+      message: `season "${body.season}" already exists.`,
+    };
+  }
+
+  const { data, errors } = await cookiesClient.models.CompetitionSeason.create(
+    body,
+    {
+      selectionSet: ["id", 'competition.longName','season', 'createdAt'],
+    }
+  );
+
+  if (errors) {
+    return {
+      status: "error",
+      message: errors[0].message || "An unknown error occurred",
+    };
+  }
+
+  revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
+  return {
+    status: "success",
+    data,
+  };
+}
+
+export async function updateCompetitionSeason(  id: string,
+  formData: FormData,
+  currentUniqueValue: string) {
+  const body = formDataToObject<CompetitionSeason>(formData);
+
+  if(body.season !== currentUniqueValue) {
+    if ((await checkUniqueCompetitionSeason(body.season)).length > 0) {
+    return {
+      status: "error",
+      message: `season "${body.season}" already exists.`,
+    };
+  }
+  }
+
+  const { data, errors } = await cookiesClient.models.CompetitionSeason.create(
+    body,
+    {
+      selectionSet: ["id", 'competition.longName','season', 'createdAt'],
+    }
+  );
+
+  if (errors) {
+    return {
+      status: "error",
+      message: errors[0].message || "An unknown error occurred",
+    };
+  }
+
+  revalidatePath("/cp/competitions/[competitionId]/competition-seasons/");
+  return {
+    status: "success",
+    data,
+  };
+}
+
+export async function deleteCompetitionSeason(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "CompetitionSeason",
+    pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons/",
   });
 }
