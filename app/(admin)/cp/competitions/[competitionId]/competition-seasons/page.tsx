@@ -1,6 +1,7 @@
 import { deleteCompetitionSeason } from "@/app/_actions/actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
+import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
@@ -26,12 +27,14 @@ async function CompetitionSeasons({
   const { data: competition, errors } =
     await cookiesClient.models.Competition.get(
       {
-        id: params.competitionId,
+        id: params.competitionId
       },
       {
-        selectionSet: ["id", "longName", 'competitionSeasons.*'],
+        selectionSet: ['id', 'longName', 'competitionSeasons.*']
       }
     );
+
+  
 
   return (
     <>
@@ -46,7 +49,13 @@ async function CompetitionSeasons({
               text="Create Season"
             />
             </HStack>
-        {!competition ? (
+          {(errors) ? (
+          <CustomAlert
+            status="error"
+            title="Something went wrong."
+            message={errors[0].message}
+          />
+        ) :!competition ? (
           <CustomAlert 
           title="No competition available" 
           message={`No competition with id ${params.competitionId} available.`}  
@@ -78,7 +87,7 @@ async function CompetitionSeasons({
                 </TableHeader>
                 <TableBody>
                   <>
-                    {competition.competitionSeasons.map((season) => {
+                    {competition.competitionSeasons.map(async (season) => {
                       return (
                         <TableRows key={season.id}>
                           <>
@@ -89,6 +98,11 @@ async function CompetitionSeasons({
                             <TableCell>
                               <CustomMenu>
                                 <>
+                                  <CompetitionMenuItemLink 
+                                    disabled={false}
+                                    label="View season"
+                                    link={`/cp/competitions/${params.competitionId}/competition-seasons/${season.id}`}
+                                      />
                                   <CustomMenuItem
                                     label="Edit season"
                                     showBorder={true}

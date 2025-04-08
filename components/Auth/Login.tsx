@@ -10,15 +10,13 @@ function Login({ user }: { user?: AuthUser }) {
   const redirectPath = searchParams.get("redirectTo") || "/cp/dashboard";
   const { authStatus } = useAuthenticator();
 
-  console.log(authStatus);
+  console.log(authStatus, user, redirectPath);
 
   useEffect(() => {
     if (authStatus === "authenticated" && user) {
-      setTimeout(() => {
-        redirect(redirectPath);
-      }, 1000);
+      redirect(redirectPath);
     }
-  }, [authStatus, user, redirectPath]);
+  }, [authStatus, user]);
 
   return null;
 }
