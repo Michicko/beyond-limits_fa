@@ -89,15 +89,11 @@ const schema = a.schema({
 
   League: a
     .model({
-      competitionSeasonId: a.id(),
-      competitionSeason: a.belongsTo(
-        "CompetitionSeason",
-        "competitionSeasonId"
-      ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       leagueRounds: a.hasMany("LeagueRound", "leagueId"),
       standings: a.hasMany("Standing", "leagueId"),
+      teams: a.id().array().required(),
       winnerId: a.id(),
     })
     .secondaryIndexes((index) => [index("competitionNameSeason")])
@@ -112,7 +108,16 @@ const schema = a.schema({
       leagueId: a.id(),
       league: a.belongsTo("League", "leagueId"),
       round: a.string().required(),
-      standingId: a.id(),
+      standing: a.customType({
+        position: a.integer().required(),
+        p: a.integer().required(),
+        w: a.integer().required(),
+        d: a.integer().required(),
+        l: a.integer().required(),
+        g: a.string().required(),
+        gd: a.integer().required(),
+        pts: a.integer().required(),
+      }),
       matchId: a.id(),
       result: a.ref("RoundResult"),
       homeForm: a.string(),
@@ -146,11 +151,6 @@ const schema = a.schema({
 
   Cup: a
     .model({
-      competitionSeasonId: a.id(),
-      competitionSeason: a.belongsTo(
-        "CompetitionSeason",
-        "competitionSeasonId"
-      ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       playOffs: a.hasMany("PlayOff", "cupId"),

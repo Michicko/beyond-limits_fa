@@ -1,17 +1,8 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
-import BackButton from "@/components/admin/BackButton";
-import CompetitionSeasonSteps from "@/components/admin/CompetitionSeasonSteps/CompetitionSeasonSetps";
-import CompetitionSeasonFormWrapper from "@/components/admin/Forms/CompetitionSeasonFormWrapper";
+import CompetitionSeasonSteps from "@/components/admin/CompetitionSeasonSteps/CompetitionSeasonSteps";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import { cookiesClient } from "@/utils/amplify-utils";
-import {
-  Box,
-  HStack,
-  Button,
-  ButtonGroup,
-  Steps,
-  Stack,
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import React from "react";
 
 async function CreateCompetitionSeason({
@@ -34,11 +25,16 @@ async function CreateCompetitionSeason({
       selectionSet: ["season"],
     });
 
+  const { data: teams, errors: teamsErrors } =
+    await cookiesClient.models.Team.list({
+      selectionSet: ["id", "logo", "longName"],
+    });
+
   return (
     <>
       <PageTitle pageTitle="Create Season" />
       <Box w={"full"} h={"full"} mt={"30px"}>
-        {errors || seasonsErrors ? (
+        {errors || seasonsErrors || teamsErrors ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
@@ -47,6 +43,8 @@ async function CreateCompetitionSeason({
                 ? errors[0].message
                 : seasonsErrors
                 ? seasonsErrors[0].message
+                : teamsErrors
+                ? teamsErrors[0].message
                 : "something went wrong."
             }
           />
@@ -60,6 +58,8 @@ async function CreateCompetitionSeason({
             competitionType={competition.competitionType}
             seasons={seasons}
             competitionName={competition.longName}
+            teams={teams}
+            competitionId={params.competitionId}
           />
         )}
       </Box>
