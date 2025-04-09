@@ -8,7 +8,7 @@ import { leagues, matches, standing } from "@/lib/placeholder-data";
 import { Box, HStack, SimpleGrid, GridItem } from "@chakra-ui/react";
 import React from "react";
 
-const league = leagues.find((el) => el.competition?.short_name === "nnl");
+const league = leagues.find((el) => el.competition?.shortName === "nnl");
 const standings = standing.filter((el) => el.league_id === league?.id);
 
 function Dashboard() {

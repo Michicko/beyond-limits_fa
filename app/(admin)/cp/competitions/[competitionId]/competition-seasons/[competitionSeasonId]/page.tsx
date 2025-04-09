@@ -4,24 +4,22 @@ import PageTitle from "@/components/admin/Layout/PageTitle";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { Box, HStack } from "@chakra-ui/react";
 
-async function CompetitionSeason ({
+async function CompetitionSeason({
   params,
 }: {
-  params: { competitionId: string, competitionSeasonId: string };
-}){
-    const {data: competitionSeason, errors} = await cookiesClient.models.CompetitionSeason.get({
-        id: params.competitionSeasonId
-    })
+  params: { competitionId: string; competitionSeasonId: string };
+}) {
+  const { data: competitionSeason, errors } =
+    await cookiesClient.models.CompetitionSeason.get({
+      id: params.competitionSeasonId,
+    });
 
-    const {data: cup, errors: cupErrors} = await cookiesClient.models.Cup.listCupByCompetitionNameSeason({
-        competitionNameSeason: params.competitionSeasonId
-    })
+  const cup = await competitionSeason?.cup();
 
-    const {data: league, errors: leagueErrors} = await cookiesClient.models.League.listLeagueByCompetitionNameSeason({
-        competitionNameSeason: params.competitionSeasonId
-    })
+  const leaue = await competitionSeason?.league();
 
-    return <>
+  return (
+    <>
       <PageTitle pageTitle={`${competitionSeason?.season} season`} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <HStack mb={8}>
@@ -38,11 +36,14 @@ async function CompetitionSeason ({
             status="error"
             title={`No season with id ${params.competitionSeasonId}`}
           />
-        ) :
-
-      }
+        ) : (
+          <Box>
+            <h1>competition season</h1>
+          </Box>
+        )}
       </Box>
     </>
+  );
 }
 
-export default CompetitionSeason
+export default CompetitionSeason;

@@ -1,7 +1,6 @@
 "use client";
 import { Box, Image, Icon } from "@chakra-ui/react";
 import React from "react";
-import { CldImage } from "next-cloudinary";
 
 function MatchIcon({
   src,
@@ -21,7 +20,7 @@ function MatchIcon({
       bg={radius ? "fg.muted" : "transparent"}
       order={order}
     >
-      <CldImage src={src} width="250" height="250" alt="" />
+      <Image src={src} width="250" height="250" alt="" />
     </Icon>
   );
 }

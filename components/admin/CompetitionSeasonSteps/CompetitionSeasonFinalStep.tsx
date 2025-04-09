@@ -32,6 +32,7 @@ function CompetitionSeasonFinalStep({
     if (cupId) {
       formData.append("cupId", cupId);
     }
+
     if (leagueId) {
       formData.append("leagueId", leagueId);
     }

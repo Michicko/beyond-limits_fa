@@ -63,7 +63,7 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    // User is authenticated but not authorizedS
+    // User is authenticated but not authorized
     return NextResponse.redirect(new URL("/", request.url));
   }
 

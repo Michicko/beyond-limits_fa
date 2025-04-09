@@ -74,9 +74,8 @@ const schema = a.schema({
       season: a.string().required(),
       competitionId: a.id(),
       competition: a.belongsTo("Competition", "competitionId"),
-      league: a.hasOne("League", "competitionSeasonId"),
-      cup: a.hasOne("Cup", "competitionSeasonId"),
-      matches: a.hasMany("Match", "competitionSeasonId"),
+      cupId: a.id(),
+      leagueId: a.id(),
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
     })

@@ -27,16 +27,16 @@ export default function AuthLayout({
     >
       <body>
         <NextTopLoader color="#ffd700" height={4} />
-        <Auth>
-          <PageProvider>
-            <Provider>
-              <>
-                <Toaster />
-                <RootLayout>{children}</RootLayout>
-              </>
-            </Provider>
-          </PageProvider>
-        </Auth>
+        {/* <Auth> */}
+        <PageProvider>
+          <Provider>
+            <>
+              <Toaster />
+              <RootLayout>{children}</RootLayout>
+            </>
+          </Provider>
+        </PageProvider>
+        {/* </Auth> */}
       </body>
     </html>
   );
