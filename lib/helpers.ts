@@ -20,6 +20,7 @@ export const isInAuthorizedGroup = (
   userGroups: any,
   authorizedGroups: string[]
 ) => {
+  if (!userGroups || !authorizedGroups) return;
   const includesAny = (arr: any, values: string[]) =>
     values.some((v) => arr.includes(v));
   return includesAny(userGroups, authorizedGroups);

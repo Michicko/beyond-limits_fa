@@ -11,11 +11,11 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useRef, useState, useTransition } from "react";
+import React, { Suspense, useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import { getIcon } from "@/lib/icons";
 import FormBtn from "./FormBtn";
-import { createPosition, updatePosition } from "@/app/_actions/actions";
+import { createPosition } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
@@ -55,21 +55,19 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
     formData.append("attributes", JSON.stringify(attributes));
 
     if (position) {
-      startTransition(async () => {
-        const res = await updatePosition(
-          position.id,
-          formData,
-          position.shortName
-        );
-
-        if (res.status === "success" && res.data) {
-          mutationToast("player Position", res.data.longName, "update");
-        }
-
-        if (res.status === "error") {
-          errorToast(res.message);
-        }
-      });
+      // startTransition(async () => {
+      //   const res = await updatePosition(
+      //     position.id,
+      //     formData,
+      //     position.shortName
+      //   );
+      //   if (res.status === "success" && res.data) {
+      //     mutationToast("player Position", res.data.longName, "update");
+      //   }
+      //   if (res.status === "error") {
+      //     errorToast(res.message);
+      //   }
+      // });
     } else {
       startTransition(async () => {
         const res = await createPosition(formData);
@@ -87,101 +85,103 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
-      <Stack gap={5} mb={10}>
-        <Skeleton asChild loading={false}>
+    <Suspense fallback={null}>
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <Stack gap={5} mb={10}>
+          <Skeleton asChild loading={false}>
+            <Field.Root required>
+              <FormLabel>Short name</FormLabel>
+              <Input
+                name={"shortName"}
+                type={"text"}
+                placeholder="Enter short name"
+                px={"2"}
+                color={"text_lg"}
+                fontSize={"sm"}
+                fontWeight={"medium"}
+                mb={"5px"}
+                defaultValue={position ? position.shortName : ""}
+              />
+            </Field.Root>
+          </Skeleton>
           <Field.Root required>
-            <FormLabel>Short name</FormLabel>
+            <FormLabel>Long name</FormLabel>
             <Input
-              name={"shortName"}
+              name={"longName"}
               type={"text"}
-              placeholder="Enter short name"
+              placeholder="Enter long name"
               px={"2"}
               color={"text_lg"}
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
-              defaultValue={position ? position.shortName : ""}
+              defaultValue={position ? position.longName : ""}
             />
           </Field.Root>
-        </Skeleton>
-        <Field.Root required>
-          <FormLabel>Long name</FormLabel>
-          <Input
-            name={"longName"}
-            type={"text"}
-            placeholder="Enter long name"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            defaultValue={position ? position.longName : ""}
-          />
-        </Field.Root>
-        <Stack>
-          <Flex mb={4} alignItems={"flex-end"} gap={4}>
-            <Field.Root>
-              <FormLabel>attribue</FormLabel>
-              <Input
-                name={"attribute"}
-                type={"text"}
-                placeholder="Enter attribute"
-                px={"2"}
-                color={"text_lg"}
-                fontSize={"sm"}
-                fontWeight={"medium"}
-                value={attribute}
-                onChange={(e: { target: HTMLInputElement }) =>
-                  setAttribute(e.target.value)
-                }
-              />
-            </Field.Root>
-            <Button
-              p={4}
-              variant={"outline"}
-              colorPalette={"blue"}
-              type="button"
-              onClick={handleAddAttribute}
-            >
-              Add Attribue
-            </Button>
-          </Flex>
-          <HStack gap={3}>
-            {attributes.map((attribute) => {
-              if (!attribute) return;
-              return (
-                <Card.Root key={attribute} maxW={"200px"} p={3}>
-                  <Card.Body>
-                    <HStack justifyContent={"space-between"}>
-                      <Text
-                        fontSize={"md"}
-                        fontWeight={"400"}
-                        color={"text_lg"}
-                        textTransform={"capitalize"}
-                      >
-                        {attribute}
-                      </Text>
-                      <IconButton
-                        size={"2xs"}
-                        variant={"solid"}
-                        colorPalette={"red"}
-                        onClick={() => removeAttribute(attribute)}
-                      >
-                        {getIcon("close")}
-                      </IconButton>
-                    </HStack>
-                  </Card.Body>
-                </Card.Root>
-              );
-            })}
-          </HStack>
+          <Stack>
+            <Flex mb={4} alignItems={"flex-end"} gap={4}>
+              <Field.Root>
+                <FormLabel>attribue</FormLabel>
+                <Input
+                  name={"attribute"}
+                  type={"text"}
+                  placeholder="Enter attribute"
+                  px={"2"}
+                  color={"text_lg"}
+                  fontSize={"sm"}
+                  fontWeight={"medium"}
+                  value={attribute}
+                  onChange={(e: { target: HTMLInputElement }) =>
+                    setAttribute(e.target.value)
+                  }
+                />
+              </Field.Root>
+              <Button
+                p={4}
+                variant={"outline"}
+                colorPalette={"blue"}
+                type="button"
+                onClick={handleAddAttribute}
+              >
+                Add Attribue
+              </Button>
+            </Flex>
+            <HStack gap={3}>
+              {attributes.map((attribute) => {
+                if (!attribute) return;
+                return (
+                  <Card.Root key={attribute} maxW={"200px"} p={3}>
+                    <Card.Body>
+                      <HStack justifyContent={"space-between"}>
+                        <Text
+                          fontSize={"md"}
+                          fontWeight={"400"}
+                          color={"text_lg"}
+                          textTransform={"capitalize"}
+                        >
+                          {attribute}
+                        </Text>
+                        <IconButton
+                          size={"2xs"}
+                          variant={"solid"}
+                          colorPalette={"red"}
+                          onClick={() => removeAttribute(attribute)}
+                        >
+                          {getIcon("close")}
+                        </IconButton>
+                      </HStack>
+                    </Card.Body>
+                  </Card.Root>
+                );
+              })}
+            </HStack>
+          </Stack>
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(position, "Player Position", isPending)}
+          </FormBtn>
         </Stack>
-        <FormBtn disabled={isPending}>
-          {getButtonStatus(position, "Player Position", isPending)}
-        </FormBtn>
-      </Stack>
-    </form>
+      </form>
+    </Suspense>
   );
 }
 

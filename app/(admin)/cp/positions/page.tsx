@@ -22,9 +22,7 @@ async function Positions() {
   const { data: positions, errors } =
     await cookiesClient.models.PlayerPosition.list({
       selectionSet: ["id", "longName", "attributes"],
-      authMode: "userPool",
     });
-
   return (
     <>
       <PageTitle pageTitle="Positions" />

@@ -75,7 +75,9 @@ const schema = a.schema({
       competitionId: a.id(),
       competition: a.belongsTo("Competition", "competitionId"),
       cupId: a.id(),
+      cup: a.belongsTo("Cup", "cupId"),
       leagueId: a.id(),
+      league: a.belongsTo("League", "leagueId"),
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
     })
@@ -88,6 +90,7 @@ const schema = a.schema({
 
   League: a
     .model({
+      competitionSeason: a.hasOne("CompetitionSeason", "leagueId"),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       leagueRounds: a.hasMany("LeagueRound", "leagueId"),
@@ -150,6 +153,7 @@ const schema = a.schema({
 
   Cup: a
     .model({
+      competitionSeason: a.hasOne("CompetitionSeason", "cupId"),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       playOffs: a.hasMany("PlayOff", "cupId"),

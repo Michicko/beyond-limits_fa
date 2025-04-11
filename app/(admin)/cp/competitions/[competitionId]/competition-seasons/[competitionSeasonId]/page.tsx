@@ -1,8 +1,10 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
+import CompetitionSeasonCard from "@/components/admin/CompetitionSeasonCard/CompetitionSeasonCard";
+import Cup from "@/components/admin/Cup/Cup";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Stack, Tabs } from "@chakra-ui/react";
 
 async function CompetitionSeason({
   params,
@@ -14,9 +16,11 @@ async function CompetitionSeason({
       id: params.competitionSeasonId,
     });
 
-  const cup = await competitionSeason?.cup();
+  const competitionData = await competitionSeason?.competition();
+  const competition = competitionData?.data;
 
-  const leaue = await competitionSeason?.league();
+  const cup = await competitionSeason?.cup();
+  const league = await competitionSeason?.league();
 
   return (
     <>
@@ -31,14 +35,42 @@ async function CompetitionSeason({
             title="Something went wrong."
             message={errors[0].message}
           />
+        ) : !competition ? (
+          <CustomAlert
+            status="error"
+            title={`Competition seasonm does not belong to any competition`}
+          />
         ) : !competitionSeason ? (
           <CustomAlert
             status="error"
             title={`No season with id ${params.competitionSeasonId}`}
           />
         ) : (
-          <Box>
-            <h1>competition season</h1>
+          <Box p={"5"} w={"full"}>
+            <Stack maxW={"960px"} m={"0 auto"} gap={"5"}>
+              <CompetitionSeasonCard
+                competitionName={competition.longName}
+                competitionType={competition.competitionType}
+                season={competitionSeason.season}
+                status={competitionSeason.status}
+              />
+              {competition.competitionType === "LEAGUE" ? (
+                <Box>
+                  <h1>League</h1>
+                </Box>
+              ) : competition.competitionType === "CUP" ? (
+                <Cup />
+              ) : (
+                <Tabs.Root defaultValue="league">
+                  <Tabs.List>
+                    <Tabs.Trigger value="league">League</Tabs.Trigger>
+                    <Tabs.Trigger value="cup">Cup</Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="league">League: Main</Tabs.Content>
+                  <Tabs.Content value="cup">Cup: Knockout stage</Tabs.Content>
+                </Tabs.Root>
+              )}
+            </Stack>
           </Box>
         )}
       </Box>

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerRunner } from "@aws-amplify/adapter-nextjs";
 import { generateServerClientUsingCookies } from "@aws-amplify/adapter-nextjs/api";
-import { getCurrentUser } from "aws-amplify/auth/server";
+import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";
 
 import { type Schema } from "@/amplify/data/resource";
 import outputs from "@/amplify_outputs.json";
@@ -16,7 +16,7 @@ export const cookiesClient = generateServerClientUsingCookies<Schema>({
   authMode: "userPool",
 });
 
-export async function GetCurrentAuthUser() {
+export async function getCurrentAuthUser() {
   try {
     const currentUser = await runWithAmplifyServerContext({
       nextServerContext: { cookies },
@@ -28,3 +28,30 @@ export async function GetCurrentAuthUser() {
     return false;
   }
 }
+
+export const getRole = async () => {
+  return await runWithAmplifyServerContext({
+    nextServerContext: { cookies },
+    async operation(contextSpec) {
+      let tokens;
+      let groups;
+      try {
+        const session = await fetchAuthSession(contextSpec);
+        tokens = session.tokens;
+
+        if (tokens && Object.keys(tokens).length > 0) {
+          groups = tokens.accessToken.payload["cognito:groups"];
+        }
+        return {
+          tokens,
+          groups,
+        };
+      } catch (error) {
+        return {
+          tokens,
+          groups,
+        };
+      }
+    },
+  });
+};

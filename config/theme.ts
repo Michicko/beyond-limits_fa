@@ -1,4 +1,5 @@
 import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
+import merge from "deepmerge";
 
 const fonts = {
   font: { value: "--roboto" },
@@ -52,4 +53,5 @@ const config = defineConfig({
   },
 });
 
-export const system = createSystem(defaultConfig, config);
+const mergedConfig = merge(defaultConfig, config);
+export const system = createSystem(mergedConfig);

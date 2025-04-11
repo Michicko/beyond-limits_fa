@@ -4,6 +4,25 @@ import { Schema } from "@/amplify/data/resource";
 
 export type RawPlayer = Schema["Player"]["type"];
 
+export interface IRound {
+  leagueId?: number;
+  cupId?: number;
+  standing?: {
+    position: number;
+    pts: number;
+    p: number;
+    w: number;
+    d: number;
+    l: number;
+    g: string;
+    gd: number;
+  };
+  round: string;
+  matchId: number;
+  result: string;
+  status: "PENDING" | "COMPLETED";
+}
+
 export type IPlayer = Omit<
   Pick<
     RawPlayer,

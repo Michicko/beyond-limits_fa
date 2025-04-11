@@ -1,24 +1,23 @@
 "use client";
-import { useAuthenticator, withAuthenticator } from "@aws-amplify/ui-react";
-import { AuthUser } from "aws-amplify/auth";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 import { redirect } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { AuthUser } from "aws-amplify/auth";
+import AuthClient from "./AuthClient";
 
 function Login({ user }: { user?: AuthUser }) {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirectTo") || "/cp/dashboard";
-  const { authStatus } = useAuthenticator();
-
-  console.log(authStatus, user, redirectPath);
+  console.log(user, redirectPath);
 
   useEffect(() => {
-    if (authStatus === "authenticated" && user) {
+    if (user) {
       redirect(redirectPath);
     }
-  }, [authStatus, user]);
+  }, [user]);
 
-  return null;
+  return <AuthClient />;
 }
 
 export default withAuthenticator(Login);

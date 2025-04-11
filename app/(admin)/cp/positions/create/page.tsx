@@ -12,9 +12,7 @@ function CreatePosition() {
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        <Suspense fallback={null}>
-          <PlayerPositionForm position={null} />
-        </Suspense>
+        <PlayerPositionForm position={null} />
       </Box>
     </>
   );
