@@ -56,3 +56,42 @@ export const getPlayOffRoundName = (value: string) => {
   const plf = playOffsLabels.find((el) => el.value === value);
   return plf?.label;
 };
+
+type SortableObject = { [key: string]: any };
+
+export const sortArray = <T extends SortableObject>(
+  array: T[],
+  key: keyof T
+): T[] => {
+  return array.sort((a, b) => {
+    // Check if the key exists in both objects
+    if (a[key] === undefined || b[key] === undefined) {
+      return 0; // Treat as equal if either key is missing
+    }
+
+    // Compare values (handles both strings and numbers)
+    if (a[key] > b[key]) return 1;
+    if (a[key] < b[key]) return -1;
+    return 0; // Values are equal
+  });
+};
+
+export const objectToFormData = (obj: Record<string, any>): FormData => {
+  const formData = new FormData();
+
+  for (const key in obj) {
+    if (obj[key] instanceof File) {
+      // For file uploads
+      formData.append(key, obj[key]);
+    } else if (Array.isArray(obj[key])) {
+      // Handle arrays (optional handling)
+      obj[key].forEach((value: any, index: number) => {
+        formData.append(`${key}[${index}]`, value);
+      });
+    } else {
+      formData.append(key, obj[key]);
+    }
+  }
+
+  return formData;
+};

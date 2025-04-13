@@ -22,19 +22,19 @@ async function CompetitionSeasons({
 }: {
   params: { competitionId: string };
 }) {
-  const { data: competition, errors } =
-    await cookiesClient.models.Competition.get(
-      {
-        id: params.competitionId,
+  const { data: competitionSeasons, errors } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
+        },
       },
-      {
-        selectionSet: ["id", "longName", "competitionSeasons.*"],
-      }
-    );
+      selectionSet: ["id", "status", "name", "season"],
+    });
 
   return (
     <>
-      <PageTitle pageTitle={`${competition?.longName} Seasons`} />
+      <PageTitle pageTitle={"seasons"} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <HStack mb={8}>
           <BackButton />
@@ -51,13 +51,7 @@ async function CompetitionSeasons({
             title="Something went wrong."
             message={errors[0].message}
           />
-        ) : !competition ? (
-          <CustomAlert
-            title="No competition available"
-            message={`No competition with id ${params.competitionId} available.`}
-            status="error"
-          />
-        ) : competition.competitionSeasons.length < 1 ? (
+        ) : competitionSeasons.length < 1 ? (
           <CustomAlert
             status="info"
             title="No Competition season."
@@ -85,12 +79,12 @@ async function CompetitionSeasons({
                 </TableHeader>
                 <TableBody>
                   <>
-                    {competition.competitionSeasons.map(async (season) => {
+                    {competitionSeasons.map(async (season) => {
                       return (
                         <TableRows key={season.id}>
                           <>
                             <TableCell pl={"10px"}>
-                              {competition.longName} [{season.season}]
+                              {season.name} [{season.season}]
                             </TableCell>
                             <TableCell>{season.status}</TableCell>
                             <TableCell>

@@ -1,21 +1,8 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
 import LeagueStanding from "../LeagueStanding/LeagueStanding";
-import { Nullable } from "@/lib/definitions";
+import { IDBLeague, IDTeam, Nullable } from "@/lib/definitions";
 import LeagueRound from "../LeagueRound/LeagueRound";
-
-interface IStanding {
-  position: number;
-  p: number;
-  w: number;
-  d: number;
-  l: number;
-  g: string;
-  gd: number;
-  pts: number;
-  teamId: Nullable<string>;
-  id: string;
-}
 
 interface IMatch {
   id: string;
@@ -55,27 +42,18 @@ interface ILeagueRound {
   status: "PENDING" | "COMPLETED" | null;
 }
 
-interface ITeam {
-  logo: string;
-  shortName: string;
-  longName: string;
-  isBeyondLimits: boolean;
-  stadium: Nullable<string>;
-  id: string;
-}
-
 async function League({
   teams,
-  standing,
   leagueRounds,
   matches,
+  league,
 }: {
-  teams: ITeam[];
-  standing: IStanding[];
+  teams: IDTeam[];
   leagueRounds: ILeagueRound[];
   matches: IMatch[];
+  league: IDBLeague;
 }) {
-  const transformedStanding = standing
+  const transformedStanding = league.standings
     .map((row) => {
       const team = teams.find((team) => team.id === row.teamId);
       if (!team) return;
@@ -88,7 +66,11 @@ async function League({
 
   return (
     <Stack gap={5}>
-      <LeagueStanding serverStanding={transformedStanding} teams={teams} />
+      <LeagueStanding
+        serverStanding={transformedStanding}
+        teams={teams}
+        league={league}
+      />
       <LeagueRound dbRounds={leagueRounds} matches={matches} />
     </Stack>
   );

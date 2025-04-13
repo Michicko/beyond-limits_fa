@@ -22,6 +22,24 @@ async function CompetitionSeason({
 
   const roundResults = cookiesClient.enums.RoundResult.values();
 
+  const league =
+    competitionSeason &&
+    competitionSeason.leagueId &&
+    (await cookiesClient.models.League.get(
+      {
+        id: competitionSeason.leagueId,
+      },
+      {
+        selectionSet: [
+          "id",
+          "competitionNameSeason",
+          "teams",
+          "standings.*",
+          "leagueRounds.*",
+        ],
+      }
+    ));
+
   const cupRoundsData =
     competitionSeason &&
     competitionSeason.cupId &&
@@ -63,39 +81,14 @@ async function CompetitionSeason({
       ],
     }));
 
-  const standingData =
-    competitionSeason &&
-    competitionSeason.leagueId &&
-    (
-      await cookiesClient.models.Standing.list({
-        filter: {
-          leagueId: {
-            eq: competitionSeason.leagueId,
-          },
-        },
-        selectionSet: [
-          "id",
-          "teamId",
-          "position",
-          "pts",
-          "p",
-          "w",
-          "d",
-          "l",
-          "g",
-          "gd",
-        ],
-      })
-    ).data;
-
   const leagueRoundData =
-    competitionSeason &&
-    competitionSeason.leagueId &&
+    league &&
+    league.data &&
     (
       await cookiesClient.models.LeagueRound.list({
         filter: {
           leagueId: {
-            eq: competitionSeason.leagueId,
+            eq: league.data.id,
           },
         },
         selectionSet: [
@@ -166,15 +159,16 @@ async function CompetitionSeason({
                   status={competitionSeason.status}
                 />
                 {competition.competitionType === "LEAGUE" &&
-                  competitionSeason.leagueId &&
-                  standingData &&
+                  league &&
+                  league.data &&
+                  league.data.standings &&
                   leagueRoundData &&
                   matchesData && (
                     <League
                       teams={teams}
-                      standing={standingData}
                       leagueRounds={leagueRoundData}
                       matches={matchesData.data}
+                      league={league.data}
                     />
                   )}
                 {competition.competitionType === "CUP" &&
@@ -193,15 +187,16 @@ async function CompetitionSeason({
                       <Tabs.Trigger value="cup">Cup</Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
-                      {competitionSeason.leagueId &&
-                        standingData &&
+                      {league &&
+                        league.data &&
+                        league.data.standings &&
                         leagueRoundData &&
                         matchesData && (
                           <League
                             teams={teams}
-                            standing={standingData}
                             leagueRounds={leagueRoundData}
                             matches={matchesData.data}
+                            league={league.data}
                           />
                         )}
                     </Tabs.Content>

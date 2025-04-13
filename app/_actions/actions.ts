@@ -16,6 +16,7 @@ type ArticleCategory = Schema["ArticleCategory"]["type"];
 type CompetitionSeason = Schema["CompetitionSeason"]["type"];
 type Cup = Schema["Cup"]["type"];
 type League = Schema["League"]["type"];
+type Standing = Schema["Standing"]["type"];
 
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
@@ -100,10 +101,10 @@ const checkUniqueTrophyName = async (trophyName: string) => {
   return existing;
 };
 
-const checkUniqueCompetitionSeason = async (name: string) => {
+const checkUniqueCompetitionSeason = async (season: string) => {
   const { data: existing } =
-    await cookiesClient.models.CompetitionSeason.listCompetitionSeasonByName({
-      name,
+    await cookiesClient.models.CompetitionSeason.listCompetitionSeasonBySeason({
+      season,
     });
 
   return existing;
@@ -737,11 +738,11 @@ export async function createLeague(formData: FormData) {
 export async function createCompetitionSeason(formData: FormData) {
   const body = formDataToObject<CompetitionSeason>(formData);
   try {
-    const uniqueSeason = await checkUniqueCompetitionSeason(body.name);
+    const uniqueSeason = await checkUniqueCompetitionSeason(body.season);
     if (uniqueSeason && uniqueSeason.length > 0) {
       return {
         status: "error",
-        message: `name "${body.name}" already exists.`,
+        message: `name "${body.season}" already exists.`,
       };
     }
 
@@ -819,4 +820,42 @@ export async function deleteCompetitionSeason(id: string) {
     modelName: "CompetitionSeason",
     pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons/",
   });
+}
+
+export async function createStandingRow(formData: FormData) {
+  const body = formDataToObject<Standing>(formData);
+  try {
+    const { data, errors } = await cookiesClient.models.Standing.create(body, {
+      selectionSet: [
+        "id",
+        "teamId",
+        "position",
+        "pts",
+        "p",
+        "w",
+        "d",
+        "l",
+        "g",
+        "gd",
+        "leagueId",
+      ],
+    });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
 }

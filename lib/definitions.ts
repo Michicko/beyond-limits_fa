@@ -6,6 +6,38 @@ export type RawPlayer = Schema["Player"]["type"];
 
 export type Nullable<T> = T | null;
 
+export interface IDTeam {
+  logo: string;
+  shortName: string;
+  longName: string;
+  isBeyondLimits: boolean;
+  stadium: Nullable<string>;
+  id: string;
+}
+
+export interface IDBStandings {
+  team?: IDTeam;
+  position: number;
+  p: number;
+  w: number;
+  leagueId: Nullable<string>;
+  teamId: Nullable<string>;
+  d: number;
+  l: number;
+  g: string;
+  gd: number;
+  pts: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IDBLeague {
+  competitionNameSeason: string;
+  id: string;
+  teams: Nullable<string>[];
+  standings: IDBStandings[];
+}
+
 export interface IRound {
   leagueId?: number;
   cupId?: number;

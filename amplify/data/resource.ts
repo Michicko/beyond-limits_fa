@@ -83,7 +83,7 @@ const schema = a.schema({
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
     })
-    .secondaryIndexes((index) => [index("name")])
+    .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),

@@ -1,34 +1,13 @@
-import { Nullable } from "@/lib/definitions";
+import { IDBStandings, IDTeam } from "@/lib/definitions";
 import { Button, HStack, Image, Input, Table, Text } from "@chakra-ui/react";
 import React from "react";
-
-interface IStanding {
-  position: number;
-  p: number;
-  w: number;
-  d: number;
-  l: number;
-  g: string;
-  gd: number;
-  pts: number;
-  teamId: Nullable<string>;
-  id?: string;
-}
-interface ITeam {
-  logo: string;
-  shortName: string;
-  longName: string;
-  isBeyondLimits: boolean;
-  stadium: Nullable<string>;
-  id: string;
-}
 
 function LeagueStandingRow({
   team,
   standing,
 }: {
-  team: ITeam;
-  standing: IStanding;
+  team: IDTeam;
+  standing: IDBStandings;
 }) {
   const inputStyles = {
     textAlign: "center",
@@ -52,8 +31,8 @@ function LeagueStandingRow({
   };
 
   return (
-    <Table.Row key={team.id}>
-      <Table.Cell columnCount={4}>
+    <Table.Row key={team.id} borderBottom={"1px solid"} borderColor={"neutral"}>
+      <Table.Cell columnCount={4} verticalAlign={"middle"}>
         <HStack alignItems={"center"} gap={"2"}>
           <Image
             src={team.logo}

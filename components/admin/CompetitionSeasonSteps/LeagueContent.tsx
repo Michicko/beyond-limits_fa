@@ -57,7 +57,6 @@ function LeagueContent({
       const res = await createLeague(formData);
 
       if (res.status === "success" && res.data) {
-        console.log("goin to navigate");
         mutationToast("league", res.data.competitionNameSeason, "create");
         formRef.current?.reset();
         setLeagueId(res.data.id);
