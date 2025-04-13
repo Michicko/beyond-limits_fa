@@ -72,16 +72,18 @@ const schema = a.schema({
   CompetitionSeason: a
     .model({
       season: a.string().required(),
+      name: a.string().required(),
+      type: a.string().required(),
+      logo: a.string().required(),
       competitionId: a.id(),
       competition: a.belongsTo("Competition", "competitionId"),
       cupId: a.id(),
-      cup: a.belongsTo("Cup", "cupId"),
       leagueId: a.id(),
-      league: a.belongsTo("League", "leagueId"),
+      matches: a.hasMany("Match", "competitionSeasonId"),
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
     })
-    .secondaryIndexes((index) => [index("season")])
+    .secondaryIndexes((index) => [index("name")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated("identityPool").to(["read"]),
@@ -90,7 +92,6 @@ const schema = a.schema({
 
   League: a
     .model({
-      competitionSeason: a.hasOne("CompetitionSeason", "leagueId"),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       leagueRounds: a.hasMany("LeagueRound", "leagueId"),
@@ -124,6 +125,7 @@ const schema = a.schema({
       result: a.ref("RoundResult"),
       homeForm: a.string(),
       awayForm: a.string(),
+      status: a.ref("CompetitionStatus"),
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
@@ -153,7 +155,6 @@ const schema = a.schema({
 
   Cup: a
     .model({
-      competitionSeason: a.hasOne("CompetitionSeason", "cupId"),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       playOffs: a.hasMany("PlayOff", "cupId"),
@@ -175,6 +176,7 @@ const schema = a.schema({
       homeForm: a.string(),
       awayForm: a.string(),
       result: a.ref("RoundResult"),
+      status: a.ref("CompetitionStatus"),
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
@@ -203,9 +205,11 @@ const schema = a.schema({
         name: a.string().required(),
         role: a.enum(["HEAD", "ASSISTANT"]),
       }),
-      homeTeamId: a.id(),
-      awayTeamId: a.id(),
-      homeTeamStats: a.customType({
+      homeTeam: a.customType({
+        id: a.string().required(),
+        logo: a.string().required(),
+        shortName: a.string().required(),
+        longName: a.string().required(),
         goals: a.integer(),
         passes: a.integer(),
         offsides: a.integer(),
@@ -214,7 +218,11 @@ const schema = a.schema({
         yellows: a.integer(),
         reds: a.integer(),
       }),
-      awayTeamStats: a.customType({
+      awayTeam: a.customType({
+        id: a.string().required(),
+        logo: a.string().required(),
+        shortName: a.string().required(),
+        longName: a.string().required(),
         goals: a.integer(),
         passes: a.integer(),
         offsides: a.integer(),

@@ -4,6 +4,8 @@ import { Schema } from "@/amplify/data/resource";
 
 export type RawPlayer = Schema["Player"]["type"];
 
+export type Nullable<T> = T | null;
+
 export interface IRound {
   leagueId?: number;
   cupId?: number;

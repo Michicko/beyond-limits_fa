@@ -88,21 +88,32 @@ async function Competitions() {
                                 </HStack>
                               </TableCell>
                               <TableCell>
-                                {competition.competitionType}
+                                {competition.competitionType &&
+                                  competition.competitionType.toLowerCase()}
                               </TableCell>
                               <TableCell>
                                 <CustomMenu>
                                   <>
                                     <CustomMenuItem
+                                      label="Create season"
+                                      showBorder={true}
+                                    >
+                                      <Link
+                                        href={`/cp/competitions/${competition.id}/competition-seasons/create`}
+                                      >
+                                        Create Season
+                                      </Link>
+                                    </CustomMenuItem>
+                                    <CustomMenuItem
                                       label="View seasons"
-                                          showBorder={true}
-                                        >
-                                          <Link
-                                            href={`/cp/competitions/${competition.id}/competition-seasons`}
-                                          >
-                                            View Seasons
-                                          </Link>
-                                        </CustomMenuItem>
+                                      showBorder={true}
+                                    >
+                                      <Link
+                                        href={`/cp/competitions/${competition.id}/competition-seasons`}
+                                      >
+                                        View Seasons
+                                      </Link>
+                                    </CustomMenuItem>
                                     <CustomMenuItem
                                       label="Edit"
                                       showBorder={true}

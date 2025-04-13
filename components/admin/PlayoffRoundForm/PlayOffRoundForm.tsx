@@ -9,25 +9,38 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
+interface IMatch {
+  id: string;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
+}
+
 function PlayOffRoundForm({
-  open,
-  setOpen,
-  play_offs,
+  playOffsLabels,
+  matches,
 }: {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  play_offs: { label: string; value: string }[];
+  playOffsLabels: { label: string; value: string }[];
+  matches: IMatch[];
 }) {
   return (
-    <Dialog.Root
-      lazyMount
-      open={open}
-      onOpenChange={(e) => setOpen(e.open)}
-      placement={"center"}
-      scrollBehavior="inside"
-    >
+    <Dialog.Root lazyMount placement={"center"} scrollBehavior="inside">
       <Dialog.Trigger asChild>
-        <Button px={"20px"} variant={"solid"} colorPalette={"teal"}>
+        <Button
+          px={"20px"}
+          variant={"solid"}
+          colorPalette={"teal"}
+          disabled={!matches}
+        >
           Create Round
         </Button>
       </Dialog.Trigger>
@@ -54,7 +67,7 @@ function PlayOffRoundForm({
                         }}
                         textTransform={"capitalize"}
                       >
-                        {play_offs.map((el) => {
+                        {playOffsLabels.map((el) => {
                           return (
                             <option
                               value={el.value}
@@ -72,7 +85,34 @@ function PlayOffRoundForm({
                   </Field.Root>
                   <Field.Root>
                     <Field.Label>Match</Field.Label>
-                    <Input placeholder="Select Match" name={"matchId"} px={1} />
+                    <NativeSelect.Root size="md" w={"full"} margin={"0 auto"}>
+                      <NativeSelect.Field
+                        placeholder="Select match"
+                        pl={"10px"}
+                        lineHeight={1.5}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                          const { value } = e.target;
+                          // handleOnChange(value, id);
+                        }}
+                        textTransform={"capitalize"}
+                      >
+                        {matches.map((el) => {
+                          return (
+                            <option
+                              value={el.id}
+                              style={{
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {el.homeTeam?.longName +
+                                " - " +
+                                el.awayTeam?.longName}
+                            </option>
+                          );
+                        })}
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
                   </Field.Root>
                 </Stack>
               </form>

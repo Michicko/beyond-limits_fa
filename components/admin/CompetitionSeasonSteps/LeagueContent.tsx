@@ -1,11 +1,15 @@
+"use client";
 import { Flex, HStack, Stack, Steps, Text, Box, Image } from "@chakra-ui/react";
-import React from "react";
+import React, { useRef, useTransition } from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import FormBtn from "../Forms/FormBtn";
 import CompetitionSeasonInfo from "./CompetitionSeasonInfo";
 import CustomSeparator from "../CustomSeparator";
 import CheckBox from "../CheckBox/CheckBox";
 import { Schema } from "@/amplify/data/resource";
+import useToast from "@/hooks/useToast";
+import { createLeague } from "@/app/_actions/actions";
+import { getButtonStatus } from "@/lib/helpers";
 
 function LeagueContent({
   index,
@@ -37,19 +41,35 @@ function LeagueContent({
     setSelectedTeams(teams);
   };
 
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const { errorToast, mutationToast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("competitionNameSeason", competitionName + season);
+    formData.append("competitionNameSeason", competitionName + " " + season);
     formData.append("status", "PENDING");
     formData.append("winnerId", "");
     formData.append("teams", JSON.stringify(selectedTeams));
 
-    const data = Array.from(formData.entries(), ([key, val]) => [key, val]);
+    startTransition(async () => {
+      const res = await createLeague(formData);
 
-    console.log(data);
-
-    goToNextStep();
+      if (res.status === "success" && res.data) {
+        console.log("goin to navigate");
+        mutationToast("league", res.data.competitionNameSeason, "create");
+        formRef.current?.reset();
+        setLeagueId(res.data.id);
+        const time = setTimeout(() => {
+          goToNextStep();
+          return () => clearTimeout(time);
+        }, 200);
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
   };
 
   return (
@@ -96,7 +116,9 @@ function LeagueContent({
             </Flex>
           </Stack>
           <HStack justifyContent={"flex-end"}>
-            <FormBtn type="submit">Create League</FormBtn>
+            <FormBtn type="submit" disabled={isPending}>
+              {getButtonStatus(null, "League", isPending)}
+            </FormBtn>
           </HStack>
         </CompetitionSeasonCard>
       </form>

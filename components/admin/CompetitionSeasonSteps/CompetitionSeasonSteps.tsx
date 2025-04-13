@@ -9,12 +9,14 @@ import CupContent from "./CupContent";
 import CompetitionSeasonComplete from "./CompetitionSeasonComplete";
 
 function CompetitionSeasonSteps({
+  competitionLogo,
   competitionId,
   competitionType,
   seasons,
   competitionName,
   teams,
 }: {
+  competitionLogo: string;
   competitionId: string;
   competitionType: "CUP" | "LEAGUE" | "MIXED" | null;
   seasons: { season: string }[];
@@ -148,13 +150,14 @@ function CompetitionSeasonSteps({
             </>
           )}
           <CompetitionSeasonFinalStep
+            cupId={cupId}
+            leagueId={leagueId}
+            competitionLogo={competitionLogo}
             competitionName={competitionName}
             competitionType={competitionType}
             season={season}
             goToNextStep={goToNextStep}
             competitionId={competitionId}
-            cupId={cupId}
-            leagueId={leagueId}
           />
           <CompetitionSeasonComplete competitionId={competitionId} />
         </Stack>

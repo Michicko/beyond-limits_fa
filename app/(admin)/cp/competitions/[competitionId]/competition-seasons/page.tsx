@@ -3,7 +3,6 @@ import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
-import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import Pagination from "@/components/admin/Pagination/Pagination";
@@ -16,7 +15,6 @@ import TableRows from "@/components/admin/Table/TableRows";
 import CreateButton from "@/components/Buttons/CreateButton";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { Box, HStack } from "@chakra-ui/react";
-import Link from "next/link";
 import React from "react";
 
 async function CompetitionSeasons({
@@ -27,14 +25,12 @@ async function CompetitionSeasons({
   const { data: competition, errors } =
     await cookiesClient.models.Competition.get(
       {
-        id: params.competitionId
+        id: params.competitionId,
       },
       {
-        selectionSet: ['id', 'longName', 'competitionSeasons.*']
+        selectionSet: ["id", "longName", "competitionSeasons.*"],
       }
     );
-
-  
 
   return (
     <>
@@ -43,29 +39,31 @@ async function CompetitionSeasons({
         <HStack mb={8}>
           <BackButton />
         </HStack>
-          <HStack justify={"flex-end"} mb={"20px"} gap="2">
-            <CreateButton
-              link={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
-              text="Create Season"
-            />
-            </HStack>
-          {(errors) ? (
+        <HStack justify={"flex-end"} mb={"20px"} gap="2">
+          <CreateButton
+            link={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
+            text="Create Season"
+          />
+        </HStack>
+        {errors ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
             message={errors[0].message}
           />
-        ) :!competition ? (
-          <CustomAlert 
-          title="No competition available" 
-          message={`No competition with id ${params.competitionId} available.`}  
-          status="error" 
+        ) : !competition ? (
+          <CustomAlert
+            title="No competition available"
+            message={`No competition with id ${params.competitionId} available.`}
+            status="error"
           />
-        ) : competition.competitionSeasons.length < 1 ? ( 
-            <CustomAlert 
-              status="info"
-              title="No Competition season."
-              message={"No season available, create some to get started."} />) : (
+        ) : competition.competitionSeasons.length < 1 ? (
+          <CustomAlert
+            status="info"
+            title="No Competition season."
+            message={"No season available, create some to get started."}
+          />
+        ) : (
           <>
             <Table>
               <>
@@ -98,30 +96,16 @@ async function CompetitionSeasons({
                             <TableCell>
                               <CustomMenu>
                                 <>
-                                  <CompetitionMenuItemLink 
+                                  <CompetitionMenuItemLink
                                     disabled={false}
                                     label="View season"
                                     link={`/cp/competitions/${params.competitionId}/competition-seasons/${season.id}`}
-                                      />
-                                  <CustomMenuItem
-                                    label="Edit season"
-                                    showBorder={true}
-                                    disabled={season.status === "COMPLETED"}
-                                  >
-                                    <Link
-                                      href={
-                                        season.status === "COMPLETED"
-                                          ? "#"
-                                          : `/cp/competitions/${competition.id}/competition-seasons/${season.id}/edit`
-                                      }
-                                    >
-                                      Edit season
-                                    </Link>
-                                  </CustomMenuItem>
-                                  <DeleteBtn 
-                                  id={season.id} 
-                                  name="competition season" 
-                                  onDelete={deleteCompetitionSeason}  />
+                                  />
+                                  <DeleteBtn
+                                    id={season.id}
+                                    name="competition season"
+                                    onDelete={deleteCompetitionSeason}
+                                  />
                                 </>
                               </CustomMenu>
                             </TableCell>

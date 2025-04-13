@@ -1,46 +1,59 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import PlayoffRound from "../PlayoffRound/PlayoffRound";
-import { IRound } from "@/lib/definitions";
+import { Nullable } from "@/lib/definitions";
 
-enum IStatus {
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED",
+interface IMatch {
+  id: string;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
 }
 
-function Cup() {
-  const [rounds, setRounds] = useState<IRound[]>([
-    {
-      cupId: 1,
-      round: "FINALS_128",
-      matchId: 1,
-      result: "",
-      status: IStatus.PENDING,
-    },
-    {
-      cupId: 1,
-      round: "FINALS_64",
-      matchId: 1,
-      result: "",
-      status: IStatus.PENDING,
-    },
-  ]);
+interface IRound {
+  id: string;
+  homeForm: Nullable<string>;
+  awayForm: Nullable<string>;
+  round: string;
+  result: "WIN" | "LOSE" | "DRAW" | null;
+  status: "PENDING" | "COMPLETED" | null;
+  matchId: Nullable<string>;
+}
 
-  const play_offs = [
-    { value: "QUALIFIERS", label: "qualifiers" },
-    { value: "FINALS_128", label: "1/128-finals" },
-    { value: "FINALS_64", label: "1/64-finals" },
-    { value: "FINALS_32", label: "1/32-finals" },
-    { value: "FINALS_16", label: "1/16-finals" },
-    { value: "FINALS_8", label: "1/8-finals" },
-    { value: "QUARTER_FINALS", label: "quater-finals" },
-    { value: "SEMI_FINALS", label: "semi-finals" },
-    { value: "FINALS", label: "final" },
-  ];
+function Cup({
+  rounds,
+  matches,
+  roundResults,
+}: {
+  rounds?: IRound[];
+  matches?: IMatch[];
+  roundResults: string[];
+}) {
+  const transformedRounds =
+    rounds &&
+    matches &&
+    rounds
+      .map((round) => {
+        let match = matches.find((match) => match.id === round.matchId);
+        if (!match) return;
+        return {
+          ...round,
+          match,
+        };
+      })
+      .filter((el) => el !== undefined);
 
-  return (
-    <PlayoffRound rounds={rounds} setRounds={setRounds} play_offs={play_offs} />
-  );
+  if (!transformedRounds) return null;
+
+  return <PlayoffRound dbRounds={transformedRounds} matches={matches} />;
 }
 
 export default Cup;

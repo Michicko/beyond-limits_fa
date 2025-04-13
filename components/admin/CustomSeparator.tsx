@@ -8,7 +8,7 @@ function CustomSeparator() {
       height={"1px"}
       variant={"solid"}
       colorPalette={"gray"}
-      bg={"gray"}
+      bg={"gray.200"}
     />
   );
 }

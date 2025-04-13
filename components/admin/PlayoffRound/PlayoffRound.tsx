@@ -1,143 +1,293 @@
 "use client";
-import {
-  Button,
-  Card,
-  Heading,
-  HStack,
-  Image,
-  Separator,
-  Table,
-  Text,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import ResultSelector from "../ResultSelector/ResultSelector";
+import { Card, Heading, HStack, Table, Text } from "@chakra-ui/react";
+import React from "react";
 import PlayOffRoundForm from "../PlayoffRoundForm/PlayOffRoundForm";
-import { IRound } from "@/lib/definitions";
+import { playOffsLabels } from "@/lib/helpers";
+import { Nullable } from "@/lib/definitions";
+import CustomSeparator from "../CustomSeparator";
+import PlayOffRoundRow from "./PlayOffRoundRow";
+
+// const matches = [
+//   {
+//     id: "d55ae10f-1c1f-46b4-abe6-7fba3891fc45",
+//     competitionSeasonid: "cd5ae10f-1f1f-46b4-abe6-7fba3891fc45",
+//     home: "f7dccbf7-d187-465d-918f-7760444e839c",
+//     away: "07b1ea51-73a7-41eb-aae1-9dff2500d50a",
+//     date: "2025-4-15",
+//     time: "10:00 am",
+//     venue: "remo stars stadium",
+//     status: "UPCOMING",
+//     lineup: [
+//       {
+//         id: "2cc2934b-f7bb-27c5-af35-ecee0bbbe4a4",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 9,
+//         firstname: "Aiyenugba",
+//         lastname: "Daniel",
+//         dob: "2011-5-2",
+//         height: 170,
+//         weight: 82,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: true,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//       {
+//         id: "2b4584d3-c78c-2480-ad20-7fe25f5398fb",
+//         firstname: "Shina",
+//         lastname: "Ayodele",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 8,
+//         dob: "2006-06-22",
+//         height: 175,
+//         weight: 75,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: false,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//     ],
+//     substitutes: [
+//       {
+//         id: "2b4584d3-c78c-2480-ad20-7fe25f5398fb",
+//         firstname: "Shina",
+//         lastname: "Ayodele",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 8,
+//         dob: "2006-06-22",
+//         height: 175,
+//         weight: 75,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: false,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//     ],
+//     coach: {},
+//     preview:
+//       "Match between beyon limits fa and imperifal fc is going to be tough",
+//     keyPlayer: "cc3a4a86-a091-4099-be7a-2e1b061e330a",
+//     aboutKeyPlayer: "He is a cool boy",
+//     report: "",
+//     mvp: "",
+//     aboutMvp: "",
+//     scorers: [],
+//     homeTeamStats: {
+//       goals: "",
+//       passes: "",
+//       offsides: "",
+//       corners: "",
+//       shots: "",
+//       yellows: "",
+//       reds: "",
+//     },
+//     awayTeamStats: {
+//       goals: "",
+//       passes: "",
+//       offsides: "",
+//       corners: "",
+//       shots: "",
+//       yellows: "",
+//       reds: "",
+//     },
+//   },
+//   {
+//     id: "c42ae10f-1c1f-46b4-abe6-4bba3891fc43",
+//     competitionSeasonid: "bc3ae20f-1f1f-46b4-abe6-7fba3891fc42",
+//     home: "4cd32940-d9a7-43c4-4ac9-7313a7d8b9b2",
+//     homeTeamStats: {
+//       passes: 200,
+//       corners: 6,
+//       offsides: 5,
+//       yellows: 5,
+//       reds: 0,
+//       shots: 13,
+//     },
+//     away: "f7dccbf7-d187-465d-918f-7760444e839c",
+//     awayTeamStats: {
+//       passes: 243,
+//       offsides: 5,
+//       corners: 12,
+//       yellows: 2,
+//       reds: 0,
+//       shots: 18,
+//     },
+//     date: "2024-02-12",
+//     time: "3:00 pm",
+//     venue: "Italy stadium",
+//     status: "FINISHED",
+//     result: "WIN",
+//     lineup: [
+//       {
+//         id: "2cc2934b-f7bb-27c5-af35-ecee0bbbe4a4",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 9,
+//         firstname: "Aiyenugba",
+//         lastname: "Daniel",
+//         dob: "2011-5-2",
+//         height: 170,
+//         weight: 82,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: true,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//       {
+//         id: "2b4584d3-c78c-2480-ad20-7fe25f5398fb",
+//         firstname: "Shina",
+//         lastname: "Ayodele",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 8,
+//         dob: "2006-06-22",
+//         height: 175,
+//         weight: 75,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: false,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//     ],
+//     substitutes: [
+//       {
+//         id: "2b4584d3-c78c-2480-ad20-7fe25f5398fb",
+//         firstname: "Shina",
+//         lastname: "Ayodele",
+//         positionId: "3bc2934b-f7eb-47b5-af55-ecee0bbbe6a8",
+//         squadNo: 8,
+//         dob: "2006-06-22",
+//         height: 175,
+//         weight: 75,
+//         dominantFoot: "RIGHT",
+//         isTwoFooted: false,
+//         homeKit: "/images/player-1.png",
+//         awayKit: "/images/player-2.png",
+//         ageGroup: "UNDER_19",
+//         status: "ACTIVE",
+//       },
+//     ],
+//     coach: {
+//       name: "Ogundeye godwin",
+//       role: "coach",
+//       image: "/images/coach.png",
+//     },
+//     preview:
+//       "Match between beyon limits fa and gbagada fc is going to be tough",
+//     keyPlayer: "2cc2934b-f7bb-27c5-af35-ecee0bbbe4a4",
+//     aboutKeyPlayer:
+//       "He is a joy to watch, i expect him to get some goals today",
+//     report: "It was a beautiful match which beautiful memories",
+//     mvp: "2cc2934b-f7bb-27c5-af35-ecee0bbbe4a4",
+//     aboutMvp: `He was a joy to watch. He bagged a hatrick and left with the match ball,
+//         not only that he also left with the people's heart.`,
+//     scorers: [
+//       {
+//         time: "1st",
+//         isOpponent: false,
+//         id: "'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+//         goalType: "normal goal",
+//         name: "Kparobo Ariehri",
+//         assist: "",
+//       },
+//       {
+//         time: "6th",
+//         isOpponent: false,
+//         id: "'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+//         goalType: "normal goal",
+//         name: "Olamilekan Adegoyega",
+//         assist: "",
+//       },
+//       {
+//         time: "13th",
+//         isOpponent: false,
+//         id: "'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+//         goalType: "normal goal",
+//         name: "Kparobo Ariehri",
+//         assist: "",
+//       },
+//       {
+//         time: "37th",
+//         isOpponent: false,
+//         id: "'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+//         goalType: "normal goal",
+//         name: "Kparobo Ariehri",
+//         assist: "",
+//       },
+//     ],
+//   },
+// ];
+
+interface IMatch {
+  id: string;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+  } | null;
+}
+
+interface IRound {
+  id: string;
+  homeForm: Nullable<string>;
+  awayForm: Nullable<string>;
+  round: string;
+  result: "WIN" | "LOSE" | "DRAW" | null;
+  status: "PENDING" | "COMPLETED" | null;
+  match: IMatch;
+}
 
 function PlayoffRound({
-  rounds,
-  setRounds,
-  play_offs,
+  dbRounds,
+  matches,
 }: {
-  rounds: IRound[];
-  setRounds: React.Dispatch<React.SetStateAction<IRound[]>>;
-  play_offs: { label: string; value: string }[];
+  dbRounds: IRound[];
+  matches: IMatch[];
 }) {
   const cH = {
     fontWeight: "700",
     h: "50px",
     textAlign: "center",
-  };
-
-  const tC = {
-    h: "50px",
-    textAlign: "center",
-    px: "5px",
-  };
-
-  const getPlayOffRoundName = (value: string) => {
-    const plf = play_offs.find((el) => el.value === value);
-    return plf?.label;
-  };
-
-  const [openCupRoundForm, setOpenCupRoundForm] = useState(false);
-
-  const match = {
-    home: {
-      id: 1,
-      logo: "/images/blfc.png",
-      shortName: "blfc",
-      longName: "beyon limits fa",
-      stadium: "Remo stars",
-      isBeyondLimits: true,
-    },
-    away: {
-      id: 3,
-      logo: "/images/imfc.png",
-      shortName: "imfc",
-      longName: "imperial fc",
-      stadium: "Imperial stadium",
-      isBeyondLimits: false,
-    },
-  };
-
-  const getRound = (round: IRound) => {
-    return (
-      <Table.Row key={round.round}>
-        <Table.Cell textTransform={"capitalize"}>
-          {getPlayOffRoundName(round.round)}
-        </Table.Cell>
-        <Table.Cell css={tC}>
-          <HStack
-            alignItems={"center"}
-            gap={3}
-            justifyContent={"center"}
-            minW={"250px"}
-          >
-            <HStack alignItems={"center"} gap={"2"}>
-              <Image
-                src={match.home.logo}
-                boxSize="30px"
-                borderRadius="full"
-                fit="cover"
-                alt={match.home.longName}
-                flexShrink={0}
-              />
-              <Text textTransform={"uppercase"}>{match.home.shortName}</Text>
-            </HStack>
-            <Text fontWeight={"700"}>VS</Text>
-            <HStack alignItems={"center"} gap={"2"}>
-              <Image
-                src={match.away.logo}
-                boxSize="30px"
-                borderRadius="full"
-                fit="cover"
-                alt={match.away.longName}
-                flexShrink={0}
-              />
-              <Text textTransform={"uppercase"}>{match.away.shortName}</Text>
-            </HStack>
-          </HStack>
-        </Table.Cell>
-        <Table.Cell css={tC}>{round.status}</Table.Cell>
-        <Table.Cell css={tC} textAlign={"center"}>
-          <ResultSelector
-            id={round.round}
-            round={round.round}
-            rounds={rounds}
-            setRounds={setRounds}
-            result={round.result}
-            status={round.status}
-          />
-        </Table.Cell>
-        <Table.Cell css={tC}>
-          <Button
-            variant={"solid"}
-            colorPalette={"green"}
-            px={"10px"}
-            disabled={
-              round.result && round.status === "COMPLETED" ? true : false
-            }
-          >
-            Update
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    );
+    verticalAlign: "middle",
   };
 
   return (
-    <Card.Root size="md" p={"5"}>
+    <Card.Root size="md" p={"5"} border={"1px solid"} borderColor={"gray.200"}>
       <Card.Body color="fg.muted">
-        <HStack justifyContent={"space-between"} alignItems={"center"}>
-          <Heading mb="2">Rounds</Heading>
-          <PlayOffRoundForm
-            open={openCupRoundForm}
-            setOpen={setOpenCupRoundForm}
-            play_offs={play_offs}
-          />
+        <HStack
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          flexWrap={"wrap"}
+        >
+          <Heading fontWeight={"700"}>Rounds</Heading>
+          {!matches ? (
+            <Text>
+              No matches available, please add a match to create round
+            </Text>
+          ) : (
+            <PlayOffRoundForm
+              playOffsLabels={playOffsLabels}
+              matches={matches}
+            />
+          )}
         </HStack>
-        <Separator mb={"5"} mt={"2"} />
+        <CustomSeparator />
+
         <Table.ScrollArea maxW="5xl">
           <Table.Root showColumnBorder={false}>
             <Table.Header>
@@ -154,7 +304,11 @@ function PlayoffRound({
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              <>{rounds.map((round) => getRound(round))}</>
+              <>
+                {dbRounds.map((round) => {
+                  return <PlayOffRoundRow round={round} key={round.id} />;
+                })}
+              </>
             </Table.Body>
           </Table.Root>
         </Table.ScrollArea>

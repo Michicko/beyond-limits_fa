@@ -16,7 +16,7 @@ async function CreateCompetitionSeason({
         id: params.competitionId,
       },
       {
-        selectionSet: ["id", "longName", "competitionType"],
+        selectionSet: ["id", "longName", "competitionType", "logo"],
       }
     );
 
@@ -55,6 +55,7 @@ async function CreateCompetitionSeason({
           />
         ) : (
           <CompetitionSeasonSteps
+            competitionLogo={competition.logo}
             competitionType={competition.competitionType}
             seasons={seasons}
             competitionName={competition.longName}

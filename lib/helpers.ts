@@ -39,3 +39,20 @@ export const getButtonStatus = (
 export const formatDate = (date: string) => {
   return moment(date).startOf("minutes").fromNow();
 };
+
+export const playOffsLabels = [
+  { value: "QUALIFIERS", label: "qualifiers" },
+  { value: "FINALS_128", label: "1/128-finals" },
+  { value: "FINALS_64", label: "1/64-finals" },
+  { value: "FINALS_32", label: "1/32-finals" },
+  { value: "FINALS_16", label: "1/16-finals" },
+  { value: "FINALS_8", label: "1/8-finals" },
+  { value: "QUARTER_FINALS", label: "quater-finals" },
+  { value: "SEMI_FINALS", label: "semi-finals" },
+  { value: "FINALS", label: "final" },
+];
+
+export const getPlayOffRoundName = (value: string) => {
+  const plf = playOffsLabels.find((el) => el.value === value);
+  return plf?.label;
+};

@@ -1,8 +1,12 @@
+"use client";
 import { HStack, Stack, Steps } from "@chakra-ui/react";
-import React from "react";
+import React, { useRef, useTransition } from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import CompetitionSeasonInfo from "./CompetitionSeasonInfo";
 import FormBtn from "../Forms/FormBtn";
+import { createCup } from "@/app/_actions/actions";
+import useToast from "@/hooks/useToast";
+import { getButtonStatus } from "@/lib/helpers";
 
 function CupContent({
   competitionName,
@@ -17,16 +21,34 @@ function CupContent({
   setCupId: React.Dispatch<React.SetStateAction<string>>;
   goToNextStep: () => void;
 }) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const { errorToast, mutationToast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("competitionNameSeason", competitionName + season);
+    formData.append("competitionNameSeason", competitionName + " " + season);
     formData.append("status", "PENDING");
     formData.append("winnerId", "");
 
-    const data = Array.from(formData.entries(), ([key, val]) => [key, val]);
-    goToNextStep();
-    console.log(data);
+    startTransition(async () => {
+      const res = await createCup(formData);
+
+      if (res.status === "success" && res.data) {
+        console.log("goin to navigate");
+        mutationToast("cup", res.data.competitionNameSeason, "create");
+        formRef.current?.reset();
+        setCupId(res.data.id);
+        const time = setTimeout(() => {
+          goToNextStep();
+          return () => clearTimeout(time);
+        }, 200);
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
   };
 
   return (
@@ -38,7 +60,9 @@ function CupContent({
             <CompetitionSeasonInfo label={"Season"} value={season} />
           </Stack>
           <HStack justifyContent={"flex-end"}>
-            <FormBtn type="submit">Create Cup</FormBtn>
+            <FormBtn type="submit" disabled={isPending}>
+              {getButtonStatus(null, "Cup", isPending)}
+            </FormBtn>
           </HStack>
         </CompetitionSeasonCard>
       </form>
