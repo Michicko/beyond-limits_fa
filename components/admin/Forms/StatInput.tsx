@@ -9,10 +9,7 @@ function StatInput({
   name,
 }: {
   value: string | number;
-  onChange: (
-    e: { target: { name: string; value: string | number } },
-    team: "home" | "away"
-  ) => void;
+  onChange: (e: { target: { name: string; value: any } }) => void;
   team: "home" | "away";
   name: string;
 }) {
@@ -40,7 +37,7 @@ function StatInput({
         variant={"subtle"}
         color={"text_lg"}
         value={value || ""}
-        onChange={(e) => onChange(e, team)}
+        onChange={onChange}
       />
     </Field.Root>
   );

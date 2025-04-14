@@ -15,7 +15,7 @@ import React, { Suspense, useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import { getIcon } from "@/lib/icons";
 import FormBtn from "./FormBtn";
-import { createPosition } from "@/app/_actions/actions";
+import { createPosition, updatePosition } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
@@ -55,19 +55,19 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
     formData.append("attributes", JSON.stringify(attributes));
 
     if (position) {
-      // startTransition(async () => {
-      //   const res = await updatePosition(
-      //     position.id,
-      //     formData,
-      //     position.shortName
-      //   );
-      //   if (res.status === "success" && res.data) {
-      //     mutationToast("player Position", res.data.longName, "update");
-      //   }
-      //   if (res.status === "error") {
-      //     errorToast(res.message);
-      //   }
-      // });
+      startTransition(async () => {
+        const res = await updatePosition(
+          position.id,
+          formData,
+          position.shortName
+        );
+        if (res.status === "success" && res.data) {
+          mutationToast("player Position", res.data.longName, "update");
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
     } else {
       startTransition(async () => {
         const res = await createPosition(formData);

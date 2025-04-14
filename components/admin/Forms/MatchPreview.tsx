@@ -3,27 +3,51 @@ import { Box, Field, SimpleGrid, Textarea } from "@chakra-ui/react";
 import React from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
-import { players } from "@/lib/placeholder-data";
 import { JSONContent } from "@tiptap/react";
-import { IMatch, IStackStyles } from "@/lib/definitions";
-import MatchTeamForm from "./MatchTeamForm";
+import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
 import FormLabel from "./FormLabel";
+import { Schema } from "@/amplify/data/resource";
+
+interface IPlayer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  squadNo: Nullable<number>;
+  homeKit: Nullable<string>;
+}
+type IMatchI = Pick<
+  Schema["Match"]["type"],
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+>;
 
 function MatchPreview({
   matchForm,
   setMatchForm,
   stackStyles,
   handleOnChange,
-  handleMatchTeamChange,
+  players,
 }: {
-  matchForm: IMatch;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatch>>;
+  matchForm: IMatchI;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
   stackStyles: IStackStyles;
+  players: IPlayer[];
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
-  handleMatchTeamChange: (
-    e: { target: { name: string; value: any } },
-    team: "home" | "away"
-  ) => void;
 }) {
   const playerOptions = players.map((player) => {
     return {
@@ -32,42 +56,30 @@ function MatchPreview({
     };
   });
 
-  const handlePreviewContext = (json: JSONContent) => {
+  const handleReview = (json: JSONContent) => {
     setMatchForm({
       ...matchForm,
-      preview: { ...matchForm.preview, context: json },
+      review: json,
     });
   };
 
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Preview</FormLabel>
-      <SimpleGrid gap={4} mb={5} columns={{ base: 1, md: 2 }}>
-        <MatchTeamForm
-          team={"home"}
-          value={matchForm.home.form}
-          handleOnChange={handleMatchTeamChange}
-        />
-        <MatchTeamForm
-          team={"away"}
-          value={matchForm.away.form}
-          handleOnChange={handleMatchTeamChange}
-        />
-      </SimpleGrid>
       <Field.Root mb={"5"} w={"full"}>
         <FormLabel>Match Context</FormLabel>
         <TextEditor
-          content={matchForm.preview.context}
-          handleOnUpdate={handlePreviewContext}
+          content={matchForm.review as string}
+          handleOnUpdate={handleReview}
         />
       </Field.Root>
       <Field.Root mb={"5"}>
         <FormLabel>key player</FormLabel>
         <CustomSelect
-          name="keyPlayer"
+          name="keyPlayerId"
           description="key player"
           options={playerOptions}
-          selectedValue={matchForm.preview.keyPlayer || ""}
+          selectedValue={matchForm.keyPlayerId || ""}
           handleOnChange={handleOnChange}
           fixedWidth={true}
         />
@@ -81,6 +93,7 @@ function MatchPreview({
           p={"10px"}
           color={"text_lg"}
           resize={"none"}
+          value={matchForm.aboutKeyPlayer || ""}
           onChange={handleOnChange}
         />
       </Field.Root>

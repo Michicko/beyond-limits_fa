@@ -1,7 +1,15 @@
 import { Tabs } from "@chakra-ui/react";
 import React from "react";
 
-function CustomTabTrigger({ label, value }: { label: string; value: string }) {
+function CustomTabTrigger({
+  label,
+  value,
+  disabled,
+}: {
+  label: string;
+  value: string;
+  disabled?: boolean;
+}) {
   return (
     <Tabs.Trigger
       value={value}
@@ -11,6 +19,7 @@ function CustomTabTrigger({ label, value }: { label: string; value: string }) {
       border={"1px solid transparent"}
       _selected={{ bg: "primary_variant", color: "gray.200" }}
       fontWeight={"medium"}
+      disabled={disabled}
     >
       {label}
     </Tabs.Trigger>

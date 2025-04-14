@@ -1,6 +1,6 @@
 "use client";
-import CheckBox from "@/components/CheckBox/CheckBox";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CheckBox from "@/components/admin/CheckBox/CheckBox";
+import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import MatchScoreTime from "@/components/main/MatchCard/MatchScoreTime";
 import { IMatch, IMatchScorer } from "@/lib/definitions";
 import { getIcon } from "@/lib/icons";
@@ -21,12 +21,36 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import FormLabel from "./FormLabel";
+import { Schema } from "@/amplify/data/resource";
+import MatchForm from "./MatchForm";
+
+type IMatchI = Pick<
+  Schema["Match"]["type"],
+  // | "id"
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+>;
 
 function GoalScorers({
   matchForm,
   setMatchForm,
 }: {
-  matchForm: IMatch;
+  matchForm: IMatchI;
   setMatchForm: any;
 }) {
   const [scorer, setScorer] = useState<IMatchScorer>({
@@ -56,14 +80,18 @@ function GoalScorers({
 
   const addScorer = () => {
     const newScorer = { ...scorer, id: uuidv4() };
-    const tempScorers = [...matchForm.scorers, newScorer];
-    setMatchForm({ ...matchForm, scorers: tempScorers });
+    const matchScorers = matchForm.scorers ? (matchForm.scorers as []) : [];
+    const tempScorers = [...matchScorers, newScorer];
+    setMatchForm({ ...matchForm, scorers: JSON.stringify(tempScorers) });
     clearScorer();
   };
 
   const removeScorer = (id: string) => {
-    const tempScorers = matchForm.scorers.filter((scorer) => scorer.id !== id);
-    setMatchForm({ ...matchForm, scorers: tempScorers });
+    const matchScorers = matchForm.scorers ? (matchForm.scorers as []) : [];
+    const tempScorers = matchScorers.filter(
+      (scorer: IMatchScorer) => scorer.id !== id
+    );
+    setMatchForm({ ...matchForm, scorers: JSON.stringify(tempScorers) });
   };
 
   return (
@@ -155,48 +183,49 @@ function GoalScorers({
         </GridItem>
       </Grid>
       <HStack mt={"12"} flexWrap={"wrap"} columnGap={"6"} rowGap={"8"}>
-        {matchForm.scorers.map((scorer) => {
-          return (
-            <Flex
-              flexDirection={"column"}
-              key={scorer.name}
-              shadow={"sm"}
-              p={"2"}
-              borderRadius={"sm"}
-              position={"relative"}
-            >
-              <IconButton
-                bg={"error"}
-                color={"white"}
-                size={"2xs"}
-                alignSelf={"flex-end"}
-                position={"absolute"}
-                right={"-15px"}
-                top={"-18px"}
-                cursor={"pointer"}
-                onClick={() => removeScorer(scorer.id)}
+        {matchForm.scorers &&
+          (matchForm.scorers as []).map((scorer: IMatchScorer) => {
+            return (
+              <Flex
+                flexDirection={"column"}
+                key={scorer.name}
+                shadow={"sm"}
+                p={"2"}
+                borderRadius={"sm"}
+                position={"relative"}
               >
-                {getIcon("close")}
-              </IconButton>
-              <HStack alignItems={"center"} gap={3} mb={"1"}>
-                <Text fontSize={"sm"} fontWeight={"500"}>
-                  {scorer.name}
-                </Text>
-                <MatchScoreTime time={scorer.time} theme="dark" />
-              </HStack>
-              <HStack gap={"2"}>
-                <Text fontSize={"12px"} color={"primary"}>
-                  {scorer.goalType}
-                </Text>
-                {scorer.isOpponent && (
-                  <Text fontSize={"12px"} color={"secondary"}>
-                    (opponent)
+                <IconButton
+                  bg={"error"}
+                  color={"white"}
+                  size={"2xs"}
+                  alignSelf={"flex-end"}
+                  position={"absolute"}
+                  right={"-15px"}
+                  top={"-18px"}
+                  cursor={"pointer"}
+                  onClick={() => removeScorer(scorer.id)}
+                >
+                  {getIcon("close")}
+                </IconButton>
+                <HStack alignItems={"center"} gap={3} mb={"1"}>
+                  <Text fontSize={"sm"} fontWeight={"500"}>
+                    {scorer.name}
                   </Text>
-                )}
-              </HStack>
-            </Flex>
-          );
-        })}
+                  <MatchScoreTime time={scorer.time} theme="dark" />
+                </HStack>
+                <HStack gap={"2"}>
+                  <Text fontSize={"12px"} color={"primary"}>
+                    {scorer.goalType}
+                  </Text>
+                  {scorer.isOpponent && (
+                    <Text fontSize={"12px"} color={"secondary"}>
+                      (opponent)
+                    </Text>
+                  )}
+                </HStack>
+              </Flex>
+            );
+          })}
       </HStack>
       <Separator
         my={"5"}

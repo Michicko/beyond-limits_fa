@@ -17,6 +17,7 @@ type CompetitionSeason = Schema["CompetitionSeason"]["type"];
 type Cup = Schema["Cup"]["type"];
 type League = Schema["League"]["type"];
 type Standing = Schema["Standing"]["type"];
+type Match = Schema["Match"]["type"];
 
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
@@ -853,6 +854,40 @@ export async function createStandingRow(formData: FormData) {
       data,
     };
   } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
+
+export async function createMatch(formData: FormData) {
+  const body = formDataToObject<Match>(formData);
+  body.lineup = JSON.parse(formData.get("lineup") as string);
+  body.coach = JSON.parse(formData.get("coach") as string);
+  body.substitutes = JSON.parse(formData.get("substitutes") as string);
+  body.homeTeam = JSON.parse(formData.get("homeTeam") as string);
+  body.awayTeam = JSON.parse(formData.get("awayTeam") as string);
+
+  try {
+    const { data, errors } = await cookiesClient.models.Match.create(body, {
+      selectionSet: ["id", "homeTeam.*", "awayTeam.*"],
+    });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    revalidatePath("/cp/matches");
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    console.log(error);
     return {
       status: "error",
       message: "An unknown error occurred",

@@ -365,36 +365,95 @@ interface IMatchTeam {
   penalties?: number;
 }
 
+export interface ICompetitionSeason {
+  logo: string;
+  name: string;
+  season: string;
+}
+
+export interface IGoal {
+  name: string;
+  time: string;
+  goalType: "NORMAL" | "OWNGOAL" | "PENALTY" | null;
+  isOpponent: Nullable<boolean>;
+}
+
 export interface IMatch {
   id?: string;
-  round: string;
-  competition_id: string;
-  competition?: ICompetition;
-  home: IMatchTeam;
-  away: IMatchTeam;
+  competitionSeasonId: Nullable<string>;
+  competitionSeason?: ICompetitionSeason;
   date: string;
   time: string;
   venue: string;
-  status: MatchStatus;
-  result?: MatchResult;
-  lineup: string[];
-  substitutes: string[];
-  coach: {
-    name: string;
-    role: string;
-  };
-  preview: {
-    context: JSONContent | string;
-    keyPlayer?: string;
-    aboutKeyPlayer: string;
-  };
-  report: {
-    context: JSONContent | string;
-    mvp?: string;
-    aboutMvp: string;
-  };
-  scorers: IMatchScorer[];
+  status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
+  keyPlayerId: Nullable<string>;
+  aboutKeyPlayer: Nullable<string>;
+  mvpId: Nullable<string>;
+  aboutMvp: string | null;
+  review: any;
+  report: any;
+  lineup: Nullable<string>[] | null;
+  substitutes: Nullable<string>[] | null;
+  coach: { name: string; role: "HEAD" | "ASSISTANT" | null } | null;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+    passes: Nullable<string>;
+    offsides: Nullable<string>;
+    corners: Nullable<string>;
+    shots: Nullable<string>;
+    yellows: Nullable<string>;
+    reds: Nullable<string>;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+    passes: Nullable<string>;
+    offsides: Nullable<string>;
+    corners: Nullable<string>;
+    shots: Nullable<string>;
+    yellows: Nullable<string>;
+    reds: Nullable<string>;
+  } | null;
+  scorers: [];
 }
+
+// export interface IMatch {
+//   id?: string;
+//   round: string;
+//   competition_id: string;
+//   competition?: ICompetition;
+//   home: IMatchTeam;
+//   away: IMatchTeam;
+//   date: string;
+//   time: string;
+//   venue: string;
+//   status: MatchStatus;
+//   result?: MatchResult;
+//   lineup: string[];
+//   substitutes: string[];
+//   coach: {
+//     name: string;
+//     role: string;
+//   };
+//   preview: {
+//     context: JSONContent | string;
+//     keyPlayer?: string;
+//     aboutKeyPlayer: string;
+//   };
+//   report: {
+//     context: JSONContent | string;
+//     mvp?: string;
+//     aboutMvp: string;
+//   };
+//   scorers: IMatchScorer[];
+// }
 
 export interface IMatchTeamForm {
   team: string;

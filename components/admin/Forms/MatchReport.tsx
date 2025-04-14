@@ -3,24 +3,54 @@ import { Box, Field, HStack, Text, Textarea } from "@chakra-ui/react";
 import React from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
-import { players } from "@/lib/placeholder-data";
 import { JSONContent } from "@tiptap/react";
-import { IMatch, IStackStyles } from "@/lib/definitions";
+import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
 import GoalScorers from "./GoalScorers";
 import FormLabel from "./FormLabel";
+import { Schema } from "@/amplify/data/resource";
+
+interface IPlayer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  squadNo: Nullable<number>;
+  homeKit: Nullable<string>;
+}
+
+type IMatchI = Pick<
+  Schema["Match"]["type"],
+  // | "id"
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+>;
 
 function MatchReport({
   matchForm,
   setMatchForm,
   stackStyles,
   handleOnChange,
+  players,
 }: {
-  matchForm: IMatch;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatch>>;
+  matchForm: IMatchI;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
   stackStyles: IStackStyles;
-  handleOnChange: (e: {
-    target: { name: string; value: string | number };
-  }) => void;
+  handleOnChange: (e: { target: { name: string; value: any } }) => void;
+  players: IPlayer[];
 }) {
   const playerOptions = players.map((player) => {
     return {
@@ -32,7 +62,7 @@ function MatchReport({
   const handleReportContext = (json: JSONContent) => {
     setMatchForm({
       ...matchForm,
-      report: { ...matchForm.report, context: json },
+      report: json,
     });
   };
 
@@ -43,17 +73,17 @@ function MatchReport({
       <Field.Root mb={"5"} w={"full"}>
         <FormLabel>Match Context</FormLabel>
         <TextEditor
-          content={matchForm.report.context}
+          content={matchForm.report as string}
           handleOnUpdate={handleReportContext}
         />
       </Field.Root>
       <Field.Root mb={"5"}>
         <FormLabel>Mvp</FormLabel>
         <CustomSelect
-          name="mvp"
+          name="mvpId"
           description="man of the match"
           options={playerOptions}
-          selectedValue={matchForm.report.mvp || ""}
+          selectedValue={matchForm.mvpId || ""}
           handleOnChange={handleOnChange}
           fixedWidth={true}
         />
@@ -67,7 +97,7 @@ function MatchReport({
           p={"10px"}
           color={"text_lg"}
           resize={"none"}
-          value={matchForm.report.aboutMvp}
+          value={matchForm.aboutMvp || ""}
           onChange={handleOnChange}
         />
       </Field.Root>

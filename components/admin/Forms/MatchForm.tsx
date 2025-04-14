@@ -5,12 +5,6 @@ import CustomTabList from "@/components/admin/Tabs/CustomTabList";
 import CustomTabs from "@/components/admin/Tabs/CustomTabs";
 import CustomTabTrigger from "@/components/admin/Tabs/CustomTabTrigger";
 import {
-  competitions,
-  leagues,
-  mixed_cups,
-  teams,
-} from "@/lib/placeholder-data";
-import {
   Box,
   Field,
   Grid,
@@ -20,17 +14,98 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import MatchPreview from "./MatchPreview";
 import MatchReport from "./MatchReport";
-import MatchRound from "./MatchRound";
 import Lineup from "./Lineup";
 import MatchStats from "./MatchStats";
-import { IMatch, MatchResult, MatchStatus } from "@/lib/definitions";
+import { IMatch, Nullable } from "@/lib/definitions";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
+import { getButtonStatus, objectToFormData } from "@/lib/helpers";
+import { JSONContent } from "@tiptap/react";
+import { createMatch } from "@/app/_actions/actions";
+import useToast from "@/hooks/useToast";
+import { Schema } from "@/amplify/data/resource";
 
-function MatchForm({ match }: { match?: IMatch }) {
+interface ICompetitionSeason {
+  id: string;
+  season: string;
+  name: string;
+  type: string;
+  logo: string;
+  competitionId: Nullable<string>;
+  updatedAt: string;
+  createdAt: string;
+  cupId?: Nullable<string>;
+  leagueId?: Nullable<string>;
+  winnerId: Nullable<string>;
+  status: string | null;
+}
+
+interface ICompetition {
+  id: string;
+  longName: string;
+  competitionSeasons: ICompetitionSeason[];
+}
+
+// Scorer: a.customType({
+//   name: a.string().required(),
+//   time: a.string().required(),
+//   goalType: a.ref("GoalType"),
+//   isOpponent: a.boolean(),
+// }),
+
+interface IPlayer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  squadNo: Nullable<number>;
+  homeKit: Nullable<string>;
+}
+
+// type Coach = {
+//   name: string;
+//   role: "HEAD" | "ASSISTANT" | null;
+// };
+
+type IMatchI = Pick<
+  Schema["Match"]["type"],
+  // | "id"
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+>;
+
+function MatchForm({
+  match,
+  competitions,
+  teams,
+  players,
+  method,
+  statuses,
+}: {
+  match?: IMatchI;
+  competitions: ICompetition[];
+  teams: { id: string; shortName: string; longName: string; logo: string }[];
+  players: IPlayer[];
+  method: "CREATE" | "UPDATE";
+  statuses: string[];
+}) {
   const stackStyles = {
     border: "1px solid gray",
     padding: "20px",
@@ -48,81 +123,79 @@ function MatchForm({ match }: { match?: IMatch }) {
     },
   };
 
+  console.log(match);
+
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const { errorToast, mutationToast } = useToast();
+
   const teamOptions = teams.map((team) => {
     return { label: team.longName, value: team.id };
   });
 
   const tabs = ["preview", "lineup", "report", "stats"];
 
-  const [matchForm, setMatchForm] = useState<IMatch>({
-    round: match?.round || "",
-    competition_id: "",
-    home: {
-      team_id: "",
-      goals: NaN,
-      stats: {
-        passes: NaN,
-        offsides: NaN,
-        corners: NaN,
-        shots: NaN,
-        yellows: NaN,
-        reds: NaN,
-      },
-      penalties: NaN,
-      form: "",
-    },
-    away: {
-      team_id: "",
-      goals: NaN,
-      stats: {
-        passes: NaN,
-        offsides: NaN,
-        corners: NaN,
-        shots: NaN,
-        yellows: NaN,
-        reds: NaN,
-      },
-      penalties: NaN,
-      form: "",
-    },
-    date: "",
-    time: "",
-    venue: "",
-    status: "" as MatchStatus,
-    result: "" as MatchResult,
-    lineup: [] as string[],
-    substitutes: [] as string[],
-    coach: {
-      name: "",
-      role: "",
-    },
-    preview: {
-      context: {},
-      keyPlayer: "",
-      aboutKeyPlayer: "",
-    },
-    report: {
-      context: {},
-      mvp: "",
-      aboutMvp: "",
-    },
-    scorers: [
-      {
-        id: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-        name: "John Doe",
-        time: "23",
-        goalType: "normal",
-        isOpponent: false,
-      },
-      {
-        id: "2b1deb2d-3b7d-4bad-9bdd-2b0d7b3dcb6c",
-        name: "Jane Doe",
-        time: "43",
-        goalType: "normal",
-        isOpponent: true,
-      },
-    ],
+  const resultTabs = ["report", "stats"];
+
+  const getTeamStats = (team: "homeTeam" | "awayTeam") => {
+    const teamData = match?.[team];
+
+    return {
+      id: teamData?.id || "",
+      logo: teamData?.logo || "",
+      shortName: teamData?.shortName || "",
+      longName: teamData?.longName || "",
+      goals: teamData?.goals || ("" as Nullable<string>),
+      passes: teamData?.passes || ("" as Nullable<string>),
+      offsides: teamData?.offsides || ("" as Nullable<string>),
+      corners: teamData?.corners || ("" as Nullable<string>),
+      shots: teamData?.shots || ("" as Nullable<string>),
+      yellows: teamData?.yellows || ("" as Nullable<string>),
+      reds: teamData?.reds || ("" as Nullable<string>),
+    };
+  };
+
+  const [data, setData] = useState<IMatchI>({
+    competitionSeasonId: match?.competitionSeasonId || "",
+    date: match?.date || "",
+    time: match?.time || "",
+    venue: match?.venue || "",
+    status: match?.status || "UPCOMING",
+    keyPlayerId: match?.keyPlayerId || "",
+    aboutKeyPlayer: match?.aboutKeyPlayer || "",
+    mvpId: match?.mvpId || "",
+    aboutMvp: match?.aboutMvp || "",
+    review: match?.review
+      ? JSON.parse(match.review as string)
+      : ({} as JSONContent),
+    report: match?.report
+      ? JSON.parse(match.report as string)
+      : ({} as JSONContent),
+    lineup: match?.lineup || [],
+    substitutes: match?.substitutes ?? [],
+    coach: match?.coach
+      ? {
+          name: match?.coach?.name || "",
+          role: match?.coach?.role || null,
+        }
+      : { name: "", role: null },
+    homeTeam: getTeamStats("homeTeam"),
+    awayTeam: getTeamStats("awayTeam"),
+    scorers: match?.scorers ? JSON.parse(match.scorers as string) : [],
   });
+
+  const selectedCompetition = match
+    ? competitions.find((el) => {
+        const competitionSeason = el.competitionSeasons.find(
+          (comp) => comp.id === match.competitionSeasonId
+        );
+        if (competitionSeason) return el;
+      })
+    : null;
+
+  const [competition, setCompetition] = useState<ICompetition | null>(
+    selectedCompetition || null
+  );
 
   const competitionOptions = competitions.map((el) => {
     return {
@@ -131,103 +204,159 @@ function MatchForm({ match }: { match?: IMatch }) {
     };
   });
 
-  const rounds = [
-    "1/128-final",
-    "1/64-final",
-    "1/32-final",
-    "1/16-final",
-    "1/8-final",
-    "quaterfinal",
-    "semifinal",
-    "thirdplace",
-    "final",
-  ];
+  const competitionSeasonOptions =
+    competition &&
+    competition.competitionSeasons.map((el) => {
+      return {
+        label: el.season,
+        value: el.id,
+      };
+    });
 
-  const selectedCompetition = competitions.find(
-    (competition) => competition.id === matchForm.competition_id
-  );
+  console.log(competitions);
 
-  const selectedLeague = leagues.find(
-    (league) => league.competition_id === matchForm.competition_id
-  );
-
-  const selectedMixedCup = mixed_cups.find(
-    (mixedCup) => mixedCup.competition_id === matchForm.competition_id
-  );
-
-  const handleMatchTeamChange = (
-    e: { target: { name: string; value: string | number } },
-    team: "home" | "away"
+  const handleTeam = (
+    name: string,
+    value: string,
+    teamOption: "homeTeam" | "awayTeam"
   ) => {
-    const stats = Object.keys(matchForm.home.stats);
-    const { name, value } = e.target;
-    if (team === "home") {
-      if (stats.includes(name)) {
-        setMatchForm({
-          ...matchForm,
-          home: {
-            ...matchForm.home,
-            stats: { ...matchForm.home.stats, [name]: value },
-          },
-        });
-      } else {
-        setMatchForm({
-          ...matchForm,
-          home: { ...matchForm.home, [name]: value },
-        });
-      }
-    } else if (team === "away") {
-      if (stats.includes(name)) {
-        setMatchForm({
-          ...matchForm,
-          away: {
-            ...matchForm.away,
-            stats: { ...matchForm.away.stats, [name]: value },
-          },
-        });
-      } else {
-        setMatchForm({
-          ...matchForm,
-          away: { ...matchForm.away, [name]: value },
-        });
-      }
-    }
+    const team = teams.find((el) => el.id === value);
+    if (!team) return;
+
+    const currentTeamData = data[teamOption];
+
+    const updatedTeam =
+      name === teamOption
+        ? {
+            ...currentTeamData,
+            id: value,
+            logo: team.logo,
+            shortName: team.shortName,
+            longName: team.longName,
+          }
+        : {
+            ...currentTeamData,
+            [name]: value,
+          };
+
+    setData({
+      ...data,
+      [teamOption]: updatedTeam,
+    });
   };
 
-  //   const competitions = [...currentLeagues, ...currentMixedCups];
-  const handleMatchFormOnChange = (e: {
-    target: { name: string; value: any };
-  }) => {
+  const handleOnChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-    if (name === "mvp" || name === "aboutMvp") {
-      setMatchForm({
-        ...matchForm,
-        report: { ...matchForm.report, [name]: value },
-      });
-    } else if (name === "keyPlayer" || name === "aboutKeyPlayer") {
-      setMatchForm({
-        ...matchForm,
-        preview: { ...matchForm.preview, [name]: value },
-      });
-    } else if (name === "coach" || name === "role") {
-      setMatchForm({
-        ...matchForm,
-        coach: { ...matchForm.coach, [name]: value },
-      });
-    } else {
-      setMatchForm({ ...matchForm, [name]: value });
+
+    const goalMap: Record<string, "homeTeam" | "awayTeam"> = {
+      "home goals": "homeTeam",
+      "away goals": "awayTeam",
+    };
+
+    if (goalMap[name]) {
+      handleTeam("goals", value, goalMap[name]);
+      return;
     }
+
+    if (name === "homeTeam" || name === "awayTeam") {
+      handleTeam(name, value, name);
+      return;
+    }
+
+    if (name === "coach" || name === "coachRole") {
+      if (name === "coach") {
+        setData({
+          ...data,
+          coach: {
+            ...data.coach,
+            name: value,
+          },
+        });
+      } else if (name === "coachRole") {
+        setData({
+          ...data,
+          coach: {
+            name: data.coach?.name || "",
+            role: value as "HEAD" | "ASSISTANT" | null | undefined,
+          },
+        });
+      }
+      return;
+    }
+
+    setData({
+      ...data,
+      [name]: value,
+    });
   };
+
+  function updateFormDataWithJSON(
+    formData: FormData,
+    data: Record<string, any>
+  ) {
+    const keys = [
+      "review",
+      "report",
+      "lineup",
+      "substitutes",
+      "coach",
+      "homeTeam",
+      "awayTeam",
+      "scorers",
+    ];
+
+    keys.forEach((key) => {
+      formData.delete(key);
+      formData.append(key, JSON.stringify(data[key]));
+    });
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(matchForm);
+    const formData = objectToFormData(data);
+    formData.delete("lineup[0]");
+    formData.delete("substitutes[0]");
+    updateFormDataWithJSON(formData, data);
+
+    //  if (position) {
+    //       startTransition(async () => {
+    //         const res = await updatePosition(
+    //           position.id,
+    //           formData,
+    //           position.shortName
+    //         );
+    //         if (res.status === "success" && res.data) {
+    //           mutationToast("player Position", res.data.longName, "update");
+    //         }
+    //         if (res.status === "error") {
+    //           errorToast(res.message);
+    //         }
+    //       });
+    //     } else {
+    startTransition(async () => {
+      const res = await createMatch(formData);
+
+      if (res.status === "success" && res.data) {
+        mutationToast(
+          "Match",
+          res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
+          "create"
+        );
+        formRef.current?.reset();
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
+    // }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} ref={formRef}>
       <HStack justifyContent={"flex-end"} mb={4}>
-        <FormBtn>{match ? "Update Match" : "Create Match"}</FormBtn>
+        <FormBtn disabled={isPending}>
+          {getButtonStatus(null, "Match", isPending)}
+        </FormBtn>
       </HStack>
       <Stack
         flexDirection={{ base: "column" }}
@@ -236,56 +365,58 @@ function MatchForm({ match }: { match?: IMatch }) {
         mb={"5"}
         w={"full"}
       >
-        <Field.Root>
-          <FormLabel>Teams</FormLabel>
-          <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
-            <CustomSelect
-              name="team_id"
-              description="team"
-              id="home-team"
-              options={teamOptions}
-              selectedValue={matchForm.home.team_id}
-              handleOnChange={(e) => handleMatchTeamChange(e, "home")}
-            />
-            <HStack align={"center"}>
-              <Input
-                name="goals"
-                type="number"
-                css={inputStyles}
-                placeholder="-"
-                id="home-goals"
-                variant="subtle"
-                maxW={"5"}
-                textAlign={"center"}
-                value={matchForm.home.goals || ""}
-                onChange={(e) => handleMatchTeamChange(e, "home")}
+        {data.homeTeam && data.awayTeam && (
+          <Field.Root>
+            <FormLabel>Teams</FormLabel>
+            <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
+              <CustomSelect
+                name="homeTeam"
+                description="Home Team"
+                id="homeTeam"
+                options={teamOptions}
+                selectedValue={data.homeTeam.id}
+                handleOnChange={handleOnChange}
               />
-              <Text color={"text_md"} textTransform={"uppercase"}>
-                VS
-              </Text>
-              <Input
-                name="goals"
-                type="number"
-                css={inputStyles}
-                placeholder="-"
-                id="away-goals"
-                variant="subtle"
-                maxW={"5"}
-                textAlign={"center"}
-                value={matchForm.away.goals || ""}
-                onChange={(e) => handleMatchTeamChange(e, "away")}
+              <HStack align={"center"}>
+                <Input
+                  name="home goals"
+                  type="number"
+                  css={inputStyles}
+                  placeholder="-"
+                  id="homeGoals"
+                  variant="subtle"
+                  maxW={"5"}
+                  textAlign={"center"}
+                  value={data.homeTeam.goals || ""}
+                  onChange={handleOnChange}
+                />
+                <Text color={"text_md"} textTransform={"uppercase"}>
+                  VS
+                </Text>
+                <Input
+                  name="away goals"
+                  type="number"
+                  css={inputStyles}
+                  placeholder="-"
+                  id="awayGoals"
+                  variant="subtle"
+                  maxW={"5"}
+                  textAlign={"center"}
+                  value={data.awayTeam.goals || ""}
+                  onChange={handleOnChange}
+                />
+              </HStack>
+              <CustomSelect
+                name="awayTeam"
+                description="Away Team"
+                id="awayTeam"
+                options={teamOptions}
+                selectedValue={data.awayTeam.id}
+                handleOnChange={handleOnChange}
               />
             </HStack>
-            <CustomSelect
-              name="team_id"
-              description="team"
-              id="away-team"
-              options={teamOptions}
-              selectedValue={matchForm.away.team_id}
-              handleOnChange={(e) => handleMatchTeamChange(e, "away")}
-            />
-          </HStack>
-        </Field.Root>
+          </Field.Root>
+        )}
       </Stack>
       <Grid
         gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
@@ -302,8 +433,8 @@ function MatchForm({ match }: { match?: IMatch }) {
               type="date"
               variant={"outline"}
               color={"text_lg"}
-              value={matchForm.date}
-              onChange={handleMatchFormOnChange}
+              value={data.date}
+              onChange={handleOnChange}
             />
           </Field.Root>
         </GridItem>
@@ -317,8 +448,8 @@ function MatchForm({ match }: { match?: IMatch }) {
               type="time"
               variant={"outline"}
               color={"text_lg"}
-              value={matchForm.time}
-              onChange={handleMatchFormOnChange}
+              value={data.time}
+              onChange={handleOnChange}
             />
           </Field.Root>
         </GridItem>
@@ -332,21 +463,32 @@ function MatchForm({ match }: { match?: IMatch }) {
               type="text"
               variant={"outline"}
               color={"text_lg"}
-              value={matchForm.venue}
-              onChange={handleMatchFormOnChange}
+              value={data.venue}
+              onChange={handleOnChange}
             />
           </Field.Root>
         </GridItem>
         <GridItem>
           <Field.Root>
             <FormLabel>Competition</FormLabel>
-            <CustomSelect
-              name="competition_id"
-              description="competition"
-              options={competitionOptions}
-              selectedValue={matchForm.competition_id}
-              handleOnChange={handleMatchFormOnChange}
-            />
+            {competitions && (
+              <CustomSelect
+                name="competition"
+                description="competition"
+                options={competitionOptions}
+                selectedValue={competition ? competition.id : ""}
+                handleOnChange={(e: {
+                  target: { name: string; value: string };
+                }) => {
+                  const { value } = e.target;
+                  const competition = competitions.find(
+                    (el) => el.id === value
+                  );
+                  if (!competition) return;
+                  setCompetition(competition);
+                }}
+              />
+            )}
           </Field.Root>
         </GridItem>
         <GridItem>
@@ -355,45 +497,30 @@ function MatchForm({ match }: { match?: IMatch }) {
             <CustomSelect
               name="status"
               description="status"
-              options={["upcoming", "finished", "canceled", "abandoned"].map(
-                (el) => {
-                  return {
-                    label: el,
-                    value: el,
-                  };
-                }
-              )}
-              selectedValue={matchForm.status}
-              handleOnChange={handleMatchFormOnChange}
+              options={statuses.map((el) => {
+                return {
+                  label: el,
+                  value: el,
+                };
+              })}
+              selectedValue={data.status || ""}
+              handleOnChange={handleOnChange}
             />
           </Field.Root>
         </GridItem>
         <GridItem>
-          {selectedCompetition &&
-            (selectedLeague ||
-              (selectedMixedCup &&
-                selectedMixedCup.mainStatus === "pending")) && (
-              <MatchRound
-                handleMatchFormOnChange={handleMatchFormOnChange}
-                matchForm={matchForm}
-              />
-            )}
-          {selectedCompetition &&
-            selectedMixedCup &&
-            selectedMixedCup.mainStatus === "completed" && (
+          <Field.Root>
+            <FormLabel>Competition Season</FormLabel>
+            {competition && competitionSeasonOptions && (
               <CustomSelect
-                name="round"
-                description="round"
-                options={rounds.map((el) => {
-                  return {
-                    label: el,
-                    value: el,
-                  };
-                })}
-                selectedValue={matchForm.round}
-                handleOnChange={handleMatchFormOnChange}
+                name="competitionSeasonId"
+                description="season"
+                options={competitionSeasonOptions}
+                selectedValue={data.competitionSeasonId as string}
+                handleOnChange={handleOnChange}
               />
             )}
+          </Field.Root>
         </GridItem>
       </Grid>
       <Box my={"5"}>
@@ -402,40 +529,49 @@ function MatchForm({ match }: { match?: IMatch }) {
             <CustomTabList>
               <>
                 {tabs.map((el) => {
-                  return <CustomTabTrigger label={el} value={el} key={el} />;
+                  return (
+                    <CustomTabTrigger
+                      label={el}
+                      value={el}
+                      key={el}
+                      disabled={resultTabs.includes(el) && method !== "UPDATE"}
+                    />
+                  );
                 })}
               </>
             </CustomTabList>
             <CustomTabContent value={"preview"}>
               <MatchPreview
-                matchForm={matchForm}
-                setMatchForm={setMatchForm}
+                matchForm={data}
+                setMatchForm={setData}
                 stackStyles={stackStyles}
-                handleOnChange={handleMatchFormOnChange}
-                handleMatchTeamChange={handleMatchTeamChange}
+                handleOnChange={handleOnChange}
+                players={players}
               />
             </CustomTabContent>
             <CustomTabContent value={"report"}>
               <MatchReport
-                matchForm={matchForm}
-                setMatchForm={setMatchForm}
+                matchForm={data}
+                setMatchForm={setData}
                 stackStyles={stackStyles}
-                handleOnChange={handleMatchFormOnChange}
+                handleOnChange={handleOnChange}
+                players={players}
               />
             </CustomTabContent>
             <CustomTabContent value={"lineup"}>
               <Lineup
                 stackStyles={stackStyles}
-                matchForm={matchForm}
-                setMatchForm={setMatchForm}
-                handleMatchFormOnChange={handleMatchFormOnChange}
+                matchForm={data}
+                setMatchForm={setData}
+                handleOnChange={handleOnChange}
+                players={players}
               />
             </CustomTabContent>
             <CustomTabContent value={"stats"}>
               <MatchStats
                 stackStyles={stackStyles}
-                matchForm={matchForm}
-                handleMatchTeamChange={handleMatchTeamChange}
+                matchForm={data}
+                setMatchForm={setData}
               />
             </CustomTabContent>
           </>

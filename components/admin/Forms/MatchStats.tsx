@@ -3,66 +3,103 @@ import { Box, Separator, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
 import StatInput from "./StatInput";
 import FormLabel from "./FormLabel";
+import { Schema } from "@/amplify/data/resource";
 
+type IMatchI = Pick<
+  Schema["Match"]["type"],
+  // | "id"
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+>;
 function MatchStats({
   stackStyles,
   matchForm,
-  handleMatchTeamChange,
+  setMatchForm,
 }: {
   stackStyles: IStackStyles;
-  matchForm: IMatch;
-  handleMatchTeamChange: (
-    e: { target: { name: string; value: string | number } },
-    team: "home" | "away"
-  ) => void;
+  matchForm: IMatchI;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
 }) {
+  const handleTeam = (
+    e: { target: { name: string; value: any } },
+    team: "home" | "away"
+  ) => {
+    const { name, value } = e.target;
+    const teamKey = team === "home" ? "homeTeam" : "awayTeam";
+
+    setMatchForm((prevForm) => ({
+      ...prevForm,
+      [teamKey]: {
+        ...prevForm[teamKey],
+        [name]: value,
+      },
+    }));
+  };
+
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Match Stats</FormLabel>
       <Box>
         <FormLabel as="Text">Home Team</FormLabel>
-        <SimpleGrid
-          columns={{ base: 2, md: 3, lg: 6 }}
-          gap={"4"}
-          alignItems={"center"}
-        >
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.passes}
-            name="passes"
-          />
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.offsides}
-            name="offsides"
-          />
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.corners}
-            name="corners"
-          />
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.shots}
-            name="shots"
-          />
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.yellows}
-            name="yellows"
-          />
-          <StatInput
-            team="home"
-            onChange={handleMatchTeamChange}
-            value={matchForm.home.stats.reds}
-            name="reds"
-          />
-        </SimpleGrid>
+        {matchForm.homeTeam && (
+          <SimpleGrid
+            columns={{ base: 2, md: 3, lg: 6 }}
+            gap={"4"}
+            alignItems={"center"}
+          >
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.passes || ""}
+              name="passes"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.offsides || ""}
+              name="offsides"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.corners || ""}
+              name="corners"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.shots || ""}
+              name="shots"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.yellows || ""}
+              name="yellows"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.reds || ""}
+              name="reds"
+            />
+          </SimpleGrid>
+        )}
       </Box>
       <Separator
         my={"5"}
@@ -73,48 +110,50 @@ function MatchStats({
       />
       <Box>
         <FormLabel as="Text">Away Team</FormLabel>
-        <SimpleGrid
-          gap={"4"}
-          alignItems={"center"}
-          columns={{ base: 2, md: 3, lg: 6 }}
-        >
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.passes}
-            name="passes"
-          />
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.offsides}
-            name="offsides"
-          />
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.corners}
-            name="corners"
-          />
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.shots}
-            name="shots"
-          />
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.yellows}
-            name="yellows"
-          />
-          <StatInput
-            team="away"
-            onChange={handleMatchTeamChange}
-            value={matchForm.away.stats.reds}
-            name="reds"
-          />
-        </SimpleGrid>
+        {matchForm.awayTeam && (
+          <SimpleGrid
+            gap={"4"}
+            alignItems={"center"}
+            columns={{ base: 2, md: 3, lg: 6 }}
+          >
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.passes || ""}
+              name="passes"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.offsides || ""}
+              name="offsides"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.corners || ""}
+              name="corners"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.shots || ""}
+              name="shots"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.yellows || ""}
+              name="yellows"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.reds || ""}
+              name="reds"
+            />
+          </SimpleGrid>
+        )}
       </Box>
     </Box>
   );

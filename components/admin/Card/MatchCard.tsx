@@ -9,6 +9,14 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { IMatch } from "@/lib/definitions";
 
+function getFirstLetter(str: string): string {
+  return str
+    .split(" ")
+    .filter((word) => word.length > 0)
+    .map((word) => word[0])
+    .join("");
+}
+
 function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
   return (
     <Card.Root border={"1px solid"} borderColor={"neutral"} w={"full"}>
@@ -25,9 +33,13 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
           h={"full"}
           px={"10px"}
         >
-          {match.competition && (
+          {match.competitionSeason && (
             <HStack align={"center"}>
-              <MatchIcon size="md" radius={true} src={match.competition.logo} />
+              <MatchIcon
+                size="xl"
+                radius={true}
+                src={match.competitionSeason.logo}
+              />
               <Text
                 color={"text_md"}
                 fontWeight={"medium"}
@@ -35,7 +47,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
                 ml={"sm"}
                 textTransform={"uppercase"}
               >
-                {match.competition.short_name}
+                {getFirstLetter(match.competitionSeason.name)}
               </Text>
             </HStack>
           )}
@@ -67,24 +79,37 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
         >
           {match.status}
         </Text>
-        <MatchDetails />
-        {match.home.team && match.away.team && (
-          <HStack justify={"space-between"}>
+        <MatchDetails time={match.time} venue={match.venue} />
+        {match.homeTeam && match.awayTeam && (
+          <HStack
+            justify={"space-between"}
+            maxW={"230px"}
+            m={"0 auto"}
+            w={"full"}
+          >
             <MatchTeam
-              short_name={match.home.team?.shortName}
-              long_name={match.home.team?.longName}
+              short_name={match.homeTeam.shortName}
+              long_name={match.homeTeam.longName}
               team="home"
-              team_icon={match.home.team.logo}
+              team_icon={match.homeTeam.logo}
             />
-            <MatchScores
-              scores={{ home: match.home.goals, away: match.away.goals }}
-              status={match.status}
-            />
+            {match.homeTeam.goals && match.awayTeam.goals ? (
+              <MatchScores
+                scores={{
+                  home: +match.homeTeam.goals,
+                  away: +match.awayTeam.goals,
+                }}
+              />
+            ) : (
+              <Text fontSize={"xl"} fontWeight={"bold"} color={"error"}>
+                VS
+              </Text>
+            )}
             <MatchTeam
-              short_name={match.away.team?.shortName}
-              long_name={match.away.team?.longName}
+              short_name={match.awayTeam.shortName}
+              long_name={match.awayTeam.longName}
               team="away"
-              team_icon={match.away.team.logo}
+              team_icon={match.awayTeam.logo}
             />
           </HStack>
         )}
