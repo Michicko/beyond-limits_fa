@@ -36,7 +36,6 @@ function CupContent({
       const res = await createCup(formData);
 
       if (res.status === "success" && res.data) {
-        console.log("goin to navigate");
         mutationToast("cup", res.data.competitionNameSeason, "create");
         formRef.current?.reset();
         setCupId(res.data.id);

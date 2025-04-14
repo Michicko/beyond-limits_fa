@@ -19,6 +19,7 @@ async function page({ params }: { params: { matchId: string } }) {
         "competitionSeason.logo",
         "competitionSeason.name",
         "competitionSeason.season",
+        "competitionSeason.competitionId",
         "date",
         "time",
         "venue",

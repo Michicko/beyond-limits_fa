@@ -8,6 +8,8 @@ import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { IMatch } from "@/lib/definitions";
+import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { deleteMatch } from "@/app/_actions/actions";
 
 function getFirstLetter(str: string): string {
   return str
@@ -61,7 +63,13 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
                   <CustomMenuItem label="Edit" showBorder={true}>
                     <Link href={`/cp/matches/${match.id}/edit`}>Edit</Link>
                   </CustomMenuItem>
-                  <CustomMenuItem label="Delete" showBorder={false} />
+                  {match.id && (
+                    <DeleteBtn
+                      id={match.id}
+                      name="match"
+                      onDelete={deleteMatch}
+                    />
+                  )}
                 </>
               </CustomMenu>
             )}

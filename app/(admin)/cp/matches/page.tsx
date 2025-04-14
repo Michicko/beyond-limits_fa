@@ -44,8 +44,6 @@ async function Matches() {
     ],
   });
 
-  console.log(matches);
-
   return (
     <>
       <PageTitle pageTitle="Matches" />

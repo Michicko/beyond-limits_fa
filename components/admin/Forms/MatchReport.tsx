@@ -19,7 +19,7 @@ interface IPlayer {
 
 type IMatchI = Pick<
   Schema["Match"]["type"],
-  // | "id"
+  | "id"
   | "aboutKeyPlayer"
   | "aboutMvp"
   | "awayTeam"

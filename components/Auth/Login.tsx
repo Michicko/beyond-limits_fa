@@ -9,7 +9,6 @@ import AuthClient from "./AuthClient";
 function Login({ user }: { user?: AuthUser }) {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirectTo") || "/cp/dashboard";
-  console.log(user, redirectPath);
 
   useEffect(() => {
     if (user) {

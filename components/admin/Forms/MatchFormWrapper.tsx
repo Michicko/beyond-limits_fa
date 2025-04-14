@@ -6,7 +6,7 @@ import { Schema } from "@/amplify/data/resource";
 
 type IMatchI = Pick<
   Schema["Match"]["type"],
-  // | "id"
+  | "id"
   | "aboutKeyPlayer"
   | "aboutMvp"
   | "awayTeam"
@@ -37,6 +37,7 @@ async function MatchFormWrapper({
     await cookiesClient.models.Competition.list({
       selectionSet: ["id", "longName", "competitionSeasons.*"],
     });
+
   const { data: teams, errors: teamsErros } =
     await cookiesClient.models.Team.list({
       selectionSet: ["id", "longName", "shortName", "logo"],
@@ -47,8 +48,6 @@ async function MatchFormWrapper({
       selectionSet: ["id", "firstname", "lastname", "homeKit", "squadNo"],
     });
   const statuses = cookiesClient.enums.MatchStatus.values();
-
-  console.log(statuses);
 
   return errors ? (
     <CustomAlert

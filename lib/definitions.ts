@@ -421,7 +421,7 @@ export interface IMatch {
     yellows: Nullable<string>;
     reds: Nullable<string>;
   } | null;
-  scorers: [];
+  scorers: any;
 }
 
 // export interface IMatch {

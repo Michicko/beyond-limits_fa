@@ -24,7 +24,7 @@ import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
 import { getButtonStatus, objectToFormData } from "@/lib/helpers";
 import { JSONContent } from "@tiptap/react";
-import { createMatch } from "@/app/_actions/actions";
+import { createMatch, updateMatch } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { Schema } from "@/amplify/data/resource";
 
@@ -49,13 +49,6 @@ interface ICompetition {
   competitionSeasons: ICompetitionSeason[];
 }
 
-// Scorer: a.customType({
-//   name: a.string().required(),
-//   time: a.string().required(),
-//   goalType: a.ref("GoalType"),
-//   isOpponent: a.boolean(),
-// }),
-
 interface IPlayer {
   id: string;
   firstname: string;
@@ -64,14 +57,9 @@ interface IPlayer {
   homeKit: Nullable<string>;
 }
 
-// type Coach = {
-//   name: string;
-//   role: "HEAD" | "ASSISTANT" | null;
-// };
-
 type IMatchI = Pick<
   Schema["Match"]["type"],
-  // | "id"
+  | "id"
   | "aboutKeyPlayer"
   | "aboutMvp"
   | "awayTeam"
@@ -123,8 +111,6 @@ function MatchForm({
     },
   };
 
-  console.log(match);
-
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { errorToast, mutationToast } = useToast();
@@ -139,7 +125,6 @@ function MatchForm({
 
   const getTeamStats = (team: "homeTeam" | "awayTeam") => {
     const teamData = match?.[team];
-
     return {
       id: teamData?.id || "",
       logo: teamData?.logo || "",
@@ -156,6 +141,7 @@ function MatchForm({
   };
 
   const [data, setData] = useState<IMatchI>({
+    id: match?.id || "",
     competitionSeasonId: match?.competitionSeasonId || "",
     date: match?.date || "",
     time: match?.time || "",
@@ -213,50 +199,54 @@ function MatchForm({
       };
     });
 
-  console.log(competitions);
-
   const handleTeam = (
     name: string,
     value: string,
     teamOption: "homeTeam" | "awayTeam"
   ) => {
-    const team = teams.find((el) => el.id === value);
-    if (!team) return;
-
     const currentTeamData = data[teamOption];
 
-    const updatedTeam =
-      name === teamOption
-        ? {
-            ...currentTeamData,
-            id: value,
-            logo: team.logo,
-            shortName: team.shortName,
-            longName: team.longName,
-          }
-        : {
-            ...currentTeamData,
-            [name]: value,
-          };
+    // If both teams have been selected (i.e., they have IDs)
+    if (data.homeTeam?.id && data.awayTeam?.id) {
+      setData({
+        ...data,
+        [teamOption]: {
+          ...currentTeamData,
+          [name]: value,
+        },
+      });
+      return;
+    }
 
+    // If the team is not yet fully set, fetch its full data from `teams`
+    if (name === "homeTeam" || name === "awayTeam") {
+      const team = teams.find((el) => el.id === value);
+      if (!team) return;
+
+      setData({
+        ...data,
+        [teamOption]: {
+          id: team.id,
+          logo: team.logo,
+          shortName: team.shortName,
+          longName: team.longName,
+        },
+      });
+      return;
+    }
+
+    // Handle updating other properties if ID is not yet set
     setData({
       ...data,
-      [teamOption]: updatedTeam,
+      [teamOption]: {
+        ...currentTeamData,
+        [name]: value,
+      },
     });
   };
 
   const handleOnChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-
-    const goalMap: Record<string, "homeTeam" | "awayTeam"> = {
-      "home goals": "homeTeam",
-      "away goals": "awayTeam",
-    };
-
-    if (goalMap[name]) {
-      handleTeam("goals", value, goalMap[name]);
-      return;
-    }
 
     if (name === "homeTeam" || name === "awayTeam") {
       handleTeam(name, value, name);
@@ -314,48 +304,50 @@ function MatchForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = objectToFormData(data);
+    updateFormDataWithJSON(formData, data);
     formData.delete("lineup[0]");
     formData.delete("substitutes[0]");
-    updateFormDataWithJSON(formData, data);
+    formData.delete("scorers[0]");
 
-    //  if (position) {
-    //       startTransition(async () => {
-    //         const res = await updatePosition(
-    //           position.id,
-    //           formData,
-    //           position.shortName
-    //         );
-    //         if (res.status === "success" && res.data) {
-    //           mutationToast("player Position", res.data.longName, "update");
-    //         }
-    //         if (res.status === "error") {
-    //           errorToast(res.message);
-    //         }
-    //       });
-    //     } else {
-    startTransition(async () => {
-      const res = await createMatch(formData);
+    if (match && method === "UPDATE") {
+      startTransition(async () => {
+        const res = await updateMatch(match.id, formData);
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "Match",
+            res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
+            "update"
+          );
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
+    } else {
+      formData.delete("id");
+      startTransition(async () => {
+        const res = await createMatch(formData);
 
-      if (res.status === "success" && res.data) {
-        mutationToast(
-          "Match",
-          res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
-          "create"
-        );
-        formRef.current?.reset();
-      }
-      if (res.status === "error") {
-        errorToast(res.message);
-      }
-    });
-    // }
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "Match",
+            res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
+            "create"
+          );
+          formRef.current?.reset();
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
       <HStack justifyContent={"flex-end"} mb={4}>
         <FormBtn disabled={isPending}>
-          {getButtonStatus(null, "Match", isPending)}
+          {getButtonStatus(match, "Match", isPending)}
         </FormBtn>
       </HStack>
       <Stack
@@ -379,7 +371,7 @@ function MatchForm({
               />
               <HStack align={"center"}>
                 <Input
-                  name="home goals"
+                  name="goals"
                   type="number"
                   css={inputStyles}
                   placeholder="-"
@@ -388,13 +380,15 @@ function MatchForm({
                   maxW={"5"}
                   textAlign={"center"}
                   value={data.homeTeam.goals || ""}
-                  onChange={handleOnChange}
+                  onChange={(e) => {
+                    handleTeam(e.target.name, e.target.value, "homeTeam");
+                  }}
                 />
                 <Text color={"text_md"} textTransform={"uppercase"}>
                   VS
                 </Text>
                 <Input
-                  name="away goals"
+                  name="goals"
                   type="number"
                   css={inputStyles}
                   placeholder="-"
@@ -403,7 +397,9 @@ function MatchForm({
                   maxW={"5"}
                   textAlign={"center"}
                   value={data.awayTeam.goals || ""}
-                  onChange={handleOnChange}
+                  onChange={(e) => {
+                    handleTeam(e.target.name, e.target.value, "awayTeam");
+                  }}
                 />
               </HStack>
               <CustomSelect

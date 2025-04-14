@@ -80,18 +80,18 @@ function GoalScorers({
 
   const addScorer = () => {
     const newScorer = { ...scorer, id: uuidv4() };
-    const matchScorers = matchForm.scorers ? (matchForm.scorers as []) : [];
-    const tempScorers = [...matchScorers, newScorer];
-    setMatchForm({ ...matchForm, scorers: JSON.stringify(tempScorers) });
+    const matchScorers = matchForm.scorers ? matchForm.scorers : [];
+    const tempScorers = [...(matchScorers as []), newScorer];
+    setMatchForm({ ...matchForm, scorers: tempScorers });
     clearScorer();
   };
 
   const removeScorer = (id: string) => {
-    const matchScorers = matchForm.scorers ? (matchForm.scorers as []) : [];
-    const tempScorers = matchScorers.filter(
+    const matchScorers = matchForm.scorers ? matchForm.scorers : [];
+    const tempScorers = (matchScorers as []).filter(
       (scorer: IMatchScorer) => scorer.id !== id
     );
-    setMatchForm({ ...matchForm, scorers: JSON.stringify(tempScorers) });
+    setMatchForm({ ...matchForm, scorers: tempScorers });
   };
 
   return (

@@ -1,6 +1,6 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
-import { deleteEntity } from "@/lib/factoryFunctions";
+import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 
@@ -861,7 +861,61 @@ export async function createStandingRow(formData: FormData) {
   }
 }
 
-export async function createMatch(formData: FormData) {
+// export async function createMatch(formData: FormData) {
+//   const body = formDataToObject<Match>(formData);
+//   body.lineup = JSON.parse(formData.get("lineup") as string);
+//   body.coach = JSON.parse(formData.get("coach") as string);
+//   body.substitutes = JSON.parse(formData.get("substitutes") as string);
+//   body.homeTeam = JSON.parse(formData.get("homeTeam") as string);
+//   body.awayTeam = JSON.parse(formData.get("awayTeam") as string);
+
+//   try {
+//     const { data, errors } = await cookiesClient.models.Match.create(body, {
+//       selectionSet: ["id", "homeTeam.*", "awayTeam.*"],
+//     });
+
+//     if (errors) {
+//       return {
+//         status: "error",
+//         message: errors[0].message || "An unknown error occurred",
+//       };
+//     }
+
+//     revalidatePath("/cp/matches");
+//     return {
+//       status: "success",
+//       data,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       status: "error",
+//       message: "An unknown error occurred",
+//     };
+//   }
+// }
+
+export const createMatch = async (formData: FormData) => {
+  const base = formDataToObject<Match>(formData);
+  const matchCreator = createEntityFactory<Match, Match>();
+
+  return await matchCreator({
+    modelName: "Match",
+    input: base,
+    selectionSet: ["id", "homeTeam.*", "awayTeam.*"],
+    pathToRevalidate: "/cp/matches",
+    preprocess: (input) => ({
+      ...input,
+      lineup: JSON.parse(formData.get("lineup") as string),
+      coach: JSON.parse(formData.get("coach") as string),
+      substitutes: JSON.parse(formData.get("substitutes") as string),
+      homeTeam: JSON.parse(formData.get("homeTeam") as string),
+      awayTeam: JSON.parse(formData.get("awayTeam") as string),
+    }),
+  });
+};
+
+export async function updateMatch(id: string, formData: FormData) {
   const body = formDataToObject<Match>(formData);
   body.lineup = JSON.parse(formData.get("lineup") as string);
   body.coach = JSON.parse(formData.get("coach") as string);
@@ -870,11 +924,12 @@ export async function createMatch(formData: FormData) {
   body.awayTeam = JSON.parse(formData.get("awayTeam") as string);
 
   try {
-    const { data, errors } = await cookiesClient.models.Match.create(body, {
+    const { data, errors } = await cookiesClient.models.Match.update(body, {
       selectionSet: ["id", "homeTeam.*", "awayTeam.*"],
     });
 
     if (errors) {
+      console.log(errors);
       return {
         status: "error",
         message: errors[0].message || "An unknown error occurred",
@@ -893,4 +948,12 @@ export async function createMatch(formData: FormData) {
       message: "An unknown error occurred",
     };
   }
+}
+
+export async function deleteMatch(id: string) {
+  return await deleteEntity({
+    id,
+    modelName: "Match",
+    pathToRevalidate: "/cp/trophies",
+  });
 }
