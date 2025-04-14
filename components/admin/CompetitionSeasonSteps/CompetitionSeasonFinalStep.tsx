@@ -57,7 +57,6 @@ function CompetitionSeasonFinalStep({
       const res = await createCompetitionSeason(formData);
 
       if (res.status === "success" && res.data) {
-        console.log("goin to navigate");
         mutationToast(
           "competition season",
           res.data.name + res.data.name,

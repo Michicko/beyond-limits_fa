@@ -120,48 +120,34 @@ const checkUniqueArticleTitle = async (title: string) => {
   return existing;
 };
 
-export async function createPosition(formData: FormData) {
-  const body = formDataToObject<PlayerPosition>(formData);
-  body.attributes = JSON.parse(formData.get("attributes") as string);
+export const createPosition = async (formData: FormData) => {
+  const base = formDataToObject<PlayerPosition>(formData);
+  const positionCreator = createEntityFactory<PlayerPosition, PlayerPosition>();
 
-  try {
-    const uniqueShortName = await checkPositionUniqueShortName(body.shortName);
-
-    if (uniqueShortName && uniqueShortName.length > 0) {
-      return {
-        status: "error",
-        message: `shortName "${body.shortName}" already exists.`,
-      };
-    }
-
-    const { data, errors } = await cookiesClient.models.PlayerPosition.create(
-      body,
-      {
-        selectionSet: ["id", "shortName", "longName", "createdAt"],
+  return await positionCreator({
+    modelName: "PlayerPosition",
+    input: base,
+    selectionSet: ["id", "shortName", "longName", "createdAt"],
+    pathToRevalidate: "/cp/positions",
+    preprocess: (input) => ({
+      ...input,
+      attributes: JSON.parse(formData.get("attributes") as string),
+    }),
+    validate: async (input) => {
+      const uniqueShortName = await checkPositionUniqueShortName(
+        input.shortName
+      );
+      if (uniqueShortName && uniqueShortName.length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `shortName "${input.shortName}" already exists.`,
+        };
       }
-    );
-
-    if (errors) {
-      console.log(errors);
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
-
-    // revalidatePath("/cp/positions");
-    return {
-      status: "success",
-      data,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      status: "error",
-      message: "An unknown error occurred",
-    };
-  }
-}
+      return { valid: true };
+    },
+  });
+};
 
 export async function updatePosition(
   id: string,
@@ -209,33 +195,27 @@ export async function deletePosition(id: string) {
   });
 }
 
-export async function createSeason(formData: FormData) {
-  const body = formDataToObject<Season>(formData);
+export const createSeason = async (formData: FormData) => {
+  const base = formDataToObject<Season>(formData);
+  const seasonCreator = createEntityFactory<Season, Season>();
 
-  if ((await checkUniqueSeason(body.season)).length > 0) {
-    return {
-      status: "error",
-      message: `season "${body.season}" already exists.`,
-    };
-  }
-
-  const { data, errors } = await cookiesClient.models.Season.create(body, {
+  return await seasonCreator({
+    modelName: "Season",
+    input: base,
     selectionSet: ["id", "season", "createdAt"],
+    pathToRevalidate: "/cp/seasons",
+    validate: async (input) => {
+      if ((await checkUniqueSeason(input.season)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `season "${input.season}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
   });
-
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
-
-  revalidatePath("/cp/seasons");
-  return {
-    status: "success",
-    data,
-  };
-}
+};
 
 export async function updateSeason(
   id: string,
@@ -253,7 +233,7 @@ export async function updateSeason(
     }
   }
 
-  const { data, errors } = await cookiesClient.models.Season.create(
+  const { data, errors } = await cookiesClient.models.Season.update(
     { ...body, id },
     {
       selectionSet: ["id", "season", "createdAt"],
@@ -282,33 +262,55 @@ export async function deleteSeason(id: string) {
   });
 }
 
-export async function createCompetition(formData: FormData) {
-  const body = formDataToObject<Competition>(formData);
+export const createCompetition = async (formData: FormData) => {
+  const base = formDataToObject<Competition>(formData);
+  const competitionCreator = createEntityFactory<Competition, Competition>();
 
-  if ((await checkUniqueCompetitionName(body.longName)).length > 0) {
-    return {
-      status: "error",
-      message: `longName "${body.longName}" already exists.`,
-    };
-  }
-
-  const { data, errors } = await cookiesClient.models.Competition.create(body, {
+  return await competitionCreator({
+    modelName: "Competition",
+    input: base,
     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
+    pathToRevalidate: "/cp/competitions",
+    validate: async (input) => {
+      if ((await checkUniqueCompetitionName(input.longName)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `longName "${input.longName}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
   });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createCompetition(formData: FormData) {
+//   const body = formDataToObject<Competition>(formData);
 
-  revalidatePath("/cp/competitions");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   if ((await checkUniqueCompetitionName(body.longName)).length > 0) {
+//     return {
+//       status: "error",
+//       message: `longName "${body.longName}" already exists.`,
+//     };
+//   }
+
+//   const { data, errors } = await cookiesClient.models.Competition.create(body, {
+//     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
+//   });
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/competitions");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function updateCompetition(
   id: string,
@@ -354,33 +356,55 @@ export async function deleteCompetition(id: string) {
   });
 }
 
-export async function createTeam(formData: FormData) {
-  const body = formDataToObject<Team>(formData);
+export const createTeam = async (formData: FormData) => {
+  const base = formDataToObject<Team>(formData);
+  const teamCreator = createEntityFactory<Team, Team>();
 
-  if ((await checkUniqueTeamName(body.longName)).length > 0) {
-    return {
-      status: "error",
-      message: `longName "${body.longName}" already exists.`,
-    };
-  }
-
-  const { data, errors } = await cookiesClient.models.Team.create(body, {
+  return await teamCreator({
+    modelName: "Team",
+    input: base,
     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
+    pathToRevalidate: "/cp/teams",
+    validate: async (input) => {
+      if ((await checkUniqueTeamName(input.longName)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `longName "${input.longName}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
   });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createTeam(formData: FormData) {
+//   const body = formDataToObject<Team>(formData);
 
-  revalidatePath("/cp/teams");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   if ((await checkUniqueTeamName(body.longName)).length > 0) {
+//     return {
+//       status: "error",
+//       message: `longName "${body.longName}" already exists.`,
+//     };
+//   }
+
+//   const { data, errors } = await cookiesClient.models.Team.create(body, {
+//     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
+//   });
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/teams");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function updateTeam(
   id: string,
@@ -427,26 +451,38 @@ export async function deleteTeam(id: string) {
   });
 }
 
-export async function createPlayer(formData: FormData) {
-  const body = formDataToObject<Player>(formData);
+export const createPlayer = async (formData: FormData) => {
+  const base = formDataToObject<Player>(formData);
+  const playerCreator = createEntityFactory<Player, Player>();
 
-  const { data, errors } = await cookiesClient.models.Player.create(body, {
+  return await playerCreator({
+    modelName: "Player",
+    input: base,
     selectionSet: ["id", "firstname", "lastname", "ageGroup", "dob"],
+    pathToRevalidate: "/cp/players",
   });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createPlayer(formData: FormData) {
+//   const body = formDataToObject<Player>(formData);
 
-  revalidatePath("/cp/players");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   const { data, errors } = await cookiesClient.models.Player.create(body, {
+//     selectionSet: ["id", "firstname", "lastname", "ageGroup", "dob"],
+//   });
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/players");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function updatePlayer(id: string, formData: FormData) {
   const body = formDataToObject<Player>(formData);
@@ -480,33 +516,55 @@ export async function deletePlayer(id: string) {
   });
 }
 
-export async function createArticle(formData: FormData) {
-  const body = formDataToObject<Article>(formData);
+export const createArticle = async (formData: FormData) => {
+  const base = formDataToObject<Article>(formData);
+  const articleCreator = createEntityFactory<Article, Article>();
 
-  if ((await checkUniqueArticleTitle(body.title)).length > 0) {
-    return {
-      status: "error",
-      message: `title "${body.title}" already exists.`,
-    };
-  }
-
-  const { data, errors } = await cookiesClient.models.Article.create(body, {
+  return await articleCreator({
+    modelName: "Team",
+    input: base,
     selectionSet: ["id", "title", "content", "coverImage"],
+    pathToRevalidate: "/cp/articles",
+    validate: async (input) => {
+      if ((await checkUniqueArticleTitle(input.title)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `title "${input.title}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
   });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createArticle(formData: FormData) {
+//   const body = formDataToObject<Article>(formData);
 
-  revalidatePath("/cp/articles");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   if ((await checkUniqueArticleTitle(body.title)).length > 0) {
+//     return {
+//       status: "error",
+//       message: `title "${body.title}" already exists.`,
+//     };
+//   }
+
+//   const { data, errors } = await cookiesClient.models.Article.create(body, {
+//     selectionSet: ["id", "title", "content", "coverImage"],
+//   });
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/articles");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function updateArticle(
   id: string,
@@ -553,33 +611,55 @@ export async function deleteArticle(id: string) {
   });
 }
 
-export async function createTrophy(formData: FormData) {
-  const body = formDataToObject<Trophy>(formData);
+export const createTrophy = async (formData: FormData) => {
+  const base = formDataToObject<Trophy>(formData);
+  const trophyCreator = createEntityFactory<Trophy, Trophy>();
 
-  if ((await checkUniqueTrophyName(body.trophyName)).length > 0) {
-    return {
-      status: "error",
-      message: `trophyName "${body.trophyName}" already exists.`,
-    };
-  }
-
-  const { data, errors } = await cookiesClient.models.Trophy.create(body, {
+  return await trophyCreator({
+    modelName: "Trophy",
+    input: base,
     selectionSet: ["id", "image", "trophyName"],
+    pathToRevalidate: "/cp/trophies",
+    validate: async (input) => {
+      if ((await checkUniqueTrophyName(input.trophyName)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `trophyName "${input.trophyName}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
   });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createTrophy(formData: FormData) {
+//   const body = formDataToObject<Trophy>(formData);
 
-  revalidatePath("/cp/trophies");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   if ((await checkUniqueTrophyName(body.trophyName)).length > 0) {
+//     return {
+//       status: "error",
+//       message: `trophyName "${body.trophyName}" already exists.`,
+//     };
+//   }
+
+//   const { data, errors } = await cookiesClient.models.Trophy.create(body, {
+//     selectionSet: ["id", "image", "trophyName"],
+//   });
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/trophies");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function deleteTrophy(id: string) {
   return await deleteEntity({
@@ -589,36 +669,62 @@ export async function deleteTrophy(id: string) {
   });
 }
 
-export async function createArticleCategory(formData: FormData) {
-  const body = formDataToObject<ArticleCategory>(formData);
+export const createArticleCategory = async (formData: FormData) => {
+  const base = formDataToObject<ArticleCategory>(formData);
+  const articleCategoryCreator = createEntityFactory<
+    ArticleCategory,
+    ArticleCategory
+  >();
 
-  if ((await checkUniqueCategory(body.category)).length > 0) {
-    return {
-      status: "error",
-      message: `category "${body.category}" already exists.`,
-    };
-  }
+  return await articleCategoryCreator({
+    modelName: "ArticleCategory",
+    input: base,
+    selectionSet: ["id", "category"],
+    pathToRevalidate: "/cp/article-categories",
+    validate: async (input) => {
+      if ((await checkUniqueCategory(input.category)).length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `category "${input.category}" already exists.`,
+        };
+      }
 
-  const { data, errors } = await cookiesClient.models.ArticleCategory.create(
-    body,
-    {
-      selectionSet: ["id", "category"],
-    }
-  );
+      return { valid: true };
+    },
+  });
+};
 
-  if (errors) {
-    return {
-      status: "error",
-      message: errors[0].message || "An unknown error occurred",
-    };
-  }
+// export async function createArticleCategory(formData: FormData) {
+//   const body = formDataToObject<ArticleCategory>(formData);
 
-  revalidatePath("/cp/article-categories");
-  return {
-    status: "success",
-    data,
-  };
-}
+//   if ((await checkUniqueCategory(body.category)).length > 0) {
+//     return {
+//       status: "error",
+//       message: `category "${body.category}" already exists.`,
+//     };
+//   }
+
+//   const { data, errors } = await cookiesClient.models.ArticleCategory.create(
+//     body,
+//     {
+//       selectionSet: ["id", "category"],
+//     }
+//   );
+
+//   if (errors) {
+//     return {
+//       status: "error",
+//       message: errors[0].message || "An unknown error occurred",
+//     };
+//   }
+
+//   revalidatePath("/cp/article-categories");
+//   return {
+//     status: "success",
+//     data,
+//   };
+// }
 
 export async function updateArticleCategory(
   id: string,
@@ -665,113 +771,185 @@ export async function deleteArticleCategory(id: string) {
   });
 }
 
-export async function createCup(formData: FormData) {
-  const body = formDataToObject<Cup>(formData);
-  try {
-    const uniqueCup = await checkUniqueCup(body.competitionNameSeason);
-    if (uniqueCup && uniqueCup.length > 0) {
-      return {
-        status: "error",
-        message: `name "${body.competitionNameSeason}" already exists.`,
-      };
-    }
+export const createCup = async (formData: FormData) => {
+  const base = formDataToObject<Cup>(formData);
+  const cupCreator = createEntityFactory<Cup, Cup>();
 
-    const { data, errors } = await cookiesClient.models.Cup.create(body, {
-      selectionSet: ["id", "competitionNameSeason"],
-    });
+  return await cupCreator({
+    modelName: "Cup",
+    input: base,
+    selectionSet: ["id", "competitionNameSeason"],
+    validate: async (input) => {
+      const uniqueCup = await checkUniqueCup(input.competitionNameSeason);
+      if (uniqueCup && uniqueCup.length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `name "${input.competitionNameSeason}" already exists.`,
+        };
+      }
 
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
+      return { valid: true };
+    },
+  });
+};
 
-    return {
-      status: "success",
-      data,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      status: "error",
-      message: "An unknown error occurred",
-    };
-  }
-}
+// export async function createCup(formData: FormData) {
+//   const body = formDataToObject<Cup>(formData);
+//   try {
+//     const uniqueCup = await checkUniqueCup(body.competitionNameSeason);
+//     if (uniqueCup && uniqueCup.length > 0) {
+//       return {
+//         status: "error",
+//         message: `name "${body.competitionNameSeason}" already exists.`,
+//       };
+//     }
 
-export async function createLeague(formData: FormData) {
-  const body = formDataToObject<League>(formData);
-  body.teams = JSON.parse(formData.get("teams") as string);
-  try {
-    const uniqueCup = await checkUniqueLeague(body.competitionNameSeason);
-    if (uniqueCup && uniqueCup.length > 0) {
-      return {
-        status: "error",
-        message: `name "${body.competitionNameSeason}" already exists.`,
-      };
-    }
+//     const { data, errors } = await cookiesClient.models.Cup.create(body, {
+//       selectionSet: ["id", "competitionNameSeason"],
+//     });
 
-    const { data, errors } = await cookiesClient.models.League.create(body, {
-      selectionSet: ["id", "competitionNameSeason"],
-    });
+//     if (errors) {
+//       return {
+//         status: "error",
+//         message: errors[0].message || "An unknown error occurred",
+//       };
+//     }
 
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
+//     return {
+//       status: "success",
+//       data,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       status: "error",
+//       message: "An unknown error occurred",
+//     };
+//   }
+// }
 
-    return {
-      status: "success",
-      data,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      status: "error",
-      message: "An unknown error occurred",
-    };
-  }
-}
+export const createLeague = async (formData: FormData) => {
+  const base = formDataToObject<League>(formData);
+  const leagueCreator = createEntityFactory<League, League>();
 
-export async function createCompetitionSeason(formData: FormData) {
-  const body = formDataToObject<CompetitionSeason>(formData);
-  try {
-    const uniqueSeason = await checkUniqueCompetitionSeason(body.season);
-    if (uniqueSeason && uniqueSeason.length > 0) {
-      return {
-        status: "error",
-        message: `name "${body.season}" already exists.`,
-      };
-    }
+  return await leagueCreator({
+    modelName: "League",
+    input: base,
+    selectionSet: ["id", "competitionNameSeason"],
+    validate: async (input) => {
+      const uniqueLeague = await checkUniqueLeague(input.competitionNameSeason);
+      if (uniqueLeague && uniqueLeague.length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `name "${input.competitionNameSeason}" already exists.`,
+        };
+      }
 
-    const { data, errors } =
-      await cookiesClient.models.CompetitionSeason.create(body, {
-        selectionSet: ["id", "name", "season", "createdAt"],
-      });
+      return { valid: true };
+    },
+  });
+};
 
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
+// export async function createLeague(formData: FormData) {
+//   const body = formDataToObject<League>(formData);
+//   body.teams = JSON.parse(formData.get("teams") as string);
+//   try {
+//     const uniqueCup = await checkUniqueLeague(body.competitionNameSeason);
+//     if (uniqueCup && uniqueCup.length > 0) {
+//       return {
+//         status: "error",
+//         message: `name "${body.competitionNameSeason}" already exists.`,
+//       };
+//     }
 
-    revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
-    return {
-      status: "success",
-      data,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      status: "error",
-      message: "An unknown error occurred",
-    };
-  }
-}
+//     const { data, errors } = await cookiesClient.models.League.create(body, {
+//       selectionSet: ["id", "competitionNameSeason"],
+//     });
+
+//     if (errors) {
+//       return {
+//         status: "error",
+//         message: errors[0].message || "An unknown error occurred",
+//       };
+//     }
+
+//     return {
+//       status: "success",
+//       data,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       status: "error",
+//       message: "An unknown error occurred",
+//     };
+//   }
+// }
+
+export const createCompetitionSeason = async (formData: FormData) => {
+  const base = formDataToObject<CompetitionSeason>(formData);
+  const competitionSeasonCreator = createEntityFactory<
+    CompetitionSeason,
+    CompetitionSeason
+  >();
+
+  return await competitionSeasonCreator({
+    modelName: "CompetitionSeason",
+    input: base,
+    selectionSet: ["id", "name", "season", "createdAt"],
+    pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons",
+    validate: async (base) => {
+      const uniqueSeason = await checkUniqueCompetitionSeason(base.season);
+      if (uniqueSeason && uniqueSeason.length > 0) {
+        return {
+          status: "error",
+          valid: false,
+          message: `name "${base.season}" already exists.`,
+        };
+      }
+      return { valid: true };
+    },
+  });
+};
+
+// export async function createCompetitionSeason(formData: FormData) {
+//   const body = formDataToObject<CompetitionSeason>(formData);
+//   try {
+//     const uniqueSeason = await checkUniqueCompetitionSeason(body.season);
+//     if (uniqueSeason && uniqueSeason.length > 0) {
+//       return {
+//         status: "error",
+//         message: `name "${body.season}" already exists.`,
+//       };
+//     }
+
+//     const { data, errors } =
+//       await cookiesClient.models.CompetitionSeason.create(body, {
+//         selectionSet: ["id", "name", "season", "createdAt"],
+//       });
+
+//     if (errors) {
+//       return {
+//         status: "error",
+//         message: errors[0].message || "An unknown error occurred",
+//       };
+//     }
+
+//     revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
+//     return {
+//       status: "success",
+//       data,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       status: "error",
+//       message: "An unknown error occurred",
+//     };
+//   }
+// }
 
 export async function updateCompetitionSeason(
   id: string,
@@ -823,55 +1001,46 @@ export async function deleteCompetitionSeason(id: string) {
   });
 }
 
-export async function createStandingRow(formData: FormData) {
-  const body = formDataToObject<Standing>(formData);
-  try {
-    const { data, errors } = await cookiesClient.models.Standing.create(body, {
-      selectionSet: [
-        "id",
-        "teamId",
-        "position",
-        "pts",
-        "p",
-        "w",
-        "d",
-        "l",
-        "g",
-        "gd",
-        "leagueId",
-      ],
-    });
+export const createStandingRow = async (formData: FormData) => {
+  const base = formDataToObject<Standing>(formData);
+  const standingRowCreator = createEntityFactory<Standing, Standing>();
 
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
+  return await standingRowCreator({
+    modelName: "Standing",
+    input: base,
+    selectionSet: [
+      "id",
+      "teamId",
+      "position",
+      "pts",
+      "p",
+      "w",
+      "d",
+      "l",
+      "g",
+      "gd",
+      "leagueId",
+    ],
+  });
+};
 
-    return {
-      status: "success",
-      data,
-    };
-  } catch (error) {
-    return {
-      status: "error",
-      message: "An unknown error occurred",
-    };
-  }
-}
-
-// export async function createMatch(formData: FormData) {
-//   const body = formDataToObject<Match>(formData);
-//   body.lineup = JSON.parse(formData.get("lineup") as string);
-//   body.coach = JSON.parse(formData.get("coach") as string);
-//   body.substitutes = JSON.parse(formData.get("substitutes") as string);
-//   body.homeTeam = JSON.parse(formData.get("homeTeam") as string);
-//   body.awayTeam = JSON.parse(formData.get("awayTeam") as string);
-
+// export async function createStandingRow(formData: FormData) {
+//   const body = formDataToObject<Standing>(formData);
 //   try {
-//     const { data, errors } = await cookiesClient.models.Match.create(body, {
-//       selectionSet: ["id", "homeTeam.*", "awayTeam.*"],
+//     const { data, errors } = await cookiesClient.models.Standing.create(body, {
+//       selectionSet: [
+//         "id",
+//         "teamId",
+//         "position",
+//         "pts",
+//         "p",
+//         "w",
+//         "d",
+//         "l",
+//         "g",
+//         "gd",
+//         "leagueId",
+//       ],
 //     });
 
 //     if (errors) {
@@ -881,13 +1050,11 @@ export async function createStandingRow(formData: FormData) {
 //       };
 //     }
 
-//     revalidatePath("/cp/matches");
 //     return {
 //       status: "success",
 //       data,
 //     };
 //   } catch (error) {
-//     console.log(error);
 //     return {
 //       status: "error",
 //       message: "An unknown error occurred",
