@@ -71,7 +71,11 @@ async function League({
         teams={teams}
         league={league}
       />
-      <LeagueRound dbRounds={leagueRounds} matches={matches} />
+      <LeagueRound
+        dbRounds={leagueRounds}
+        matches={matches}
+        leagueId={league.id}
+      />
     </Stack>
   );
 }

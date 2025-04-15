@@ -40,6 +40,8 @@ async function CompetitionSeason({
       }
     ));
 
+  console.log(league && league.data?.leagueRounds);
+
   const cupRoundsData =
     competitionSeason &&
     competitionSeason.cupId &&
@@ -78,6 +80,7 @@ async function CompetitionSeason({
         "awayTeam.logo",
         "awayTeam.shortName",
         "awayTeam.longName",
+        "date",
       ],
     }));
 

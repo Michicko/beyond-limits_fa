@@ -18,6 +18,7 @@ type Cup = Schema["Cup"]["type"];
 type League = Schema["League"]["type"];
 type Standing = Schema["Standing"]["type"];
 type Match = Schema["Match"]["type"];
+type LeagueRound = Schema["LeagueRound"]["type"];
 
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
@@ -1021,6 +1022,23 @@ export const createStandingRow = async (formData: FormData) => {
       "gd",
       "leagueId",
     ],
+  });
+};
+
+export const createLeagueRound = async (formData: FormData) => {
+  const base = formDataToObject<LeagueRound>(formData);
+  const leagueRoundCreator = createEntityFactory<LeagueRound, LeagueRound>();
+
+  return await leagueRoundCreator({
+    modelName: "LeagueRound",
+    input: base,
+    selectionSet: ["id", "round"],
+    pathToRevalidate:
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]",
+    preprocess: (input) => ({
+      ...input,
+      standing: JSON.parse(formData.get("standing") as string),
+    }),
   });
 };
 

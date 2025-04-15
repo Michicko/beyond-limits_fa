@@ -20,6 +20,7 @@ interface IMatch {
     shortName: string;
     longName: string;
   } | null;
+  date: string;
 }
 
 interface ILeagueRoundStanding {
@@ -47,16 +48,17 @@ interface ILeagueRound {
 function LeagueRound({
   dbRounds,
   matches,
+  leagueId,
 }: {
   dbRounds: ILeagueRound[];
   matches: IMatch[];
+  leagueId: string;
 }) {
   const cH = {
     fontWeight: "700",
     h: "50px",
     textAlign: "center",
   };
-
   return (
     <Card.Root size="md" p={"5"} border={"1px solid"} borderColor={"gray.200"}>
       <Card.Body color="fg.muted">
@@ -71,7 +73,11 @@ function LeagueRound({
               No matches available, please add a match to create round
             </Text>
           ) : (
-            <LeagueRoundForm dbRounds={dbRounds} />
+            <LeagueRoundForm
+              dbRounds={dbRounds}
+              matches={matches}
+              leagueId={leagueId}
+            />
           )}
         </HStack>
         <CustomSeparator />
