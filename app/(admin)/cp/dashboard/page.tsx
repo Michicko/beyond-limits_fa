@@ -1,3 +1,4 @@
+import { fetchDashboardData } from "@/app/_actions/actions";
 import MatchCard from "@/components/admin/Card/MatchCard";
 import MatchStats from "@/components/admin/Card/MatchStats";
 import StatCard from "@/components/admin/Card/StatCard";
@@ -11,7 +12,11 @@ import React from "react";
 const league = leagues.find((el) => el.competition?.shortName === "nnl");
 const standings = standing.filter((el) => el.league_id === league?.id);
 
-function Dashboard() {
+async function Dashboard() {
+  const { data: dashboardContent, status } = await fetchDashboardData();
+
+  console.log(dashboardContent, status);
+
   return (
     <>
       <PageTitle pageTitle="Dashboard" />
@@ -20,7 +25,6 @@ function Dashboard() {
           <StatCard name="Competitions" value="4" />
           <StatCard name="Active" value="3" />
           <StatCard name="Win" value="24" type="success" />
-
           <StatCard name="Draw" value="5" type="warning" />
           <StatCard name="Lose" value="4" type="error" />
         </HStack>

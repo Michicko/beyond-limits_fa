@@ -60,15 +60,21 @@ function MatchStats() {
         >
           <Box
             css={lineStyles}
-            _before={{ w: `${calcWidth(6, 4)}%`, bg: "green.400" }}
+            w={`${calcWidth(6, 4)}%`}
+            _before={{ bg: "green.400", w: "100%" }}
+            title="win"
           ></Box>
           <Box
             css={lineStyles}
-            _before={{ w: `${calcWidth(6, 1)}%`, bg: "yellow.400" }}
+            w={`${calcWidth(6, 1)}%`}
+            _before={{ bg: "yellow.400", w: "100%" }}
+            title="draw"
           ></Box>
           <Box
             css={lineStyles}
-            _before={{ w: `${calcWidth(6, 1)}%`, bg: "red.400" }}
+            w={`${calcWidth(6, 1)}%`}
+            _before={{ bg: "red.400", w: "100%" }}
+            title="lose"
           ></Box>
         </Flex>
         <HStack gap={"20px"} w={"full"} mb={"29px"}>

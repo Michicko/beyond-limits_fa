@@ -21,6 +21,15 @@ type Match = Schema["Match"]["type"];
 type LeagueRound = Schema["LeagueRound"]["type"];
 type PlayOff = Schema["PlayOff"]["type"];
 
+interface IMatchScorer {
+  id: string;
+  name: string;
+  playerId?: string;
+  time: string;
+  goalType: string;
+  isOpponent: boolean;
+}
+
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
 
@@ -286,34 +295,6 @@ export const createCompetition = async (formData: FormData) => {
   });
 };
 
-// export async function createCompetition(formData: FormData) {
-//   const body = formDataToObject<Competition>(formData);
-
-//   if ((await checkUniqueCompetitionName(body.longName)).length > 0) {
-//     return {
-//       status: "error",
-//       message: `longName "${body.longName}" already exists.`,
-//     };
-//   }
-
-//   const { data, errors } = await cookiesClient.models.Competition.create(body, {
-//     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
-//   });
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/competitions");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
-
 export async function updateCompetition(
   id: string,
   formData: FormData,
@@ -425,34 +406,6 @@ export const createTeam = async (formData: FormData) => {
   });
 };
 
-// export async function createTeam(formData: FormData) {
-//   const body = formDataToObject<Team>(formData);
-
-//   if ((await checkUniqueTeamName(body.longName)).length > 0) {
-//     return {
-//       status: "error",
-//       message: `longName "${body.longName}" already exists.`,
-//     };
-//   }
-
-//   const { data, errors } = await cookiesClient.models.Team.create(body, {
-//     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
-//   });
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/teams");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
-
 export async function updateTeam(
   id: string,
   formData: FormData,
@@ -510,27 +463,6 @@ export const createPlayer = async (formData: FormData) => {
   });
 };
 
-// export async function createPlayer(formData: FormData) {
-//   const body = formDataToObject<Player>(formData);
-
-//   const { data, errors } = await cookiesClient.models.Player.create(body, {
-//     selectionSet: ["id", "firstname", "lastname", "ageGroup", "dob"],
-//   });
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/players");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
-
 export async function updatePlayer(id: string, formData: FormData) {
   const body = formDataToObject<Player>(formData);
 
@@ -584,34 +516,6 @@ export const createArticle = async (formData: FormData) => {
     },
   });
 };
-
-// export async function createArticle(formData: FormData) {
-//   const body = formDataToObject<Article>(formData);
-
-//   if ((await checkUniqueArticleTitle(body.title)).length > 0) {
-//     return {
-//       status: "error",
-//       message: `title "${body.title}" already exists.`,
-//     };
-//   }
-
-//   const { data, errors } = await cookiesClient.models.Article.create(body, {
-//     selectionSet: ["id", "title", "content", "coverImage"],
-//   });
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/articles");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
 
 export async function updateArticle(
   id: string,
@@ -680,34 +584,6 @@ export const createTrophy = async (formData: FormData) => {
   });
 };
 
-// export async function createTrophy(formData: FormData) {
-//   const body = formDataToObject<Trophy>(formData);
-
-//   if ((await checkUniqueTrophyName(body.trophyName)).length > 0) {
-//     return {
-//       status: "error",
-//       message: `trophyName "${body.trophyName}" already exists.`,
-//     };
-//   }
-
-//   const { data, errors } = await cookiesClient.models.Trophy.create(body, {
-//     selectionSet: ["id", "image", "trophyName"],
-//   });
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/trophies");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
-
 export async function deleteTrophy(id: string) {
   return await deleteEntity({
     id,
@@ -741,37 +617,6 @@ export const createArticleCategory = async (formData: FormData) => {
     },
   });
 };
-
-// export async function createArticleCategory(formData: FormData) {
-//   const body = formDataToObject<ArticleCategory>(formData);
-
-//   if ((await checkUniqueCategory(body.category)).length > 0) {
-//     return {
-//       status: "error",
-//       message: `category "${body.category}" already exists.`,
-//     };
-//   }
-
-//   const { data, errors } = await cookiesClient.models.ArticleCategory.create(
-//     body,
-//     {
-//       selectionSet: ["id", "category"],
-//     }
-//   );
-
-//   if (errors) {
-//     return {
-//       status: "error",
-//       message: errors[0].message || "An unknown error occurred",
-//     };
-//   }
-
-//   revalidatePath("/cp/article-categories");
-//   return {
-//     status: "success",
-//     data,
-//   };
-// }
 
 export async function updateArticleCategory(
   id: string,
@@ -841,41 +686,6 @@ export const createCup = async (formData: FormData) => {
   });
 };
 
-// export async function createCup(formData: FormData) {
-//   const body = formDataToObject<Cup>(formData);
-//   try {
-//     const uniqueCup = await checkUniqueCup(body.competitionNameSeason);
-//     if (uniqueCup && uniqueCup.length > 0) {
-//       return {
-//         status: "error",
-//         message: `name "${body.competitionNameSeason}" already exists.`,
-//       };
-//     }
-
-//     const { data, errors } = await cookiesClient.models.Cup.create(body, {
-//       selectionSet: ["id", "competitionNameSeason"],
-//     });
-
-//     if (errors) {
-//       return {
-//         status: "error",
-//         message: errors[0].message || "An unknown error occurred",
-//       };
-//     }
-
-//     return {
-//       status: "success",
-//       data,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       status: "error",
-//       message: "An unknown error occurred",
-//     };
-//   }
-// }
-
 export const createLeague = async (formData: FormData) => {
   const base = formDataToObject<League>(formData);
   const leagueCreator = createEntityFactory<League, League>();
@@ -898,42 +708,6 @@ export const createLeague = async (formData: FormData) => {
     },
   });
 };
-
-// export async function createLeague(formData: FormData) {
-//   const body = formDataToObject<League>(formData);
-//   body.teams = JSON.parse(formData.get("teams") as string);
-//   try {
-//     const uniqueCup = await checkUniqueLeague(body.competitionNameSeason);
-//     if (uniqueCup && uniqueCup.length > 0) {
-//       return {
-//         status: "error",
-//         message: `name "${body.competitionNameSeason}" already exists.`,
-//       };
-//     }
-
-//     const { data, errors } = await cookiesClient.models.League.create(body, {
-//       selectionSet: ["id", "competitionNameSeason"],
-//     });
-
-//     if (errors) {
-//       return {
-//         status: "error",
-//         message: errors[0].message || "An unknown error occurred",
-//       };
-//     }
-
-//     return {
-//       status: "success",
-//       data,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       status: "error",
-//       message: "An unknown error occurred",
-//     };
-//   }
-// }
 
 export const createCompetitionSeason = async (formData: FormData) => {
   const base = formDataToObject<CompetitionSeason>(formData);
@@ -963,43 +737,6 @@ export const createCompetitionSeason = async (formData: FormData) => {
     },
   });
 };
-
-// export async function createCompetitionSeason(formData: FormData) {
-//   const body = formDataToObject<CompetitionSeason>(formData);
-//   try {
-//     const uniqueSeason = await checkUniqueCompetitionSeason(body.season);
-//     if (uniqueSeason && uniqueSeason.length > 0) {
-//       return {
-//         status: "error",
-//         message: `name "${body.season}" already exists.`,
-//       };
-//     }
-
-//     const { data, errors } =
-//       await cookiesClient.models.CompetitionSeason.create(body, {
-//         selectionSet: ["id", "name", "season", "createdAt"],
-//       });
-
-//     if (errors) {
-//       return {
-//         status: "error",
-//         message: errors[0].message || "An unknown error occurred",
-//       };
-//     }
-
-//     revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
-//     return {
-//       status: "success",
-//       data,
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       status: "error",
-//       message: "An unknown error occurred",
-//     };
-//   }
-// }
 
 export async function updateCompetitionSeason(
   id: string,
@@ -1145,6 +882,14 @@ export async function deleteCompetitionSeason(id: string) {
       leagueRounds = res2.data || [];
     }
 
+    const { data: trophies } = await cookiesClient.models.Trophy.list({
+      filter: {
+        competitionId: {
+          eq: id,
+        },
+      },
+    });
+
     // 3. Delete related records in safe order
     for (const row of standingRows) {
       await cookiesClient.models.Standing.delete({ id: row.id });
@@ -1168,6 +913,10 @@ export async function deleteCompetitionSeason(id: string) {
 
     for (const league of leagues) {
       await cookiesClient.models.League.delete({ id: league.id });
+    }
+
+    for (const trophy of trophies) {
+      await cookiesClient.models.Trophy.delete({ id: trophy.id });
     }
 
     // Delete the CompetitionSeason itself
@@ -1311,44 +1060,6 @@ export async function updatePlayOff(id: string, formData: FormData) {
   }
 }
 
-// export async function createStandingRow(formData: FormData) {
-//   const body = formDataToObject<Standing>(formData);
-//   try {
-//     const { data, errors } = await cookiesClient.models.Standing.create(body, {
-//       selectionSet: [
-//         "id",
-//         "teamId",
-//         "position",
-//         "pts",
-//         "p",
-//         "w",
-//         "d",
-//         "l",
-//         "g",
-//         "gd",
-//         "leagueId",
-//       ],
-//     });
-
-//     if (errors) {
-//       return {
-//         status: "error",
-//         message: errors[0].message || "An unknown error occurred",
-//       };
-//     }
-
-//     return {
-//       status: "success",
-//       data,
-//     };
-//   } catch (error) {
-//     return {
-//       status: "error",
-//       message: "An unknown error occurred",
-//     };
-//   }
-// }
-
 export const createMatch = async (formData: FormData) => {
   const base = formDataToObject<Match>(formData);
   const matchCreator = createEntityFactory<Match, Match>();
@@ -1410,4 +1121,210 @@ export async function deleteMatch(id: string) {
     modelName: "Match",
     pathToRevalidate: "/cp/trophies",
   });
+}
+
+function getPlayerGoalCounts(matches: Match[]) {
+  const goalCounts: Record<string, number> = {};
+  for (const match of matches) {
+    let scorers: IMatchScorer[] = [];
+
+    try {
+      if (match.scorers) {
+        scorers = JSON.parse(match.scorers as string);
+      }
+    } catch (e) {
+      console.error("Invalid scorers JSON in match:", match, e);
+      continue;
+    }
+
+    for (const scorer of scorers) {
+      if (!scorer.isOpponent && scorer.playerId) {
+        if (!goalCounts[scorer.playerId]) {
+          goalCounts[scorer.playerId] = 1;
+        } else {
+          goalCounts[scorer.playerId]++;
+        }
+      }
+    }
+  }
+
+  return goalCounts;
+}
+
+export async function fetchDashboardData() {
+  const year = new Date().getFullYear();
+  try {
+    const { data: competitionSeasons } =
+      await cookiesClient.models.CompetitionSeason.list({
+        filter: {
+          season: {
+            beginsWith: `${year}`,
+          },
+        },
+      });
+
+    if (!competitionSeasons || competitionSeasons.length < 1) {
+      return {
+        data: [],
+        status: "error",
+        message: "No Competition seasons",
+      };
+    }
+
+    let allRounds: (LeagueRound | PlayOff)[] = [];
+    let matches: Match[] = [];
+
+    for (const season of competitionSeasons) {
+      const { data: matchList } = await cookiesClient.models.Match.list({
+        filter: {
+          competitionSeasonId: {
+            eq: season.id,
+          },
+        },
+      });
+      matches = [...matches, ...matchList];
+      if (season.cupId) {
+        const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list(
+          {
+            filter: {
+              cupId: {
+                eq: season.cupId,
+              },
+            },
+          }
+        );
+        allRounds = [...allRounds, ...playOffs];
+      }
+
+      if (season.leagueId) {
+        const { data: leagueRounds = [] } =
+          await cookiesClient.models.LeagueRound.list({
+            filter: {
+              leagueId: {
+                eq: season.leagueId,
+              },
+            },
+          });
+        allRounds = [...allRounds, ...leagueRounds];
+      }
+    }
+
+    const resultCounts = allRounds.reduce(
+      (acc, round) => {
+        const status = round.status?.toLowerCase(); // or round.result/outcome etc.
+        if (status === "win") acc.wins += 1;
+        else if (status === "loss") acc.losses += 1;
+        else if (status === "draw") acc.draws += 1;
+        return acc;
+      },
+      { wins: 0, losses: 0, draws: 0 }
+    );
+
+    const currentNNlSeasons = (
+      await cookiesClient.models.CompetitionSeason.list({
+        filter: {
+          name: {
+            eq: "nigerian national league",
+          },
+          season: {
+            beginsWith: `${year}`,
+          },
+        },
+      })
+    ).data;
+
+    const currentNNlSeason = currentNNlSeasons[0];
+    const nnlStanding = currentNNlSeason
+      ? (
+          await cookiesClient.models.Standing.list({
+            filter: {
+              leagueId: {
+                eq: currentNNlSeason.id,
+              },
+            },
+          })
+        ).data
+      : [];
+
+    const { results, fixtures } = matches.reduce(
+      (acc, match) => {
+        if (match.status === "COMPLETED") {
+          acc.results.push(match);
+        } else {
+          acc.fixtures.push(match);
+        }
+        return acc;
+      },
+      { results: [], fixtures: [] } as {
+        results: typeof matches;
+        fixtures: typeof matches;
+      }
+    );
+
+    results.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    fixtures.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    const upcomingMatch = fixtures[0] || null;
+
+    const upcomingCompetitionSeasonRounds = upcomingMatch
+      ? allRounds.filter((el) => el.matchId === upcomingMatch.id)
+      : [];
+
+    const roundStatusCounts = upcomingCompetitionSeasonRounds.reduce(
+      (acc, round) => {
+        const outcome = round.result?.toUpperCase(); // or round.outcome or round.someOtherField
+
+        switch (outcome) {
+          case "WIN":
+            acc.wins++;
+            break;
+          case "DRAW":
+            acc.draws++;
+            break;
+          case "LOSE":
+            acc.losses++;
+            break;
+        }
+
+        return acc;
+      },
+      { wins: 0, draws: 0, losses: 0 }
+    );
+
+    const dashboardContent = {
+      totalCompetitions: competitionSeasons.length,
+      activeCompetitions: competitionSeasons.filter(
+        (el) => el.status === "PENDING"
+      ).length,
+      matchSummary: {
+        wins: resultCounts.wins,
+        losses: resultCounts.losses,
+        draws: resultCounts.draws,
+      },
+      goalRanking: getPlayerGoalCounts(matches),
+      nnlStanding,
+      lastMatch: results[results.length - 1] || null,
+      upcomingMatch,
+      upcomingCompetition: {
+        win: roundStatusCounts.wins,
+        draw: roundStatusCounts.draws,
+        lose: roundStatusCounts.losses,
+        played: upcomingCompetitionSeasonRounds.length,
+      },
+    };
+    return {
+      status: "success",
+      data: dashboardContent,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
 }
