@@ -64,7 +64,6 @@ const LeagueRoundForm = ({
   matches: IMatch[];
 }) => {
   const formRef = useRef<HTMLFormElement | null>(null);
-
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
   const [status, setStatus] = useState("PENDING");
@@ -93,6 +92,7 @@ const LeagueRoundForm = ({
       formData.append("matchId", match);
       formData.delete("result");
       formData.append("standing", JSON.stringify(standing));
+      formData.append("leagueId", leagueId);
       startTransition(async () => {
         const res = await createLeagueRound(formData);
         if (res.status === "success" && res.data) {
@@ -248,7 +248,7 @@ const LeagueRoundForm = ({
                     <Field.Root>
                       <Field.Label>Away Form</Field.Label>
                       <Input
-                        placeholder="Enter Lose"
+                        placeholder="Enter Away Form"
                         name={"awayForm"}
                         px={1}
                       />

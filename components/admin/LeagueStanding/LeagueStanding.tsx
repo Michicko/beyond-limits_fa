@@ -106,6 +106,7 @@ function LeagueStanding({
     if (!team) return;
     return (
       <LeagueStandingRow
+        leagueId={league.id}
         team={team}
         standing={standing}
         key={(standing.teamId as string) + standing.position}

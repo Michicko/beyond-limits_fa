@@ -1,8 +1,10 @@
-import { getPlayOffRoundName } from "@/lib/helpers";
+import { getButtonStatus, getPlayOffRoundName } from "@/lib/helpers";
 import { Button, HStack, Image, Table, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import ResultSelector from "../ResultSelector/ResultSelector";
 import { Nullable } from "@/lib/definitions";
+import useToast from "@/hooks/useToast";
+import { updatePlayOff } from "@/app/_actions/actions";
 
 interface IMatch {
   id: string;
@@ -39,14 +41,29 @@ function PlayOffRoundRow({ round }: { round: IRound }) {
   };
 
   const [result, setResult] = useState(round.result || "");
+  const [isPending, startTransition] = useTransition();
+  const { mutationToast, errorToast } = useToast();
 
   const updateRound = () => {
     const formData = new FormData();
+    formData.append("id", round.id);
+    formData.append("status", "COMPLETED");
+    formData.append("result", result);
+
+    startTransition(async () => {
+      const res = await updatePlayOff(round.id, formData);
+      if (res.status === "success" && res.data) {
+        mutationToast("PlayOff", `${res.data.round}`, "create");
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
   };
 
   return (
     <Table.Row key={round.round}>
-      <Table.Cell textTransform={"capitalize"}>
+      <Table.Cell textTransform={"capitalize"} verticalAlign={"middle"}>
         {getPlayOffRoundName(round.round)}
       </Table.Cell>
       <Table.Cell css={tC}>
@@ -103,9 +120,12 @@ function PlayOffRoundRow({ round }: { round: IRound }) {
           variant={"solid"}
           colorPalette={"green"}
           px={"10px"}
-          disabled={round.result && round.status === "COMPLETED" ? true : false}
+          disabled={
+            (round.result && round.status === "COMPLETED" && true) || isPending
+          }
+          onClick={updateRound}
         >
-          Update
+          {getButtonStatus(round, "Round", isPending)}
         </Button>
       </Table.Cell>
     </Table.Row>

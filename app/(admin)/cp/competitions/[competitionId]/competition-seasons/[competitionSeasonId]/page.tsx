@@ -40,8 +40,6 @@ async function CompetitionSeason({
       }
     ));
 
-  console.log(league && league.data?.leagueRounds);
-
   const cupRoundsData =
     competitionSeason &&
     competitionSeason.cupId &&
@@ -83,37 +81,6 @@ async function CompetitionSeason({
         "date",
       ],
     }));
-
-  const leagueRoundData =
-    league &&
-    league.data &&
-    (
-      await cookiesClient.models.LeagueRound.list({
-        filter: {
-          leagueId: {
-            eq: league.data.id,
-          },
-        },
-        selectionSet: [
-          "leagueId",
-          "id",
-          "homeForm",
-          "awayForm",
-          "standing.position",
-          "standing.pts",
-          "standing.p",
-          "standing.w",
-          "standing.d",
-          "standing.l",
-          "standing.g",
-          "standing.gd",
-          "status",
-          "matchId",
-          "result",
-          "round",
-        ],
-      })
-    ).data;
 
   const teams = (
     await cookiesClient.models.Team.list({
@@ -165,22 +132,23 @@ async function CompetitionSeason({
                   league &&
                   league.data &&
                   league.data.standings &&
-                  leagueRoundData &&
                   matchesData && (
                     <League
                       teams={teams}
-                      leagueRounds={leagueRoundData}
+                      leagueRounds={league.data?.leagueRounds}
                       matches={matchesData.data}
                       league={league.data}
                     />
                   )}
                 {competition.competitionType === "CUP" &&
+                  competitionSeason &&
                   cupRoundsData &&
-                  matchesData && (
+                  matchesData &&
+                  competitionSeason.cupId && (
                     <Cup
                       rounds={cupRoundsData.data}
                       matches={matchesData.data}
-                      roundResults={roundResults}
+                      cupId={competitionSeason.cupId}
                     />
                   )}
                 {competition.competitionType === "MIXED" && (
@@ -193,24 +161,26 @@ async function CompetitionSeason({
                       {league &&
                         league.data &&
                         league.data.standings &&
-                        leagueRoundData &&
                         matchesData && (
                           <League
                             teams={teams}
-                            leagueRounds={leagueRoundData}
+                            leagueRounds={league.data?.leagueRounds}
                             matches={matchesData.data}
                             league={league.data}
                           />
                         )}
                     </Tabs.Content>
                     <Tabs.Content value="cup">
-                      {cupRoundsData && matchesData && (
-                        <Cup
-                          rounds={cupRoundsData.data}
-                          matches={matchesData.data}
-                          roundResults={roundResults}
-                        />
-                      )}
+                      {cupRoundsData &&
+                        competitionSeason &&
+                        matchesData &&
+                        competitionSeason.cupId && (
+                          <Cup
+                            rounds={cupRoundsData.data}
+                            matches={matchesData.data}
+                            cupId={competitionSeason.cupId}
+                          />
+                        )}
                     </Tabs.Content>
                   </Tabs.Root>
                 )}

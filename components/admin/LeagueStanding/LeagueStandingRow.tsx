@@ -1,11 +1,16 @@
+import { updateStandingRow } from "@/app/_actions/actions";
+import useToast from "@/hooks/useToast";
 import { IDBStandings, IDTeam } from "@/lib/definitions";
+import { getButtonStatus, objectToFormData } from "@/lib/helpers";
 import { Button, HStack, Image, Input, Table, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState, useTransition } from "react";
 
 function LeagueStandingRow({
+  leagueId,
   team,
   standing,
 }: {
+  leagueId: string;
   team: IDTeam;
   standing: IDBStandings;
 }) {
@@ -30,6 +35,44 @@ function LeagueStandingRow({
     verticalAlign: "middle",
   };
 
+  const [stateStanding, setStateStanding] = useState({
+    id: standing.id,
+    leagueId,
+    teamId: team.id,
+    position: standing.position,
+    pts: standing.pts,
+    p: standing.p,
+    w: standing.w,
+    d: standing.d,
+    l: standing.l,
+    g: standing.g,
+    gd: standing.gd,
+  });
+
+  const [isPending, startTransition] = useTransition();
+  const { mutationToast, errorToast } = useToast();
+
+  const onChange = (e: { target: { name: string; value: string } }) => {
+    const { name, value } = e.target;
+    setStateStanding({ ...stateStanding, [name]: value });
+  };
+
+  const updateStanding = async () => {
+    const formData = objectToFormData(stateStanding);
+
+    startTransition(async () => {
+      const res = await updateStandingRow(standing.id, formData);
+      if (res.status === "success" && res.data) {
+        mutationToast("League Standing", `${team.longName}`, "update");
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
+  };
+
+  // todo => fetch match for each round to display match scores afte it has been marked as completed
+
   return (
     <Table.Row key={team.id} borderBottom={"1px solid"} borderColor={"neutral"}>
       <Table.Cell columnCount={4} verticalAlign={"middle"}>
@@ -47,35 +90,87 @@ function LeagueStandingRow({
       </Table.Cell>
       <Table.Cell css={tC}>
         <Input
+          name="position"
           css={inputStyles}
-          defaultValue={standing.position}
           type="number"
+          value={stateStanding.position}
+          onChange={onChange}
         />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.pts} type="number" />
+        <Input
+          name="pts"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.pts}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.p} type="number" />
+        <Input
+          name="p"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.p}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.w} type="number" />
+        <Input
+          name="w"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.w}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.d} type="number" />
+        <Input
+          name="d"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.d}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.l} type="number" />
+        <Input
+          name="l"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.l}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.g} type="string" />
+        <Input
+          name="g"
+          css={inputStyles}
+          type="string"
+          value={stateStanding.g}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Input css={inputStyles} defaultValue={standing.gd} type="number" />
+        <Input
+          name="gd"
+          css={inputStyles}
+          type="number"
+          value={stateStanding.gd}
+          onChange={onChange}
+        />
       </Table.Cell>
       <Table.Cell css={tC}>
-        <Button variant={"solid"} colorPalette={"green"} px={"10px"}>
-          Update
+        <Button
+          variant={"solid"}
+          colorPalette={"green"}
+          px={"10px"}
+          onClick={async () => {
+            await updateStanding();
+          }}
+          disabled={isPending}
+        >
+          {getButtonStatus(standing, "Standing", isPending)}
         </Button>
       </Table.Cell>
     </Table.Row>

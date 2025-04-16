@@ -16,12 +16,13 @@ export interface IDTeam {
 }
 
 export interface IDBStandings {
+  id: string;
   team?: IDTeam;
   position: number;
   p: number;
   w: number;
-  leagueId: Nullable<string>;
-  teamId: Nullable<string>;
+  leagueId?: Nullable<string>;
+  teamId?: Nullable<string>;
   d: number;
   l: number;
   g: string;

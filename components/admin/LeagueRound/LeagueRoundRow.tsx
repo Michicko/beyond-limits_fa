@@ -1,7 +1,10 @@
 import { Button, Table } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import ResultSelector from "../ResultSelector/ResultSelector";
 import { Nullable } from "@/lib/definitions";
+import { updateLeagueRound } from "@/app/_actions/actions";
+import useToast from "@/hooks/useToast";
+import { getButtonStatus } from "@/lib/helpers";
 
 interface ILeagueRoundStanding {
   position: number;
@@ -15,6 +18,7 @@ interface ILeagueRoundStanding {
 }
 
 interface ILeagueRound {
+  id: string;
   leagueId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
@@ -32,10 +36,26 @@ function LeagueRoundRow({ round }: { round: ILeagueRound }) {
     px: "5px",
   };
 
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState(round.result || "");
 
-  const updateRound = () => {
+  const [isPending, startTransition] = useTransition();
+  const { mutationToast, errorToast } = useToast();
+
+  const updateRound = async (id: string) => {
     const formData = new FormData();
+    formData.append("id", id);
+    formData.append("status", "COMPLETED");
+    formData.append("result", result);
+
+    startTransition(async () => {
+      const res = await updateLeagueRound(round.id, formData);
+      if (res.status === "success" && res.data) {
+        mutationToast("League Round", `${res.data.round}`, "update");
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
+    });
   };
 
   if (!round.standing) return;
@@ -64,9 +84,14 @@ function LeagueRoundRow({ round }: { round: ILeagueRound }) {
           variant={"solid"}
           colorPalette={"green"}
           px={"10px"}
-          disabled={round.result && round.status === "COMPLETED" ? true : false}
+          disabled={
+            (round.result && round.status === "COMPLETED" && true) || isPending
+          }
+          onClick={async () => {
+            await updateRound(round.id);
+          }}
         >
-          Update
+          {getButtonStatus(round, "Round", isPending)}
         </Button>
       </Table.Cell>
     </Table.Row>

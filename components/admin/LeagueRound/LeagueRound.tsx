@@ -35,6 +35,7 @@ interface ILeagueRoundStanding {
 }
 
 interface ILeagueRound {
+  id: string;
   leagueId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
@@ -119,7 +120,7 @@ function LeagueRound({
             <Table.Body>
               <>
                 {dbRounds.map((round) => {
-                  return <LeagueRoundRow round={round} key={round.round} />;
+                  return <LeagueRoundRow round={round} key={round.id} />;
                 })}
               </>
             </Table.Body>

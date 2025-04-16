@@ -1,6 +1,9 @@
-'use client';
+"use client";
 import { Schema } from "@/amplify/data/resource";
-import { createCompetitionSeason, updateCompetitionSeason } from "@/app/_actions/actions";
+import {
+  createCompetitionSeason,
+  updateCompetitionSeason,
+} from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { Field, Stack } from "@chakra-ui/react";
 import { useRef, useState, useTransition } from "react";
@@ -9,55 +12,47 @@ import CustomSelect from "../CustomSelect/CustomSelect";
 import FormBtn from "./FormBtn";
 import { getButtonStatus } from "@/lib/helpers";
 
-
 type ICompetitionSeason = Pick<
   Schema["CompetitionSeason"]["type"],
-  "id" | 'season' | 'status' | 'winnerId' | 'competitionId'
+  "id" | "season" | "status" | "winnerId" | "competitionId"
 >;
-type ITeam = Pick<
-  Schema["Team"]["type"],
-  "id" | 'logo' | 'longName'
->;
-type ISeason = Pick<
-  Schema["Season"]["type"],
-  "id" | 'season'
->;
-
+type ITeam = Pick<Schema["Team"]["type"], "id" | "logo" | "longName">;
+type ISeason = Pick<Schema["Season"]["type"], "id" | "season">;
 
 function CompetitionSeasonForm({
   competitionId,
   competitionSeason,
   teams,
   seasons,
-  statuses
+  statuses,
 }: {
   competitionId: string;
   competitionSeason?: ICompetitionSeason | null;
-  teams: ITeam[]
-  seasons: ISeason[]
-  statuses: string[]
+  teams: ITeam[];
+  seasons: ISeason[];
+  statuses: string[];
 }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
 
   const [tempData, setTempData] = useState({
-    season: competitionSeason?.season || '',
+    season: competitionSeason?.season || "",
     competitionId,
-    status: competitionSeason?.status || 'PENDING',
-    winnerId: competitionSeason?.winnerId || ''
-  })
+    status: competitionSeason?.status || "PENDING",
+    winnerId: competitionSeason?.winnerId || "",
+  });
 
   const handleOnChange = (e: { target: { name: string; value: string } }) => {
-    const {name, value} = e.target
-    setTempData({...tempData, [name]: value});
-  }
+    const { name, value } = e.target;
+    setTempData({ ...tempData, [name]: value });
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    formData.delete('winner')
-    formData.append('competitionId', tempData.competitionId);
+    formData.delete("winner");
+    formData.append("competitionId", tempData.competitionId);
 
     if (competitionSeason) {
       startTransition(async () => {
@@ -103,10 +98,9 @@ function CompetitionSeasonForm({
             description="season"
             selectedValue={tempData.season}
             handleOnChange={handleOnChange}
-           
           />
         </Field.Root>
-         <Field.Root required>
+        <Field.Root required>
           <FormLabel>Season Status</FormLabel>
           <CustomSelect
             options={statuses.map((el) => {
@@ -119,7 +113,6 @@ function CompetitionSeasonForm({
             description="status"
             selectedValue={tempData.status}
             handleOnChange={handleOnChange}
-           
           />
         </Field.Root>
         <Field.Root>
@@ -135,7 +128,6 @@ function CompetitionSeasonForm({
             description="winner"
             selectedValue={tempData.winnerId}
             handleOnChange={handleOnChange}
-           
           />
         </Field.Root>
         <FormBtn disabled={isPending}>

@@ -18,6 +18,7 @@ interface IMatch {
     shortName: string;
     longName: string;
   } | null;
+  date: string;
 }
 
 interface ILeagueRoundStanding {
@@ -32,6 +33,7 @@ interface ILeagueRoundStanding {
 }
 
 interface ILeagueRound {
+  id: string;
   leagueId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;

@@ -19,6 +19,7 @@ type League = Schema["League"]["type"];
 type Standing = Schema["Standing"]["type"];
 type Match = Schema["Match"]["type"];
 type LeagueRound = Schema["LeagueRound"]["type"];
+type PlayOff = Schema["PlayOff"]["type"];
 
 function formDataToObject<T = Record<string, any>>(formData: FormData): T {
   const obj: Record<string, any> = {};
@@ -903,11 +904,14 @@ export const createCompetitionSeason = async (formData: FormData) => {
     pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons",
     validate: async (base) => {
       const uniqueSeason = await checkUniqueCompetitionSeason(base.season);
-      if (uniqueSeason && uniqueSeason.length > 0) {
+      const existing = uniqueSeason.find(
+        (el) => el.name === base.name && el.season === base.season
+      );
+      if (existing) {
         return {
           status: "error",
           valid: false,
-          message: `name "${base.season}" already exists.`,
+          message: `season "${base.season}" already exists.`,
         };
       }
       return { valid: true };
@@ -994,6 +998,39 @@ export async function updateCompetitionSeason(
   }
 }
 
+export async function updateLeagueRound(id: string, formData: FormData) {
+  const body = formDataToObject<LeagueRound>(formData);
+
+  try {
+    const { data, errors } = await cookiesClient.models.LeagueRound.update(
+      body,
+      {
+        selectionSet: ["id", "round"],
+      }
+    );
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    revalidatePath(
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]"
+    );
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
+
 export async function deleteCompetitionSeason(id: string) {
   return await deleteEntity({
     id,
@@ -1025,6 +1062,47 @@ export const createStandingRow = async (formData: FormData) => {
   });
 };
 
+export const updateStandingRow = async (id: string, formData: FormData) => {
+  const base = formDataToObject<Standing>(formData);
+
+  try {
+    const { data, errors } = await cookiesClient.models.Standing.update(base, {
+      selectionSet: [
+        "id",
+        "teamId",
+        "position",
+        "pts",
+        "p",
+        "w",
+        "d",
+        "l",
+        "g",
+        "gd",
+        "leagueId",
+      ],
+    });
+
+    if (errors) {
+      console.log(errors);
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+};
+
 export const createLeagueRound = async (formData: FormData) => {
   const base = formDataToObject<LeagueRound>(formData);
   const leagueRoundCreator = createEntityFactory<LeagueRound, LeagueRound>();
@@ -1041,6 +1119,49 @@ export const createLeagueRound = async (formData: FormData) => {
     }),
   });
 };
+
+export const createPlayOff = async (formData: FormData) => {
+  const base = formDataToObject<PlayOff>(formData);
+  const playOffCreator = createEntityFactory<PlayOff, PlayOff>();
+
+  return await playOffCreator({
+    modelName: "PlayOff",
+    input: base,
+    selectionSet: ["id", "round"],
+    pathToRevalidate:
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]",
+  });
+};
+
+export async function updatePlayOff(id: string, formData: FormData) {
+  const body = formDataToObject<PlayOff>(formData);
+
+  try {
+    const { data, errors } = await cookiesClient.models.PlayOff.update(body, {
+      selectionSet: ["id", "round"],
+    });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    revalidatePath(
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]"
+    );
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
 
 // export async function createStandingRow(formData: FormData) {
 //   const body = formDataToObject<Standing>(formData);

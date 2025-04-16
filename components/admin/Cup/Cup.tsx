@@ -16,6 +16,7 @@ interface IMatch {
     shortName: string;
     longName: string;
   } | null;
+  date: string;
 }
 
 interface IRound {
@@ -31,11 +32,11 @@ interface IRound {
 function Cup({
   rounds,
   matches,
-  roundResults,
+  cupId,
 }: {
   rounds?: IRound[];
   matches?: IMatch[];
-  roundResults: string[];
+  cupId: Nullable<string>;
 }) {
   const transformedRounds =
     rounds &&
@@ -53,7 +54,13 @@ function Cup({
 
   if (!transformedRounds) return null;
 
-  return <PlayoffRound dbRounds={transformedRounds} matches={matches} />;
+  return (
+    <PlayoffRound
+      dbRounds={transformedRounds}
+      matches={matches}
+      cupId={cupId}
+    />
+  );
 }
 
 export default Cup;

@@ -9,6 +9,7 @@ function CustomSelect({
   handleOnChange,
   fixedWidth,
   id,
+  disabled,
 }: {
   name: string;
   description: string;
@@ -17,13 +18,16 @@ function CustomSelect({
   handleOnChange?: (e: { target: { name: string; value: string } }) => void;
   fixedWidth?: boolean;
   id?: string;
+  disabled?: boolean;
 }) {
   return (
     <NativeSelect.Root
       size={"md"}
       variant={"outline"}
       colorPalette={"gray"}
+      textTransform={"capitalize"}
       maxW={fixedWidth ? "2xs" : "full"}
+      disabled={disabled}
     >
       <NativeSelect.Field
         placeholder={`Select ${description}`}
@@ -31,14 +35,15 @@ function CustomSelect({
         fontSize={"sm"}
         fontWeight={"medium"}
         pl={"10px"}
+        lineHeight={1.5}
         name={name}
         value={selectedValue}
         onChange={handleOnChange}
         id={id}
       >
-        {options.map((option) => {
+        {options.map((option, i) => {
           return (
-            <option value={option.value} key={option.value}>
+            <option value={option.value} key={option.value + i}>
               {option.label}
             </option>
           );

@@ -59,7 +59,7 @@ function CompetitionSeasonFinalStep({
       if (res.status === "success" && res.data) {
         mutationToast(
           "competition season",
-          res.data.name + res.data.name,
+          res.data.name + " " + res.data.season,
           "create"
         );
         formRef.current?.reset();
