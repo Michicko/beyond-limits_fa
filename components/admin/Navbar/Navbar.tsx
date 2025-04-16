@@ -58,7 +58,7 @@ function Navbar({
         </HStack>
         <HStack gap={{ base: "1", sm: "3" }} align={"center"}>
           <ColorModeButton />
-          <Notification count={5} />
+          {/* <Notification count={5} /> */}
           <ProfileMenu user={user} />
         </HStack>
       </Flex>

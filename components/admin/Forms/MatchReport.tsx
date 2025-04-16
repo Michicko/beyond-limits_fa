@@ -69,7 +69,11 @@ function MatchReport({
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Report</FormLabel>
-      <GoalScorers matchForm={matchForm} setMatchForm={setMatchForm} />
+      <GoalScorers
+        matchForm={matchForm}
+        setMatchForm={setMatchForm}
+        players={players}
+      />
       <Field.Root mb={"5"} w={"full"}>
         <FormLabel>Match Context</FormLabel>
         <TextEditor

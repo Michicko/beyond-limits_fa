@@ -351,11 +351,56 @@ export async function updateCompetition(
 }
 
 export async function deleteCompetition(id: string) {
-  return await deleteEntity({
-    id,
-    modelName: "Competition",
-    pathToRevalidate: "/cp/competitions",
-  });
+  try {
+    const { data: competition, errors } =
+      await cookiesClient.models.Competition.get({ id });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    if (!competition) {
+      return {
+        status: "error",
+        message: "No competition with that id" + id,
+      };
+    }
+
+    //  find competition season
+    const { data: competitionSeasons } =
+      await cookiesClient.models.CompetitionSeason.list({
+        filter: {
+          competitionId: {
+            eq: id,
+          },
+        },
+      });
+
+    if (competitionSeasons && competitionSeasons.length > 0) {
+      return {
+        status: "error",
+        message:
+          "Please delete competition seasons associated with this competition",
+      };
+    }
+
+    await cookiesClient.models.Competition.delete({ id });
+
+    revalidatePath("/cp/competitions");
+    return {
+      status: "success",
+      data: null,
+      message: "Competition deleted successfully",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
 }
 
 export const createTeam = async (formData: FormData) => {
@@ -1032,11 +1077,114 @@ export async function updateLeagueRound(id: string, formData: FormData) {
 }
 
 export async function deleteCompetitionSeason(id: string) {
-  return await deleteEntity({
-    id,
-    modelName: "CompetitionSeason",
-    pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons/",
-  });
+  try {
+    const { data: competitionSeason, errors } =
+      await cookiesClient.models.CompetitionSeason.get({ id });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    if (!competitionSeason) {
+      return {
+        status: "error",
+        message: "No competition season with that id" + id,
+      };
+    }
+
+    // find all competition season resources
+
+    const { data: leagues = [] } =
+      await cookiesClient.models.League.listLeagueByCompetitionNameSeason({
+        competitionNameSeason:
+          competitionSeason.name + " " + competitionSeason.season,
+      });
+
+    const { data: cups = [] } =
+      await cookiesClient.models.Cup.listCupByCompetitionNameSeason({
+        competitionNameSeason:
+          competitionSeason.name + " " + competitionSeason.season,
+      });
+
+    const { data: matches = [] } = await cookiesClient.models.Match.list({
+      filter: {
+        competitionSeasonId: { eq: id },
+      },
+    });
+
+    // 2. Conditionally fetch dependent models if leagues/cups exist
+    let playOffs: PlayOff[] = [];
+    if (cups.length > 0) {
+      const res = await cookiesClient.models.PlayOff.list({
+        filter: {
+          cupId: { eq: cups[0].id },
+        },
+      });
+      playOffs = res.data || [];
+    }
+
+    let standingRows: Standing[] = [];
+    let leagueRounds: LeagueRound[] = [];
+
+    if (leagues.length > 0) {
+      const res1 = await cookiesClient.models.Standing.list({
+        filter: {
+          leagueId: { eq: leagues[0].id },
+        },
+      });
+      standingRows = res1.data || [];
+
+      const res2 = await cookiesClient.models.LeagueRound.list({
+        filter: {
+          leagueId: { eq: leagues[0].id },
+        },
+      });
+      leagueRounds = res2.data || [];
+    }
+
+    // 3. Delete related records in safe order
+    for (const row of standingRows) {
+      await cookiesClient.models.Standing.delete({ id: row.id });
+    }
+
+    for (const round of leagueRounds) {
+      await cookiesClient.models.LeagueRound.delete({ id: round.id });
+    }
+
+    for (const playOff of playOffs) {
+      await cookiesClient.models.PlayOff.delete({ id: playOff.id });
+    }
+
+    for (const match of matches) {
+      await cookiesClient.models.Match.delete({ id: match.id });
+    }
+
+    for (const cup of cups) {
+      await cookiesClient.models.Cup.delete({ id: cup.id });
+    }
+
+    for (const league of leagues) {
+      await cookiesClient.models.League.delete({ id: league.id });
+    }
+
+    // Delete the CompetitionSeason itself
+    await cookiesClient.models.CompetitionSeason.delete({ id });
+
+    revalidatePath("/cp/competitions/[competitionId]/competition-seasons/");
+    return {
+      status: "success",
+      data: null,
+      message: "Competition season and all related data deleted successfully",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
 }
 
 export const createStandingRow = async (formData: FormData) => {

@@ -345,6 +345,7 @@ interface ILineup {
 export interface IMatchScorer {
   id: string;
   name: string;
+  playerId?: string;
   time: string;
   goalType: string;
   isOpponent: boolean;

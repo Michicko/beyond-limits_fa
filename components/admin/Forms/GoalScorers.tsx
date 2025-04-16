@@ -2,7 +2,7 @@
 import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import MatchScoreTime from "@/components/main/MatchCard/MatchScoreTime";
-import { IMatch, IMatchScorer } from "@/lib/definitions";
+import { IMatchScorer, Nullable } from "@/lib/definitions";
 import { getIcon } from "@/lib/icons";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -46,16 +46,27 @@ type IMatchI = Pick<
   | "competitionSeasonId"
 >;
 
+interface IPlayer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  squadNo: Nullable<number>;
+  homeKit: Nullable<string>;
+}
+
 function GoalScorers({
   matchForm,
   setMatchForm,
+  players,
 }: {
   matchForm: IMatchI;
   setMatchForm: any;
+  players: IPlayer[];
 }) {
   const [scorer, setScorer] = useState<IMatchScorer>({
     id: "",
     name: "",
+    playerId: "",
     time: "",
     goalType: "",
     isOpponent: false,
@@ -65,6 +76,7 @@ function GoalScorers({
     setScorer({
       id: "",
       name: "",
+      playerId: "",
       time: "",
       goalType: "",
       isOpponent: false,
@@ -121,7 +133,25 @@ function GoalScorers({
             </Field.HelperText>
           </Field.Root>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={{ base: 1, md: 2 }}>
+          <Field.Root>
+            <Field.Label>Player</Field.Label>
+            <CustomSelect
+              name={"playerId"}
+              description={"Player"}
+              selectedValue={scorer.playerId || ""}
+              options={players.map((player) => {
+                return {
+                  label: player.firstname + " " + player.lastname,
+                  value: player.id,
+                };
+              })}
+              handleOnChange={handleScorerOnChange}
+              id={"match"}
+            />
+          </Field.Root>
+        </GridItem>
+        <GridItem colSpan={{ base: 1, md: 2 }}>
           <Field.Root mb={"1"}>
             <FormLabel>Time</FormLabel>
             <Input
@@ -140,7 +170,7 @@ function GoalScorers({
             </Field.HelperText>
           </Field.Root>
         </GridItem>
-        <GridItem>
+        <GridItem colSpan={{ base: 1, md: 2 }}>
           <Field.Root mb={"1"}>
             <FormLabel>Goal Type</FormLabel>
             <CustomSelect
