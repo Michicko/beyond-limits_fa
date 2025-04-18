@@ -1,0 +1,76 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--xxs) var(--sm);
+  text-transform: uppercase;
+  border-radius: var(--xxs);
+  font-family: var(--font-body);
+  font-weight: 500;
+  gap: var(--sm);
+  outline: transparent;
+  border: transparent;
+  cursor: pointer;
+}
+
+.btn.sm {
+  font-size: var(--sm);
+  padding: var(--xxs) var(--sm);
+}
+
+.btn.secondary {
+  background: var(--secondary-light);
+  color: var(--primary-light);
+}
+
+.btn.btn.secondary:hover {
+  background: var(--secondary-dark);
+  color: var(--white);
+}
+
+.btn svg {
+  height: var(--base);
+  width: var(--base);
+  fill: var(--primary-light);
+  margin-top: -0.2rem;
+  display: none;
+}
+
+.btn.btn.secondary:hover svg {
+  fill: var(--white);
+}
+
+.btn.share-btn {
+  background: transparent;
+  color: var(--secondary-light);
+  border: var(--secondary-light) solid 1px;
+  padding: var(--xs) var(--md);
+}
+
+.btn.share-btn:hover {
+  background: var(--secondary-light);
+  color: var(--primary-dark);
+}
+
+.btn-img-box {
+  position: relative;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.btn.share-btn .share-btn:hover {
+  background: var(--secondary-light);
+  color: var(--primary-light);
+}
+
+@media only screen and (min-width: 25rem) {
+  .btn svg {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 36rem) {
+  .btn {
+    padding: var(--xs) var(--lg);
+    gap: var(--base);
+  }
+}

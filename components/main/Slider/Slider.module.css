@@ -1,0 +1,95 @@
+.slider {
+  position: relative;
+}
+
+.slider-btns {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--md);
+  z-index: 1600;
+}
+
+.slider-btns svg {
+  height: var(--lg);
+  width: var(--lg);
+  color: var(--white);
+}
+
+.slider-btns button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: transparent;
+  border: transparent;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  height: calc(var(--lg) + 0.8rem);
+  width: calc(var(--lg) + 0.8rem);
+}
+
+.header-overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(4, 48, 91, 0.65),
+    rgba(64, 84, 102, 0.02)
+  );
+  z-index: 1300;
+}
+
+.slider-btns button:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+@media only screen and (min-width: 48rem) {
+  .slider-btns svg {
+    height: var(--xl);
+    width: var(--xl);
+  }
+
+  .slider-btns button {
+    height: calc(var(--xl) + 0.8rem);
+    width: calc(var(--xl) + 0.8rem);
+  }
+}
+
+@media only screen and (min-width: 64rem) {
+  .slider-btns svg {
+    height: var(--xxl);
+    width: var(--xxl);
+  }
+  .slider-btns {
+    padding: 0 var(--lg);
+  }
+
+  .slider-btns button {
+    height: calc(var(--xxl) + 0.8rem);
+    width: calc(var(--xxl) + 0.8rem);
+  }
+}
+
+@media only screen and (min-width: 64rem) {
+  .slider-btns svg {
+    height: var(--xxxl);
+    width: var(--xxxl);
+  }
+
+  .slider-btns button {
+    height: calc(var(--xxxl) + 0.8rem);
+    width: calc(var(--xxxl) + 0.8rem);
+  }
+}
