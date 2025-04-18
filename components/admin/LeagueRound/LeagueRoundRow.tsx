@@ -77,6 +77,7 @@ function LeagueRoundRow({ round }: { round: ILeagueRound }) {
           value={result}
           setValue={setResult}
           disabled={round.result && round.status === "COMPLETED" ? true : false}
+          fixedWidth={true}
         />
       </Table.Cell>
       <Table.Cell css={tC}>

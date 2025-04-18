@@ -10,6 +10,7 @@ import {
   Spinner,
   Alert,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
@@ -68,7 +69,6 @@ function LeagueStanding({
       gd: 0,
     }));
 
-    setIsGenerating(false);
     const promises = standing.map((row) => {
       const formData = objectToFormData(row);
       return createStandingRow(formData);
@@ -94,6 +94,7 @@ function LeagueStanding({
               return prevStanding;
             });
           }
+          setIsGenerating(false);
         } else {
           setError(result.reason);
         }
@@ -144,10 +145,17 @@ function LeagueStanding({
               px={"20px"}
               variant={"solid"}
               colorPalette={"teal"}
-              disabled={standing.length > 0}
+              disabled={standing.length > 0 || isGenerating}
               onClick={async () => await generateStanding()}
             >
-              Generate Standing
+              {isGenerating ? (
+                <HStack gap={2} alignItems={"center"}>
+                  <Spinner size="sm" border={"1px solid blue"} />
+                  <Text as={"span"}>Generating...</Text>
+                </HStack>
+              ) : (
+                "Generate Standing"
+              )}
             </Button>
           </HStack>
           <CustomSeparator />

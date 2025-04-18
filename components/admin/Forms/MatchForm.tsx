@@ -293,9 +293,9 @@ function MatchForm({
     const formData = objectToFormData(data);
     updateFormDataWithJSON(formData, data);
     formData.delete("result");
-    formData.append("result", result);
 
     if (match && method === "UPDATE") {
+      formData.append("result", result);
       startTransition(async () => {
         const res = await updateMatch(match.id, formData);
         if (res.status === "success" && res.data) {

@@ -1,0 +1,117 @@
+.videoCard {
+  transition: transform 0.2s ease-in-out;
+  width: 100%;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--base);
+  text-decoration: none;
+}
+
+.videocards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sm);
+  margin-bottom: var(--xl);
+}
+
+.videocards {
+  gap: var(--lg);
+}
+
+.videoCard:hover {
+  transform: translateY(-5px);
+}
+
+.thumbnailWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 5rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--base);
+  overflow: hidden;
+}
+
+.thumbnailWrapper::before {
+  content: "";
+  padding-top: 130%;
+  display: block;
+}
+
+.thumbnail {
+  border-radius: 12px;
+  max-width: 100%;
+  height: auto;
+}
+
+.videoInfo {
+  padding: 16px;
+  text-align: left;
+  color: #fff;
+}
+
+.videoTitle {
+  font-family: var(--font);
+  font-size: var(--md);
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+}
+
+.videoDate {
+  font-size: 14px;
+  color: #bbb;
+  margin-bottom: 12px;
+}
+
+.videocard-title {
+  color: var(--white);
+  padding: 5px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--md);
+  font-weight: 500;
+}
+
+.buttonContainer {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.videocard-link {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  z-index: 500;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.play-icon {
+  height: 2.5rem;
+  width: 2.5rem;
+  fill: #ffd700;
+}
+
+@media only screen and (min-width: 48rem) {
+  .play-icon {
+    height: 4rem;
+    width: 4rem;
+  }
+  .videocards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (min-width: 60rem) {
+  .videocards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (min-width: 75rem) {
+  .videocards {
+    gap: var(--xl);
+  }
+}

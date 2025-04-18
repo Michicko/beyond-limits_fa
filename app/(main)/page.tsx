@@ -10,7 +10,7 @@ import Slider from "@/components/main/Slider/Slider";
 import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
 import Text from "@/components/main/Typography/Text";
-// import VideoCards from "@/components/main/VideoCard/VideoCards";
+import VideoCards from "@/components/main/VideoCard/VideoCards";
 // import { getDefaultSeason } from "@/lib/helper";
 import {
   articles,
@@ -24,8 +24,9 @@ import {
 } from "@/lib/placeholder-data";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
+import { fetchHomepageData } from "../_actions/actions";
 
-export default function Home() {
+export default async function Home() {
   const previous_match = matches.find((el) => el.status === "FINISHED");
   const upcoming_match = matches.find((el) => el.status === "UPCOMING");
   // const currentSeason = getDefaultSeason(seasons);
@@ -40,6 +41,10 @@ export default function Home() {
       team,
     };
   });
+
+  const { data: homepageContent, status } = await fetchHomepageData();
+
+  console.log(homepageContent, status);
 
   return (
     <>
@@ -173,7 +178,7 @@ export default function Home() {
           </Flex>
         </Container>
         <Container as="section" size="md">
-          {/* <VideoCards videos={match_highlights.slice(0, 3)} /> */}
+          <VideoCards videos={match_highlights.slice(0, 3)} />
           <></>
         </Container>
       </main>

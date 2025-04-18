@@ -159,9 +159,9 @@ export interface IArticle {
   id: string;
   title: string;
   createdAt: string;
-  article_category_id: string;
+  articleCategoryId: string;
   coverImage: string;
-  match?: IMatch;
+  matchId?: string;
   tags: string[];
   content: JSONContent | string;
   category?: IArticleCategory;

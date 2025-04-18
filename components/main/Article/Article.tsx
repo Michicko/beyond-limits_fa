@@ -40,7 +40,7 @@ const Article = ({ article }: { article: IArticle }) => {
       })}
       style={cardStyles}
     >
-      {article.match &&
+      {/* {article.match &&
         article.match.homeTeam &&
         article.match.awayTeam &&
         article.category &&
@@ -59,7 +59,7 @@ const Article = ({ article }: { article: IArticle }) => {
               />
             </div>
           </div>
-        )}
+        )} */}
       <div className={clsx(styles.article__body)}>
         {article.category && <ArticleCategory category={article.category} />}
         <h3>{article.title}</h3>

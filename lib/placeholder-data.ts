@@ -1405,7 +1405,7 @@ export const articles = [
       "Beyond Limits FA Earns Promotion to NNL After 4-0 Victory Over First Bank FC",
     createdAt: "2024-06-15",
     coverImage: "/images/winners.jpg",
-    article_category_id: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
+    articleCategoryId: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
     category: article_categories.find(
       (el) => el.id === "bb3a4a86-a091-4099-be7a-2e1b061e340c"
     ),
@@ -1414,7 +1414,7 @@ export const articles = [
   },
   {
     id: "bc2a4a86-a091-4099-be7a-2e1b061e330a",
-    article_category_id: "bb3a4a86-a091-4099-be7a-2e1b061e340b",
+    articleCategoryId: "bb3a4a86-a091-4099-be7a-2e1b061e340b",
     category: article_categories.find(
       (el) => el.id === "bb3a4a86-a091-4099-be7a-2e1b061e340b"
     ),
@@ -1430,7 +1430,7 @@ export const articles = [
   },
   {
     id: "cc3a4a86-a093-3099-be7a-2e1b061e331a",
-    article_category_id: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
+    articleCategoryId: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
     category: article_categories.find(
       (el) => el.id === "bb3a4a86-a091-4099-be7a-2e1b061e340c"
     ),
@@ -1443,7 +1443,7 @@ export const articles = [
   },
   {
     id: "dd3a4a86-a091-4099-be7a-2e1b061e330a",
-    article_category_id: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
+    articleCategoryId: "bb3a4a86-a091-4099-be7a-2e1b061e340c",
     category: article_categories.find(
       (el) => el.id === "bb3a4a86-a091-4099-be7a-2e1b061e340c"
     ),
@@ -1456,7 +1456,7 @@ export const articles = [
   },
   {
     id: "cc3a4a86-a091-4099-be7a-2e1b061e23ab",
-    article_category_id: "bb3a4a86-a091-4099-be7a-2e1b061e340C",
+    articleCategoryId: "bb3a4a86-a091-4099-be7a-2e1b061e340C",
     category: article_categories.find(
       (el) => el.id === "bb3a4a86-a091-4099-be7a-2e1b061e340c"
     ),
@@ -1472,7 +1472,7 @@ export const articles = [
   },
   {
     id: "cc3a4a86-a091-2149-be7a-2e1b061e330c",
-    article_category_id: "dd2a4a86-a091-4099-be7a-2e1b061e340b",
+    articleCategoryId: "dd2a4a86-a091-4099-be7a-2e1b061e340b",
     category: article_categories.find(
       (el) => el.id === "dd2a4a86-a091-4099-be7a-2e1b061e340b"
     ),

@@ -1194,18 +1194,145 @@ function getPlayerGoalCounts(matches: IMatch[]) {
   return result;
 }
 
+async function getCurrentCompetitionSeasons() {
+  const year = new Date().getFullYear();
+  const { data: competitionSeasons } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        season: {
+          contains: `${year}`,
+        },
+      },
+    });
+
+  return competitionSeasons;
+}
+
+async function getCurrentCompetitionSeasonsMatches() {
+  const competitionSeasons = await getCurrentCompetitionSeasons();
+  let matches: IMatch[] = [];
+
+  for (const season of competitionSeasons) {
+    // matches for each competition season
+    const { data: matchList } = await cookiesClient.models.Match.list({
+      filter: {
+        competitionSeasonId: {
+          eq: season.id,
+        },
+      },
+      selectionSet: [
+        "id",
+        "date",
+        "time",
+        "status",
+        "result",
+        "venue",
+        "awayTeam.*",
+        "keyPlayerId",
+        "homeTeam.*",
+        "competitionSeason.logo",
+        "competitionSeason.name",
+        "competitionSeason.id",
+        "scorers",
+      ],
+    });
+    matches = [...matches, ...matchList];
+  }
+  return matches;
+}
+
+async function getPrevNextMatch() {
+  const matches = await getCurrentCompetitionSeasonsMatches();
+  // result and fixtures from matches for the current year
+  const { results, fixtures } = matches.reduce(
+    (acc, match) => {
+      if (match.status === "COMPLETED") {
+        acc.results.push(match);
+      } else {
+        acc.fixtures.push(match);
+      }
+      return acc;
+    },
+    { results: [], fixtures: [] } as {
+      results: typeof matches;
+      fixtures: typeof matches;
+    }
+  );
+
+  results.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  fixtures.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  const upcomingMatch = fixtures[0] || null;
+  const lastMatch = results[results.length - 1] || null;
+
+  return {
+    upcomingMatch,
+    lastMatch,
+  };
+}
+
+async function getCurrentNnlStanding() {
+  const year = new Date().getFullYear();
+  // current nigerian national league competition
+  const currentNNlSeasons = (
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        name: {
+          eq: "nigerian national league",
+        },
+        season: {
+          contains: `${year}`,
+        },
+        status: { eq: "PENDING" },
+      },
+    })
+  ).data;
+
+  const currentNNlSeason = currentNNlSeasons[0];
+
+  // league belonging to the nigerian national league
+  const currentLeague =
+    currentNNlSeason &&
+    currentNNlSeason.leagueId &&
+    (
+      await cookiesClient.models.League.get({
+        id: currentNNlSeason.leagueId,
+      })
+    ).data;
+
+  // nigerian natonal league table
+  const nnlStanding = currentLeague
+    ? (
+        await cookiesClient.models.Standing.list({
+          filter: {
+            leagueId: {
+              eq: currentLeague.id,
+            },
+          },
+        })
+      ).data
+    : [];
+
+  const teams = (await cookiesClient.models.Team.list()).data;
+
+  const mappedStanding = nnlStanding
+    .map((el) => {
+      const team = teams.find((team) => team.id === el.teamId);
+      return { ...el, team };
+    })
+    .filter((el) => el !== undefined);
+
+  return mappedStanding;
+}
+
 export async function fetchDashboardData() {
   const year = new Date().getFullYear();
   try {
-    // find competition seasons for current year
-    const { data: competitionSeasons } =
-      await cookiesClient.models.CompetitionSeason.list({
-        filter: {
-          season: {
-            contains: `${year}`,
-          },
-        },
-      });
+    const competitionSeasons = await getCurrentCompetitionSeasons();
 
     if (!competitionSeasons || competitionSeasons.length < 1) {
       return {
@@ -1226,35 +1353,10 @@ export async function fetchDashboardData() {
       };
     }
 
-    // initialize mathes and rounds for either cup or league
+    // initialize rounds for cup or league
     let allRounds: (LeagueRound | PlayOff)[] = [];
-    let matches: IMatch[] = [];
 
     for (const season of competitionSeasons) {
-      // matches for each competition season
-      const { data: matchList } = await cookiesClient.models.Match.list({
-        filter: {
-          competitionSeasonId: {
-            eq: season.id,
-          },
-        },
-        selectionSet: [
-          "id",
-          "date",
-          "time",
-          "status",
-          "result",
-          "venue",
-          "awayTeam.*",
-          "keyPlayerId",
-          "homeTeam.*",
-          "competitionSeason.logo",
-          "competitionSeason.name",
-          "competitionSeason.id",
-          "scorers",
-        ],
-      });
-      matches = [...matches, ...matchList];
       // playoff rounds for competition season
       if (season.cupId) {
         const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list(
@@ -1299,73 +1401,11 @@ export async function fetchDashboardData() {
       { wins: 0, losses: 0, draws: 0 }
     );
 
-    // current nigerian national league competition
-    const currentNNlSeasons = (
-      await cookiesClient.models.CompetitionSeason.list({
-        filter: {
-          name: {
-            eq: "nigerian national league",
-          },
-          season: {
-            contains: `${year}`,
-          },
-          status: { eq: "PENDING" },
-        },
-      })
-    ).data;
+    const nnlStanding = await getCurrentNnlStanding();
 
-    const currentNNlSeason = currentNNlSeasons[0];
+    const { upcomingMatch, lastMatch } = await getPrevNextMatch();
+    const matches = await getCurrentCompetitionSeasonsMatches();
 
-    // league belonging to the nigerian national league
-    const currentLeague =
-      currentNNlSeason &&
-      currentNNlSeason.leagueId &&
-      (
-        await cookiesClient.models.League.get({
-          id: currentNNlSeason.leagueId,
-        })
-      ).data;
-
-    // nigerian natonal league table
-    const nnlStanding = currentLeague
-      ? (
-          await cookiesClient.models.Standing.list({
-            filter: {
-              leagueId: {
-                eq: currentLeague.id,
-              },
-            },
-          })
-        ).data
-      : [];
-
-    // result and fixtures from matches for the current year
-    const { results, fixtures } = matches.reduce(
-      (acc, match) => {
-        if (match.status === "COMPLETED") {
-          acc.results.push(match);
-        } else {
-          acc.fixtures.push(match);
-        }
-        return acc;
-      },
-      { results: [], fixtures: [] } as {
-        results: typeof matches;
-        fixtures: typeof matches;
-      }
-    );
-
-    results.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-    fixtures.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-
-    const upcomingMatch = fixtures[0] || null;
-    const lastMatch = results[results.length - 1] || null;
-
-    //
     const upcomingCompetitionSeasonRounds = upcomingMatch
       ? matches.filter(
           (el) => el.competitionSeasonId === upcomingMatch.competitionSeasonId
@@ -1403,15 +1443,6 @@ export async function fetchDashboardData() {
         selectionSet: ["id", "firstname", "lastname", "homeKit"],
       })
     ).data;
-    const teams = (await cookiesClient.models.Team.list()).data;
-
-    // map team to nnlstanding
-    const mappedStanding = nnlStanding
-      .map((el) => {
-        const team = teams.find((team) => team.id === el.teamId);
-        return { ...el, team };
-      })
-      .filter((el) => el !== undefined);
 
     // map player to goal ranking
     const mappedGoalRanking = getPlayerGoalCounts(matches)
@@ -1433,7 +1464,7 @@ export async function fetchDashboardData() {
         draws: resultCounts.draws,
       },
       goalRanking: mappedGoalRanking,
-      nnlStanding: mappedStanding,
+      nnlStanding,
       lastMatch,
       upcomingMatch,
       upcomingCompetition: {
@@ -1458,4 +1489,24 @@ export async function fetchDashboardData() {
 
 // end season route for competition season
 
-export async function fetchHomepageData() {}
+export async function fetchHomepageData() {
+  try {
+    const { upcomingMatch, lastMatch } = await getPrevNextMatch();
+
+    const homepageContent = {
+      upcomingMatch,
+      lastMatch,
+    };
+
+    return {
+      status: "success",
+      data: homepageContent,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
