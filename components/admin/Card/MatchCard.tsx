@@ -7,7 +7,7 @@ import MatchDetails from "./MatchDetails";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
-import { IMatch } from "@/lib/definitions";
+import { Nullable } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
 import { deleteMatch } from "@/app/_actions/actions";
 
@@ -17,6 +17,38 @@ function getFirstLetter(str: string): string {
     .filter((word) => word.length > 0)
     .map((word) => word[0])
     .join("");
+}
+
+interface ICompetitionSeason {
+  id: string;
+  logo: string;
+  name: string;
+}
+
+interface IMatch {
+  id?: string;
+  competitionSeasonId?: Nullable<string>;
+  competitionSeason?: ICompetitionSeason;
+  date: string;
+  time: string;
+  venue: string;
+  status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
+  result?: "WIN" | "DRAW" | "LOSE" | null;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  scorers: any;
 }
 
 function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {

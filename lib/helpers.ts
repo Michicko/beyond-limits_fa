@@ -81,17 +81,32 @@ export const objectToFormData = (obj: Record<string, any>): FormData => {
 
   for (const key in obj) {
     if (obj[key] instanceof File) {
-      // For file uploads
       formData.append(key, obj[key]);
-    } else if (Array.isArray(obj[key])) {
-      // Handle arrays (optional handling)
-      obj[key].forEach((value: any, index: number) => {
-        formData.append(`${key}[${index}]`, value);
-      });
-    } else {
+    } else if (typeof obj[key] !== "object" || obj[key] === null) {
       formData.append(key, obj[key]);
     }
   }
 
   return formData;
 };
+
+export function updateFormDataWithJSON(
+  formData: FormData,
+  data: Record<string, any>
+) {
+  const keys = [
+    "review",
+    "report",
+    "lineup",
+    "substitutes",
+    "coach",
+    "homeTeam",
+    "awayTeam",
+    "scorers",
+  ];
+
+  keys.forEach((key) => {
+    formData.delete(key);
+    formData.append(key, JSON.stringify(data[key]));
+  });
+}

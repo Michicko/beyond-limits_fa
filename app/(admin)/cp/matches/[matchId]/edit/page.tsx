@@ -30,6 +30,7 @@ async function page({ params }: { params: { matchId: string } }) {
         "mvpId",
         "time",
         "status",
+        "result",
         "review",
         "report",
         "lineup",

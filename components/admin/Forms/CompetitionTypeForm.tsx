@@ -48,7 +48,7 @@ function CompetitionTypeForm({
             <FormLabel>Competition</FormLabel>
             <Input
               disabled
-              value={competition.long_name}
+              value={competition.longName}
               p={"0 10px"}
               variant={"outline"}
               color={"text_lg"}

@@ -55,27 +55,26 @@ function TrophyFormDialog({
       `${competiton?.longName.toString()} trophy` || ""
     );
 
-    startTransition(() => {
-      createTrophy(formData)
-        .then((data: Schema["Trophy"]["type"] | null) => {
-          if (data) {
-            mutationToast(
-              "trophy",
-              competiton?.longName || "competition",
-              "create"
-            );
-            formRef.current?.reset();
-            setTempData({
-              image: "",
-              competitionId: "",
-              articleId: "",
-              trophyName: "",
-            });
-          }
-        })
-        .catch((err) => {
-          errorToast(err);
+    startTransition(async () => {
+      const res = await createTrophy(formData);
+
+      if (res.status === "success" && res.data) {
+        mutationToast(
+          "trophy",
+          competiton?.longName || "competition",
+          "create"
+        );
+        formRef.current?.reset();
+        setTempData({
+          image: "",
+          competitionId: "",
+          articleId: "",
+          trophyName: "",
         });
+      }
+      if (res.status === "error") {
+        errorToast(res.message);
+      }
     });
   };
 

@@ -60,6 +60,11 @@ function PlayerForm({
     formData.append("homeKit", tempData.homeKit);
     formData.append("awayKit", tempData.awayKit);
     formData.append("isTwoFooted", String(tempData.isTwoFooted));
+    formData.delete("scorers[0]");
+    formData.delete("scorers[1]");
+    formData.delete("scorers[2]");
+    formData.delete("scorers[3]");
+    formData.delete("scorers[4]");
 
     if (player) {
       startTransition(async () => {

@@ -1,6 +1,6 @@
 "use client";
 import { Box, Field, HStack, Text, Textarea } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { JSONContent } from "@tiptap/react";
@@ -8,6 +8,7 @@ import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
 import GoalScorers from "./GoalScorers";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
+import ResultSelector from "../ResultSelector/ResultSelector";
 
 interface IPlayer {
   id: string;
@@ -36,6 +37,7 @@ type IMatchI = Pick<
   | "substitutes"
   | "time"
   | "status"
+  | "result"
   | "competitionSeasonId"
 >;
 
@@ -45,12 +47,16 @@ function MatchReport({
   stackStyles,
   handleOnChange,
   players,
+  result,
+  setResult,
 }: {
   matchForm: IMatchI;
   setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
   stackStyles: IStackStyles;
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
   players: IPlayer[];
+  result: string;
+  setResult: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const playerOptions = players.map((player) => {
     return {
@@ -69,6 +75,17 @@ function MatchReport({
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Report</FormLabel>
+      <Field.Root>
+        <ResultSelector
+          id={matchForm.id}
+          value={result}
+          setValue={setResult}
+          disabled={
+            matchForm.result && matchForm.status === "COMPLETED" ? true : false
+          }
+          fixedWidth={false}
+        />
+      </Field.Root>
       <GoalScorers
         matchForm={matchForm}
         setMatchForm={setMatchForm}

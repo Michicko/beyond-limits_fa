@@ -2,7 +2,17 @@ import calcWidth from "@/lib/calcWidth";
 import { Card, Box, HStack, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 
-function MatchStats() {
+function MatchStats({
+  played,
+  win,
+  draw,
+  lose,
+}: {
+  played: number;
+  win: number;
+  draw: number;
+  lose: number;
+}) {
   const lineStyles = {
     h: "6px",
     w: "full",
@@ -60,19 +70,19 @@ function MatchStats() {
         >
           <Box
             css={lineStyles}
-            w={`${calcWidth(6, 4)}%`}
+            w={`${calcWidth(played, win)}%`}
             _before={{ bg: "green.400", w: "100%" }}
             title="win"
           ></Box>
           <Box
             css={lineStyles}
-            w={`${calcWidth(6, 1)}%`}
+            w={`${calcWidth(played, draw)}%`}
             _before={{ bg: "yellow.400", w: "100%" }}
             title="draw"
           ></Box>
           <Box
             css={lineStyles}
-            w={`${calcWidth(6, 1)}%`}
+            w={`${calcWidth(played, lose)}%`}
             _before={{ bg: "red.400", w: "100%" }}
             title="lose"
           ></Box>
@@ -80,21 +90,21 @@ function MatchStats() {
         <HStack gap={"20px"} w={"full"} mb={"29px"}>
           <Flex align={"center"} direction={"column"}>
             <Text css={statTitle}>Played</Text>
-            <Text css={statInfo}>6</Text>
+            <Text css={statInfo}>{played}</Text>
           </Flex>
           <Box as={"span"} h={"40px"} w={"1px"} bg={"gray.300"}></Box>
           <HStack w={"full"} justify={"space-between"}>
             <Flex align={"center"} direction={"column"}>
               <Text css={statTitle}>Win</Text>
-              <Text css={statInfo}>4</Text>
+              <Text css={statInfo}>{win}</Text>
             </Flex>
             <Flex align={"center"} direction={"column"}>
               <Text css={statTitle}>Draw</Text>
-              <Text css={statInfo}>1</Text>
+              <Text css={statInfo}>{draw}</Text>
             </Flex>
             <Flex align={"center"} direction={"column"}>
               <Text css={statTitle}>Lose</Text>
-              <Text css={statInfo}>1</Text>
+              <Text css={statInfo}>{lose}</Text>
             </Flex>
           </HStack>
         </HStack>

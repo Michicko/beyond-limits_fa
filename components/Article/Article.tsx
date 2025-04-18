@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import ArticleCategory from "./ArticleCategory";
 import Link from "next/link";
-// import ImageComp from "@/components/ImageComp/ImageComp";
+import ImageComp from "@/components/ImageComp/ImageComp";
 import { formatDate } from "@/lib/helpers";
 
 const Article = ({ article }: { article: IArticle }) => {
@@ -43,21 +43,21 @@ const Article = ({ article }: { article: IArticle }) => {
       style={cardStyles}
     >
       {article.match &&
-        article.match.home.team &&
-        article.match.away.team &&
+        article.match.homeTeam &&
+        article.match.awayTeam &&
         article.category &&
         selected_categories.includes(article.category.name.toLowerCase()) && (
           <div className={styles.match__teams}>
             <div className={styles["team__img-box"]}>
               <ImageComp
-                image={article.match.home.team?.logo}
-                alt={article.match.home.team?.longName}
+                image={article.match.homeTeam.logo}
+                alt={article.match.homeTeam.longName}
               />
             </div>
             <div className={styles["team__img-box"]}>
               <ImageComp
-                image={article.match.away.team?.logo}
-                alt={article.match.away.team?.longName}
+                image={article.match.awayTeam.logo}
+                alt={article.match.awayTeam.longName}
               />
             </div>
           </div>

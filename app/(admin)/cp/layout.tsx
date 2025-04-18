@@ -7,6 +7,7 @@ import PageProvider from "@/providers/pageProvider";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/toaster";
 import Auth from "@/components/Auth/Auth";
+import { Toaster as ReactToaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Beyon Limits Fa | Youth development for Remo stars fc",
@@ -31,6 +32,7 @@ export default function AuthLayout({
           <PageProvider>
             <Provider>
               <>
+                <ReactToaster />
                 <Toaster />
                 <RootLayout>{children}</RootLayout>
               </>

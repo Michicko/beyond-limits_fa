@@ -7,12 +7,14 @@ function CustomSelect({
   options,
   handleOnChange,
   disabled,
+  fixedWidth,
 }: {
   id: string;
   defaultValue: string;
   options: { label: string; value: string }[];
   handleOnChange: (value: string, id: string) => void;
   disabled: boolean;
+  fixedWidth?: boolean;
 }) {
   const getColor = (option: string) => {
     return option === "win"
@@ -27,7 +29,7 @@ function CustomSelect({
   return (
     <NativeSelect.Root
       size="md"
-      w={"125px"}
+      w={fixedWidth ? "125px" : "full"}
       margin={"0 auto"}
       id={id}
       disabled={disabled}

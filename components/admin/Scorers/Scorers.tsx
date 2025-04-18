@@ -1,3 +1,4 @@
+import { Schema } from "@/amplify/data/resource";
 import {
   Avatar,
   AvatarGroup,
@@ -10,38 +11,16 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const scorers = [
-  {
-    id: 1,
-    img: "",
-    firstname: "john",
-    lastname: "doe",
-    goals: 5,
-  },
-  {
-    id: 2,
-    img: "",
-    firstname: "john",
-    lastname: "Okafor",
-    goals: 4,
-  },
-  {
-    id: 3,
-    img: "",
-    firstname: "OLuseyi",
-    lastname: "Ojo",
-    goals: 3,
-  },
-  {
-    id: 4,
-    img: "",
-    firstname: "john",
-    lastname: "doe",
-    goals: 2,
-  },
-];
+interface IScorer {
+  goals: number;
+  playerId: string;
+  player: Pick<
+    Schema["Player"]["type"],
+    "id" | "firstname" | "lastname" | "homeKit"
+  >;
+}
 
-function Scorers() {
+function Scorers({ ranking }: { ranking: IScorer[] }) {
   const headingStyles = {
     color: "text_lg",
     mb: "10px",
@@ -56,9 +35,9 @@ function Scorers() {
       </Card.Header>
       <Card.Body>
         <List.Root>
-          {scorers.map((scorer, i) => {
+          {ranking.map((scorer, i) => {
             return (
-              <List.Item key={scorer.id}>
+              <List.Item key={scorer.playerId}>
                 <Flex
                   justify={"space-between"}
                   align={"center"}
@@ -66,7 +45,7 @@ function Scorers() {
                   px={"10px"}
                   borderBottom={"1px solid"}
                   borderColor={
-                    i === scorers.length - 1 ? "transparent" : "neutral"
+                    i === ranking.length - 1 ? "transparent" : "neutral"
                   }
                 >
                   <HStack>
@@ -82,7 +61,7 @@ function Scorers() {
                       fontWeight={"medium"}
                       color={"text_lg"}
                       fontSize={"md"}
-                    >{`${scorer.firstname} ${scorer.lastname}`}</Text>
+                    >{`${scorer.player.firstname} ${scorer.player.lastname}`}</Text>
                   </HStack>
                   <Text
                     mb={0}

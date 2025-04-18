@@ -52,7 +52,11 @@ export function createEntityFactory<TInput, TOutput>() {
       }
 
       if (pathToRevalidate) {
-        revalidatePath(pathToRevalidate);
+        if (pathToRevalidate.includes("[")) {
+          revalidatePath(pathToRevalidate, "page");
+        } else {
+          revalidatePath(pathToRevalidate);
+        }
       }
 
       return {

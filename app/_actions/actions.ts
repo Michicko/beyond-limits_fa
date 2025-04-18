@@ -21,6 +21,39 @@ type Match = Schema["Match"]["type"];
 type LeagueRound = Schema["LeagueRound"]["type"];
 type PlayOff = Schema["PlayOff"]["type"];
 
+interface ICompetitionSeason {
+  id: string;
+  logo: string;
+  name: string;
+  // season: string;
+}
+
+interface IMatch {
+  id?: string;
+  competitionSeasonId?: Nullable<string>;
+  competitionSeason?: ICompetitionSeason;
+  date: string;
+  time: string;
+  venue: string;
+  status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
+  result?: "WIN" | "DRAW" | "LOSE" | null;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  scorers: any;
+}
+
 interface IMatchScorer {
   id: string;
   name: string;
@@ -569,7 +602,7 @@ export const createTrophy = async (formData: FormData) => {
   return await trophyCreator({
     modelName: "Trophy",
     input: base,
-    selectionSet: ["id", "image", "trophyName"],
+    selectionSet: ["id", "image", "trophyName", "competition.longName"],
     pathToRevalidate: "/cp/trophies",
     validate: async (input) => {
       if ((await checkUniqueTrophyName(input.trophyName)).length > 0) {
@@ -703,9 +736,12 @@ export const createLeague = async (formData: FormData) => {
           message: `name "${input.competitionNameSeason}" already exists.`,
         };
       }
-
       return { valid: true };
     },
+    preprocess: (input) => ({
+      ...input,
+      teams: JSON.parse(formData.get("teams") as string),
+    }),
   });
 };
 
@@ -1123,8 +1159,9 @@ export async function deleteMatch(id: string) {
   });
 }
 
-function getPlayerGoalCounts(matches: Match[]) {
+function getPlayerGoalCounts(matches: IMatch[]) {
   const goalCounts: Record<string, number> = {};
+
   for (const match of matches) {
     let scorers: IMatchScorer[] = [];
 
@@ -1148,41 +1185,77 @@ function getPlayerGoalCounts(matches: Match[]) {
     }
   }
 
-  return goalCounts;
+  // Convert the record to an array of objects
+  const result = Object.entries(goalCounts).map(([playerId, goals]) => ({
+    playerId,
+    goals,
+  }));
+
+  return result;
 }
 
 export async function fetchDashboardData() {
   const year = new Date().getFullYear();
   try {
+    // find competition seasons for current year
     const { data: competitionSeasons } =
       await cookiesClient.models.CompetitionSeason.list({
         filter: {
           season: {
-            beginsWith: `${year}`,
+            contains: `${year}`,
           },
         },
       });
 
     if (!competitionSeasons || competitionSeasons.length < 1) {
       return {
-        data: [],
-        status: "error",
-        message: "No Competition seasons",
+        totalCompetitions: 0,
+        activeCompetitions: 0,
+        matchSummary: { wins: 0, losses: 0, draws: 0 },
+        goalRanking: null,
+        nnlStanding: null,
+        lastMatch: null,
+        upcomingMatch: null,
+        upcomingCompetition: {
+          win: 0,
+          draw: 0,
+          lose: 0,
+          played: 0,
+        },
+        status: "success",
       };
     }
 
+    // initialize mathes and rounds for either cup or league
     let allRounds: (LeagueRound | PlayOff)[] = [];
-    let matches: Match[] = [];
+    let matches: IMatch[] = [];
 
     for (const season of competitionSeasons) {
+      // matches for each competition season
       const { data: matchList } = await cookiesClient.models.Match.list({
         filter: {
           competitionSeasonId: {
             eq: season.id,
           },
         },
+        selectionSet: [
+          "id",
+          "date",
+          "time",
+          "status",
+          "result",
+          "venue",
+          "awayTeam.*",
+          "keyPlayerId",
+          "homeTeam.*",
+          "competitionSeason.logo",
+          "competitionSeason.name",
+          "competitionSeason.id",
+          "scorers",
+        ],
       });
       matches = [...matches, ...matchList];
+      // playoff rounds for competition season
       if (season.cupId) {
         const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list(
           {
@@ -1196,6 +1269,7 @@ export async function fetchDashboardData() {
         allRounds = [...allRounds, ...playOffs];
       }
 
+      // league rounds for each competition season
       if (season.leagueId) {
         const { data: leagueRounds = [] } =
           await cookiesClient.models.LeagueRound.list({
@@ -1209,17 +1283,23 @@ export async function fetchDashboardData() {
       }
     }
 
+    // find the counts for completed rounds
     const resultCounts = allRounds.reduce(
       (acc, round) => {
-        const status = round.status?.toLowerCase(); // or round.result/outcome etc.
-        if (status === "win") acc.wins += 1;
-        else if (status === "loss") acc.losses += 1;
-        else if (status === "draw") acc.draws += 1;
+        if (round.status !== "COMPLETED") return acc;
+
+        const result = round.result?.toLowerCase();
+
+        if (result === "win") acc.wins += 1;
+        else if (result === "loss") acc.losses += 1;
+        else if (result === "draw") acc.draws += 1;
+
         return acc;
       },
       { wins: 0, losses: 0, draws: 0 }
     );
 
+    // current nigerian national league competition
     const currentNNlSeasons = (
       await cookiesClient.models.CompetitionSeason.list({
         filter: {
@@ -1227,25 +1307,39 @@ export async function fetchDashboardData() {
             eq: "nigerian national league",
           },
           season: {
-            beginsWith: `${year}`,
+            contains: `${year}`,
           },
+          status: { eq: "PENDING" },
         },
       })
     ).data;
 
     const currentNNlSeason = currentNNlSeasons[0];
-    const nnlStanding = currentNNlSeason
+
+    // league belonging to the nigerian national league
+    const currentLeague =
+      currentNNlSeason &&
+      currentNNlSeason.leagueId &&
+      (
+        await cookiesClient.models.League.get({
+          id: currentNNlSeason.leagueId,
+        })
+      ).data;
+
+    // nigerian natonal league table
+    const nnlStanding = currentLeague
       ? (
           await cookiesClient.models.Standing.list({
             filter: {
               leagueId: {
-                eq: currentNNlSeason.id,
+                eq: currentLeague.id,
               },
             },
           })
         ).data
       : [];
 
+    // result and fixtures from matches for the current year
     const { results, fixtures } = matches.reduce(
       (acc, match) => {
         if (match.status === "COMPLETED") {
@@ -1269,31 +1363,64 @@ export async function fetchDashboardData() {
     );
 
     const upcomingMatch = fixtures[0] || null;
+    const lastMatch = results[results.length - 1] || null;
 
+    //
     const upcomingCompetitionSeasonRounds = upcomingMatch
-      ? allRounds.filter((el) => el.matchId === upcomingMatch.id)
+      ? matches.filter(
+          (el) => el.competitionSeasonId === upcomingMatch.competitionSeasonId
+        )
       : [];
 
+    // result for previous rounds of upcoming match
     const roundStatusCounts = upcomingCompetitionSeasonRounds.reduce(
       (acc, round) => {
-        const outcome = round.result?.toUpperCase(); // or round.outcome or round.someOtherField
+        const outcome = round.result?.toString().trim().toUpperCase();
 
-        switch (outcome) {
-          case "WIN":
-            acc.wins++;
-            break;
-          case "DRAW":
-            acc.draws++;
-            break;
-          case "LOSE":
-            acc.losses++;
-            break;
+        if (round.status === "COMPLETED") {
+          acc.played++;
+
+          switch (outcome) {
+            case "WIN":
+              acc.wins++;
+              break;
+            case "DRAW":
+              acc.draws++;
+              break;
+            case "LOSE":
+              acc.losses++;
+              break;
+          }
         }
 
         return acc;
       },
-      { wins: 0, draws: 0, losses: 0 }
+      { wins: 0, draws: 0, losses: 0, played: 0 }
     );
+
+    const players = (
+      await cookiesClient.models.Player.list({
+        selectionSet: ["id", "firstname", "lastname", "homeKit"],
+      })
+    ).data;
+    const teams = (await cookiesClient.models.Team.list()).data;
+
+    // map team to nnlstanding
+    const mappedStanding = nnlStanding
+      .map((el) => {
+        const team = teams.find((team) => team.id === el.teamId);
+        return { ...el, team };
+      })
+      .filter((el) => el !== undefined);
+
+    // map player to goal ranking
+    const mappedGoalRanking = getPlayerGoalCounts(matches)
+      .map((el) => {
+        const player = players.find((play) => play.id === el.playerId);
+        if (!player) return;
+        return { ...el, player };
+      })
+      .filter((el) => el !== undefined);
 
     const dashboardContent = {
       totalCompetitions: competitionSeasons.length,
@@ -1305,15 +1432,15 @@ export async function fetchDashboardData() {
         losses: resultCounts.losses,
         draws: resultCounts.draws,
       },
-      goalRanking: getPlayerGoalCounts(matches),
-      nnlStanding,
-      lastMatch: results[results.length - 1] || null,
+      goalRanking: mappedGoalRanking,
+      nnlStanding: mappedStanding,
+      lastMatch,
       upcomingMatch,
       upcomingCompetition: {
         win: roundStatusCounts.wins,
         draw: roundStatusCounts.draws,
         lose: roundStatusCounts.losses,
-        played: upcomingCompetitionSeasonRounds.length,
+        played: roundStatusCounts.played,
       },
     };
     return {
@@ -1328,3 +1455,7 @@ export async function fetchDashboardData() {
     };
   }
 }
+
+// end season route for competition season
+
+export async function fetchHomepageData() {}

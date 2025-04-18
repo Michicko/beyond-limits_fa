@@ -20,8 +20,6 @@ async function CompetitionSeason({
   const competition =
     competitionSeason && (await competitionSeason.competition()).data;
 
-  const roundResults = cookiesClient.enums.RoundResult.values();
-
   const league =
     competitionSeason &&
     competitionSeason.leagueId &&

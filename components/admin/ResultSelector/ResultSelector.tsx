@@ -6,11 +6,13 @@ function ResultSelector({
   value,
   setValue,
   disabled,
+  fixedWidth,
 }: {
   id: string;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   disabled: boolean;
+  fixedWidth?: boolean;
 }) {
   return (
     <CustomSelect
@@ -24,6 +26,7 @@ function ResultSelector({
       })}
       disabled={disabled}
       handleOnChange={(value: string, id: string) => setValue(value)}
+      fixedWidth={fixedWidth}
     />
   );
 }

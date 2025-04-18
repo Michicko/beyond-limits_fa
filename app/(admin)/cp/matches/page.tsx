@@ -19,6 +19,7 @@ async function Matches() {
       "id",
       "status",
       "competitionSeasonId",
+      "competitionSeason.id",
       "competitionSeason.logo",
       "competitionSeason.name",
       "competitionSeason.season",

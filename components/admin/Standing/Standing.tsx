@@ -1,8 +1,34 @@
 import { Table, Card, Heading, HStack } from "@chakra-ui/react";
 import React from "react";
 import MatchIcon from "../Card/MatchIcon";
-import { IStandingRow } from "@/lib/definitions";
-import { teams } from "@/lib/placeholder-data";
+import { Nullable } from "@/lib/definitions";
+
+interface IStandingRow {
+  id: string;
+  leagueId: Nullable<string>;
+  teamId: Nullable<string>;
+  position: number;
+  p: number;
+  w: number;
+  d: number;
+  l: number;
+  g: string;
+  gd: number;
+  pts: number;
+  createdAt: string;
+  updatedAt: string;
+  league?: unknown;
+  team?: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    stadium: Nullable<string>;
+    isBeyondLimits: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
 
 function Standing({
   standings,
@@ -30,17 +56,6 @@ function Standing({
     h: "45px !important",
     minH: "45px !important",
   };
-
-  const populatedStanding = standings
-    .map((row) => {
-      const team = teams.find((team) => team.id === row.team_id);
-      if (!team) return;
-      return {
-        ...row,
-        team,
-      };
-    })
-    .filter((el) => el !== undefined);
 
   return (
     <Card.Root border={"1px solid"} borderColor={"neutral"} p={"10px"}>
@@ -78,15 +93,15 @@ function Standing({
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {populatedStanding
+          {standings
             .sort((a, b) => a.position - b.position)
             .map((standing, i) => (
               <Table.Row
-                key={standing.team.id}
+                key={standing.team && standing.team.id}
                 h={"40px"}
                 borderBottom={"1px solid"}
                 borderColor={
-                  i === populatedStanding.length - 1 ? "transparent" : "neutral"
+                  i === standings.length - 1 ? "transparent" : "neutral"
                 }
                 bg={
                   standing.team && standing.team.isBeyondLimits
@@ -130,33 +145,33 @@ function Standing({
                   </HStack>
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">
-                  {standing.stats.p}
+                  {standing.p}
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">
-                  {standing.stats.w}
+                  {standing.w}
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">
-                  {standing.stats.d}
+                  {standing.d}
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">
-                  {standing.stats.l}
+                  {standing.l}
                 </Table.Cell>
                 <Table.Cell
                   css={tdStyles}
                   textAlign="center"
                   display={{ base: "none", md: "table-cell" }}
                 >
-                  {standing.stats.g}
+                  {standing.g}
                 </Table.Cell>
                 <Table.Cell
                   css={tdStyles}
                   textAlign="center"
                   display={{ base: "none", md: "table-cell" }}
                 >
-                  {standing.stats.gd}
+                  {standing.gd}
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">
-                  {standing.stats.pts}
+                  {standing.pts}
                 </Table.Cell>
               </Table.Row>
             ))}

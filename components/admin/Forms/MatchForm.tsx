@@ -22,7 +22,11 @@ import MatchStats from "./MatchStats";
 import { IMatch, Nullable } from "@/lib/definitions";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
-import { getButtonStatus, objectToFormData } from "@/lib/helpers";
+import {
+  getButtonStatus,
+  objectToFormData,
+  updateFormDataWithJSON,
+} from "@/lib/helpers";
 import { JSONContent } from "@tiptap/react";
 import { createMatch, updateMatch } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
@@ -71,6 +75,7 @@ type IMatchI = Pick<
   | "mvpId"
   | "report"
   | "review"
+  | "result"
   | "venue"
   | "scorers"
   | "substitutes"
@@ -147,6 +152,7 @@ function MatchForm({
     time: match?.time || "",
     venue: match?.venue || "",
     status: match?.status || "UPCOMING",
+    result: match?.result || null,
     keyPlayerId: match?.keyPlayerId || "",
     aboutKeyPlayer: match?.aboutKeyPlayer || "",
     mvpId: match?.mvpId || "",
@@ -178,6 +184,8 @@ function MatchForm({
         if (competitionSeason) return el;
       })
     : null;
+
+  const [result, setResult] = useState((match && match.result) || "");
 
   const [competition, setCompetition] = useState<ICompetition | null>(
     selectedCompetition || null
@@ -280,34 +288,12 @@ function MatchForm({
     });
   };
 
-  function updateFormDataWithJSON(
-    formData: FormData,
-    data: Record<string, any>
-  ) {
-    const keys = [
-      "review",
-      "report",
-      "lineup",
-      "substitutes",
-      "coach",
-      "homeTeam",
-      "awayTeam",
-      "scorers",
-    ];
-
-    keys.forEach((key) => {
-      formData.delete(key);
-      formData.append(key, JSON.stringify(data[key]));
-    });
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = objectToFormData(data);
     updateFormDataWithJSON(formData, data);
-    formData.delete("lineup[0]");
-    formData.delete("substitutes[0]");
-    formData.delete("scorers[0]");
+    formData.delete("result");
+    formData.append("result", result);
 
     if (match && method === "UPDATE") {
       startTransition(async () => {
@@ -552,6 +538,8 @@ function MatchForm({
                 stackStyles={stackStyles}
                 handleOnChange={handleOnChange}
                 players={players}
+                result={result}
+                setResult={setResult}
               />
             </CustomTabContent>
             <CustomTabContent value={"lineup"}>

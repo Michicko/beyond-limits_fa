@@ -382,12 +382,13 @@ export interface IGoal {
 
 export interface IMatch {
   id?: string;
-  competitionSeasonId: Nullable<string>;
+  competitionSeasonId?: Nullable<string>;
   competitionSeason?: ICompetitionSeason;
   date: string;
   time: string;
   venue: string;
   status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
+  result?: string;
   keyPlayerId: Nullable<string>;
   aboutKeyPlayer: Nullable<string>;
   mvpId: Nullable<string>;

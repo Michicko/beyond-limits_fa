@@ -189,6 +189,7 @@ const schema = a.schema({
       time: a.time().required(),
       venue: a.string().required(),
       status: a.ref("MatchStatus"),
+      result: a.ref("RoundResult"),
       keyPlayerId: a.id(),
       aboutKeyPlayer: a.string(),
       mvpId: a.id(),
