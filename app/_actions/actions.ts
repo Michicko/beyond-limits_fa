@@ -1492,10 +1492,50 @@ export async function fetchDashboardData() {
 export async function fetchHomepageData() {
   try {
     const { upcomingMatch, lastMatch } = await getPrevNextMatch();
+    const nnlStanding = await getCurrentNnlStanding();
+    const { data: articles } = await cookiesClient.models.Article.list({
+      limit: 4,
+      selectionSet: [
+        "id",
+        "articleCategory.category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+      ],
+    });
+    const { data: players } = await cookiesClient.models.Player.list({
+      filter: {
+        ageGroup: {
+          eq: "UNDER_19",
+        },
+      },
+      limit: 3,
+      selectionSet: [
+        "id",
+        "firstname",
+        "lastname",
+        "awayKit",
+        "homeKit",
+        "dob",
+        "dominantFoot",
+        "squadNo",
+        "height",
+        "weight",
+        "isTwoFooted",
+        "playerPosition.shortName",
+        "playerPosition.longName",
+      ],
+    });
 
     const homepageContent = {
       upcomingMatch,
       lastMatch,
+      nnlStanding,
+      articles,
+      players,
     };
 
     return {

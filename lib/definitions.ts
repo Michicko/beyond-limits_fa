@@ -147,7 +147,9 @@ export interface ITeam {
   longName: string;
   logo: string;
   isBeyondLimits: boolean;
-  stadium?: string;
+  stadium?: Nullable<string>;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IArticleCategory {
@@ -159,12 +161,14 @@ export interface IArticle {
   id: string;
   title: string;
   createdAt: string;
-  articleCategoryId: string;
-  coverImage: string;
-  matchId?: string;
-  tags: string[];
-  content: JSONContent | string;
-  category?: IArticleCategory;
+  articleCategoryId?: string;
+  coverImage: Nullable<string>;
+  match?: IMatch;
+  tags?: Nullable<string>[] | null;
+  content: any;
+  articleCategory: {
+    category: string;
+  };
 }
 
 export interface ISeason {
@@ -240,18 +244,17 @@ export interface IMixedCup {
 }
 
 export interface IStandingRow {
-  league_id: string;
-  team_id: string;
+  leagueId?: Nullable<string>;
+  teamId?: Nullable<string>;
+  team?: ITeam;
   position: number;
-  stats: {
-    p: number;
-    w: number;
-    d: number;
-    l: number;
-    g: string;
-    gd: number;
-    pts: number;
-  };
+  p: number;
+  w: number;
+  d: number;
+  l: number;
+  g: string;
+  gd: number;
+  pts: number;
 }
 
 export enum Competition_type {

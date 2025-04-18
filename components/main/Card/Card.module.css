@@ -1,0 +1,57 @@
+.card {
+  width: 100%;
+}
+
+.card.radius {
+  overflow: hidden;
+  border-radius: var(--sm);
+}
+
+.card-header,
+.card-body {
+  width: 100%;
+}
+
+.card {
+  border-radius: var(--sm);
+  overflow: hidden;
+}
+
+.card-header {
+  height: var(--v);
+  border-top-right-radius: var(--sm);
+  border-top-left-radius: var(--sm);
+  height: var(--v);
+}
+
+.card-body {
+  border-bottom-right-radius: var(--sm);
+  border-bottom-left-radius: var(--sm);
+  background: var(--blue-400);
+}
+
+.card-body.fixed-height {
+  height: 9rem;
+}
+
+.card-header.border {
+  border-bottom: 1px solid var(--t-border);
+}
+
+.card-header.dark,
+.card.dark,
+.card-body.dark {
+  background: var(--blue-600);
+}
+
+.card-header.light,
+.card.light,
+.card-body.light {
+  background: var(--blue-400);
+}
+
+.card.trans,
+.card-header.trans,
+.card-body.trans {
+  background: transparent;
+}

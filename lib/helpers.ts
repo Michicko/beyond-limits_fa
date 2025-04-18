@@ -7,6 +7,14 @@ export const getObjectValue = <T extends Object>(
   return obj[key as keyof typeof obj];
 };
 
+export function getFirstLetter(str: string): string {
+  return str
+    .split(" ")
+    .filter((word) => word.length > 0)
+    .map((word) => word[0])
+    .join("");
+}
+
 export const getDefaultSeason = (seasons: { id: string; season: string }[]) => {
   const date = new Date();
   const currentYear = date.getFullYear();

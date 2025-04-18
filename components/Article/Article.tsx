@@ -16,11 +16,13 @@ const Article = ({ article }: { article: IArticle }) => {
   ), url(${article.coverImage})`;
 
   const cardStyles =
-    article.category && article.category.name === "MATCH PREVIEW"
+    article.articleCategory.category &&
+    article.articleCategory.category === "MATCH PREVIEW"
       ? {
           background: "#30353B",
         }
-      : article.category && article.category.name === "MATCH REPORT"
+      : article.articleCategory.category &&
+        article.articleCategory.category === "MATCH REPORT"
       ? {
           background: "#01305b",
         }
@@ -31,22 +33,27 @@ const Article = ({ article }: { article: IArticle }) => {
           backgroundPosition: "center",
         };
 
+  console.log(article);
   const selected_categories = ["match preview", "match report"];
 
   return (
     <article
       className={clsx(styles.news__article, {
         [styles["with-bg"]]:
-          article.category &&
-          !selected_categories.includes(article.category.name.toLowerCase()),
+          article.articleCategory.category &&
+          !selected_categories.includes(
+            article.articleCategory.category.toLowerCase()
+          ),
       })}
       style={cardStyles}
     >
       {article.match &&
         article.match.homeTeam &&
         article.match.awayTeam &&
-        article.category &&
-        selected_categories.includes(article.category.name.toLowerCase()) && (
+        article.articleCategory.category &&
+        selected_categories.includes(
+          article.articleCategory.category.toLowerCase()
+        ) && (
           <div className={styles.match__teams}>
             <div className={styles["team__img-box"]}>
               <ImageComp
@@ -63,10 +70,10 @@ const Article = ({ article }: { article: IArticle }) => {
           </div>
         )}
       <div className={clsx(styles.article__body)}>
-        {article.category && (
+        {article.articleCategory.category && (
           <ArticleCategory
-            category={article.category.name}
-            link={`/articles?category=${article.category.name}`}
+            category={article.articleCategory.category}
+            link={`/articles?category=${article.articleCategory.category}`}
           />
         )}
         <h3>{article.title}</h3>

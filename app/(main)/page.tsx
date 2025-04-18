@@ -1,50 +1,23 @@
-import ArticleList from "@/components/main/Article/ArticleList";
 import Button from "@/components/main/Button/Button";
 import Container from "@/components/main/Container/Container";
 import Flex from "@/components/main/Container/Flex";
 import Grid from "@/components/main/Container/Grid";
-// import MatchCard from "@/components/main/MatchCard/MatchCard";
-// import PlayerList from "@/components/main/Player/PlayerList";
+import MatchCard from "@/components/main/MatchCard/MatchCard";
+import PlayerList from "@/components/main/Player/PlayerList";
 import Slider from "@/components/main/Slider/Slider";
-// import Standing from "@/components/main/Standing/Standing";
+import Standing from "@/components/main/Standing/Standing";
 import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
 import Text from "@/components/main/Typography/Text";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
-// import { getDefaultSeason } from "@/lib/helper";
-import {
-  articles,
-  leagues,
-  match_highlights,
-  matches,
-  players,
-  seasons,
-  standing,
-  teams,
-} from "@/lib/placeholder-data";
+import { match_highlights } from "@/lib/placeholder-data";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
+import ArticleList from "@/components/Article/ArticleList";
 
 export default async function Home() {
-  const previous_match = matches.find((el) => el.status === "FINISHED");
-  const upcoming_match = matches.find((el) => el.status === "UPCOMING");
-  // const currentSeason = getDefaultSeason(seasons);
-  const league = leagues.find((el) => el.competition?.shortName === "nnl");
-  const standings = standing.filter(
-    (el) => league && el.league_id === league.id
-  );
-  const nnl_standing = standings.map((el) => {
-    const team = teams.find((team_el) => team_el.id === el.team_id);
-    return {
-      ...el,
-      team,
-    };
-  });
-
   const { data: homepageContent, status } = await fetchHomepageData();
-
-  console.log(homepageContent, status);
 
   return (
     <>
@@ -54,29 +27,32 @@ export default async function Home() {
           <div className={clsx("matchcards")}>
             <Grid col="2fr" gap="md">
               <>
-                {upcoming_match && previous_match && (
+                {homepageContent && (
                   <>
-                    {/* <MatchCard
-                      match={previous_match}
-                      theme="light"
-                      iconSize={"md"}
-                    />
-                    <MatchCard
-                      match={upcoming_match}
-                      theme="light"
-                      iconSize={"md"}
-                    /> */}
+                    {homepageContent.lastMatch && (
+                      <MatchCard
+                        match={homepageContent?.lastMatch}
+                        theme="light"
+                        iconSize={"md"}
+                      />
+                    )}
+                    {homepageContent.upcomingMatch && (
+                      <MatchCard
+                        match={homepageContent.upcomingMatch}
+                        theme="light"
+                        iconSize={"md"}
+                      />
+                    )}
                   </>
                 )}
               </>
             </Grid>
-            {league && (
-              // <Standing
-              //   showFull={false}
-              //   standings={nnl_standing}
-              //   showLongName={false}
-              // />
-              <></>
+            {homepageContent && (
+              <Standing
+                showFull={false}
+                standings={homepageContent.nnlStanding}
+                showLongName={false}
+              />
             )}
           </div>
         </Container>
@@ -96,7 +72,9 @@ export default async function Home() {
               type="section"
             />
           </Flex>
-          {/* <ArticleList articles={articles.slice(0, 4)} /> */}
+          {homepageContent?.articles && (
+            <ArticleList articles={homepageContent.articles} />
+          )}
         </Container>
         <Container as="section" size="lg">
           <Flex
@@ -114,7 +92,9 @@ export default async function Home() {
               type="section"
             />
           </Flex>
-          {/* <PlayerList players={players.slice(0, 3)} /> */}
+          {homepageContent?.players && (
+            <PlayerList players={homepageContent.players} />
+          )}
         </Container>
         <Container as="section" size="md">
           <Heading
@@ -128,23 +108,23 @@ export default async function Home() {
           </Heading>
           <Grid col="3" gap="sm">
             <>
-              {upcoming_match && (
+              {homepageContent?.upcomingMatch && (
                 <>
-                  {/* <MatchCard
-                    match={upcoming_match}
+                  <MatchCard
+                    match={homepageContent.upcomingMatch}
                     theme="dark"
                     iconSize={"md"}
                   />
                   <MatchCard
-                    match={upcoming_match}
+                    match={homepageContent.upcomingMatch}
                     theme="light"
                     iconSize={"md"}
                   />
                   <MatchCard
-                    match={upcoming_match}
+                    match={homepageContent.upcomingMatch}
                     theme="dark"
                     iconSize={"md"}
-                  /> */}
+                  />
                 </>
               )}
             </>

@@ -10,14 +10,7 @@ import Link from "next/link";
 import { Nullable } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
 import { deleteMatch } from "@/app/_actions/actions";
-
-function getFirstLetter(str: string): string {
-  return str
-    .split(" ")
-    .filter((word) => word.length > 0)
-    .map((word) => word[0])
-    .join("");
-}
+import { getFirstLetter } from "@/lib/helpers";
 
 interface ICompetitionSeason {
   id: string;
