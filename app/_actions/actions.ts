@@ -3,6 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 type Nullable<T> = T | null;
 type PlayerPosition = Schema["PlayerPosition"]["type"];

@@ -1,0 +1,45 @@
+/* components/Pagination.module.css */
+
+.pagination-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5rem 0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.link {
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: var(--md);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  width: 5rem;
+  border-radius: var(--xxs);
+}
+
+.link:hover,
+.link.disabled {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+.link.disabled {
+  /* background: #b4b4b4; */
+  cursor: not-allowed;
+}
+
+.link svg {
+  height: 1.5rem;
+  width: 1.5rem;
+}

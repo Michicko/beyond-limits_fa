@@ -68,7 +68,7 @@ export default async function Home() {
               Latest News
             </Heading>
             <CustomLink
-              link={{ name: "View more news", href: "/news" }}
+              link={{ name: "View more news", href: "/news?page=1" }}
               type="section"
             />
           </Flex>
