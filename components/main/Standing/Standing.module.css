@@ -3,7 +3,7 @@
   border-collapse: collapse;
   border-spacing: var(--sm);
   border: none;
-  /* margin-bottom: 2rem; */
+  margin-bottom: 0.5rem;
   color: var(--white);
 }
 

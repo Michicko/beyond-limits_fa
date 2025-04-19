@@ -32,10 +32,15 @@ function FilterBtn({
     setCurrentIndex(index);
   };
 
+  const current = React.useMemo(
+    () => searchParams.get(filterName),
+    [searchParams, filterName]
+  );
+
   return (
     <button
       className={clsx(styles.filter__btn, {
-        [styles.current]: currentIndex === index,
+        [styles.current]: current === filterValue,
       })}
       onClick={selectFilterValue}
     >
@@ -44,4 +49,4 @@ function FilterBtn({
   );
 }
 
-export default FilterBtn;
+export default React.memo(FilterBtn);

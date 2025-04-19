@@ -9,6 +9,7 @@ import Hamburger from "./Hamburger";
 import NavLogo from "./NavLogo";
 import NavSearchBtn from "./NavSearchBtn";
 import { usePathname } from "next/navigation";
+import { months } from "@/lib/placeholder-data";
 
 function Nav() {
   const pathname = usePathname();
@@ -66,6 +67,9 @@ function Nav() {
     };
   }, [lastScrollYRef.current]);
 
+  const date = new Date();
+  const month = date.getMonth();
+
   return (
     <>
       <Search isOpened={isSearchBarOpened} setIsOpened={setIsSearchBarOpened} />
@@ -81,7 +85,7 @@ function Nav() {
             <NavLink link={{ href: "/gallery", name: "gallery" }} />
             <NavLink
               link={{
-                href: `/fixtures`,
+                href: `/fixtures?month=${months[month]}`,
                 name: "fixtures",
               }}
             />

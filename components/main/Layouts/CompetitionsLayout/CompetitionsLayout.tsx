@@ -50,21 +50,15 @@ function CompetitionsLayout({
     : [
         {
           name: "fixtures",
-          href: `/fixtures?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}&month=${months[month]}`,
+          href: `/fixtures?month=${months[month]}`,
         },
         {
           name: "results",
-          href: `/results?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}&month=${months[month]}`,
+          href: `/results?month=${months[month]}`,
         },
         {
           name: "standing",
-          href: `/standing?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}`,
+          href: `/standing`,
         },
       ];
 
@@ -86,9 +80,9 @@ function CompetitionsLayout({
             >
               {pageTitle}
             </Heading>
-            <Suspense key={currentSeason} fallback={<div>loading...</div>}>
+            {/* <Suspense key={currentSeason} fallback={<div>loading...</div>}>
               <SeasonFilter />
-            </Suspense>
+            </Suspense> */}
           </>
         </LayoutHeader>
       </Header>

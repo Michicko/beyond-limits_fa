@@ -81,7 +81,7 @@ const MenuLinks = [
     subMenu: [
       {
         id: 311,
-        link: `/competitions?season`,
+        link: `/competitions`,
         name: "season overview",
         image: "/images/fixtures.jpg",
       },

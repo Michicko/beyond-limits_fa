@@ -1278,7 +1278,7 @@ async function getPrevNextMatch(client: "guest" | "auth") {
   };
 }
 
-async function getCurrentNnlStanding(client: "guest" | "auth") {
+export async function getCurrentNnlStanding(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   // current nigerian national league competition
   const currentNNlSeasons = (
