@@ -29,22 +29,16 @@ function CompetitionsLayout({
     ? [
         {
           name: "Results",
-          href: `/competitions/${competitionId}/results?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}&month=${months[month]}`,
+          href: `/competitions/${competitionId}/results?month=${months[month]}`,
         },
         {
           name: "Fixtures",
-          href: `/competitions/${competitionId}/fixtures?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}&month=${months[month]}`,
+          href: `/competitions/${competitionId}/fixtures?month=${months[month]}`,
         },
 
         {
           name: "Standing",
-          href: `/competitions/${competitionId}/standing?season=${encodeURIComponent(
-            currentSeason.toString()
-          )}`,
+          href: `/competitions/${competitionId}/standing`,
         },
       ]
     : [

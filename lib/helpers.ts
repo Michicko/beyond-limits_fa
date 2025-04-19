@@ -1,4 +1,6 @@
 import moment from "moment";
+import { IMatch } from "./definitions";
+import { months } from "./placeholder-data";
 
 export const getObjectValue = <T extends Object>(
   obj: T,
@@ -118,3 +120,19 @@ export function updateFormDataWithJSON(
     formData.append(key, JSON.stringify(data[key]));
   });
 }
+
+export const getMatches = (
+  matches: IMatch[],
+  status: "UPCOMING" | "COMPLETED",
+  param?: string
+) => {
+  return matches.filter((el) => {
+    const date = new Date(el.date);
+    const month = date.getUTCMonth();
+    if (param) {
+      return el.status === status && months.indexOf(param) === month;
+    } else {
+      return el.status === status;
+    }
+  });
+};

@@ -2,7 +2,7 @@ import Calendar from "@/components/main/Calendar/Calendar";
 import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
-import { months } from "@/lib/placeholder-data";
+import { getMatches } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
@@ -30,16 +30,22 @@ async function Results(props: {
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 
-  const results = competitionSeasons[0].matches.filter((el) => {
-    const date = new Date(el.date);
-    const month = date.getUTCMonth();
-    const paramsMonth = searchParams.month;
-    if (paramsMonth) {
-      return el.status === "COMPLETED" && months.indexOf(paramsMonth) === month;
-    } else {
-      return el.status === "COMPLETED";
-    }
-  });
+  // const results = competitionSeasons[0].matches.filter((el) => {
+  //   const date = new Date(el.date);
+  //   const month = date.getUTCMonth();
+  //   const paramsMonth = searchParams.month;
+  //   if (paramsMonth) {
+  //     return el.status === "COMPLETED" && months.indexOf(paramsMonth) === month;
+  //   } else {
+  //     return el.status === "COMPLETED";
+  //   }
+  // });
+
+  const results = getMatches(
+    competitionSeasons[0].matches,
+    "COMPLETED",
+    searchParams.month
+  );
 
   return (
     <CompetitionsLayout pageTitle="Results">

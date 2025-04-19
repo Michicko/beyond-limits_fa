@@ -4,7 +4,7 @@ import Flex from "@/components/main/Container/Flex";
 import Calendar from "@/components/main/Calendar/Calendar";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { months } from "@/lib/placeholder-data";
+import { getMatches } from "@/lib/helpers";
 
 async function Fixtures(props: {
   searchParams: Promise<{
@@ -31,16 +31,11 @@ async function Fixtures(props: {
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 
-  const fixtures = competitionSeasons[0].matches.filter((el) => {
-    const date = new Date(el.date);
-    const month = date.getUTCMonth();
-    const paramsMonth = searchParams.month;
-    if (paramsMonth) {
-      return el.status === "UPCOMING" && months.indexOf(paramsMonth) === month;
-    } else {
-      return el.status === "UPCOMING";
-    }
-  });
+  const fixtures = getMatches(
+    competitionSeasons[0].matches,
+    "UPCOMING",
+    searchParams.month
+  );
 
   const month = date.getUTCMonth();
 
@@ -48,7 +43,7 @@ async function Fixtures(props: {
     <CompetitionsLayout pageTitle="Fixtures">
       <>
         <Suspense fallback={null}>
-          <Calendar slice={month} />
+          <Calendar />
         </Suspense>
         {fixtures && fixtures.length < 1 ? (
           <div>No Fixtures available at the moment.</div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRole } from "@/utils/amplify-utils";
 import { isInAuthorizedGroup } from "./lib/helpers";
+import { months } from "./lib/placeholder-data";
 
 const unAuthenticatedRoutes = [
   "/login",
@@ -16,6 +17,21 @@ const authorizedGroups = ["Admin", "Editor"];
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   let url = request.nextUrl.clone();
+
+  // navigate /competitions/id to /competitions/id/fixture
+  if (
+    url.pathname.match(/^\/competitions\/[^/]+$/) &&
+    request.method === "GET"
+  ) {
+    const month = months[new Date().getUTCMonth()];
+    const segments = url.pathname.split("/");
+    const competitionId = segments[2];
+
+    url.pathname = `/competitions/${competitionId}/fixtures`;
+    url.searchParams.set("month", `${month}`);
+
+    return NextResponse.redirect(url);
+  }
 
   const isCpRoute = request.nextUrl.pathname.startsWith("/cp");
 

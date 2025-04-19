@@ -14,7 +14,7 @@ import Link from "next/link";
 import { getFirstLetter } from "@/lib/helpers";
 
 interface ICompetitionSeason {
-  id: string;
+  id?: string;
   logo: string;
   name: string;
   // season: string;

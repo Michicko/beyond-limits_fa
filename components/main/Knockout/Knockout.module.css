@@ -1,0 +1,132 @@
+.knockout {
+  width: 100%;
+  max-width: 386px;
+  margin: 0 auto;
+}
+
+.knockout-match {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto min-content auto;
+  padding: 0.15rem 0;
+}
+
+.knockout-match__team {
+  margin: var(--sm) 0;
+}
+
+.knockout-match__team,
+.knockout-match__team--details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.knockout-match__team--details {
+  flex-shrink: 0;
+  background-color: var(--blue-500);
+  padding: var(--xxs) var(--sm);
+  gap: var(--xxs);
+}
+
+.knockout-match > *:last-child,
+.knockout-match > *:last-child .knockout-match__team--details {
+  flex-direction: row-reverse;
+}
+
+.knockout-round-title {
+  color: var(--white);
+  font-size: var(--base);
+  font-weight: 300;
+  text-align: center;
+  font-style: italic;
+  margin-bottom: var(--sm);
+  padding-bottom: var(--xxs);
+  border-bottom: 1px dashed var(--yellow-300);
+  letter-spacing: 1px;
+}
+
+.knockout-match__code.knockout-match__long {
+  display: none;
+}
+
+.knockout-match__code {
+  color: var(--white);
+  font-weight: 500;
+  text-transform: uppercase;
+  border: 0;
+  text-decoration: none;
+  cursor: help;
+  transition: padding 0.2s ease-in-out;
+  display: none;
+  letter-spacing: 1px;
+}
+
+.knockout-match__score {
+  display: flex;
+  align-items: center;
+}
+
+.versus {
+  width: 1em;
+  text-align: center;
+  padding: 0.2em 0.1em;
+  margin-top: 1.6rem;
+  font-size: var(--sm);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.knockout-match__number {
+  display: inline-block;
+  padding: 0.3em 0.6em 0.2em;
+  border-bottom: 0.075em solid transparent;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 300;
+  background-color: #f5f5f5;
+  border-color: #dddddd;
+}
+
+.knockout-match__team--winner .knockout-match__number {
+  background-color: var(--green-100);
+  color: var(--green-400);
+}
+
+.knockout-match__team--loser .knockout-match__number {
+  background-color: var(--red-100);
+  color: var(--red-400);
+}
+
+.knockout-match__team--null .knockout-match__number {
+  background: var(--gray-100);
+  color: var(--primary-dark);
+}
+
+@media only screen and (min-width: 25rem) {
+  .knockout-match__code {
+    display: block;
+  }
+
+  .knockout-match__team--details {
+    width: 106px;
+    justify-content: center;
+  }
+}
+
+@media only screen and (min-width: 48rem) {
+  .knockout {
+    max-width: 576px;
+  }
+
+  .knockout-match__code {
+    display: none;
+  }
+
+  .knockout-match__code.knockout-match__long {
+    display: block;
+  }
+  .knockout-match__team--details {
+    width: 206px;
+  }
+}

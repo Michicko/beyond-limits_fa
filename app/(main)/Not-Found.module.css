@@ -1,5 +1,5 @@
 .not-found__container {
-  height: auto;
+  min-height: 100vh;
   width: 100%;
 }
 
@@ -7,6 +7,11 @@
   text-align: center;
   padding: 0 20px;
   margin-top: var(--v);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .error-code {
@@ -24,16 +29,19 @@
 
 .home-link {
   display: inline-block;
-  margin-top: var(--md);
-  padding: var(--xxs) var(--xs);
-  padding-top: var(--xs);
+  padding: var(--xs) var(--sm);
   background-color: var(--blue-500);
   color: var(--white);
   border-radius: var(--xxs);
   text-decoration: none;
   font-size: var(--base);
   cursor: pointer;
-  letter-spacing: 1px;
+  margin-top: var(--md);
+}
+
+.container p {
+  line-height: 1.6;
+  max-width: 85%;
 }
 
 .home-link:hover {

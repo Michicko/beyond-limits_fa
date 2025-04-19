@@ -1381,6 +1381,7 @@ export async function fetchDashboardData() {
             },
           }
         );
+
         allRounds = [...allRounds, ...playOffs];
       }
 
@@ -1564,4 +1565,76 @@ export async function fetchHomepageData() {
       message: "An unknown error occurred",
     };
   }
+}
+
+export async function fetchPlayOffs(cupId: string, seasonId: string) {
+  const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list({
+    filter: {
+      cupId: {
+        eq: cupId,
+      },
+    },
+    authMode: "iam",
+    selectionSet: ["id", "round", "matchId", "cupId"],
+  });
+
+  const { data: matches = [] } = await cookiesClient.models.Match.list({
+    filter: {
+      competitionSeasonId: {
+        eq: seasonId,
+      },
+    },
+    authMode: "iam",
+    selectionSet: [
+      "id",
+      "date",
+      "time",
+      "status",
+      "result",
+      "awayTeam.*",
+      "homeTeam.*",
+      "competitionSeason.logo",
+      "competitionSeason.name",
+      "competitionSeason.id",
+    ],
+  });
+
+  const mappedPlayOffs = playOffs
+    .map((el) => {
+      const match = matches.find((match) => match.id === el.matchId);
+      if (!match) return;
+      return {
+        ...el,
+        match,
+      };
+    })
+    .filter((el) => el !== undefined);
+
+  return mappedPlayOffs;
+}
+
+export async function fetchStanding(leagueId: string) {
+  const { data: standing = [] } = await cookiesClient.models.Standing.list({
+    filter: {
+      leagueId: {
+        eq: leagueId,
+      },
+    },
+    authMode: "iam",
+  });
+
+  const teams = (
+    await cookiesClient.models.Team.list({
+      authMode: "iam",
+    })
+  ).data;
+
+  const mappedStanding = standing
+    .map((el) => {
+      const team = teams.find((team) => team.id === el.teamId);
+      return { ...el, team };
+    })
+    .filter((el) => el !== undefined);
+
+  return mappedStanding;
 }

@@ -216,9 +216,9 @@ export interface ICup {
 
 export interface IPlayOff {
   id: string;
-  cup_id: string;
+  cupId: Nullable<string>;
   round: string;
-  match_id: string;
+  matchId: Nullable<string>;
   match?: IMatch;
 }
 
@@ -391,7 +391,7 @@ export interface IMatch {
   time: string;
   venue: string;
   status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
-  result?: string;
+  result?: "WIN" | "DRAW" | "LOSE" | null;
   keyPlayerId: Nullable<string>;
   aboutKeyPlayer: Nullable<string>;
   mvpId: Nullable<string>;

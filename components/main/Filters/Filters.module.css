@@ -8,6 +8,7 @@
 .filter__btns-container {
   width: 100%;
   overflow-x: auto;
+  margin-bottom: 1.5rem;
 }
 
 .filter__btn {
