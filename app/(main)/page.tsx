@@ -159,7 +159,6 @@ export default async function Home() {
         </Container>
         <Container as="section" size="md">
           <VideoCards videos={match_highlights.slice(0, 3)} />
-          <></>
         </Container>
       </main>
     </>

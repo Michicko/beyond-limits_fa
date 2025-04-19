@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRole } from "@/utils/amplify-utils";
 import { isInAuthorizedGroup } from "./lib/helpers";
-import { cookies } from "next/headers";
 
 const unAuthenticatedRoutes = [
   "/login",

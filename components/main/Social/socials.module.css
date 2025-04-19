@@ -1,0 +1,23 @@
+.socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.social-share-links {
+  margin-top: var(--xl);
+  display: flex;
+  gap: var(--sm);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  transition: transform 0.2s linear;
+}
+
+.social-link:hover {
+  transform: translateY(-0.5rem);
+}

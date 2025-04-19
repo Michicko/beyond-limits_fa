@@ -15,19 +15,19 @@ function Details({
 }) {
   return status === "COMPLETED" ? (
     <div className={clsx(styles["matchcard-scores"])}>
-      <Text color="white" letterCase="normal" size="xxl" weight="bold">
+      <Text color="white" letterCase="normal" size="xl" weight="bold">
         {home_score}
       </Text>
-      <Text color="white" letterCase="upper" size="xxl" weight="bold">
+      <Text color="white" letterCase="upper" size="xl" weight="bold">
         -
       </Text>
-      <Text color="white" letterCase="normal" size="xxl" weight="bold">
+      <Text color="white" letterCase="normal" size="xl" weight="bold">
         {away_score}
       </Text>
     </div>
   ) : status === "UPCOMING" ? (
     <>
-      <Text color="white" letterCase="upper" size="xxl" weight="bold">
+      <Text color="white" letterCase="upper" size="xl" weight="bold">
         -
       </Text>
     </>

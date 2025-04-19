@@ -78,7 +78,7 @@ export type IPlayer = Omit<
   never
 > & {
   playerPosition: {
-    id: string;
+    id?: string;
     shortName: string;
     longName: string;
   } | null;

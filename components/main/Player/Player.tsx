@@ -20,17 +20,19 @@ const Player = ({
   return (
     <div style={playerStyles} className={clsx(styles.player)}>
       <div className={clsx(styles["player__img-box"])}>
-        <ImageComp
-          image={player.homeKit}
-          alt={player.firstname}
-          placeholder={"/images/player-bg.png"}
-          priority={false}
-        />
+        {player.homeKit && (
+          <ImageComp
+            image={player.homeKit}
+            alt={player.firstname}
+            placeholder={"/images/player-bg.png"}
+            priority={false}
+          />
+        )}
       </div>
       <div className={clsx(styles["player__body"])}>
         <div className={clsx(styles["player__info-box"])}>
           <div className={clsx(styles["player__position-tile"])}>
-            <p>{player.position?.shortName}</p>
+            <p>{player.playerPosition?.shortName}</p>
           </div>
           <div className={clsx(styles["player__info-box-inner"])}>
             <div className={clsx(styles["player__details"])}>

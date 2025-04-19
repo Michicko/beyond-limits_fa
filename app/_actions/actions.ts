@@ -1194,7 +1194,7 @@ function getPlayerGoalCounts(matches: IMatch[]) {
   return result;
 }
 
-async function getCurrentCompetitionSeasons() {
+async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   const { data: competitionSeasons } =
     await cookiesClient.models.CompetitionSeason.list({
@@ -1203,13 +1203,14 @@ async function getCurrentCompetitionSeasons() {
           contains: `${year}`,
         },
       },
+      authMode: client === "guest" ? "iam" : "userPool",
     });
 
   return competitionSeasons;
 }
 
-async function getCurrentCompetitionSeasonsMatches() {
-  const competitionSeasons = await getCurrentCompetitionSeasons();
+async function getCurrentCompetitionSeasonsMatches(client: "guest" | "auth") {
+  const competitionSeasons = await getCurrentCompetitionSeasons(client);
   let matches: IMatch[] = [];
 
   for (const season of competitionSeasons) {
@@ -1220,6 +1221,7 @@ async function getCurrentCompetitionSeasonsMatches() {
           eq: season.id,
         },
       },
+      authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
         "id",
         "date",
@@ -1241,8 +1243,8 @@ async function getCurrentCompetitionSeasonsMatches() {
   return matches;
 }
 
-async function getPrevNextMatch() {
-  const matches = await getCurrentCompetitionSeasonsMatches();
+async function getPrevNextMatch(client: "guest" | "auth") {
+  const matches = await getCurrentCompetitionSeasonsMatches(client);
   // result and fixtures from matches for the current year
   const { results, fixtures } = matches.reduce(
     (acc, match) => {
@@ -1275,7 +1277,7 @@ async function getPrevNextMatch() {
   };
 }
 
-async function getCurrentNnlStanding() {
+async function getCurrentNnlStanding(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   // current nigerian national league competition
   const currentNNlSeasons = (
@@ -1289,6 +1291,7 @@ async function getCurrentNnlStanding() {
         },
         status: { eq: "PENDING" },
       },
+      authMode: client === "guest" ? "iam" : "userPool",
     })
   ).data;
 
@@ -1299,9 +1302,14 @@ async function getCurrentNnlStanding() {
     currentNNlSeason &&
     currentNNlSeason.leagueId &&
     (
-      await cookiesClient.models.League.get({
-        id: currentNNlSeason.leagueId,
-      })
+      await cookiesClient.models.League.get(
+        {
+          id: currentNNlSeason.leagueId,
+        },
+        {
+          authMode: client === "guest" ? "iam" : "userPool",
+        }
+      )
     ).data;
 
   // nigerian natonal league table
@@ -1313,11 +1321,16 @@ async function getCurrentNnlStanding() {
               eq: currentLeague.id,
             },
           },
+          authMode: client === "guest" ? "iam" : "userPool",
         })
       ).data
     : [];
 
-  const teams = (await cookiesClient.models.Team.list()).data;
+  const teams = (
+    await cookiesClient.models.Team.list({
+      authMode: client === "guest" ? "iam" : "userPool",
+    })
+  ).data;
 
   const mappedStanding = nnlStanding
     .map((el) => {
@@ -1332,7 +1345,7 @@ async function getCurrentNnlStanding() {
 export async function fetchDashboardData() {
   const year = new Date().getFullYear();
   try {
-    const competitionSeasons = await getCurrentCompetitionSeasons();
+    const competitionSeasons = await getCurrentCompetitionSeasons("auth");
 
     if (!competitionSeasons || competitionSeasons.length < 1) {
       return {
@@ -1355,7 +1368,6 @@ export async function fetchDashboardData() {
 
     // initialize rounds for cup or league
     let allRounds: (LeagueRound | PlayOff)[] = [];
-
     for (const season of competitionSeasons) {
       // playoff rounds for competition season
       if (season.cupId) {
@@ -1401,10 +1413,10 @@ export async function fetchDashboardData() {
       { wins: 0, losses: 0, draws: 0 }
     );
 
-    const nnlStanding = await getCurrentNnlStanding();
+    const nnlStanding = await getCurrentNnlStanding("auth");
 
-    const { upcomingMatch, lastMatch } = await getPrevNextMatch();
-    const matches = await getCurrentCompetitionSeasonsMatches();
+    const { upcomingMatch, lastMatch } = await getPrevNextMatch("auth");
+    const matches = await getCurrentCompetitionSeasonsMatches("auth");
 
     const upcomingCompetitionSeasonRounds = upcomingMatch
       ? matches.filter(
@@ -1491,10 +1503,11 @@ export async function fetchDashboardData() {
 
 export async function fetchHomepageData() {
   try {
-    const { upcomingMatch, lastMatch } = await getPrevNextMatch();
-    const nnlStanding = await getCurrentNnlStanding();
+    const { upcomingMatch, lastMatch } = await getPrevNextMatch("guest");
+    const nnlStanding = await getCurrentNnlStanding("guest");
     const { data: articles } = await cookiesClient.models.Article.list({
       limit: 4,
+      authMode: "iam",
       selectionSet: [
         "id",
         "articleCategory.category",
@@ -1513,6 +1526,7 @@ export async function fetchHomepageData() {
         },
       },
       limit: 3,
+      authMode: "iam",
       selectionSet: [
         "id",
         "firstname",

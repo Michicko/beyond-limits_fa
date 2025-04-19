@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import styles from "./Layout.module.css";
 import clsx from "clsx";
-// import Nav from "@/components/main/nav/Nav";
+import Nav from "@/components/main/nav/Nav";
 import { formula_condensed, roboto } from "@/app/styles/fonts";
-// import Footer from "@/components/main/Footer/footer";
+import Footer from "@/components/main/Footer/footer";
 import NextTopLoader from "nextjs-toploader";
 import Auth from "@/components/Auth/Auth";
 
@@ -68,10 +68,9 @@ export default function RootLayout({
     >
       <body className={clsx(styles.layout)}>
         <NextTopLoader color="#ffd700" height={4} />
-        {/* <Nav /> */}
+        <Nav />
         <Auth>{children}</Auth>
-
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   );
