@@ -1,0 +1,48 @@
+.contact-card {
+  background: var(--primary-dark);
+  max-width: 768px;
+  min-height: 15rem;
+  border-radius: 20px;
+  margin: var(--v) auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--xl);
+}
+
+.contact-card h2 {
+  font-size: var(--xl);
+  color: var(--secondary-light);
+  margin-bottom: var(--lg);
+  font-weight: 500;
+}
+
+.contact-card p {
+  font-family: var(--font);
+  font-size: var(--md);
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+.contact-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+
+@media only screen and (min-width: 36rem) {
+  .contact-card h2 {
+    font-size: var(--xxxl);
+  }
+
+  .contact-card {
+    padding: var(--xxl);
+  }
+}
+
+@media only screen and (min-width: 48em) {
+  .contact-card {
+    padding: var(--iv);
+  }
+}

@@ -29,11 +29,29 @@ async function Players({ params }: { params: { playersSlug: string } }) {
       ],
     });
 
+  const order = [
+    "goal keeper",
+    "central back",
+    "right back",
+    "left back",
+    "defensive midfielder",
+    "central midfielder",
+    "wing forward",
+  ];
+
   const rows = () => {
-    return positions.map((row) => {
+    const sortedPositions = positions.sort((a, b) => {
+      return (
+        order.indexOf(a.longName.toLowerCase()) -
+        order.indexOf(b.longName.toLowerCase())
+      );
+    });
+
+    return sortedPositions.map((row) => {
       const filteredPlayers = row.players.filter(
         (player) => player.ageGroup === params.playersSlug.toUpperCase()
       );
+
       return (
         <div key={row.longName}>
           <Heading
@@ -62,7 +80,8 @@ async function Players({ params }: { params: { playersSlug: string } }) {
               letterCase="upper"
               type="primary"
               color="white"
-            >{`Beyond Limits ${params.playersSlug}`}</Heading>
+              center={true}
+            >{`${params.playersSlug} Players`}</Heading>
           </>
         </LayoutHeader>
       </Header>
