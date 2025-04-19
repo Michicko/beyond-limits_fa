@@ -88,7 +88,7 @@ export default async function Home() {
               Our Players
             </Heading>
             <CustomLink
-              link={{ name: "View More Players", href: "/players/under-19" }}
+              link={{ name: "View More Players", href: "/players/under_19" }}
               type="section"
             />
           </Flex>

@@ -13,7 +13,7 @@ function PlayerModal({ player }: { player: IPlayer }) {
           <ImageComp
             image={player.homeKit}
             alt={player.firstname}
-            placeholder={"/images/player-bg.png"}
+            placeholder={player.homeKit}
             priority={false}
           />
         )}
@@ -21,7 +21,7 @@ function PlayerModal({ player }: { player: IPlayer }) {
           <ImageComp
             image={player.awayKit}
             alt={player.firstname}
-            placeholder={"/images/player-bg.png"}
+            placeholder={player.awayKit}
             priority={false}
           />
         )}

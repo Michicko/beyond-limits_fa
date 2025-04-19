@@ -110,13 +110,13 @@ const MenuLinks = [
     subMenu: [
       {
         id: 321,
-        link: "/players/under-19",
+        link: "/players/under_19",
         name: "under-19",
         image: "/images/under19.png",
       },
       {
         id: 322,
-        link: "/players/under-17",
+        link: "/players/under_17",
         name: "under-17",
         image: "/images/under17.png",
       },
