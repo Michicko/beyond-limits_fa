@@ -10,7 +10,7 @@ import LinkTab from "../../Tab/LinkTab";
 import styles from "../Layout.module.css";
 import { months, seasons } from "@/lib/placeholder-data";
 import SeasonFilter from "../../Filters/SeasonFilter";
-import { getDefaultSeason } from "@/lib/helper";
+import { getDefaultSeason } from "@/lib/helpers";
 
 function CompetitionsLayout({
   children,

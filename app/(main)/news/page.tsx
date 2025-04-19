@@ -9,48 +9,69 @@ const links = [
   { name: "Beyon limits tv", href: "/beyond-tv" },
 ];
 
-async function News({ searchParams }: { searchParams: { page?: string } }) {
+async function News({
+  searchParams,
+}: {
+  searchParams: { page?: string; category?: string };
+}) {
   const currentPage = +(searchParams.page ?? 1);
   const limit = 1;
   let token;
+  let articleList;
 
-  console.log("before", token);
+  if (searchParams.category) {
+    const { data: articleData } =
+      await cookiesClient.models.ArticleCategory.listArticleCategoryByCategory(
+        {
+          category: searchParams.category,
+        },
+        {
+          authMode: "iam",
+          selectionSet: [
+            "id",
+            "articles.*",
+            "category",
+            "articles.articleCategory.category",
+          ],
+        }
+      );
+    articleList = articleData[0].articles;
+  } else {
+    const {
+      data: articles,
+      errors,
+      nextToken,
+    } = await cookiesClient.models.Article.list({
+      limit,
+      authMode: "iam",
+      nextToken: token,
+      selectionSet: [
+        "id",
+        "articleCategory.category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+      ],
+    });
 
-  const {
-    data: articles,
-    errors,
-    nextToken,
-  } = await cookiesClient.models.Article.list({
-    limit,
-    authMode: "iam",
-    nextToken: token,
-    selectionSet: [
-      "id",
-      "articleCategory.category",
-      "content",
-      "tags",
-      "title",
-      "coverImage",
-      "status",
-      "createdAt",
-    ],
-  });
-
-  if (nextToken) {
-    token = nextToken;
+    articleList = articles;
   }
-
-  console.log("next: ", token);
 
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
       <div className="main-container">
-        <ArticleList articles={articles} />
-        <Pagination
+        {searchParams.category && (
+          <h3>Fetching articles for {searchParams.category}</h3>
+        )}
+        <ArticleList articles={articleList} />
+        {/* <Pagination
           currentPage={currentPage}
           hasNextPage={!nextToken}
           basePath="/news"
-        />
+        /> */}
       </div>
     </ArticleLayout>
   );

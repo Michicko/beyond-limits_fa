@@ -1,0 +1,57 @@
+.history {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--md);
+	padding: var(--iv) 0;
+}
+
+.history__heading {
+	display: flex;
+	align-items: center;
+	padding: var(--md);
+}
+
+.history__body.p {
+	padding: var(--lg) var(--md);
+}
+
+.history__body.py {
+	padding: var(--lg) 0;
+}
+
+.history__body.py-b {
+	padding: var(--lg) 0;
+	padding-top: 0;
+}
+
+.history-link {
+	font-size: var(--base);
+	font-weight: 700;
+	color: var(--secondary-light);
+	display: inline;
+	cursor: pointer;
+	letter-spacing: 1px;
+}
+
+.link-box p {
+	display: inline;
+	margin-right: var(--xs);
+}
+
+.history__heading,
+.history__body {
+	height: 100%;
+	width: 100%;
+}
+
+.history > *,
+.history > * > *:last-child {
+	height: 100%;
+}
+
+@media only screen and (min-width: 48rem) {
+	.history {
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--lg);
+	}
+}

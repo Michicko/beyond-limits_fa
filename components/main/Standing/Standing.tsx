@@ -23,8 +23,6 @@ function Standing({
     (el) => el.team && el.team.isBeyondLimits
   );
 
-  console.log(blfcIndex);
-
   // get team before blfc and blfc postions
   const filteredStandings = showFull
     ? sortedStandings

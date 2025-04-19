@@ -33,7 +33,6 @@ const Article = ({ article }: { article: IArticle }) => {
           backgroundPosition: "center",
         };
 
-  console.log(article);
   const selected_categories = ["match preview", "match report"];
 
   return (
@@ -73,7 +72,7 @@ const Article = ({ article }: { article: IArticle }) => {
         {article.articleCategory.category && (
           <ArticleCategory
             category={article.articleCategory.category}
-            link={`/articles?category=${article.articleCategory.category}`}
+            link={`/news/?category=${article.articleCategory.category}`}
           />
         )}
         <h3>{article.title}</h3>

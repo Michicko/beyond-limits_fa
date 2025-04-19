@@ -1,0 +1,138 @@
+.honours-container {
+  width: 100%;
+  padding: var(--iv) 0;
+}
+
+.honours-intro {
+  padding: var(--xxl) var(--md);
+  background: var(--primary-light);
+  min-height: 10rem;
+  display: flex;
+  align-items: center;
+}
+
+.honours-intro p {
+  font-family: var(--font-body);
+  font-size: var(--md);
+  font-weight: 400;
+  color: var(--white);
+}
+
+.honor {
+  padding: var(--xxl) var(--md);
+  display: grid;
+  gap: var(--md);
+}
+
+.honor:nth-child(even) {
+  background: var(--primary-light);
+}
+
+/* and */
+
+.honor:nth-child(odd) {
+  background: var(--primary-dark);
+}
+
+.honor-img {
+  position: relative;
+  height: auto;
+  max-width: 100%;
+}
+
+.honor-img::before {
+  padding-top: 100%;
+  content: "";
+  display: block;
+}
+
+.honor-img img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.honor-img__box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.honor-img__box h3,
+.honor-name {
+  text-align: right;
+  font-size: var(--xxl);
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--secondary-dark);
+}
+
+.honor-name {
+  color: var(--white);
+  font-size: var(--md);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.honors-years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sm);
+}
+
+.honor-year {
+  font-weight: 400;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: var(--sm);
+}
+
+.honor-details {
+  display: grid;
+  gap: var(--base);
+}
+
+.honor-details > *:last-child {
+  justify-self: flex-start;
+}
+
+@media only screen and (min-width: 25rem) {
+  .honor-name {
+    font-size: var(--lg);
+  }
+
+  .honor-year {
+    font-size: var(--base);
+  }
+}
+
+@media only screen and (min-width: 36rem) {
+  .honor-name {
+    font-size: var(--xl);
+  }
+
+  .honor-year {
+    font-size: var(--md);
+  }
+}
+
+@media only screen and (min-width: 48rem) {
+  .honor {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--lg);
+  }
+  .honor-details {
+    align-self: flex-start;
+  }
+
+  .honor-img__box h3 {
+    font-size: var(--xxxl);
+  }
+}
+
+@media only screen and (min-width: 64rem) {
+  .honor-img__box h3 {
+    font-size: var(--v);
+  }
+  .honours-intro p {
+    max-width: 80%;
+  }
+}

@@ -161,7 +161,7 @@ export interface IArticle {
   id: string;
   title: string;
   createdAt: string;
-  articleCategoryId?: string;
+  articleCategoryId?: Nullable<string>;
   coverImage: Nullable<string>;
   match?: IMatch;
   tags?: Nullable<string>[] | null;

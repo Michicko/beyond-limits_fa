@@ -11,8 +11,8 @@ function MatchScoreBoard({
   time,
 }: {
   status: string;
-  home_score: number;
-  away_score: number;
+  home_score: string;
+  away_score: string;
   size: "sm" | "md" | "lg" | "xl" | "xxl" | "iv";
   time: string;
 }) {

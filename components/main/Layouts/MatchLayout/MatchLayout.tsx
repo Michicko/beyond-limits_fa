@@ -11,6 +11,7 @@ import MatchDate from "../../MatchCard/MatchDate";
 import MatchLocation from "../../MatchCard/MatchLocation";
 import Flex from "../../Container/Flex";
 import Text from "../../Typography/Text";
+import { getFirstLetter } from "@/lib/helpers";
 
 const generateLink = (matchId: string) => {
   const links = [
@@ -48,28 +49,30 @@ function MatchLayout({
     <div className={clsx(styles["match-layout"])}>
       <div className={clsx(styles["match-layout__header-box"])}>
         <div className={clsx(styles["match-layout__header"])}>
-          {match.home.team && (
+          {match.homeTeam && (
             <Logo
-              logo={match.home.team.logo}
-              name={match.home.team.longName}
+              logo={match.homeTeam.logo}
+              name={match.homeTeam.longName}
               size="xxl"
             />
           )}
           <div className={clsx(styles["match-header__details"])}>
             <MatchDate date={match.date} size="lg" />
-            <MatchScoreBoard
-              status={match.status}
-              time={match.time}
-              home_score={match.home.goals}
-              away_score={match.away.goals}
-              size="iv"
-            />
+            {match.homeTeam && match.awayTeam && (
+              <MatchScoreBoard
+                status={match.status ? match.status : ""}
+                time={match.time}
+                home_score={match.homeTeam.goals ? match.homeTeam.goals : ""}
+                away_score={match.awayTeam.goals ? match.awayTeam.goals : ""}
+                size="iv"
+              />
+            )}
             <MatchLocation hightlight={true} location={match.venue} size="sm" />
           </div>
-          {match.away.team && (
+          {match.awayTeam && (
             <Logo
-              logo={match.away.team.logo}
-              name={match.away.team.longName}
+              logo={match.awayTeam.logo}
+              name={match.awayTeam.longName}
               size="xxl"
             />
           )}
@@ -79,17 +82,17 @@ function MatchLayout({
           letterCase="upper"
           center={true}
           type="section"
-        >{`${match.home.team?.longName} vs ${match.away.team?.longName}`}</Heading>
+        >{`${match.homeTeam?.longName} vs ${match.awayTeam?.longName}`}</Heading>
         <Flex align="center" justify="center" gap="xs">
-          {match.competition && (
+          {match.competitionSeason && (
             <>
               <Logo
-                logo={match.competition.logo}
-                name={match.competition.long_name}
+                logo={match.competitionSeason.logo}
+                name={match.competitionSeason.name}
                 size="lg"
               />
               <Text size="md" weight="bold" letterCase="upper" color="white">
-                {match.competition.short_name}
+                {getFirstLetter(match.competitionSeason.name)}
               </Text>
             </>
           )}

@@ -6,14 +6,58 @@ import Text from "@/components/main/Typography/Text";
 import React, { Suspense } from "react";
 import styles from "../News.module.css";
 import clsx from "clsx";
-import Article from "@/components/main/Article/Article";
-import { articles } from "@/lib/placeholder-data";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
-import ArticleCategory from "@/components/main/Article/ArticleCategory";
-import TextEditor from "@/components/admin/TextEditor/TextEditor";
+import ArticleCategory from "@/components/Article/ArticleCategory";
+import TextEditor from "@/components/TextEditor/TextEditor";
+import { cookiesClient } from "@/utils/amplify-utils";
+import Article from "@/components/Article/Article";
 
-function NewsArticle({ params }: { params: { newsId: string } }) {
-  const article = articles.find((article) => article.id === params.newsId);
+async function NewsArticle({ params }: { params: { newsId: string } }) {
+  let recommendedArticles;
+  const { data: article, errors } = await cookiesClient.models.Article.get(
+    {
+      id: params.newsId,
+    },
+    {
+      authMode: "iam",
+      selectionSet: [
+        "id",
+        "articleCategoryId",
+        "articleCategory.category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+      ],
+    }
+  );
+
+  if (article && article.articleCategoryId) {
+    const { data: categoryArticles } = await cookiesClient.models.Article.list({
+      filter: {
+        articleCategoryId: {
+          eq: article.articleCategoryId,
+        },
+      },
+      authMode: "iam",
+      limit: 3,
+      selectionSet: [
+        "id",
+        "articleCategoryId",
+        "articleCategory.category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+      ],
+    });
+
+    recommendedArticles = categoryArticles;
+  }
 
   return (
     <>
@@ -40,8 +84,11 @@ function NewsArticle({ params }: { params: { newsId: string } }) {
             >
               December 15, 2025
             </Text>
-            {article && article.category && (
-              <ArticleCategory category={article.category} />
+            {article && article.articleCategory.category && (
+              <ArticleCategory
+                category={article.articleCategory.category}
+                link={`/news/${article.articleCategory.category}`}
+              />
             )}
           </>
         </LayoutHeader>
@@ -52,7 +99,10 @@ function NewsArticle({ params }: { params: { newsId: string } }) {
             {article && (
               // <div dangerouslySetInnerHTML={{ __html: article.content }} />
               <Suspense fallback={null}>
-                <TextEditor content={article.content} readOnly={true} />
+                <TextEditor
+                  content={JSON.parse(article.content as string)}
+                  readOnly={true}
+                />
               </Suspense>
             )}
             <SocialShareLinks
@@ -65,9 +115,10 @@ function NewsArticle({ params }: { params: { newsId: string } }) {
               Other Articles
             </Heading>
             <div className={clsx(styles["col-3"])}>
-              {articles.slice(0, 3).map((article) => {
-                return <Article article={article} key={article.id} />;
-              })}
+              {recommendedArticles &&
+                recommendedArticles.map((article) => {
+                  return <Article article={article} />;
+                })}
             </div>
           </div>
         </div>
