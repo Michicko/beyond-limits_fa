@@ -1479,7 +1479,7 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
     return curr?.league.standings;
   }
 
-  return currentNNlSeasons[0].league.standings;
+  return currentNNlSeasons[0] ? currentNNlSeasons[0].league.standings : [];
 }
 
 export async function fetchDashboardData() {
