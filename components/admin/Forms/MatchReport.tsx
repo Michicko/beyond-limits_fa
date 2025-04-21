@@ -75,7 +75,7 @@ function MatchReport({
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Report</FormLabel>
-      <Field.Root>
+      <Field.Root mb={"5"} w={"full"}>
         <ResultSelector
           id={matchForm.id}
           value={result}

@@ -17,7 +17,13 @@ import { formatDate } from "@/lib/helpers";
 
 async function Articles() {
   const { data: articles, errors } = await cookiesClient.models.Article.list({
-    selectionSet: ["id", "title", "articleCategory.category", "createdAt"],
+    selectionSet: [
+      "id",
+      "title",
+      "articleCategory.category",
+      "status",
+      "createdAt",
+    ],
     authMode: "userPool",
   });
 
@@ -47,7 +53,7 @@ async function Articles() {
                 <TableHeader>
                   <TableRows>
                     <>
-                      {["Title", "Category", "Created At", ""]
+                      {["Title", "Category", "Status", "Created At", ""]
                         .filter((el) => el !== "id")
                         .map((head, i) => {
                           return (
@@ -73,6 +79,7 @@ async function Articles() {
                             <TableCell>
                               {article.articleCategory.category}
                             </TableCell>
+                            <TableCell>{article.status}</TableCell>
                             <TableCell>
                               {formatDate(article.createdAt)}
                             </TableCell>

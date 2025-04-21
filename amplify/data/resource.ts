@@ -72,7 +72,9 @@ const schema = a.schema({
       competitionId: a.id(),
       competition: a.belongsTo("Competition", "competitionId"),
       cupId: a.id(),
+      cup: a.hasOne("Cup", "competitionSeasonId"),
       leagueId: a.id(),
+      league: a.hasOne("League", "competitionSeasonId"),
       matches: a.hasMany("Match", "competitionSeasonId"),
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
@@ -86,6 +88,11 @@ const schema = a.schema({
 
   League: a
     .model({
+      competitionSeasonId: a.id(),
+      CompetitionSeason: a.belongsTo(
+        "CompetitionSeason",
+        "competitionSeasonId"
+      ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       leagueRounds: a.hasMany("LeagueRound", "leagueId"),
@@ -132,6 +139,9 @@ const schema = a.schema({
       leagueId: a.id(),
       league: a.belongsTo("League", "leagueId"),
       teamId: a.id(),
+      name: a.string().required(),
+      logo: a.string().required(),
+      isBeyondLimits: a.boolean().required(),
       position: a.integer().required(),
       p: a.integer().required(),
       w: a.integer().required(),
@@ -149,6 +159,11 @@ const schema = a.schema({
 
   Cup: a
     .model({
+      competitionSeasonId: a.id(),
+      CompetitionSeason: a.belongsTo(
+        "CompetitionSeason",
+        "competitionSeasonId"
+      ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
       playOffs: a.hasMany("PlayOff", "cupId"),
@@ -311,6 +326,7 @@ const schema = a.schema({
       title: a.string().required(),
       coverImage: a.string(),
       content: a.json(),
+      matchId: a.string(),
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
     })

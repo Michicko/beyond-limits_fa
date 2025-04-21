@@ -4,6 +4,7 @@ import styles from "./Standing.module.css";
 import clsx from "clsx";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import Text from "../Typography/Text";
+import { getFirstLetter } from "@/lib/helpers";
 
 function StandingRow({
   row,
@@ -18,18 +19,13 @@ function StandingRow({
       <td
         colSpan={4}
         className={clsx(styles["with-child"], showLongName && styles["long"])}
-        title={row.team?.longName}
+        title={row.name}
       >
         <div className={styles["img-box"]}>
-          {row.team?.logo && (
-            <ImageComp
-              image={row.team?.logo}
-              alt={`${row.team?.longName} logo`}
-            />
-          )}
+          {row.logo && <ImageComp image={row.logo} alt={`${row.name} logo`} />}
         </div>
         <Text color="white" letterCase="upper" size="base" weight="semibold">
-          {row.team?.shortName}
+          {getFirstLetter(row.name)}
         </Text>
         {showLongName && (
           <Text
@@ -38,7 +34,7 @@ function StandingRow({
             size="base"
             weight="semibold"
           >
-            {row.team?.longName}
+            {row.name}
           </Text>
         )}
       </td>

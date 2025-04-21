@@ -10,7 +10,7 @@ import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
 import Text from "@/components/main/Typography/Text";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
-import { match_highlights } from "@/lib/placeholder-data";
+import { match_highlights, months } from "@/lib/placeholder-data";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
@@ -18,6 +18,7 @@ import ArticleList from "@/components/Article/ArticleList";
 
 export default async function Home() {
   const { data: homepageContent, status } = await fetchHomepageData();
+  const month = months[new Date().getUTCMonth()];
 
   return (
     <>
@@ -47,8 +48,9 @@ export default async function Home() {
                 )}
               </>
             </Grid>
-            {homepageContent && (
+            {homepageContent?.nnlStanding && (
               <Standing
+                name={"NNL"}
                 showFull={false}
                 standings={homepageContent.nnlStanding}
                 showLongName={false}
@@ -135,7 +137,7 @@ export default async function Home() {
               isLink={true}
               size={"md"}
               text={"View more matches"}
-              url={`/fixtures?season=2024/2025`}
+              url={`/fixtures?month=${month}`}
             />
           </Flex>
         </Container>

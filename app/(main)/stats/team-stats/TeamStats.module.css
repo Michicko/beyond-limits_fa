@@ -1,0 +1,124 @@
+.team-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--md);
+  margin-top: 4rem;
+  align-items: flex-start;
+  color: var(--white);
+}
+
+.team-stats__heading,
+.team-stats__body {
+  height: 100%;
+  width: 100%;
+}
+
+.team-stats__heading {
+  display: flex;
+  align-items: center;
+  padding: var(--md);
+}
+
+.team-stats__body.p {
+  padding: var(--md);
+}
+
+.team-stats__body.py {
+  padding: var(--lg) 0;
+}
+
+.team-stats__body.py-b {
+  padding: var(--lg) 0;
+  padding-top: 0;
+}
+
+.competition {
+  display: grid;
+  grid-template-columns: auto min-content;
+  align-items: flex-start;
+  padding: var(--sm) var(--lg);
+  gap: var(--md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.competition > *:nth-child(1) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md);
+}
+
+.team-stats__streaks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--md);
+}
+
+.team-stats__streak {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xxs);
+  background: var(--primary-light);
+  padding: var(--md);
+  border-radius: var(--sm);
+}
+
+.team-stats__streak p,
+.team-stats__streak h4 {
+  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: var(--sm);
+  text-transform: uppercase;
+}
+
+.team-stats__streaks > *:nth-child(1) p {
+  color: var(--primary-dark);
+}
+
+.team-stats__streaks > *:nth-child(2) p {
+  color: var(--secondary-light);
+}
+
+.team-stats__streaks > *:nth-child(3) p {
+  color: var(--red-400);
+}
+
+.team-stats__forms {
+  display: flex;
+  align-items: center;
+  gap: var(--xxs);
+}
+
+@media only screen and (min-width: 25rem) {
+  .team-stats__streaks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--md);
+  }
+}
+
+@media only screen and (min-width: 36rem) {
+  .team-stats__streak p,
+  .team-stats__streak h4 {
+    font-size: var(--base);
+  }
+}
+
+@media only screen and (min-width: 48rem) {
+  .team-stats__streak p,
+  .team-stats__streak h4 {
+    font-size: var(--md);
+  }
+}
+
+@media only screen and (min-width: 64rem) {
+  .team-stats__streak p,
+  .team-stats__streak h4 {
+    font-size: var(--lg);
+  }
+
+  .team-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

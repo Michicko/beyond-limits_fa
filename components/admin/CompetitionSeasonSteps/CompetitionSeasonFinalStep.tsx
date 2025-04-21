@@ -5,7 +5,11 @@ import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import CompetitionSeasonInfo from "./CompetitionSeasonInfo";
 import FormBtn from "../Forms/FormBtn";
 import useToast from "@/hooks/useToast";
-import { createCompetitionSeason } from "@/app/_actions/actions";
+import {
+  createCompetitionSeason,
+  updateCup,
+  updateLeague,
+} from "@/app/_actions/actions";
 import { getButtonStatus } from "@/lib/helpers";
 
 function CompetitionSeasonFinalStep({
@@ -53,25 +57,46 @@ function CompetitionSeasonFinalStep({
       formData.append("leagueId", leagueId);
     }
 
-    startTransition(async () => {
-      const res = await createCompetitionSeason(formData);
+    try {
+      startTransition(async () => {
+        const res = await createCompetitionSeason(formData);
+        // update cup with competition season id
+        if (res.status === "success" && res.data) {
+          if (cupId) {
+            const cupData = new FormData();
+            cupData.append("id", cupId);
+            cupData.append("competitionSeasonId", res.data.id);
+            await updateCup(cupData);
+          }
 
-      if (res.status === "success" && res.data) {
-        mutationToast(
-          "competition season",
-          res.data.name + " " + res.data.season,
-          "create"
-        );
-        formRef.current?.reset();
-        const time = setTimeout(() => {
-          goToNextStep();
-          return () => clearTimeout(time);
-        }, 200);
+          // update league with competition season id
+          if (leagueId) {
+            const leagueData = new FormData();
+            leagueData.append("id", leagueId);
+            leagueData.append("competitionSeasonId", res.data.id);
+            await updateLeague(leagueData);
+          }
+
+          mutationToast(
+            "competition season",
+            res.data.name + " " + res.data.season,
+            "create"
+          );
+          formRef.current?.reset();
+          const time = setTimeout(() => {
+            goToNextStep();
+            return () => clearTimeout(time);
+          }, 200);
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        errorToast(error.message);
       }
-      if (res.status === "error") {
-        errorToast(res.message);
-      }
-    });
+    }
   };
 
   return (

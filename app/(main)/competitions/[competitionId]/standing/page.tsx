@@ -8,6 +8,7 @@ import styles from "../../Competitions.module.css";
 import Knockout from "@/components/main/Knockout/Knockout";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { fetchPlayOffs, fetchStanding } from "@/app/_actions/actions";
+import { getFirstLetter } from "@/lib/helpers";
 
 async function CompetitionStanding({
   params,
@@ -76,6 +77,7 @@ async function CompetitionStanding({
           <>
             {standing && (
               <Standing
+                name={getFirstLetter(competition.name)}
                 standings={standing}
                 showFull={true}
                 showLongName={true}

@@ -214,11 +214,11 @@ function GoalScorers({
       </Grid>
       <HStack mt={"12"} flexWrap={"wrap"} columnGap={"6"} rowGap={"8"}>
         {matchForm.scorers &&
-          (matchForm.scorers as []).map((scorer: IMatchScorer) => {
+          (matchForm.scorers as []).map((scorer: IMatchScorer, i) => {
             return (
               <Flex
                 flexDirection={"column"}
-                key={scorer.name}
+                key={scorer.name + "" + i}
                 shadow={"sm"}
                 p={"2"}
                 borderRadius={"sm"}

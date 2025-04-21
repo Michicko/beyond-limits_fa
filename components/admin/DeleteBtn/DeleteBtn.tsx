@@ -2,7 +2,6 @@
 import useToast from "@/hooks/useToast";
 import { Button, Menu } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 
 function DeleteBtn({
   id,
@@ -19,7 +18,6 @@ function DeleteBtn({
   }>;
   type?: "menu" | "btn";
 }) {
-  const router = useRouter();
   const styles = {
     p: "0 10px",
     h: "40px",
@@ -41,7 +39,6 @@ function DeleteBtn({
       if (type === "btn") {
         promise.then((res) => {
           setIsPending(false);
-          router.push("/cp/articles");
         });
       }
     }

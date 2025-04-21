@@ -1,0 +1,32 @@
+.player-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--md);
+  margin-top: 4rem;
+  align-items: flex-start;
+}
+
+.player-stats__heading,
+.player-stats__body {
+  height: 100%;
+  width: 100%;
+}
+
+.player-stats__heading {
+  display: flex;
+  align-items: center;
+  padding: var(--md);
+}
+
+.player-stats__body.p {
+  padding: var(--md);
+}
+
+.player-stats__body.py {
+  padding: var(--lg) 0;
+}
+
+.player-stats__body.py-b {
+  padding: var(--lg) 0;
+  padding-top: 0;
+}

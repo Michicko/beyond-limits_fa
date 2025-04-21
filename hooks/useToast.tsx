@@ -56,6 +56,44 @@ function useToast() {
     });
   };
 
+  interface IToastDetails {
+    title: string;
+    desc: string;
+  }
+
+  const mutationPromiseToast = (
+    promise: Promise<any>,
+    success: IToastDetails,
+    error: IToastDetails,
+    loading: IToastDetails,
+    onLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    toaster.promise(promise, {
+      success: (res) => {
+        onLoading(false);
+        if (res.data) {
+          return {
+            title: `${success.title}`,
+            description: `${success.desc}`,
+          };
+        } else {
+          return {
+            title: `${success.title}`,
+            description: `${success.desc}`,
+          };
+        }
+      },
+      error: (err) => {
+        onLoading(false);
+        return {
+          title: `${error.title}`,
+          description: "Something went wrong",
+        };
+      },
+      loading: { title: `${loading.title}...`, description: "Please wait" },
+    });
+  };
+
   const errorToast = (err: any) => {
     createToast(
       "Error",
@@ -89,6 +127,7 @@ function useToast() {
     toaster,
     promiseToast,
     uploadPromiseToast,
+    mutationPromiseToast,
   };
 }
 

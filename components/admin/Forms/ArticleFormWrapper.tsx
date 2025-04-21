@@ -17,6 +17,10 @@ async function ArticleFormWrapper({ article }: { article?: IArticle | null }) {
       authMode: "userPool",
     });
 
+  const { data: matches } = await cookiesClient.models.Match.list({
+    selectionSet: ["id", "date", "homeTeam.*", "awayTeam.*"],
+  });
+
   return (
     <Box w={"full"}>
       {errors && (
@@ -27,7 +31,11 @@ async function ArticleFormWrapper({ article }: { article?: IArticle | null }) {
         />
       )}
       {articleCategories && (
-        <ArticleForm article={article} articleCategories={articleCategories} />
+        <ArticleForm
+          article={article}
+          articleCategories={articleCategories}
+          matches={matches}
+        />
       )}
     </Box>
   );

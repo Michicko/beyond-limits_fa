@@ -9,6 +9,7 @@ async function Standing() {
   return (
     <CompetitionsLayout pageTitle="Nigerian National League">
       <StandingComp
+        name={"NNL"}
         standings={nnlStanding}
         showFull={true}
         showLongName={true}

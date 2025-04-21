@@ -74,6 +74,7 @@ tr.shade {
   color: var(--secondary-light);
   margin-left: var(--sm);
   margin-top: var(--sm);
+  text-transform: uppercase;
 }
 
 .standing td.with-child > *:nth-child(3) {

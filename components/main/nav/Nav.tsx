@@ -10,8 +10,10 @@ import NavLogo from "./NavLogo";
 import NavSearchBtn from "./NavSearchBtn";
 import { usePathname } from "next/navigation";
 import { months } from "@/lib/placeholder-data";
+import { fetchAuthSession } from "@aws-amplify/auth";
 
 function Nav() {
+  const [authenticated, setAuthenticated] = useState(false);
   const pathname = usePathname();
   const isStatePopped = useRef(false);
 
@@ -70,6 +72,22 @@ function Nav() {
   const date = new Date();
   const month = date.getMonth();
 
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const { tokens } = await fetchAuthSession();
+        if (tokens) {
+          setAuthenticated(true);
+        } else {
+          setAuthenticated(false);
+        }
+      } catch (error) {
+        setAuthenticated(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
+
   return (
     <>
       <Search isOpened={isSearchBarOpened} setIsOpened={setIsSearchBarOpened} />
@@ -93,7 +111,13 @@ function Nav() {
           <p className={clsx(styles["nav-text"])}>No Limits</p>
           <div className={clsx(styles.right)}>
             <NavLink link={{ href: "/contact", name: "Contact us" }} />
-            <NavLink link={{ href: "/login", name: "Login" }} />
+            <NavLink
+              link={
+                authenticated
+                  ? { href: "/cp/dashboard", name: "Dashboard" }
+                  : { href: "/login", name: "Login" }
+              }
+            />
           </div>
         </div>
         <div className={clsx(styles["nav-main"])}>
@@ -105,5 +129,4 @@ function Nav() {
     </>
   );
 }
-
 export default Nav;

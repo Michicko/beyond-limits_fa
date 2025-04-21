@@ -59,6 +59,9 @@ function LeagueStanding({
     const standing = leagueTeams.map((team, index) => ({
       leagueId: league.id,
       teamId: team.id,
+      name: team.longName,
+      logo: team.logo,
+      isBeyondLimits: team.isBeyondLimits,
       position: index + 1, // Sorted index determines position
       pts: 0,
       p: 0,

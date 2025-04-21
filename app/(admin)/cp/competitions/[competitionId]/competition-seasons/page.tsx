@@ -4,6 +4,7 @@ import BackButton from "@/components/admin/BackButton";
 import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
+import EndSeason from "@/components/admin/EndEntityBtn/EndSeason";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import Pagination from "@/components/admin/Pagination/Pagination";
 import Table from "@/components/admin/Table/Table";
@@ -14,7 +15,7 @@ import TableHeader from "@/components/admin/Table/TableHeader";
 import TableRows from "@/components/admin/Table/TableRows";
 import CreateButton from "@/components/Buttons/CreateButton";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Button } from "@chakra-ui/react";
 import React from "react";
 
 async function CompetitionSeasons({
@@ -94,6 +95,11 @@ async function CompetitionSeasons({
                                     disabled={false}
                                     label="View season"
                                     link={`/cp/competitions/${params.competitionId}/competition-seasons/${season.id}`}
+                                  />
+                                  <EndSeason
+                                    id={season.id}
+                                    season={season.season}
+                                    disabled={season.status === "COMPLETED"}
                                   />
                                   <DeleteBtn
                                     id={season.id}

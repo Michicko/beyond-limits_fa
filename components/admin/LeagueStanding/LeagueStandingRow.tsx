@@ -39,6 +39,9 @@ function LeagueStandingRow({
     id: standing.id,
     leagueId,
     teamId: team.id,
+    name: team.longName,
+    logo: team.logo,
+    isBeyondLimits: team.isBeyondLimits,
     position: standing.position,
     pts: standing.pts,
     p: standing.p,
@@ -63,15 +66,13 @@ function LeagueStandingRow({
     startTransition(async () => {
       const res = await updateStandingRow(standing.id, formData);
       if (res.status === "success" && res.data) {
-        mutationToast("League Standing", `${team.longName}`, "update");
+        mutationToast("League Standing", `${res.data.name}`, "update");
       }
       if (res.status === "error") {
         errorToast(res.message);
       }
     });
   };
-
-  // todo => fetch match for each round to display match scores afte it has been marked as completed
 
   return (
     <Table.Row key={team.id} borderBottom={"1px solid"} borderColor={"neutral"}>

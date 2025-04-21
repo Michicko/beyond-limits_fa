@@ -64,13 +64,13 @@
 .matchcard-teams {
   max-width: 15rem;
   width: 100%;
-  /* display: flex;
+  display: flex;
   align-items: center;
-  justify-content: space-between; */
+  justify-content: space-between;
   gap: var(--sm);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 4rem 1fr;
+  /* display: grid;
+  grid-template-columns: 1fr 4rem 1fr; */
 }
 
 .matchcard-teams.upcoming {
@@ -95,13 +95,13 @@
   white-space: nowrap;
 }
 
-.matchcard-team.away {
+/* .matchcard-team.away {
   justify-self: flex-end;
 }
 
 .matchcard-team.home {
   justify-self: flex-start;
-}
+} */
 
 .matchcard-team.away > *:nth-child(1) {
   order: 3;
@@ -406,10 +406,6 @@
 
   .matchcard-teams.full.upcoming {
     max-width: 70%;
-  }
-
-  .matchcard-teams {
-    grid-template-columns: 1fr 8rem 1fr;
   }
 
   .team-form p {

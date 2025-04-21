@@ -258,7 +258,7 @@ const LeagueRoundForm = ({
                     </Field.Root>
                   </HStack>
                   <Field.Root>
-                    <Field.Label>Goals Scored</Field.Label>
+                    <Field.Label>Goals </Field.Label>
                     <Input
                       placeholder="Enter Goals Scored and conceded"
                       name={"g"}

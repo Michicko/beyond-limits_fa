@@ -8,10 +8,12 @@ import { IStandingRow } from "@/lib/definitions";
 import StandingRow from "./StandingRow";
 
 function Standing({
+  name,
   standings,
   showFull,
   showLongName,
 }: {
+  name: string;
   standings: IStandingRow[];
   showFull: boolean;
   showLongName: boolean;
@@ -19,9 +21,7 @@ function Standing({
   const sortedStandings = standings.sort((a, b) => a.position - b.position);
 
   // get blfc index in standing
-  const blfcIndex = sortedStandings.findIndex(
-    (el) => el.team && el.team.isBeyondLimits
-  );
+  const blfcIndex = sortedStandings.findIndex((el) => el && el.isBeyondLimits);
 
   // get team before blfc and blfc postions
   const filteredStandings = showFull
@@ -33,7 +33,7 @@ function Standing({
   return (
     <div className={clsx(styles.standing)}>
       <Card theme="light">
-        <p className={clsx(styles["standing-title"])}>NNL</p>
+        <p className={clsx(styles["standing-title"])}>{name} Standing</p>
         <>
           <table className={clsx(showFull)}>
             <CardHeader as="thead" theme="trans" border={true}>
@@ -64,10 +64,10 @@ function Standing({
                       key={i + 1 * 2}
                       className={clsx(
                         styles.tr,
-                        row.team?.isBeyondLimits && styles.shade
+                        row.isBeyondLimits && styles.shade
                       )}
                     >
-                      {row.team && (
+                      {row && (
                         <StandingRow row={row} showLongName={showLongName} />
                       )}
                     </tr>

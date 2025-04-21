@@ -13,6 +13,7 @@ async function EditArticle({ params }: { params: { articleId: string } }) {
       selectionSet: [
         "id",
         "title",
+        "status",
         "articleCategory.category",
         "coverImage",
         "content",

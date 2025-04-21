@@ -1,3 +1,4 @@
+"use client";
 import { Menu } from "@chakra-ui/react";
 import React from "react";
 

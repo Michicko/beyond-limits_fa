@@ -2,11 +2,15 @@ import { Table, Card, Heading, HStack } from "@chakra-ui/react";
 import React from "react";
 import MatchIcon from "../Card/MatchIcon";
 import { Nullable } from "@/lib/definitions";
+import { getFirstLetter } from "@/lib/helpers";
 
 interface IStandingRow {
   id: string;
   leagueId: Nullable<string>;
   teamId: Nullable<string>;
+  name: string;
+  logo: string;
+  isBeyondLimits: boolean;
   position: number;
   p: number;
   w: number;
@@ -18,16 +22,6 @@ interface IStandingRow {
   createdAt: string;
   updatedAt: string;
   league?: unknown;
-  team?: {
-    id: string;
-    logo: string;
-    shortName: string;
-    longName: string;
-    stadium: Nullable<string>;
-    isBeyondLimits: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
 }
 
 function Standing({
@@ -97,17 +91,13 @@ function Standing({
             .sort((a, b) => a.position - b.position)
             .map((standing, i) => (
               <Table.Row
-                key={standing.team && standing.team.id}
+                key={standing.teamId}
                 h={"40px"}
                 borderBottom={"1px solid"}
                 borderColor={
                   i === standings.length - 1 ? "transparent" : "neutral"
                 }
-                bg={
-                  standing.team && standing.team.isBeyondLimits
-                    ? "neutral"
-                    : "transparent"
-                }
+                bg={standing.isBeyondLimits ? "neutral" : "transparent"}
               >
                 <Table.Cell css={tdStyles} pl={"4px"}>
                   {standing.position}
@@ -117,15 +107,9 @@ function Standing({
                   pl={"4px"}
                   display={{ base: "table-cell", md: "none" }}
                 >
-                  <HStack>
-                    {standing.team && (
-                      <MatchIcon
-                        size="md"
-                        src={standing.team.logo}
-                        radius={false}
-                      />
-                    )}
-                    {standing.team && standing.team.shortName}
+                  <HStack title={standing.name}>
+                    <MatchIcon size="md" src={standing.logo} radius={false} />
+                    {getFirstLetter(standing.name)}
                   </HStack>
                 </Table.Cell>
                 <Table.Cell
@@ -134,14 +118,8 @@ function Standing({
                   display={{ base: "none", md: "table-cell" }}
                 >
                   <HStack>
-                    {standing.team && (
-                      <MatchIcon
-                        size="md"
-                        src={standing.team.logo}
-                        radius={false}
-                      />
-                    )}
-                    {standing.team && standing.team.longName}
+                    <MatchIcon size="md" src={standing.logo} radius={false} />
+                    {standing.name}
                   </HStack>
                 </Table.Cell>
                 <Table.Cell css={tdStyles} textAlign="center">

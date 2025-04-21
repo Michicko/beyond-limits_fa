@@ -89,46 +89,52 @@ async function Dashboard() {
               />
             </HStack>
           </Box>
-          {dashboardData.upcomingMatch && dashboardData.lastMatch && (
-            <Box
-              w="full"
-              pb={"2px"}
-              overflowX={"hidden"}
-              as={"section"}
-              mb={"19px"}
-            >
-              <SimpleGrid columns={{ base: 1, xl: 8 }} gap={"10px"}>
-                <GridItem colSpan={{ base: 1, xl: 5 }}>
-                  <SimpleGrid columns={{ base: 1, md: 2 }} gap={"10px"}>
-                    <GridItem colSpan={{ base: 1 }}>
+          <Box
+            w="full"
+            pb={"2px"}
+            overflowX={"hidden"}
+            as={"section"}
+            mb={"19px"}
+          >
+            <SimpleGrid columns={{ base: 1, xl: 8 }} gap={"10px"}>
+              <GridItem colSpan={{ base: 1, xl: 5 }}>
+                <SimpleGrid columns={{ base: 1, md: 2 }} gap={"10px"}>
+                  <GridItem colSpan={{ base: 1 }}>
+                    {dashboardData.lastMatch && (
                       <MatchCard
                         match={dashboardData.lastMatch}
                         showMenu={false}
                       />
-                    </GridItem>
-                    <GridItem colSpan={{ base: 1 }}>
+                    )}
+                  </GridItem>
+                  <GridItem colSpan={{ base: 1 }}>
+                    {dashboardData.upcomingMatch && (
                       <MatchCard
                         match={dashboardData.upcomingMatch}
                         showMenu={false}
                       />
-                    </GridItem>
-                  </SimpleGrid>
-                </GridItem>
-                <GridItem colSpan={{ base: 1, xl: 3 }}>
+                    )}
+                  </GridItem>
+                </SimpleGrid>
+              </GridItem>
+              <GridItem colSpan={{ base: 1, xl: 3 }}>
+                {dashboardData.upcomingCompetition && (
                   <MatchStats
                     played={dashboardData.upcomingCompetition.played}
                     win={dashboardData.upcomingCompetition.win}
                     draw={dashboardData.upcomingCompetition.draw}
                     lose={dashboardData.upcomingCompetition.lose}
                   />
-                </GridItem>
-              </SimpleGrid>
-            </Box>
-          )}
+                )}
+              </GridItem>
+            </SimpleGrid>
+          </Box>
           <Box w="full" pb={"2px"} overflowX={"hidden"} as={"section"}>
             <SimpleGrid columns={{ base: 1, xl: 10 }} gap={"10px"}>
               <GridItem colSpan={{ base: 1, xl: 6 }}>
-                <Standing name="NNL" standings={dashboardData.nnlStanding} />
+                {dashboardData.nnlStanding && (
+                  <Standing name="NNL" standings={dashboardData.nnlStanding} />
+                )}
               </GridItem>
               <GridItem colSpan={{ base: 1, xl: 4 }}>
                 {dashboardData.goalRanking && (

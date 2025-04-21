@@ -5,6 +5,7 @@ import {
   Field,
   HStack,
   IconButton,
+  Image,
   Input,
   Stack,
 } from "@chakra-ui/react";
@@ -12,21 +13,30 @@ import React, { useRef, useState, useTransition } from "react";
 import { JSONContent } from "@tiptap/react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import FormLabel from "./FormLabel";
-import { CldImage } from "next-cloudinary";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import slugify from "slugify";
 import useToast from "@/hooks/useToast";
-import { createArticle, updateArticle } from "@/app/_actions/actions";
+import {
+  createArticle,
+  deleteArticle,
+  updateArticle,
+  publishArticle,
+} from "@/app/_actions/actions";
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import CreateButton from "@/components/Buttons/CreateButton";
-import Link from "next/link";
 import ArticleCategory from "@/components/Article/ArticleCategory";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
-  "id" | "title" | "coverImage" | "content" | "status" | "articleCategoryId"
+  | "id"
+  | "title"
+  | "coverImage"
+  | "content"
+  | "status"
+  | "articleCategoryId"
+  | "matchId"
 >;
 
 type IArticleCategory = Pick<
@@ -34,12 +44,19 @@ type IArticleCategory = Pick<
   "id" | "category" | "createdAt"
 >;
 
+type IMatch = Pick<
+  Schema["Match"]["type"],
+  "id" | "homeTeam" | "awayTeam" | "date"
+>;
+
 function ArticleForm({
   article,
   articleCategories,
+  matches,
 }: {
   article?: IArticle | null;
   articleCategories: IArticleCategory[];
+  matches: IMatch[];
 }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const btnStyles = {
@@ -65,7 +82,8 @@ function ArticleForm({
   };
 
   const [isPending, startTransition] = useTransition();
-  const { mutationToast, errorToast } = useToast();
+  const { mutationToast, errorToast, mutationPromiseToast } = useToast();
+  const [matchId, setMatchId] = useState(article?.matchId || "");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,6 +92,7 @@ function ArticleForm({
       formData.append(Key, value.toString());
     });
     formData.delete("content");
+    formData.delete("matchId");
     formData.append("content", JSON.stringify(tempData.content));
 
     if (article) {
@@ -81,6 +100,9 @@ function ArticleForm({
         const res = await updateArticle(article.id, formData, article.title);
 
         if (res.status === "success" && res.data) {
+          if (matchId) {
+            formData.append("matchId", matchId);
+          }
           mutationToast("article", res.data.title, "update");
         }
         if (res.status === "error") {
@@ -89,6 +111,9 @@ function ArticleForm({
       });
     } else {
       startTransition(async () => {
+        if (matchId) {
+          formData.append("matchId", matchId);
+        }
         const res = await createArticle(formData);
         if (res.status === "success" && res.data) {
           mutationToast("article", res.data.title, "create");
@@ -106,6 +131,66 @@ function ArticleForm({
           errorToast(res.message);
         }
       });
+    }
+  };
+
+  const [isTrashing, setIsTrashing] = useState(false);
+
+  const trashArticle = async () => {
+    if (confirm("Are you sure?")) {
+      const success = {
+        title: "Article Deleted",
+        desc: `${article?.title} deleted successfully!`,
+      };
+      const err = {
+        title: "Error trashing article",
+        desc: `Failed to delete article`,
+      };
+      const loading = {
+        title: "Trashing Article",
+        desc: `Deleting ${article?.title}, please wait...`,
+      };
+      setIsTrashing(true);
+      if (article) {
+        mutationPromiseToast(
+          deleteArticle(article.id),
+          success,
+          err,
+          loading,
+          setIsTrashing
+        );
+      }
+    }
+  };
+
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const publishArticleFn = async () => {
+    const success = {
+      title: "Article Published",
+      desc: `${article?.title} published successfully!`,
+    };
+    const err = {
+      title: "Error publishing article",
+      desc: `Failed to publish article`,
+    };
+    const loading = {
+      title: "Publishing Article",
+      desc: `Publishing ${article?.title}, please wait...`,
+    };
+    setIsPublishing(true);
+    if (article) {
+      const formData = new FormData();
+      formData.append("id", article.id);
+      formData.append("status", "PUBLISHED");
+
+      mutationPromiseToast(
+        publishArticle(formData),
+        success,
+        err,
+        loading,
+        setIsPublishing
+      );
     }
   };
 
@@ -151,8 +236,13 @@ function ArticleForm({
             variant={"solid"}
             bg={"primary"}
             _hover={{ bg: "primary_variant", color: "gray.100" }}
-            disabled={!article || article.status === "PUBLISHED"}
+            disabled={
+              !article || article.status === "PUBLISHED" || isPublishing
+            }
             type="button"
+            onClick={async () => {
+              await publishArticleFn();
+            }}
           >
             Publish
           </Button>
@@ -163,8 +253,11 @@ function ArticleForm({
             bg={"red.100"}
             color={"error"}
             _hover={{ bg: "red.600", color: "red.100" }}
-            disabled={!article}
+            disabled={!article || isTrashing}
             type="button"
+            onClick={async () => {
+              await trashArticle();
+            }}
           >
             {getIcon("trash")} Trash
           </Button>
@@ -206,10 +299,10 @@ function ArticleForm({
           <FormLabel>Cover Image</FormLabel>
           {tempData.coverImage && (
             <HStack gap={4}>
-              <CldImage
+              <Image
                 src={tempData.coverImage}
-                width="400"
-                height="400"
+                width="200"
+                height="200"
                 alt={tempData.title}
               />
               <IconButton
@@ -234,6 +327,26 @@ function ArticleForm({
               type="drag-drop"
             />
           )}
+        </Field.Root>
+        <Field.Root mb={5}>
+          <Field.Label>Match</Field.Label>
+          <CustomSelect
+            name={"matchId"}
+            description={"Match"}
+            selectedValue={matchId}
+            options={matches.map((match) => {
+              return {
+                label:
+                  match.homeTeam?.longName +
+                  " vs " +
+                  match.awayTeam?.longName +
+                  ` (${match.date})`,
+                value: match.id,
+              };
+            })}
+            handleOnChange={(e) => setMatchId(e.target.value)}
+            id={"match"}
+          />
         </Field.Root>
         <TextEditor
           content={tempData.content}

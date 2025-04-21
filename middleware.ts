@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // User not authenticated → redirect to login if not already there
-  if (url.pathname !== "/login") {
+  if (!url.pathname.startsWith("/login")) {
     url.pathname = "/login";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(new URL(url, request.url));

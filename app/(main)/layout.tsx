@@ -68,9 +68,13 @@ export default function RootLayout({
     >
       <body className={clsx(styles.layout)}>
         <NextTopLoader color="#ffd700" height={4} />
-        <Nav />
-        <Auth>{children}</Auth>
-        <Footer />
+        <Auth>
+          <Nav />
+          <div className={clsx(styles["main-container"])}>
+            {!children ? <div>Loading...</div> : children}
+          </div>
+          <Footer />
+        </Auth>
       </body>
     </html>
   );

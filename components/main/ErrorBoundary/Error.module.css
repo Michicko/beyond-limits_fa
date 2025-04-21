@@ -1,0 +1,38 @@
+.error-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-code {
+  font-size: 4.5rem;
+  color: var(--secondary-light);
+  margin: var(--sm);
+}
+
+.error-message {
+  font-size: var(--xxl);
+  color: var(--white);
+}
+
+.error-btn {
+  display: inline-block;
+  padding: var(--xs) var(--sm);
+  background-color: var(--blue-500);
+  color: var(--white);
+  border-radius: var(--xxs);
+  text-decoration: none;
+  font-size: var(--base);
+  cursor: pointer;
+  margin-top: var(--md);
+  outline: transparent;
+  border: transparent;
+}
+
+.error-container p {
+  color: var(--white);
+  text-align: center;
+}

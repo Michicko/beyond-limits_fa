@@ -1,7 +1,8 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, getRole } from "@/utils/amplify-utils";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -588,6 +589,27 @@ export async function updateArticle(
   };
 }
 
+export async function publishArticle(formData: FormData) {
+  const body = formDataToObject<Article>(formData);
+
+  const { data, errors } = await cookiesClient.models.Article.update(body, {
+    selectionSet: ["id", "title", "content", "coverImage"],
+  });
+
+  if (errors) {
+    return {
+      status: "error",
+      message: errors[0].message || "An unknown error occurred",
+    };
+  }
+
+  revalidatePath("/cp/articles");
+  return {
+    status: "success",
+    data,
+  };
+}
+
 export async function deleteArticle(id: string) {
   return await deleteEntity({
     id,
@@ -745,6 +767,46 @@ export const createLeague = async (formData: FormData) => {
     }),
   });
 };
+
+export async function updateCup(formData: FormData) {
+  const body = formDataToObject<Cup>(formData);
+
+  try {
+    const { data, errors } = await cookiesClient.models.Cup.update(body, {
+      selectionSet: ["id"],
+    });
+
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
+
+export async function updateLeague(formData: FormData) {
+  const body = formDataToObject<League>(formData);
+
+  try {
+    const { data, errors } = await cookiesClient.models.League.update(body, {
+      selectionSet: ["id"],
+    });
+
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
 
 export const createCompetitionSeason = async (formData: FormData) => {
   const base = formDataToObject<CompetitionSeason>(formData);
@@ -983,6 +1045,10 @@ export const createStandingRow = async (formData: FormData) => {
     selectionSet: [
       "id",
       "teamId",
+      "name",
+      "logo",
+      "isBeyondLimits",
+      "position",
       "position",
       "pts",
       "p",
@@ -1004,6 +1070,9 @@ export const updateStandingRow = async (id: string, formData: FormData) => {
       selectionSet: [
         "id",
         "teamId",
+        "name",
+        "logo",
+        "isBeyondLimits",
         "position",
         "pts",
         "p",
@@ -1085,6 +1154,35 @@ export async function updatePlayOff(id: string, formData: FormData) {
     revalidatePath(
       "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]"
     );
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
+
+export async function endCompetitionSeason(formData: FormData) {
+  const body = formDataToObject<CompetitionSeason>(formData);
+
+  try {
+    const { data, errors } =
+      await cookiesClient.models.CompetitionSeason.update(body, {
+        selectionSet: ["id", "name", "season"],
+      });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
     return {
       status: "success",
       data,
@@ -1195,6 +1293,12 @@ function getPlayerGoalCounts(matches: IMatch[]) {
   return result;
 }
 
+export async function isLoggedIn() {
+  const { tokens } = await getRole();
+  console.log("tokens: => ", tokens);
+  return tokens && tokens.accessToken && tokens.idToken;
+}
+
 async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   const { data: competitionSeasons } =
@@ -1205,43 +1309,64 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         },
       },
       authMode: client === "guest" ? "iam" : "userPool",
+      selectionSet: [
+        "id",
+        "name",
+        "cup.playOffs.*",
+        "cupId",
+        "leagueId",
+        "league.leagueRounds.*",
+        "status",
+        "matches.*",
+        "matches.competitionSeason.id",
+        "matches.competitionSeason.season",
+        "matches.competitionSeason.name",
+        "matches.competitionSeason.logo",
+      ],
     });
 
   return competitionSeasons;
 }
 
-async function getCurrentCompetitionSeasonsMatches(client: "guest" | "auth") {
+export async function getCurrentCompetitionSeasonsMatches(
+  client: "guest" | "auth"
+) {
   const competitionSeasons = await getCurrentCompetitionSeasons(client);
   let matches: IMatch[] = [];
 
   for (const season of competitionSeasons) {
-    // matches for each competition season
-    const { data: matchList } = await cookiesClient.models.Match.list({
-      filter: {
-        competitionSeasonId: {
-          eq: season.id,
-        },
-      },
-      authMode: client === "guest" ? "iam" : "userPool",
-      selectionSet: [
-        "id",
-        "date",
-        "time",
-        "status",
-        "result",
-        "venue",
-        "awayTeam.*",
-        "keyPlayerId",
-        "homeTeam.*",
-        "competitionSeason.logo",
-        "competitionSeason.name",
-        "competitionSeason.id",
-        "scorers",
-      ],
-    });
-    matches = [...matches, ...matchList];
+    matches = [...matches, ...season.matches];
   }
   return matches;
+}
+
+export async function getCounts(rounds: IMatch[]) {
+  const roundStatusCounts = rounds.reduce(
+    (acc, round) => {
+      const outcome = round.result?.toString().trim().toUpperCase();
+
+      if (round.status === "COMPLETED") {
+        acc.played++;
+
+        switch (outcome) {
+          case "WIN":
+            acc.wins++;
+            break;
+          case "DRAW":
+            acc.draws++;
+            break;
+          case "LOSE":
+            acc.losses++;
+            break;
+        }
+      }
+
+      return acc;
+    },
+    { wins: 0, draws: 0, losses: 0, played: 0 }
+  );
+
+  return roundStatusCounts;
 }
 
 async function getPrevNextMatch(client: "guest" | "auth") {
@@ -1279,68 +1404,38 @@ async function getPrevNextMatch(client: "guest" | "auth") {
 }
 
 export async function getCurrentNnlStanding(client: "guest" | "auth") {
-  const year = new Date().getFullYear();
+  const year = new Date().getUTCFullYear();
+
   // current nigerian national league competition
   const currentNNlSeasons = (
     await cookiesClient.models.CompetitionSeason.list({
       filter: {
         name: {
-          eq: "nigerian national league",
+          contains: "nigerian national league",
         },
         season: {
           contains: `${year}`,
         },
-        status: { eq: "PENDING" },
+        // status: { eq: "PENDING" },
       },
       authMode: client === "guest" ? "iam" : "userPool",
+      selectionSet: [
+        "id",
+        "name",
+        "status",
+        "logo",
+        "type",
+        "league.standings.*",
+      ],
     })
   ).data;
 
-  const currentNNlSeason = currentNNlSeasons[0];
+  if (currentNNlSeasons.length > 1) {
+    const curr = currentNNlSeasons.find((el) => el.status === "PENDING");
+    return curr?.league.standings;
+  }
 
-  // league belonging to the nigerian national league
-  const currentLeague =
-    currentNNlSeason &&
-    currentNNlSeason.leagueId &&
-    (
-      await cookiesClient.models.League.get(
-        {
-          id: currentNNlSeason.leagueId,
-        },
-        {
-          authMode: client === "guest" ? "iam" : "userPool",
-        }
-      )
-    ).data;
-
-  // nigerian natonal league table
-  const nnlStanding = currentLeague
-    ? (
-        await cookiesClient.models.Standing.list({
-          filter: {
-            leagueId: {
-              eq: currentLeague.id,
-            },
-          },
-          authMode: client === "guest" ? "iam" : "userPool",
-        })
-      ).data
-    : [];
-
-  const teams = (
-    await cookiesClient.models.Team.list({
-      authMode: client === "guest" ? "iam" : "userPool",
-    })
-  ).data;
-
-  const mappedStanding = nnlStanding
-    .map((el) => {
-      const team = teams.find((team) => team.id === el.teamId);
-      return { ...el, team };
-    })
-    .filter((el) => el !== undefined);
-
-  return mappedStanding;
+  return currentNNlSeasons[0].league.standings;
 }
 
 export async function fetchDashboardData() {
@@ -1368,35 +1463,23 @@ export async function fetchDashboardData() {
     }
 
     // initialize rounds for cup or league
-    let allRounds: (LeagueRound | PlayOff)[] = [];
+    let allRounds: any[] = [];
+    // initialize matches
+    let matches: any[] = [];
     for (const season of competitionSeasons) {
       // playoff rounds for competition season
       if (season.cupId) {
-        const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list(
-          {
-            filter: {
-              cupId: {
-                eq: season.cupId,
-              },
-            },
-          }
-        );
-
+        const playOffs = season.cup.playOffs;
         allRounds = [...allRounds, ...playOffs];
       }
 
       // league rounds for each competition season
       if (season.leagueId) {
-        const { data: leagueRounds = [] } =
-          await cookiesClient.models.LeagueRound.list({
-            filter: {
-              leagueId: {
-                eq: season.leagueId,
-              },
-            },
-          });
+        const leagueRounds = season.league.leagueRounds;
         allRounds = [...allRounds, ...leagueRounds];
       }
+
+      matches = [...matches, ...season.matches];
     }
 
     // find the counts for completed rounds
@@ -1418,7 +1501,6 @@ export async function fetchDashboardData() {
     const nnlStanding = await getCurrentNnlStanding("auth");
 
     const { upcomingMatch, lastMatch } = await getPrevNextMatch("auth");
-    const matches = await getCurrentCompetitionSeasonsMatches("auth");
 
     const upcomingCompetitionSeasonRounds = upcomingMatch
       ? matches.filter(
@@ -1427,30 +1509,7 @@ export async function fetchDashboardData() {
       : [];
 
     // result for previous rounds of upcoming match
-    const roundStatusCounts = upcomingCompetitionSeasonRounds.reduce(
-      (acc, round) => {
-        const outcome = round.result?.toString().trim().toUpperCase();
-
-        if (round.status === "COMPLETED") {
-          acc.played++;
-
-          switch (outcome) {
-            case "WIN":
-              acc.wins++;
-              break;
-            case "DRAW":
-              acc.draws++;
-              break;
-            case "LOSE":
-              acc.losses++;
-              break;
-          }
-        }
-
-        return acc;
-      },
-      { wins: 0, draws: 0, losses: 0, played: 0 }
-    );
+    const roundStatusCounts = await getCounts(upcomingCompetitionSeasonRounds);
 
     const players = (
       await cookiesClient.models.Player.list({
@@ -1504,12 +1563,15 @@ export async function fetchDashboardData() {
 // end season route for competition season
 
 export async function fetchHomepageData() {
+  const auth = await isLoggedIn();
   try {
-    const { upcomingMatch, lastMatch } = await getPrevNextMatch("guest");
-    const nnlStanding = await getCurrentNnlStanding("guest");
+    const { upcomingMatch, lastMatch } = await getPrevNextMatch(
+      auth ? "auth" : "guest"
+    );
+    const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
       limit: 4,
-      authMode: "iam",
+      authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",
         "articleCategory.category",
@@ -1528,7 +1590,7 @@ export async function fetchHomepageData() {
         },
       },
       limit: 3,
-      authMode: "iam",
+      authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",
         "firstname",
@@ -1568,13 +1630,14 @@ export async function fetchHomepageData() {
 }
 
 export async function fetchPlayOffs(cupId: string, seasonId: string) {
+  const auth = await isLoggedIn();
   const { data: playOffs = [] } = await cookiesClient.models.PlayOff.list({
     filter: {
       cupId: {
         eq: cupId,
       },
     },
-    authMode: "iam",
+    authMode: auth ? "userPool" : "iam",
     selectionSet: ["id", "round", "matchId", "cupId"],
   });
 
@@ -1584,7 +1647,7 @@ export async function fetchPlayOffs(cupId: string, seasonId: string) {
         eq: seasonId,
       },
     },
-    authMode: "iam",
+    authMode: auth ? "userPool" : "iam",
     selectionSet: [
       "id",
       "date",
@@ -1614,27 +1677,15 @@ export async function fetchPlayOffs(cupId: string, seasonId: string) {
 }
 
 export async function fetchStanding(leagueId: string) {
+  const auth = await isLoggedIn();
   const { data: standing = [] } = await cookiesClient.models.Standing.list({
     filter: {
       leagueId: {
         eq: leagueId,
       },
     },
-    authMode: "iam",
+    authMode: auth ? "userPool" : "iam",
   });
 
-  const teams = (
-    await cookiesClient.models.Team.list({
-      authMode: "iam",
-    })
-  ).data;
-
-  const mappedStanding = standing
-    .map((el) => {
-      const team = teams.find((team) => team.id === el.teamId);
-      return { ...el, team };
-    })
-    .filter((el) => el !== undefined);
-
-  return mappedStanding;
+  return standing;
 }
