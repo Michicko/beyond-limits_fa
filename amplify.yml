@@ -9,11 +9,13 @@ frontend:
   phases:
     build:
       commands:
+        - env | grep -e CLOUDINARY_ >> .env.production
+        - env | grep -e NEXT_PUBLIC_ >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
     files:
-      - '**/*'
+      - "**/*"
   cache:
     paths:
       - .next/cache/**/*

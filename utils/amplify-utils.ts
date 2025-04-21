@@ -41,6 +41,9 @@ export const getRole = async () => {
         if (tokens && Object.keys(tokens).length > 0) {
           groups = tokens.accessToken.payload["cognito:groups"];
         }
+
+        console.log("role => ", tokens, groups);
+
         return {
           tokens,
           groups,
@@ -58,5 +61,6 @@ export const getRole = async () => {
 
 export async function isAuthenticated() {
   const { tokens } = await getRole();
+  console.log("authenticated: => ", tokens);
   return tokens && tokens.accessToken ? true : false;
 }
