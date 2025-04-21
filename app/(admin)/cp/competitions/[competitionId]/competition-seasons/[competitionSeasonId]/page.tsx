@@ -13,72 +13,37 @@ async function CompetitionSeason({
   params: { competitionId: string; competitionSeasonId: string };
 }) {
   const { data: competitionSeason, errors } =
-    await cookiesClient.models.CompetitionSeason.get({
-      id: params.competitionSeasonId,
-    });
-
-  const competition =
-    competitionSeason && (await competitionSeason.competition()).data;
-
-  const league =
-    competitionSeason &&
-    competitionSeason.leagueId &&
-    (await cookiesClient.models.League.get(
+    await cookiesClient.models.CompetitionSeason.get(
       {
-        id: competitionSeason.leagueId,
+        id: params.competitionSeasonId,
       },
       {
         selectionSet: [
           "id",
-          "competitionNameSeason",
-          "teams",
-          "standings.*",
-          "leagueRounds.*",
+          "name",
+          "logo",
+          "season",
+          "type",
+          "status",
+          "cupId",
+          "leagueId",
+          "matches.*",
+          "league.*",
+          "cup.playOffs.*",
+          "league.standings.*",
+          "league.leagueRounds.*",
         ],
       }
-    ));
+    );
 
-  const cupRoundsData =
+  const league = competitionSeason && competitionSeason.league;
+
+  const cupRounds =
     competitionSeason &&
     competitionSeason.cupId &&
-    (await cookiesClient.models.PlayOff.list({
-      filter: {
-        cupId: {
-          eq: competitionSeason.cupId,
-        },
-      },
-      selectionSet: [
-        "id",
-        "homeForm",
-        "awayForm",
-        "matchId",
-        "round",
-        "result",
-        "status",
-      ],
-    }));
+    competitionSeason.cup.playOffs;
 
-  const matchesData =
-    competitionSeason &&
-    (await cookiesClient.models.Match.list({
-      filter: {
-        competitionSeasonId: {
-          eq: competitionSeason.id,
-        },
-      },
-      selectionSet: [
-        "id",
-        "homeTeam.id",
-        "awayTeam.id",
-        "homeTeam.logo",
-        "homeTeam.shortName",
-        "homeTeam.longName",
-        "awayTeam.logo",
-        "awayTeam.shortName",
-        "awayTeam.longName",
-        "date",
-      ],
-    }));
+  const matches = competitionSeason && competitionSeason.matches;
 
   const teams = (
     await cookiesClient.models.Team.list({
@@ -106,11 +71,6 @@ async function CompetitionSeason({
             title="Something went wrong."
             message={errors[0].message}
           />
-        ) : !competition ? (
-          <CustomAlert
-            status="error"
-            title={`Competition seasonm does not belong to any competition`}
-          />
         ) : !competitionSeason ? (
           <CustomAlert
             status="error"
@@ -121,64 +81,57 @@ async function CompetitionSeason({
             <Box p={"5"} w={"full"}>
               <Stack maxW={"960px"} m={"0 auto"} gap={"5"}>
                 <CompetitionSeasonCard
-                  competitionName={competition.longName}
-                  competitionType={competition.competitionType}
+                  competitionName={competitionSeason.name}
+                  competitionType={competitionSeason.type}
                   season={competitionSeason.season}
                   status={competitionSeason.status}
                 />
-                {competition.competitionType === "LEAGUE" &&
-                  league &&
-                  league.data &&
-                  league.data.standings &&
-                  matchesData && (
-                    <League
-                      teams={teams}
-                      leagueRounds={league.data?.leagueRounds}
-                      matches={matchesData.data}
-                      league={league.data}
-                    />
-                  )}
-                {competition.competitionType === "CUP" &&
+                {competitionSeason.type === "LEAGUE" && league && matches && (
+                  <League
+                    teams={teams}
+                    leagueRounds={league.leagueRounds}
+                    matches={matches}
+                    league={league}
+                    competitionStatus={competitionSeason.status}
+                  />
+                )}
+                {competitionSeason.type === "CUP" &&
                   competitionSeason &&
-                  cupRoundsData &&
-                  matchesData &&
-                  competitionSeason.cupId && (
+                  matches &&
+                  cupRounds && (
                     <Cup
-                      rounds={cupRoundsData.data}
-                      matches={matchesData.data}
+                      rounds={cupRounds}
+                      matches={matches}
                       cupId={competitionSeason.cupId}
+                      competitionStatus={competitionSeason.status}
                     />
                   )}
-                {competition.competitionType === "MIXED" && (
+                {competitionSeason.type === "MIXED" && (
                   <Tabs.Root defaultValue="league">
                     <Tabs.List>
                       <Tabs.Trigger value="league">League</Tabs.Trigger>
                       <Tabs.Trigger value="cup">Cup</Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
-                      {league &&
-                        league.data &&
-                        league.data.standings &&
-                        matchesData && (
-                          <League
-                            teams={teams}
-                            leagueRounds={league.data?.leagueRounds}
-                            matches={matchesData.data}
-                            league={league.data}
-                          />
-                        )}
+                      {league && league.standings && matches && (
+                        <League
+                          teams={teams}
+                          leagueRounds={league.leagueRounds}
+                          matches={matches}
+                          league={league}
+                          competitionStatus={competitionSeason.status}
+                        />
+                      )}
                     </Tabs.Content>
                     <Tabs.Content value="cup">
-                      {cupRoundsData &&
-                        competitionSeason &&
-                        matchesData &&
-                        competitionSeason.cupId && (
-                          <Cup
-                            rounds={cupRoundsData.data}
-                            matches={matchesData.data}
-                            cupId={competitionSeason.cupId}
-                          />
-                        )}
+                      {competitionSeason.cupId && cupRounds && matches && (
+                        <Cup
+                          rounds={cupRounds}
+                          matches={matches}
+                          cupId={competitionSeason.cupId}
+                          competitionStatus={competitionSeason.status}
+                        />
+                      )}
                     </Tabs.Content>
                   </Tabs.Root>
                 )}

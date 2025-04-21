@@ -38,10 +38,12 @@ function PlayoffRound({
   dbRounds,
   matches,
   cupId,
+  competitionStatus,
 }: {
   dbRounds: IRound[];
   matches: IMatch[];
   cupId: Nullable<string>;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
     fontWeight: "700",
@@ -69,6 +71,7 @@ function PlayoffRound({
                 playOffsLabels={playOffsLabels}
                 matches={matches}
                 cupId={cupId}
+                competitionStatus={competitionStatus}
               />
             )
           )}
@@ -93,7 +96,13 @@ function PlayoffRound({
             <Table.Body>
               <>
                 {dbRounds.map((round) => {
-                  return <PlayOffRoundRow round={round} key={round.id} />;
+                  return (
+                    <PlayOffRoundRow
+                      round={round}
+                      key={round.id}
+                      competitionStatus={competitionStatus}
+                    />
+                  );
                 })}
               </>
             </Table.Body>

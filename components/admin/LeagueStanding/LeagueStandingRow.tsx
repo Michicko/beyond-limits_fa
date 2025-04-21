@@ -9,10 +9,12 @@ function LeagueStandingRow({
   leagueId,
   team,
   standing,
+  competitionStatus,
 }: {
   leagueId: string;
   team: IDTeam;
   standing: IDBStandings;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const inputStyles = {
     textAlign: "center",
@@ -169,7 +171,7 @@ function LeagueStandingRow({
           onClick={async () => {
             await updateStanding();
           }}
-          disabled={isPending}
+          disabled={isPending || competitionStatus === "COMPLETED"}
         >
           {getButtonStatus(standing, "Standing", isPending)}
         </Button>

@@ -10,7 +10,6 @@ import {
   Spinner,
   Alert,
   Text,
-  Flex,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
@@ -23,10 +22,12 @@ function LeagueStanding({
   teams,
   league,
   serverStanding,
+  competitionStatus,
 }: {
   teams: IDTeam[];
   league: IDBLeague;
   serverStanding: IDBStandings[];
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
     fontWeight: "700",
@@ -127,6 +128,7 @@ function LeagueStanding({
         team={team}
         standing={standing}
         key={(standing.teamId as string) + standing.position}
+        competitionStatus={competitionStatus}
       />
     );
   };
@@ -148,7 +150,11 @@ function LeagueStanding({
               px={"20px"}
               variant={"solid"}
               colorPalette={"teal"}
-              disabled={standing.length > 0 || isGenerating}
+              disabled={
+                standing.length > 0 ||
+                isGenerating ||
+                competitionStatus === "COMPLETED"
+              }
               onClick={async () => await generateStanding()}
             >
               {isGenerating ? (

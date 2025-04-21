@@ -50,10 +50,12 @@ function LeagueRound({
   dbRounds,
   matches,
   leagueId,
+  competitionStatus,
 }: {
   dbRounds: ILeagueRound[];
   matches: IMatch[];
   leagueId: string;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
     fontWeight: "700",
@@ -69,9 +71,14 @@ function LeagueRound({
           flexWrap={"wrap"}
         >
           <Heading fontWeight={"700"}>Rounds</Heading>
-          {!matches || matches.length < 1 ? (
+          {!matches ||
+          matches.length < 1 ||
+          competitionStatus === "COMPLETED" ? (
             <Text>
-              No matches available, please add a match to create round
+              {!matches ||
+                (matches.length < 1 &&
+                  "No matches available, please add a match to create round")}
+              {competitionStatus === "COMPLETED" && "Competition Ended!"}
             </Text>
           ) : (
             <LeagueRoundForm
@@ -120,7 +127,13 @@ function LeagueRound({
             <Table.Body>
               <>
                 {dbRounds.map((round) => {
-                  return <LeagueRoundRow round={round} key={round.id} />;
+                  return (
+                    <LeagueRoundRow
+                      round={round}
+                      key={round.id}
+                      competitionStatus={competitionStatus}
+                    />
+                  );
                 })}
               </>
             </Table.Body>

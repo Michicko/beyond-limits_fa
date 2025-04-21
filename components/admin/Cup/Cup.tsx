@@ -33,10 +33,12 @@ function Cup({
   rounds,
   matches,
   cupId,
+  competitionStatus,
 }: {
   rounds?: IRound[];
   matches?: IMatch[];
   cupId: Nullable<string>;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const transformedRounds =
     rounds &&
@@ -59,6 +61,7 @@ function Cup({
       dbRounds={transformedRounds}
       matches={matches}
       cupId={cupId}
+      competitionStatus={competitionStatus}
     />
   );
 }

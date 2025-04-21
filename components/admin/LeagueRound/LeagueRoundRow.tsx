@@ -29,7 +29,13 @@ interface ILeagueRound {
   status: "PENDING" | "COMPLETED" | null;
 }
 
-function LeagueRoundRow({ round }: { round: ILeagueRound }) {
+function LeagueRoundRow({
+  round,
+  competitionStatus,
+}: {
+  round: ILeagueRound;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
+}) {
   const tC = {
     h: "50px",
     textAlign: "center",
@@ -86,7 +92,9 @@ function LeagueRoundRow({ round }: { round: ILeagueRound }) {
           colorPalette={"green"}
           px={"10px"}
           disabled={
-            (round.result && round.status === "COMPLETED" && true) || isPending
+            (round.result && round.status === "COMPLETED" && true) ||
+            isPending ||
+            competitionStatus === "COMPLETED"
           }
           onClick={async () => {
             await updateRound(round.id);

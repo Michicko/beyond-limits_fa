@@ -32,7 +32,13 @@ interface IRound {
   match: IMatch;
 }
 
-function PlayOffRoundRow({ round }: { round: IRound }) {
+function PlayOffRoundRow({
+  round,
+  competitionStatus,
+}: {
+  round: IRound;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
+}) {
   const tC = {
     h: "50px",
     textAlign: "center",
@@ -122,7 +128,9 @@ function PlayOffRoundRow({ round }: { round: IRound }) {
           colorPalette={"green"}
           px={"10px"}
           disabled={
-            (round.result && round.status === "COMPLETED" && true) || isPending
+            (round.result && round.status === "COMPLETED" && true) ||
+            isPending ||
+            competitionStatus === "COMPLETED"
           }
           onClick={updateRound}
         >

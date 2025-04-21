@@ -49,11 +49,13 @@ async function League({
   leagueRounds,
   matches,
   league,
+  competitionStatus,
 }: {
   teams: IDTeam[];
   leagueRounds: ILeagueRound[];
   matches: IMatch[];
   league: IDBLeague;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const transformedStanding = league.standings
     .map((row) => {
@@ -72,11 +74,13 @@ async function League({
         serverStanding={transformedStanding}
         teams={teams}
         league={league}
+        competitionStatus={competitionStatus}
       />
       <LeagueRound
         dbRounds={leagueRounds}
         matches={matches}
         leagueId={league.id}
+        competitionStatus={competitionStatus}
       />
     </Stack>
   );

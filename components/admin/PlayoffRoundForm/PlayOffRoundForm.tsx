@@ -35,10 +35,12 @@ function PlayOffRoundForm({
   playOffsLabels,
   matches,
   cupId,
+  competitionStatus,
 }: {
   playOffsLabels: { label: string; value: string }[];
   matches: IMatch[];
   cupId: Nullable<string>;
+  competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const [tempData, setTempData] = useState({
     cupId,
@@ -87,7 +89,7 @@ function PlayOffRoundForm({
           px={"20px"}
           variant={"solid"}
           colorPalette={"teal"}
-          disabled={!matches}
+          disabled={!matches || competitionStatus === "COMPLETED"}
         >
           Create Round
         </Button>
@@ -174,7 +176,7 @@ function PlayOffRoundForm({
                 px={"10px"}
                 variant={"solid"}
                 colorPalette={"teal"}
-                disabled={isPending}
+                disabled={isPending || competitionStatus === "COMPLETED"}
                 type="button"
                 onClick={handleSubmit}
               >
