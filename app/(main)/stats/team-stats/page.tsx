@@ -20,7 +20,6 @@ import { getFirstLetter } from "@/lib/helpers";
 
 async function TeamStats() {
   const year = new Date().getUTCFullYear();
-
   const { data: seasons } = await cookiesClient.models.CompetitionSeason.list({
     filter: {
       season: {

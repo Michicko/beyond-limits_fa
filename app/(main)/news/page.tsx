@@ -15,7 +15,7 @@ async function News({
   searchParams: { page?: string; category?: string };
 }) {
   const currentPage = +(searchParams.page ?? 1);
-  const limit = 1;
+  const limit = 10;
   let token;
   let articleList;
 
