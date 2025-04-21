@@ -1,15 +1,20 @@
 "use client";
 import { endCompetitionSeason } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
+import { Nullable } from "@/lib/definitions";
 import { Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 function EndSeason({
   id,
+  cupId,
+  leagueId,
   season,
   disabled,
 }: {
   id: string;
+  cupId?: Nullable<string>;
+  leagueId?: Nullable<string>;
   season: string;
   disabled: boolean;
 }) {
@@ -30,7 +35,7 @@ function EndSeason({
     setIsEnding(true);
 
     mutationPromiseToast(
-      endCompetitionSeason(formData),
+      endCompetitionSeason(id, { cupId, leagueId }),
       { title: "Season ended", desc: `${season} ended successfully!` },
       { title: "Failed to end season", desc: `Failed to end ${season}` },
       { title: "Ending season", desc: `Ending ${season}, please wait...` },

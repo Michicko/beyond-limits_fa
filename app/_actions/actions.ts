@@ -2,9 +2,7 @@
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
-import { fetchAuthSession } from "aws-amplify/auth";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
 type Nullable<T> = T | null;
 type PlayerPosition = Schema["PlayerPosition"]["type"];
@@ -1166,14 +1164,32 @@ export async function updatePlayOff(id: string, formData: FormData) {
   }
 }
 
-export async function endCompetitionSeason(formData: FormData) {
-  const body = formDataToObject<CompetitionSeason>(formData);
-
+export async function endCompetitionSeason(
+  seasonId: string,
+  resources: { cupId?: Nullable<string>; leagueId?: Nullable<string> }
+) {
   try {
     const { data, errors } =
-      await cookiesClient.models.CompetitionSeason.update(body, {
-        selectionSet: ["id", "name", "season"],
+      await cookiesClient.models.CompetitionSeason.update(
+        { id: seasonId, status: "COMPLETED" },
+        {
+          selectionSet: ["id", "name", "season"],
+        }
+      );
+
+    if (resources.cupId) {
+      await cookiesClient.models.Cup.update({
+        id: resources.cupId,
+        status: "COMPLETED",
       });
+    }
+
+    if (resources.leagueId) {
+      await cookiesClient.models.League.update({
+        id: resources.leagueId,
+        status: "COMPLETED",
+      });
+    }
 
     if (errors) {
       return {
@@ -1183,6 +1199,32 @@ export async function endCompetitionSeason(formData: FormData) {
     }
 
     revalidatePath("/cp/competitions/[competitionId]/competition-seasons");
+    return {
+      status: "success",
+      data,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "An unknown error occurred",
+    };
+  }
+}
+
+export async function endLeague(id: string) {
+  try {
+    const { data, errors } = await cookiesClient.models.League.update({
+      id,
+      status: "COMPLETED",
+    });
+
+    if (errors) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
     return {
       status: "success",
       data,
@@ -1371,7 +1413,6 @@ export async function getCounts(rounds: IMatch[]) {
 
 async function getPrevNextMatch(client: "guest" | "auth") {
   const matches = await getCurrentCompetitionSeasonsMatches(client);
-  // result and fixtures from matches for the current year
   const { results, fixtures } = matches.reduce(
     (acc, match) => {
       if (match.status === "COMPLETED") {
@@ -1387,6 +1428,7 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     }
   );
 
+  const now = new Date().getTime();
   results.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -1394,12 +1436,14 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  const upcomingMatch = fixtures[0] || null;
+  const upcomingMatch =
+    fixtures.find((fixture) => new Date(fixture.date).getTime() > now) || null;
   const lastMatch = results[results.length - 1] || null;
 
   return {
     upcomingMatch,
     lastMatch,
+    fixtures,
   };
 }
 
@@ -1564,8 +1608,9 @@ export async function fetchDashboardData() {
 
 export async function fetchHomepageData() {
   const auth = await isLoggedIn();
+  console.log(auth);
   try {
-    const { upcomingMatch, lastMatch } = await getPrevNextMatch(
+    const { upcomingMatch, lastMatch, fixtures } = await getPrevNextMatch(
       auth ? "auth" : "guest"
     );
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
@@ -1614,6 +1659,7 @@ export async function fetchHomepageData() {
       nnlStanding,
       articles,
       players,
+      fixtures,
     };
 
     return {

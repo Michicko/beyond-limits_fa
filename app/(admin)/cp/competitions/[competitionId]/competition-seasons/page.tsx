@@ -30,7 +30,7 @@ async function CompetitionSeasons({
           eq: params.competitionId,
         },
       },
-      selectionSet: ["id", "status", "name", "season"],
+      selectionSet: ["id", "status", "name", "season", "cupId", "leagueId"],
     });
 
   return (
@@ -98,6 +98,8 @@ async function CompetitionSeasons({
                                   />
                                   <EndSeason
                                     id={season.id}
+                                    cupId={season.cupId}
+                                    leagueId={season.leagueId}
                                     season={season.season}
                                     disabled={season.status === "COMPLETED"}
                                   />

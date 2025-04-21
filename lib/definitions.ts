@@ -35,6 +35,7 @@ export interface IDBStandings {
 export interface IDBLeague {
   competitionNameSeason: string;
   id: string;
+  status?: "COMPLETED" | "PENDING" | null;
   teams: Nullable<string>[];
   standings: IDBStandings[];
 }

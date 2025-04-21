@@ -34,10 +34,12 @@ function MixedCup({
   league_standing,
   playoffs,
   league_status,
+  name,
 }: {
   league_standing: IStandingRow[];
   playoffs: IPlayOff[];
   league_status: string;
+  name: string;
 }) {
   const mixedTabs = [{ name: "group stage" }, { name: "knockout" }];
 
@@ -65,6 +67,7 @@ function MixedCup({
         {index === 0 ? (
           <div>
             <Standing
+              name={name}
               standings={league_standing}
               showFull={true}
               showLongName={true}

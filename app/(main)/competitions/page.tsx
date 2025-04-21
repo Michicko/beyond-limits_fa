@@ -4,7 +4,7 @@ import clsx from "clsx";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import styles from "./Competitions.module.css";
 import Link from "next/link";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getFirstLetter } from "@/lib/helpers";
 
 async function Competitions() {
@@ -18,7 +18,7 @@ async function Competitions() {
           contains: `${year}`,
         },
       },
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: ["id", "logo", "name"],
     });
 

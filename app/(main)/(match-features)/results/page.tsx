@@ -3,7 +3,7 @@ import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { getMatches } from "@/lib/helpers";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
 async function Results(props: {
@@ -26,26 +26,13 @@ async function Results(props: {
           eq: "PENDING",
         },
       },
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 
-  // const results = competitionSeasons[0].matches.filter((el) => {
-  //   const date = new Date(el.date);
-  //   const month = date.getUTCMonth();
-  //   const paramsMonth = searchParams.month;
-  //   if (paramsMonth) {
-  //     return el.status === "COMPLETED" && months.indexOf(paramsMonth) === month;
-  //   } else {
-  //     return el.status === "COMPLETED";
-  //   }
-  // });
-
-  const results = getMatches(
-    competitionSeasons[0].matches,
-    "COMPLETED",
-    searchParams.month
-  );
+  const results =
+    competitionSeasons[0] &&
+    getMatches(competitionSeasons[0].matches, "COMPLETED", searchParams.month);
 
   return (
     <CompetitionsLayout pageTitle="Results">
@@ -53,7 +40,9 @@ async function Results(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {results && results.length < 1 ? (
+        {!results ? (
+          <div>No Results</div>
+        ) : results && results.length < 1 ? (
           <div>No Results available at the moment.</div>
         ) : (
           <Flex

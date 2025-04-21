@@ -14,7 +14,7 @@ import {
   getCounts,
   getCurrentCompetitionSeasonsMatches,
 } from "@/app/_actions/actions";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
 import { getFirstLetter } from "@/lib/helpers";
 
@@ -27,10 +27,12 @@ async function TeamStats() {
         contains: `${year}`,
       },
     },
-    authMode: "iam",
+    authMode: (await isAuthenticated()) ? "userPool" : "iam",
     selectionSet: [
       "id",
       "name",
+      "type",
+      "status",
       "logo",
       "leagueId",
       "cupId",
@@ -51,7 +53,12 @@ async function TeamStats() {
       if (season.leagueId) {
         leagues = [
           ...leagues,
-          { name: season.name, logo: season.logo, league: season.league },
+          {
+            name: season.name,
+            type: season.type,
+            logo: season.logo,
+            league: season.league,
+          },
         ];
         rounds = [...rounds, ...season.league.leagueRounds];
       }
@@ -59,7 +66,12 @@ async function TeamStats() {
       if (season.cupId) {
         cups = [
           ...cups,
-          { name: season.name, logo: season.logo, cup: season.cup },
+          {
+            name: season.name,
+            type: season.type,
+            logo: season.logo,
+            cup: season.cup,
+          },
         ];
 
         rounds = [...rounds, ...season.cup.playOffs];
@@ -74,6 +86,7 @@ async function TeamStats() {
         (el: IStandingRow) => el && el.isBeyondLimits
       );
       return {
+        type: row.type,
         name: row.name,
         logo: row.logo,
         standing: beyondStanding,
@@ -85,7 +98,12 @@ async function TeamStats() {
     cups.map((row) => {
       const lastRound =
         row.cup.playOffs && row.cup.playOffs[row.cup.playOffs.length - 1];
-      return { competitionName: row.name, logo: row.logo, round: lastRound };
+      return {
+        name: row.name,
+        type: row.type,
+        logo: row.logo,
+        round: lastRound,
+      };
     });
 
   const forms =
@@ -97,7 +115,9 @@ async function TeamStats() {
       })
       .filter((el) => el !== undefined);
 
-  const matches = await getCurrentCompetitionSeasonsMatches("guest");
+  const matches = await getCurrentCompetitionSeasonsMatches(
+    (await isAuthenticated()) ? "auth" : "guest"
+  );
   const roundsCounts = await getCounts(matches);
 
   return (
@@ -140,6 +160,11 @@ async function TeamStats() {
                 <div className={clsx(styles["team-stats__body"], styles.py)}>
                   <ul className={clsx(styles["competition-list"])}>
                     {leagues.map((league, i) => {
+                      if (
+                        league.type === "MIXED" &&
+                        league.status === "COMPLETED"
+                      )
+                        return;
                       return (
                         <TeamStat
                           competition_logo={league.logo}
@@ -152,11 +177,12 @@ async function TeamStats() {
                   </ul>
                   <ul className={clsx(styles["competition-list"])}>
                     {cups.map((cup, i) => {
+                      if (!cup.round) return;
                       return (
                         <TeamStat
                           competition_logo={cup.logo}
                           competition_name={cup.name}
-                          position={cup.playoffs.round}
+                          position={cup.round}
                           key={cup.id + i + (i + 2) + i + 3}
                         />
                       );

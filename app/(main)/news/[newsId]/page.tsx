@@ -9,7 +9,7 @@ import clsx from "clsx";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
 import ArticleCategory from "@/components/Article/ArticleCategory";
 import TextEditor from "@/components/TextEditor/TextEditor";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Article from "@/components/Article/Article";
 
 async function NewsArticle({ params }: { params: { newsId: string } }) {
@@ -19,7 +19,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
       id: params.newsId,
     },
     {
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: [
         "id",
         "articleCategoryId",
@@ -87,7 +87,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
             {article && article.articleCategory.category && (
               <ArticleCategory
                 category={article.articleCategory.category}
-                link={`/news/${article.articleCategory.category}`}
+                link={`/news?category=${article.articleCategory.category}`}
               />
             )}
           </>

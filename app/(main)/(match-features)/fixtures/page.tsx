@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import Flex from "@/components/main/Container/Flex";
 import Calendar from "@/components/main/Calendar/Calendar";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getMatches } from "@/lib/helpers";
 
 async function Fixtures(props: {
@@ -27,15 +27,13 @@ async function Fixtures(props: {
           eq: "PENDING",
         },
       },
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 
-  const fixtures = getMatches(
-    competitionSeasons[0].matches,
-    "UPCOMING",
-    searchParams.month
-  );
+  const fixtures =
+    competitionSeasons[0] &&
+    getMatches(competitionSeasons[0].matches, "UPCOMING", searchParams.month);
 
   const month = date.getUTCMonth();
 
@@ -45,7 +43,9 @@ async function Fixtures(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {fixtures && fixtures.length < 1 ? (
+        {!fixtures ? (
+          <div>No fixtures</div>
+        ) : fixtures && fixtures.length < 1 ? (
           <div>No Fixtures available at the moment.</div>
         ) : (
           <Flex

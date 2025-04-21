@@ -8,7 +8,7 @@ import LayoutHeader from "@/components/main/Layouts/CompetitionsLayout/LayoutHea
 import LayoutMain from "@/components/main/Layouts/CompetitionsLayout/LayoutMain";
 import Tab from "@/components/main/Tab/Tab";
 import LinkTab from "@/components/main/Tab/LinkTab";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 
 const links = [
   { name: "Under-19", href: "/players/under_19" },
@@ -18,7 +18,7 @@ const links = [
 async function Players({ params }: { params: { playersSlug: string } }) {
   const { data: positions, errors } =
     await cookiesClient.models.PlayerPosition.list({
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: [
         "id",
         "longName",

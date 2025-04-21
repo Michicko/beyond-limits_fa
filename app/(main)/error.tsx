@@ -1,6 +1,6 @@
 "use client";
 
-import ErrorBoundary from "@/components/admin/ErrorBoundary/ErrorBoundary";
+import ErrorBoundary from "@/components/main/ErrorBoundary/ErrorBoundary";
 
 import React from "react";
 

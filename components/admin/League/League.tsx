@@ -50,11 +50,13 @@ async function League({
   matches,
   league,
   competitionStatus,
+  type,
 }: {
   teams: IDTeam[];
   leagueRounds: ILeagueRound[];
   matches: IMatch[];
   league: IDBLeague;
+  type: "MIXED" | "LEAGUE" | "CUP";
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const transformedStanding = league.standings
@@ -75,6 +77,7 @@ async function League({
         teams={teams}
         league={league}
         competitionStatus={competitionStatus}
+        type={type}
       />
       <LeagueRound
         dbRounds={leagueRounds}

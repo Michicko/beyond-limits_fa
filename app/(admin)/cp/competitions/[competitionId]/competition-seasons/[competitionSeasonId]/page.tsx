@@ -93,6 +93,7 @@ async function CompetitionSeason({
                     matches={matches}
                     league={league}
                     competitionStatus={competitionSeason.status}
+                    type={competitionSeason.type}
                   />
                 )}
                 {competitionSeason.type === "CUP" &&
@@ -107,10 +108,15 @@ async function CompetitionSeason({
                     />
                   )}
                 {competitionSeason.type === "MIXED" && (
-                  <Tabs.Root defaultValue="league">
-                    <Tabs.List>
-                      <Tabs.Trigger value="league">League</Tabs.Trigger>
-                      <Tabs.Trigger value="cup">Cup</Tabs.Trigger>
+                  <Tabs.Root defaultValue="league" fitted w={"full"}>
+                    <Tabs.List mb={5}>
+                      <Tabs.Trigger value="league">Main</Tabs.Trigger>
+                      <Tabs.Trigger
+                        value="cup"
+                        disabled={league?.status === "PENDING"}
+                      >
+                        Knockout
+                      </Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
                       {league && league.standings && matches && (
@@ -120,6 +126,7 @@ async function CompetitionSeason({
                           matches={matches}
                           league={league}
                           competitionStatus={competitionSeason.status}
+                          type={competitionSeason.type}
                         />
                       )}
                     </Tabs.Content>

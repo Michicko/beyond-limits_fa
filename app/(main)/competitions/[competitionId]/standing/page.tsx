@@ -1,13 +1,11 @@
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MixedCup from "@/components/main/MixedCup/MixedCup";
 import Standing from "@/components/main/Standing/Standing";
-import Text from "@/components/main/Typography/Text";
 import React from "react";
 import clsx from "clsx";
 import styles from "../../Competitions.module.css";
 import Knockout from "@/components/main/Knockout/Knockout";
-import { cookiesClient } from "@/utils/amplify-utils";
-import { fetchPlayOffs, fetchStanding } from "@/app/_actions/actions";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getFirstLetter } from "@/lib/helpers";
 
 async function CompetitionStanding({
@@ -21,35 +19,47 @@ async function CompetitionStanding({
         id: params.competitionId,
       },
       {
-        authMode: "iam",
-        selectionSet: ["id", "leagueId", "cupId", "name", "type"],
+        authMode: (await isAuthenticated()) ? "userPool" : "iam",
+        selectionSet: [
+          "id",
+          "leagueId",
+          "cupId",
+          "name",
+          "type",
+          "league.status",
+          "league.standings.*",
+          "cup.playOffs.*",
+          "matches.*",
+        ],
       }
     );
 
   let standing;
   let playoffs;
-
   let leagueStatus;
 
-  if (competition && competition.type === "MIXED" && competition.leagueId) {
-    const { data: league } = await cookiesClient.models.League.get(
-      {
-        id: competition.leagueId,
-      },
-      {
-        authMode: "iam",
-        selectionSet: ["status"],
-      }
-    );
-    leagueStatus = league?.status;
-  }
-
   if (competition && competition.cupId) {
-    playoffs = await fetchPlayOffs(competition.cupId, params.competitionId);
+    playoffs = competition.cup.playOffs;
+    playoffs = playoffs
+      .map((el) => {
+        const match = competition.matches.find(
+          (match) => el.matchId === match.id
+        );
+        if (!match) return;
+        return {
+          ...el,
+          match: {
+            id: match.id,
+            homeTeam: match.homeTeam,
+            awayTeam: match.awayTeam,
+          },
+        };
+      })
+      .filter((el) => el !== undefined);
   }
 
   if (competition && competition.leagueId) {
-    standing = await fetchStanding(competition.leagueId);
+    standing = competition.league.standings;
   }
 
   return (
@@ -64,7 +74,8 @@ async function CompetitionStanding({
           standing && (
             <>
               <MixedCup
-                league_status={leagueStatus || ""}
+                name={getFirstLetter(competition.name)}
+                league_status={competition.league.status || ""}
                 playoffs={playoffs}
                 league_standing={standing}
               />

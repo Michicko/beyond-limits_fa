@@ -110,25 +110,17 @@ export default async function Home() {
           </Heading>
           <Grid col="3" gap="sm">
             <>
-              {homepageContent?.upcomingMatch && (
-                <>
-                  <MatchCard
-                    match={homepageContent.upcomingMatch}
-                    theme="dark"
-                    iconSize={"md"}
-                  />
-                  <MatchCard
-                    match={homepageContent.upcomingMatch}
-                    theme="light"
-                    iconSize={"md"}
-                  />
-                  <MatchCard
-                    match={homepageContent.upcomingMatch}
-                    theme="dark"
-                    iconSize={"md"}
-                  />
-                </>
-              )}
+              {homepageContent &&
+                homepageContent.fixtures &&
+                homepageContent.fixtures.slice(0, 3).map((match, i) => {
+                  return (
+                    <MatchCard
+                      match={match}
+                      theme={i === 0 ? "dark" : i === 1 ? "light" : "dark"}
+                      iconSize={"md"}
+                    />
+                  );
+                })}
             </>
           </Grid>
           <Flex justify="center" align="center" my={"iv"}>

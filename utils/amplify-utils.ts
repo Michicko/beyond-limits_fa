@@ -5,6 +5,7 @@ import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";
 
 import { type Schema } from "@/amplify/data/resource";
 import outputs from "@/amplify_outputs.json";
+import { NextApiRequest } from "next";
 
 export const { runWithAmplifyServerContext } = createServerRunner({
   config: outputs,
@@ -55,3 +56,8 @@ export const getRole = async () => {
     },
   });
 };
+
+export async function isAuthenticated() {
+  const { tokens } = await getRole();
+  return tokens && tokens.accessToken ? true : false;
+}

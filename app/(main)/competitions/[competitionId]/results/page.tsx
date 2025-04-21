@@ -4,7 +4,7 @@ import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/Com
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
 import { getMatches } from "@/lib/helpers";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
 async function CompetitionResults({
@@ -24,7 +24,7 @@ async function CompetitionResults({
         id: params.competitionId,
       },
       {
-        authMode: "iam",
+        authMode: (await isAuthenticated()) ? "userPool" : "iam",
         selectionSet: [
           "id",
           "matches.*",

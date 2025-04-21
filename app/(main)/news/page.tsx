@@ -1,7 +1,7 @@
 import ArticleList from "@/components/Article/ArticleList";
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
 import Pagination from "@/components/Pagination/Pagination";
-import { cookiesClient } from "@/utils/amplify-utils";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
 const links = [
@@ -26,7 +26,7 @@ async function News({
           category: searchParams.category,
         },
         {
-          authMode: "iam",
+          authMode: (await isAuthenticated()) ? "userPool" : "iam",
           selectionSet: [
             "id",
             "articles.*",
@@ -35,7 +35,9 @@ async function News({
           ],
         }
       );
-    articleList = articleData[0].articles;
+    articleList =
+      articleData[0] &&
+      articleData[0].articles.filter((el) => el.status === "PUBLISHED");
   } else {
     const {
       data: articles,
@@ -43,7 +45,7 @@ async function News({
       nextToken,
     } = await cookiesClient.models.Article.list({
       limit,
-      authMode: "iam",
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
       nextToken: token,
       selectionSet: [
         "id",
@@ -57,7 +59,8 @@ async function News({
       ],
     });
 
-    articleList = articles;
+    articleList =
+      articles && articles.filter((el) => el.status === "PUBLISHED");
   }
 
   return (
@@ -66,7 +69,11 @@ async function News({
         {searchParams.category && (
           <h3>Fetching articles for {searchParams.category}</h3>
         )}
-        <ArticleList articles={articleList} />
+        {!articleList ? (
+          <div>No Articles</div>
+        ) : (
+          <ArticleList articles={articleList} />
+        )}
         {/* <Pagination
           currentPage={currentPage}
           hasNextPage={!nextToken}

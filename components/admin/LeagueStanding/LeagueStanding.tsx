@@ -10,23 +10,27 @@ import {
   Spinner,
   Alert,
   Text,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
 import LeagueStandingRow from "./LeagueStandingRow";
-import { createStandingRow } from "@/app/_actions/actions";
+import { createStandingRow, endLeague } from "@/app/_actions/actions";
 import { objectToFormData, sortArray } from "@/lib/helpers";
 import toast from "react-hot-toast";
+import useToast from "@/hooks/useToast";
 
 function LeagueStanding({
   teams,
   league,
   serverStanding,
   competitionStatus,
+  type,
 }: {
   teams: IDTeam[];
   league: IDBLeague;
   serverStanding: IDBStandings[];
+  type: "MIXED" | "CUP" | "LEAGUE";
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
@@ -135,6 +139,20 @@ function LeagueStanding({
 
   const sortedStanding = standing.length > 0 && sortArray(standing, "position");
 
+  const { mutationPromiseToast } = useToast();
+  const [isEnding, setIsEnding] = useState(false);
+
+  const endLeagueFn = async () => {
+    setIsEnding(true);
+    mutationPromiseToast(
+      endLeague(league.id),
+      { title: "League ended", desc: `League ended successfully!` },
+      { title: "Failed to end league", desc: `Failed to end league` },
+      { title: "Ending league", desc: `Ending league, please wait...` },
+      setIsEnding
+    );
+  };
+
   return (
     <>
       <Card.Root
@@ -144,28 +162,52 @@ function LeagueStanding({
         borderColor={"gray.200"}
       >
         <Card.Body color="fg.muted">
-          <HStack justifyContent={"space-between"} alignItems={"center"}>
+          <HStack
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            flexWrap={"wrap"}
+            gap={2}
+          >
             <Heading mb="2">Standing</Heading>
-            <Button
-              px={"20px"}
-              variant={"solid"}
-              colorPalette={"teal"}
-              disabled={
-                standing.length > 0 ||
-                isGenerating ||
-                competitionStatus === "COMPLETED"
-              }
-              onClick={async () => await generateStanding()}
-            >
-              {isGenerating ? (
-                <HStack gap={2} alignItems={"center"}>
-                  <Spinner size="sm" border={"1px solid blue"} />
-                  <Text as={"span"}>Generating...</Text>
-                </HStack>
-              ) : (
-                "Generate Standing"
+            <ButtonGroup flexWrap={"wrap"} gap={2}>
+              {type === "MIXED" && (
+                <Button
+                  px={"20px"}
+                  variant={"solid"}
+                  colorPalette={"cyan"}
+                  disabled={
+                    competitionStatus === "COMPLETED" ||
+                    league.status === "COMPLETED" ||
+                    isEnding
+                  }
+                  onClick={async () => {
+                    await endLeagueFn();
+                  }}
+                >
+                  {isEnding ? "Ending Main Round..." : "End Main Round"}
+                </Button>
               )}
-            </Button>
+              <Button
+                px={"20px"}
+                variant={"solid"}
+                colorPalette={"teal"}
+                disabled={
+                  standing.length > 0 ||
+                  isGenerating ||
+                  competitionStatus === "COMPLETED"
+                }
+                onClick={async () => await generateStanding()}
+              >
+                {isGenerating ? (
+                  <HStack gap={2} alignItems={"center"}>
+                    <Spinner size="sm" border={"1px solid blue"} />
+                    <Text as={"span"}>Generating...</Text>
+                  </HStack>
+                ) : (
+                  "Generate Standing"
+                )}
+              </Button>
+            </ButtonGroup>
           </HStack>
           <CustomSeparator />
           <Stack>

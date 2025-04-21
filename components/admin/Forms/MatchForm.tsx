@@ -295,7 +295,9 @@ function MatchForm({
     formData.delete("result");
 
     if (match && method === "UPDATE") {
-      formData.append("result", result);
+      if (result) {
+        formData.append("result", result);
+      }
       startTransition(async () => {
         const res = await updateMatch(match.id, formData);
         if (res.status === "success" && res.data) {
