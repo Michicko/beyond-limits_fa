@@ -21,7 +21,7 @@ import {
   deleteArticle,
   updateArticle,
   publishArticle,
-} from "@/app/_actions/actions";
+} from "@/app/_actions/article-actions";
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
@@ -319,8 +319,8 @@ function ArticleForm({
           {!tempData.coverImage && tempData.title && (
             <CustomFileUpload
               description="cover image"
-              onUploaded={(path: string) => {
-                setTempData({ ...tempData, coverImage: path });
+              onUploaded={(res: any) => {
+                setTempData({ ...tempData, coverImage: res.url });
               }}
               id="cover-image"
               filename={slugify(tempData.title, { lower: true })}

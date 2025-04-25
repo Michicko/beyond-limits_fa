@@ -41,7 +41,9 @@ function useToast() {
   ) => {
     toaster.promise(promise, {
       success: (res) => {
+        console.log(res);
         if (res.data) {
+          console.log(res.data);
           onUploaded(res.data.url);
           return {
             title: `Successfully Uploaded ${name}!`,
@@ -66,11 +68,15 @@ function useToast() {
     success: IToastDetails,
     error: IToastDetails,
     loading: IToastDetails,
-    onLoading: React.Dispatch<React.SetStateAction<boolean>>
+    onLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    onSuccess?: (res: any) => void
   ) => {
     toaster.promise(promise, {
       success: (res) => {
         onLoading(false);
+        if (onSuccess) {
+          onSuccess(res);
+        }
         if (res.data) {
           return {
             title: `${success.title}`,
@@ -87,7 +93,7 @@ function useToast() {
         onLoading(false);
         return {
           title: `${error.title}`,
-          description: "Something went wrong",
+          description: `${(err as Error).message}`,
         };
       },
       loading: { title: `${loading.title}...`, description: "Please wait" },

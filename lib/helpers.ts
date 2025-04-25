@@ -136,3 +136,15 @@ export const getMatches = (
     }
   });
 };
+
+export function formDataToObject<T = Record<string, any>>(
+  formData: FormData
+): T {
+  const obj: Record<string, any> = {};
+
+  Array.from(formData.entries()).forEach(([key, value]) => {
+    obj[key] = typeof value === "string" ? value : value.name ?? value;
+  });
+
+  return obj as T;
+}

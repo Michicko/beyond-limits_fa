@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Portal",
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;

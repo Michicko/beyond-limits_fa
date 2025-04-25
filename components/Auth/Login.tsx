@@ -1,24 +1,36 @@
 "use client";
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { AuthUser } from "aws-amplify/auth";
 import AuthClient from "./AuthClient";
+import styles from "./Auth.module.css";
+import clsx from "clsx";
 
-function Login({ user }: { user?: AuthUser }) {
+function Login({ user }: { user: AuthUser }) {
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get("redirectTo") || "/cp/dashboard";
-  const currentPath = window.location.href;
+  const pathname = usePathname();
 
-  console.log(redirectPath, currentPath, user);
+  const redirectPath = useMemo(() => {
+    return searchParams.get("redirectTo") || "/cp/dashboard";
+  }, [searchParams]);
 
   useEffect(() => {
-    if (user) {
-      if (currentPath === redirectPath) return;
+    console.log("redirect effect => ", redirectPath, user);
+    //   // Only redirect if user is authenticated and loginId exists
+    if (user && redirectPath !== pathname) {
       redirect(redirectPath);
     }
-  }, [user, redirectPath]);
+  }, [user, redirectPath, pathname]);
+
+  // if (authStatus === "configuring") {
+  //   return (
+  //     <div className={clsx(styles["loading-container"])}>
+  //       <div className={styles.loading}></div>
+  //     </div>
+  //   );
+  // }
 
   return <AuthClient />;
 }

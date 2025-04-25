@@ -1,18 +1,24 @@
 "use client";
 import React, { useRef, useState, useTransition } from "react";
 import FormDialog from "../FormDialog/FormDialog";
-import { Button, Field, HStack, IconButton, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Field,
+  HStack,
+  IconButton,
+  Image,
+  Stack,
+} from "@chakra-ui/react";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import FormBtn from "./FormBtn";
 import { getButtonStatus } from "@/lib/helpers";
 import FormLabel from "./FormLabel";
-import { CldImage } from "next-cloudinary";
 import { getIcon } from "@/lib/icons";
 import slugify from "slugify";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import { Schema } from "@/amplify/data/resource";
 import useToast from "@/hooks/useToast";
-import { createTrophy } from "@/app/_actions/actions";
+import { createTrophy } from "@/app/_actions/tropy-actions";
 
 type ICompetition = Pick<Schema["Competition"]["type"], "id" | "longName">;
 type IArticle = Pick<Schema["Article"]["type"], "id" | "title">;
@@ -117,7 +123,7 @@ function TrophyFormDialog({
               <FormLabel>Trophy image</FormLabel>
               {tempData.image && (
                 <HStack gap={4}>
-                  <CldImage
+                  <Image
                     src={tempData.image}
                     width="75"
                     height="75"
@@ -136,8 +142,8 @@ function TrophyFormDialog({
               {!tempData.image && competiton?.longName && (
                 <CustomFileUpload
                   description="trophy image"
-                  onUploaded={(path: string) => {
-                    setTempData({ ...tempData, image: path });
+                  onUploaded={(res: any) => {
+                    setTempData({ ...tempData, image: res.url });
                   }}
                   id="trophy-image"
                   filename={slugify(`${competiton?.longName} trophy`, {

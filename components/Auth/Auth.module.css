@@ -1,0 +1,17 @@
+.loading-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  height: 2rem;
+  width: 2rem;
+  border: 2px solid var(--primary-light);
+  border-radius: 50%;
+  transform: rotate(360deg);
+  transition: transform 2s linear infinite;
+}

@@ -8,7 +8,7 @@ import CustomSeparator from "../CustomSeparator";
 import CheckBox from "../CheckBox/CheckBox";
 import { Schema } from "@/amplify/data/resource";
 import useToast from "@/hooks/useToast";
-import { createLeague } from "@/app/_actions/actions";
+import { createLeague } from "@/app/_actions/league-actions";
 import { getButtonStatus } from "@/lib/helpers";
 
 function LeagueContent({

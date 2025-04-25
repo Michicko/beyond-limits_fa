@@ -5,11 +5,9 @@ import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import CompetitionSeasonInfo from "./CompetitionSeasonInfo";
 import FormBtn from "../Forms/FormBtn";
 import useToast from "@/hooks/useToast";
-import {
-  createCompetitionSeason,
-  updateCup,
-  updateLeague,
-} from "@/app/_actions/actions";
+import { createCompetitionSeason } from "@/app/_actions/competition-season-actions";
+import { updateLeague } from "@/app/_actions/league-actions";
+import { updateCup } from "@/app/_actions/cup-actions";
 import { getButtonStatus } from "@/lib/helpers";
 
 function CompetitionSeasonFinalStep({

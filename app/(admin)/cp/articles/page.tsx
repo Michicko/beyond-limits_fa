@@ -14,6 +14,8 @@ import { Box, Container, HStack, TableColumnHeader } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import { formatDate } from "@/lib/helpers";
+import { deleteArticle } from "@/app/_actions/article-actions";
+import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 
 async function Articles() {
   const { data: articles, errors } = await cookiesClient.models.Article.list({
@@ -96,9 +98,10 @@ async function Articles() {
                                       Edit
                                     </Link>
                                   </CustomMenuItem>
-                                  <CustomMenuItem
-                                    label="Delete"
-                                    showBorder={false}
+                                  <DeleteBtn
+                                    name={article.title}
+                                    id={article.id}
+                                    onDelete={deleteArticle}
                                   />
                                 </>
                               </CustomMenu>

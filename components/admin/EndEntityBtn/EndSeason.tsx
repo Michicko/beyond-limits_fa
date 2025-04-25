@@ -1,5 +1,5 @@
 "use client";
-import { endCompetitionSeason } from "@/app/_actions/actions";
+import { endCompetitionSeason } from "@/app/_actions/competition-season-actions";
 import useToast from "@/hooks/useToast";
 import { Nullable } from "@/lib/definitions";
 import { Button } from "@chakra-ui/react";

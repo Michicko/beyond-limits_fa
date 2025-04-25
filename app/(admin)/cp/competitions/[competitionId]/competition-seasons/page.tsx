@@ -1,4 +1,4 @@
-import { deleteCompetitionSeason } from "@/app/_actions/actions";
+import { deleteCompetitionSeason } from "@/app/_actions/competition-season-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink";

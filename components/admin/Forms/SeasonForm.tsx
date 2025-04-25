@@ -4,7 +4,7 @@ import React, { useRef, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import FormBtn from "./FormBtn";
 import useToast from "@/hooks/useToast";
-import { createSeason, updateSeason } from "@/app/_actions/actions";
+import { createSeason, updateSeason } from "@/app/_actions/season-actions";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
 

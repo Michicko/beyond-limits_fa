@@ -9,7 +9,7 @@ import { Schema } from "@/amplify/data/resource";
 import slugify from "slugify";
 import { getButtonStatus } from "@/lib/helpers";
 import useToast from "@/hooks/useToast";
-import { createTeam, updateTeam } from "@/app/_actions/actions";
+import { createTeam, updateTeam } from "@/app/_actions/team-actions";
 import { CldImage } from "next-cloudinary";
 import { getIcon } from "@/lib/icons";
 
@@ -150,8 +150,8 @@ function TeamForm({ team }: { team?: ITeam | null }) {
           {!logo && shortName && (
             <CustomFileUpload
               description="team logo"
-              onUploaded={(path: string) => {
-                setLogo(path);
+              onUploaded={(res: any) => {
+                setLogo(res.url);
               }}
               id="team-logo"
               filename={slugify(shortName, { lower: true })}

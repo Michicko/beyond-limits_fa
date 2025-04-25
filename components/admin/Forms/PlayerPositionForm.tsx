@@ -15,7 +15,10 @@ import React, { Suspense, useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import { getIcon } from "@/lib/icons";
 import FormBtn from "./FormBtn";
-import { createPosition, updatePosition } from "@/app/_actions/actions";
+import {
+  createPosition,
+  updatePosition,
+} from "@/app/_actions/position-actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";

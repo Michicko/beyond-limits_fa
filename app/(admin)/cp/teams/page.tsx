@@ -1,4 +1,4 @@
-import { deleteTeam } from "@/app/_actions/actions";
+import { deleteTeam } from "@/app/_actions/team-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import MatchIcon from "@/components/admin/Card/MatchIcon";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";

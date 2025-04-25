@@ -1,18 +1,17 @@
 "use client";
-import { Field, Input, SimpleGrid, Stack } from "@chakra-ui/react";
+import { Field, Image, Input, SimpleGrid, Stack } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import FormBtn from "./FormBtn";
-import { IPlayer, IPosition } from "@/lib/definitions";
-import { CldImage } from "next-cloudinary";
+import { IPlayer } from "@/lib/definitions";
 import slugify from "slugify";
 import useToast from "@/hooks/useToast";
-import { createPlayer, updatePlayer } from "@/app/_actions/actions";
-import { Schema } from "@/amplify/data/resource";
+import { createPlayer, updatePlayer } from "@/app/_actions/player-actions";
 import { getButtonStatus } from "@/lib/helpers";
+import { Schema } from "@/amplify/data/resource";
 
 function PlayerForm({
   player,
@@ -22,7 +21,10 @@ function PlayerForm({
   dominantFoots,
 }: {
   player?: IPlayer | null;
-  positions: IPosition[];
+  positions: Pick<
+    Schema["PlayerPosition"]["type"],
+    "id" | "longName" | "shortName"
+  >[];
   statuses: string[];
   ageGroups: string[];
   dominantFoots: string[];
@@ -54,7 +56,7 @@ function PlayerForm({
   const [isPending, startTransition] = useTransition();
   const { errorToast, mutationToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     formData.append("homeKit", tempData.homeKit);
@@ -165,15 +167,11 @@ function PlayerForm({
             <Field.Root required>
               <FormLabel>Home kit</FormLabel>
               {tempData.homeKit && (
-                <CldImage
-                  src={tempData.homeKit}
-                  width="600"
-                  height="600"
-                  alt=""
-                />
+                <Image src={tempData.homeKit} width="600" height="600" alt="" />
               )}
               {!tempData.homeKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
+                  type="select"
                   description="home kit"
                   id="home_kit"
                   filename={slugify(
@@ -182,8 +180,8 @@ function PlayerForm({
                       lower: true,
                     }
                   )}
-                  onUploaded={(path) =>
-                    setTempData({ ...tempData, homeKit: path })
+                  onUploaded={(res: any) =>
+                    setTempData({ ...tempData, homeKit: res.url })
                   }
                 />
               )}
@@ -191,16 +189,12 @@ function PlayerForm({
             <Field.Root required>
               <FormLabel>Away kit</FormLabel>
               {tempData.awayKit && (
-                <CldImage
-                  src={tempData.awayKit}
-                  width="600"
-                  height="600"
-                  alt=""
-                />
+                <Image src={tempData.awayKit} width="600" height="600" alt="" />
               )}
               {!tempData.awayKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
                   description="away kit"
+                  type="select"
                   id="away_kit"
                   filename={slugify(
                     `${tempData.firstname} ${tempData.lastname} awaykit`,
@@ -208,8 +202,8 @@ function PlayerForm({
                       lower: true,
                     }
                   )}
-                  onUploaded={(path) =>
-                    setTempData({ ...tempData, awayKit: path })
+                  onUploaded={(res: any) =>
+                    setTempData({ ...tempData, awayKit: res.url })
                   }
                 />
               )}

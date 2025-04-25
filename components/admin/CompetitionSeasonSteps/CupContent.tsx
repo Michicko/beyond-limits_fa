@@ -4,7 +4,7 @@ import React, { useRef, useTransition } from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import CompetitionSeasonInfo from "./CompetitionSeasonInfo";
 import FormBtn from "../Forms/FormBtn";
-import { createCup } from "@/app/_actions/actions";
+import { createCup } from "@/app/_actions/cup-actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 

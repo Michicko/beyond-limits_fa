@@ -8,7 +8,10 @@ import FormBtn from "./FormBtn";
 import { Schema } from "@/amplify/data/resource";
 import slugify from "slugify";
 import useToast from "@/hooks/useToast";
-import { createCompetition, updateCompetition } from "@/app/_actions/actions";
+import {
+  createCompetition,
+  updateCompetition,
+} from "@/app/_actions/competition-actions";
 import { getButtonStatus } from "@/lib/helpers";
 import { getIcon } from "@/lib/icons";
 import { CldImage } from "next-cloudinary";
@@ -152,8 +155,8 @@ function CompetitionForm({
           {!logo && shortName && (
             <CustomFileUpload
               description="competition logo"
-              onUploaded={(path: string) => {
-                setLogo(path);
+              onUploaded={(res: any) => {
+                setLogo(res.url);
               }}
               id="competition-logo"
               filename={slugify(shortName, { lower: true })}

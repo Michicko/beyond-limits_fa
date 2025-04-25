@@ -1,4 +1,4 @@
-import { deleteArticleCategory } from "@/app/_actions/actions";
+import { deleteArticleCategory } from "@/app/_actions/article-category-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";

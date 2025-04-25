@@ -50,6 +50,7 @@ function CustomSelect({
             <option
               value={el.value}
               style={{ color: getColor(el.label), textTransform: "capitalize" }}
+              key={el.value}
             >
               {el.label}
             </option>

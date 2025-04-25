@@ -16,7 +16,7 @@ import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import { formatDate } from "@/lib/helpers";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import useToast from "@/hooks/useToast";
-import { deleteSeason } from "@/app/_actions/actions";
+import { deleteSeason } from "@/app/_actions/season-actions";
 
 async function Seasons() {
   const btnStyles = {

@@ -9,7 +9,7 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { Nullable } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deleteMatch } from "@/app/_actions/actions";
+import { deleteMatch } from "@/app/_actions/match-actions";
 import { getFirstLetter } from "@/lib/helpers";
 
 interface ICompetitionSeason {

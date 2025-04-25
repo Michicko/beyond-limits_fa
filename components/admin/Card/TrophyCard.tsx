@@ -2,7 +2,7 @@ import { Box, Card, Grid, GridItem, Heading, Image } from "@chakra-ui/react";
 import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deleteTrophy } from "@/app/_actions/actions";
+import { deleteTrophy } from "@/app/_actions/tropy-actions";
 
 type TrophyWithCompetition = {
   id: string;

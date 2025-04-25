@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
 import Sidebar from "../Sidebar/Sidebar";
 import Main from "../Main/Main";
@@ -7,6 +7,7 @@ import Navbar from "../Navbar/Navbar";
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Box
       w="full"

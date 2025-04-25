@@ -10,7 +10,7 @@ import {
   createArticleCategory,
   deleteArticleCategory,
   updateArticleCategory,
-} from "@/app/_actions/actions";
+} from "@/app/_actions/article-category-actions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
 
 type IArticleCategory = Pick<

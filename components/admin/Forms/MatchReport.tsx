@@ -1,10 +1,10 @@
 "use client";
-import { Box, Field, HStack, Text, Textarea } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Box, Field, Textarea } from "@chakra-ui/react";
+import React from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { JSONContent } from "@tiptap/react";
-import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
+import { IStackStyles, Nullable } from "@/lib/definitions";
 import GoalScorers from "./GoalScorers";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";

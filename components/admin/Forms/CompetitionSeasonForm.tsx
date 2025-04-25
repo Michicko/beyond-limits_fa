@@ -3,7 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createCompetitionSeason,
   updateCompetitionSeason,
-} from "@/app/_actions/actions";
+} from "@/app/_actions/competition-season-actions";
 import useToast from "@/hooks/useToast";
 import { Field, Stack } from "@chakra-ui/react";
 import { useRef, useState, useTransition } from "react";

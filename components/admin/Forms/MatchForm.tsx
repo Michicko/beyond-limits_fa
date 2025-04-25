@@ -28,7 +28,7 @@ import {
   updateFormDataWithJSON,
 } from "@/lib/helpers";
 import { JSONContent } from "@tiptap/react";
-import { createMatch, updateMatch } from "@/app/_actions/actions";
+import { createMatch, updateMatch } from "@/app/_actions/match-actions";
 import useToast from "@/hooks/useToast";
 import { Schema } from "@/amplify/data/resource";
 

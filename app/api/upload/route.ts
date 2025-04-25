@@ -31,6 +31,9 @@ export async function POST(request: Request) {
         .end(Buffer.from(fileBuffer));
     });
 
+    if (!result) {
+      return Response.json({ error: "No data found" }, { status: 400 });
+    }
     return Response.json({ data: result });
   } catch (error) {
     return Response.json({ error: "Error uploading file" }, { status: 500 });

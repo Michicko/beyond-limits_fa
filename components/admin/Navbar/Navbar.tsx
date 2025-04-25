@@ -19,10 +19,6 @@ function Navbar({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { pageTitle } = usePageContext();
-  const user = {
-    name: "John Doe",
-    avatar: "/john.png",
-  };
 
   return (
     <Box
@@ -59,7 +55,7 @@ function Navbar({
         <HStack gap={{ base: "1", sm: "3" }} align={"center"}>
           <ColorModeButton />
           {/* <Notification count={5} /> */}
-          <ProfileMenu user={user} />
+          <ProfileMenu />
         </HStack>
       </Flex>
     </Box>

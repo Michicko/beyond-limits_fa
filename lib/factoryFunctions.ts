@@ -10,6 +10,16 @@ type CreateEntityOptions<TInput, TOutput> = {
   selectionSet?: string[];
 };
 
+type UpdateEntityOptions<TInput, TOutput> = {
+  modelName: keyof typeof cookiesClient.models;
+  id: string;
+  input: TInput;
+  pathToRevalidate?: string;
+  validate?: (input: TInput) => Promise<{ valid: boolean; message?: string }>;
+  preprocess?: (input: TInput) => Promise<TInput> | TInput;
+  selectionSet?: string[];
+};
+
 export function createEntityFactory<TInput, TOutput>() {
   return async ({
     modelName,
@@ -43,6 +53,74 @@ export function createEntityFactory<TInput, TOutput>() {
         authMode: "userPool",
         selectionSet,
       });
+
+      if (errors && errors.length > 0) {
+        return {
+          status: "error",
+          message: errors[0].message || "An unknown error occurred",
+        };
+      }
+
+      if (pathToRevalidate) {
+        if (pathToRevalidate.includes("[")) {
+          revalidatePath(pathToRevalidate, "page");
+        } else {
+          revalidatePath(pathToRevalidate);
+        }
+      }
+
+      return {
+        status: "success",
+        data,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "error",
+        message: (error as Error).message || "An unknown error occurred",
+      };
+    }
+  };
+}
+
+export function updateEntityFactory<TInput, TOutput>() {
+  return async ({
+    modelName,
+    id,
+    input,
+    pathToRevalidate,
+    validate,
+    preprocess,
+    selectionSet,
+  }: UpdateEntityOptions<TInput, TOutput>) => {
+    try {
+      let finalInput = preprocess ? await preprocess(input) : input;
+
+      if (validate) {
+        const { valid, message } = await validate(finalInput);
+        if (!valid) {
+          return {
+            status: "error",
+            message: message || "Validation failed",
+          };
+        }
+      }
+
+      const model = cookiesClient.models[modelName] as unknown as {
+        update: (
+          input: { id: string } & TInput,
+          options?: { authMode?: "userPool"; selectionSet?: string[] }
+        ) => Promise<{ data: TOutput | null; errors?: { message: string }[] }>;
+      };
+
+      console.log(finalInput, id);
+      const { data, errors } = await model.update(
+        { id, ...finalInput },
+        {
+          authMode: "userPool",
+          selectionSet,
+        }
+      );
 
       if (errors && errors.length > 0) {
         return {

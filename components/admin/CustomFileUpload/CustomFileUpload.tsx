@@ -1,6 +1,6 @@
 import { getIcon } from "@/lib/icons";
 import { Box, Button, FileUpload, Icon } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import useToast from "@/hooks/useToast";
 import slugify from "slugify";
 
@@ -17,29 +17,53 @@ function CustomFileUpload({
   filename: string;
   type?: "drag-drop" | "select";
 }) {
-  const { uploadPromiseToast } = useToast();
+  const { mutationPromiseToast } = useToast();
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
     const target = e.target as HTMLInputElement;
     if (!target.files) return;
     const formData = new FormData();
     formData.append("file", target.files[0]);
     formData.append("name", slugify(filename, { lower: true }));
+    formData.append("upload_preset", "beyondlimits");
+    formData.append("folder", "beyondlimitsfa");
+    formData.append("public_id", slugify(filename, { lower: true }));
+    const url = "https://api.cloudinary.com/v1_1/dsb7f77m5/upload";
 
-    const promise = new Promise(async function (resolve, reject) {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-      if (response.ok) {
-        resolve(result);
-      } else {
-        reject(response);
+    const success = {
+      title: "image Uploaded",
+      desc: `${filename} uploaded successfully!`,
+    };
+    const err = {
+      title: "Error uploading image",
+      desc: `Failed to upload image`,
+    };
+    const loading = {
+      title: "uploading image",
+      desc: `uploading ${filename}, please wait...`,
+    };
+
+    const promise = fetch(url, {
+      method: "POST",
+      body: formData,
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error?.message || "Upload failed");
       }
+      return data;
     });
 
-    uploadPromiseToast(promise, filename, onUploaded);
+    mutationPromiseToast(
+      promise,
+      success,
+      err,
+      loading,
+      setIsUploading,
+      onUploaded
+    );
   };
 
   return (
@@ -79,7 +103,13 @@ function CustomFileUpload({
         >
           <FileUpload.HiddenInput />
           <FileUpload.Trigger asChild>
-            <Button variant="outline" size="sm" px={"20px"}>
+            <Button
+              variant="outline"
+              size="sm"
+              px={"20px"}
+              type="button"
+              disabled={isUploading}
+            >
               <Icon size="md" color="fg.muted">
                 {getIcon("upload")}
               </Icon>

@@ -17,7 +17,7 @@ import Link from "next/link";
 import { CldImage } from "next-cloudinary";
 import { IPlayer } from "../../../lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deletePlayer } from "@/app/_actions/actions";
+import { deletePlayer } from "@/app/_actions/player-actions";
 
 function PlayerCard({ player }: { player: IPlayer }) {
   const cardStyles = {

@@ -16,7 +16,7 @@ import React from "react";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import { cookiesClient } from "@/utils/amplify-utils";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import { deletePosition } from "@/app/_actions/actions";
+import { deletePosition } from "@/app/_actions/position-actions";
 
 async function Positions() {
   const { data: positions, errors } =
