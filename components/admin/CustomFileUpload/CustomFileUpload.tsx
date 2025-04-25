@@ -30,7 +30,7 @@ function CustomFileUpload({
     formData.append("upload_preset", "beyondlimits");
     formData.append("folder", "beyondlimitsfa");
     formData.append("public_id", slugify(filename, { lower: true }));
-    const url = "https://api.cloudinary.com/v1_1/dsb7f77m5/upload";
+    const url = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/upload`;
 
     const success = {
       title: "image Uploaded",
