@@ -7,6 +7,23 @@ import Navbar from "../Navbar/Navbar";
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [groups, setGroups] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const groups = await getCurrentUserRole();
+        console.log(groups);
+      } catch (error) {
+        console.error("Error getting user groups:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGroups();
+  }, []);
 
   return (
     <Box

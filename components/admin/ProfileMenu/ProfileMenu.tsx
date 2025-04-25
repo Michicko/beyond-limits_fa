@@ -22,26 +22,8 @@ interface IUser {
 }
 
 function ProfileMenu() {
-  const [groups, setGroups] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const groups = await getCurrentUserRole();
-        console.log(groups);
-      } catch (error) {
-        console.error("Error getting user groups:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGroups();
-  }, []);
-
   return (
-    <Skeleton asChild loading={loading}>
+    <Skeleton asChild loading={false}>
       <HStack>
         <HStack>
           <AvatarGroup>
