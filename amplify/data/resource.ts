@@ -31,24 +31,22 @@ const schema = a.schema({
       stadium: a.string(),
       isBeyondLimits: a.boolean().required().default(false),
     })
-    .secondaryIndexes((index) => [index("longName")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("longName")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Season: a
     .model({
       season: a.string().required(),
     })
-    .secondaryIndexes((index) => [index("season")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("season")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Competition: a
     .model({
       logo: a.string().required(),
@@ -58,13 +56,12 @@ const schema = a.schema({
       competitionSeasons: a.hasMany("CompetitionSeason", "competitionId"),
       trophy: a.hasOne("Trophy", "competitionId"),
     })
-    .secondaryIndexes((index) => [index("longName")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("longName")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   CompetitionSeason: a
     .model({
       season: a.string().required(),
@@ -81,13 +78,12 @@ const schema = a.schema({
       winnerId: a.id(),
       status: a.ref("CompetitionStatus"),
     })
-    .secondaryIndexes((index) => [index("season")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("season")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   League: a
     .model({
       competitionSeasonId: a.id(),
@@ -102,48 +98,17 @@ const schema = a.schema({
       teams: a.id().array().required(),
       winnerId: a.id(),
     })
-    .secondaryIndexes((index) => [index("competitionNameSeason")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
-  LeagueRound: a
-    .model({
-      leagueId: a.id(),
-      league: a.belongsTo("League", "leagueId"),
-      round: a.string().required(),
-      standing: a.customType({
-        position: a.integer().required(),
-        p: a.integer().required(),
-        w: a.integer().required(),
-        d: a.integer().required(),
-        l: a.integer().required(),
-        g: a.string().required(),
-        gd: a.integer().required(),
-        pts: a.integer().required(),
-      }),
-      matchId: a.id(),
-      result: a.ref("RoundResult"),
-      homeForm: a.string(),
-      awayForm: a.string(),
-      status: a.ref("CompetitionStatus"),
-    })
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
-  Standing: a
-    .model({
-      leagueId: a.id(),
-      league: a.belongsTo("League", "leagueId"),
-      teamId: a.id(),
-      name: a.string().required(),
-      logo: a.string().required(),
-      isBeyondLimits: a.boolean().required(),
+    .secondaryIndexes((index) => [index("competitionNameSeason")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
+  LeagueRound: a.model({
+    leagueId: a.id(),
+    league: a.belongsTo("League", "leagueId"),
+    round: a.string().required(),
+    standing: a.customType({
       position: a.integer().required(),
       p: a.integer().required(),
       w: a.integer().required(),
@@ -152,13 +117,39 @@ const schema = a.schema({
       g: a.string().required(),
       gd: a.integer().required(),
       pts: a.integer().required(),
-    })
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    }),
+    matchId: a.id(),
+    result: a.ref("RoundResult"),
+    homeForm: a.string(),
+    awayForm: a.string(),
+    status: a.ref("CompetitionStatus"),
+  }),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
+  Standing: a.model({
+    leagueId: a.id(),
+    league: a.belongsTo("League", "leagueId"),
+    teamId: a.id(),
+    name: a.string().required(),
+    logo: a.string().required(),
+    isBeyondLimits: a.boolean().required(),
+    position: a.integer().required(),
+    p: a.integer().required(),
+    w: a.integer().required(),
+    d: a.integer().required(),
+    l: a.integer().required(),
+    g: a.string().required(),
+    gd: a.integer().required(),
+    pts: a.integer().required(),
+  }),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Cup: a
     .model({
       competitionSeasonId: a.id(),
@@ -171,30 +162,27 @@ const schema = a.schema({
       playOffs: a.hasMany("PlayOff", "cupId"),
       winnerId: a.id(),
     })
-    .secondaryIndexes((index) => [index("competitionNameSeason")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
-  PlayOff: a
-    .model({
-      cupId: a.id(),
-      cup: a.belongsTo("Cup", "cupId"),
-      round: a.string().required(),
-      matchId: a.id(),
-      homeForm: a.string(),
-      awayForm: a.string(),
-      result: a.ref("RoundResult"),
-      status: a.ref("CompetitionStatus"),
-    })
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("competitionNameSeason")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
+  PlayOff: a.model({
+    cupId: a.id(),
+    cup: a.belongsTo("Cup", "cupId"),
+    round: a.string().required(),
+    matchId: a.id(),
+    homeForm: a.string(),
+    awayForm: a.string(),
+    result: a.ref("RoundResult"),
+    status: a.ref("CompetitionStatus"),
+  }),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Match: a
     .model({
       competitionSeasonId: a.id(),
@@ -247,13 +235,12 @@ const schema = a.schema({
       }),
       scorers: a.json(),
     })
-    .secondaryIndexes((index) => [index("date").sortKeys(["status"])])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("date").sortKeys(["status"])]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Trophy: a
     .model({
       image: a.string().required(),
@@ -262,13 +249,12 @@ const schema = a.schema({
       competition: a.belongsTo("Competition", "competitionId"),
       articleId: a.id(),
     })
-    .secondaryIndexes((index) => [index("trophyName")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("trophyName")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   Player: a
     .model({
       ageGroup: a.ref("AgeGroup"),
@@ -286,13 +272,12 @@ const schema = a.schema({
       dominantFoot: a.ref("DominantFoot"),
       isTwoFooted: a.boolean().default(false),
     })
-    .secondaryIndexes((index) => [index("ageGroup")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
-
+    .secondaryIndexes((index) => [index("ageGroup")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
   PlayerPosition: a
     .model({
       shortName: a.string().required(),
@@ -300,26 +285,26 @@ const schema = a.schema({
       players: a.hasMany("Player", "playerPositionId"),
       attributes: a.string().array(),
     })
-    .secondaryIndexes((index) => [index("shortName")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow.group("Admin").to(["create", "read", "delete", "update"]),
-    ]),
+    .secondaryIndexes((index) => [index("shortName")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow.group("Admin").to(["create", "read", "delete", "update"]),
+  // ]),
 
   ArticleCategory: a
     .model({
       category: a.string().required(),
       articles: a.hasMany("Article", "articleCategoryId"),
     })
-    .secondaryIndexes((index) => [index("category")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow
-        .groups(["Admin", "Writer"])
-        .to(["create", "read", "delete", "update"]),
-    ]),
+    .secondaryIndexes((index) => [index("category")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow
+  //     .groups(["Admin", "Writer"])
+  //     .to(["create", "read", "delete", "update"]),
+  // ]),
 
   Article: a
     .model({
@@ -332,40 +317,40 @@ const schema = a.schema({
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
     })
-    .secondaryIndexes((index) => [index("title")])
-    .authorization((allow) => [
-      allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
-      allow
-        .groups(["Admin", "Writer"])
-        .to(["create", "read", "delete", "update"]),
-    ]),
+    .secondaryIndexes((index) => [index("title")]),
+  // .authorization((allow) => [
+  //   allow.guest().to(["read"]),
+  //   allow.authenticated("identityPool").to(["read"]),
+  //   allow
+  //     .groups(["Admin", "Writer"])
+  //     .to(["create", "read", "delete", "update"]),
+  // ]),
 
-  addUserToGroup: a
-    .mutation()
-    .arguments({
-      userId: a.string().required(),
-      groupName: a.string().required(),
-    })
-    .authorization((allow) => [allow.group("Admin")])
-    .handler(a.handler.function(addUserToGroup))
-    .returns(a.json()),
+  // addUserToGroup: a
+  //   .mutation()
+  //   .arguments({
+  //     userId: a.string().required(),
+  //     groupName: a.string().required(),
+  //   })
+  //   .authorization((allow) => [allow.group("Admin")])
+  //   .handler(a.handler.function(addUserToGroup))
+  //   .returns(a.json()),
 
-  listUsers: a
-    .query()
-    .authorization((allow) => [allow.group("Admin")])
-    .handler(a.handler.function(listUsers))
-    .returns(a.json()),
+  // listUsers: a
+  //   .query()
+  //   .authorization((allow) => [allow.group("Admin")])
+  //   .handler(a.handler.function(listUsers))
+  //   .returns(a.json()),
 });
 
 export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
   schema,
-  authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
-    apiKeyAuthorizationMode: {
-      expiresInDays: 30,
-    },
-  },
+  // authorizationModes: {
+  //   defaultAuthorizationMode: "apiKey",
+  //   apiKeyAuthorizationMode: {
+  //     expiresInDays: 30,
+  //   },
+  // },
 });
