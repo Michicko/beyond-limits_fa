@@ -37,6 +37,11 @@ const links = [
     icon: getIcon("players"),
   },
   {
+    name: "users",
+    link: "/cp/users",
+    icon: getIcon("user"),
+  },
+  {
     name: "matches",
     link: "/cp/matches",
     icon: getIcon("ball"),
@@ -113,7 +118,13 @@ function Sidebar({
       shadow="lg"
       p={"20px 0"}
     >
-      <Flex direction={"column"} h={"full"} w={"full"} position={"relative"}>
+      <Flex
+        direction={"column"}
+        h={"full"}
+        w={"full"}
+        position={"relative"}
+        overflowY={"auto"}
+      >
         <IconButton
           aria-label="Search database"
           variant="ghost"

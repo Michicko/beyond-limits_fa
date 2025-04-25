@@ -10,20 +10,17 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Logout from "@/components/Auth/Logout";
-import { getCurrentUserRole } from "@/app/_actions/actions";
-
-interface IUser {
-  name: string;
-  avatar: string;
-}
+import { usePageContext } from "@/contexts/pageContext";
 
 function ProfileMenu() {
+  const { username, loading } = usePageContext();
+
   return (
-    <Skeleton asChild loading={false}>
+    <Skeleton asChild loading={loading}>
       <HStack>
         <HStack>
           <AvatarGroup>
@@ -41,8 +38,8 @@ function ProfileMenu() {
             </Avatar.Root>
           </AvatarGroup>
           <Stack gap={0}>
-            <Heading as={"h3"} fontWeight={"bold"}>
-              John
+            <Heading as={"h3"} fontWeight={"bold"} textTransform={"capitalize"}>
+              {username}
             </Heading>
             <Text fontSize={"sm"} fontWeight={400} color={"gray.500"}>
               Admin

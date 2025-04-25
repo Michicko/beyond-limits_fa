@@ -678,8 +678,3 @@ export async function fetchStanding(leagueId: string) {
 
   return standing;
 }
-
-export async function getCurrentUserRole() {
-  const { groups } = await getRole();
-  return groups && Array.isArray(groups) && groups[0];
-}

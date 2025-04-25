@@ -8,7 +8,7 @@ import AuthClient from "./AuthClient";
 import styles from "./Auth.module.css";
 import clsx from "clsx";
 
-function Login({ user }: { user: AuthUser }) {
+function Login({ user }: { user?: AuthUser }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 

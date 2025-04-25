@@ -1,3 +1,4 @@
+"use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
