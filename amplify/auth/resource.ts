@@ -19,5 +19,3 @@
 //     allow.resource(listUsers).to(["listUsers"]),
 //   ],
 // });
-
-export const auth = null;
