@@ -12,7 +12,7 @@ const unAuthenticatedRoutes = [
   "api",
 ];
 
-const authorizedGroups = ["Admin", "Editor"];
+const authorizedGroups = ["Admin", "Writer"];
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();

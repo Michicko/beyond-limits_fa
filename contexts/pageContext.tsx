@@ -8,6 +8,10 @@ interface IPageContext {
   setPageBg: React.Dispatch<React.SetStateAction<string>>;
   username: string;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
+  userGroup: string;
+  setUserGroup: React.Dispatch<React.SetStateAction<string>>;
+  authenticatedUserId: string;
+  setAuthenticatedUserId: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
 }
 
@@ -17,8 +21,12 @@ const PageContext = createContext<IPageContext>({
   pageBg: "",
   setPageBg: () => {},
   username: "",
+  authenticatedUserId: "",
   setUsername: () => {},
+  setAuthenticatedUserId: () => {},
   loading: false,
+  userGroup: "",
+  setUserGroup: () => {},
 });
 
 export default PageContext;

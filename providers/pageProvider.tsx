@@ -7,17 +7,27 @@ function PageProvider({ children }: { children: React.ReactNode }) {
   const [pageTitle, setPageTitle] = useState("");
   const [pageBg, setPageBg] = useState("");
 
-  const [groups, setGroups] = useState<string[]>([]);
+  const [userGroup, setUserGroup] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const [authenticatedUserId, setAuthenticatedUserId] = useState("");
 
   useEffect(() => {
     const fetchGroups = async () => {
       setLoading(true);
       try {
         const res = await fetchAuthSession();
-        if (res.tokens?.idToken?.payload) {
+        if (res.tokens?.idToken?.payload && res.tokens?.idToken?.payload.sub) {
           setUsername(res.tokens.idToken.payload.preferred_username as string);
+          setAuthenticatedUserId(res.tokens.idToken.payload?.sub);
+          const groups = Array.isArray(
+            res.tokens?.accessToken?.payload["cognito:groups"]
+          )
+            ? res.tokens.accessToken.payload["cognito:groups"]
+            : []; // Default to an empty array if it's not an array
+
+          const group = groups[0] as string;
+          setUserGroup(group);
         }
         setLoading(false);
       } catch (error) {
@@ -41,6 +51,10 @@ function PageProvider({ children }: { children: React.ReactNode }) {
         username,
         setUsername,
         loading,
+        authenticatedUserId,
+        setAuthenticatedUserId,
+        userGroup,
+        setUserGroup,
       }}
     >
       {children}

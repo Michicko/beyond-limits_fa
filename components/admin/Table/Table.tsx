@@ -7,7 +7,7 @@ function Table({ children }: { children: React.ReactElement }) {
       <ChakraTable.ScrollArea mb={"30px"}>
         <ChakraTable.Root
           minWidth={"768px"}
-          size="sm"
+          size="lg"
           bg={"card_bg"}
           variant={"line"}
           mb={"10px"}

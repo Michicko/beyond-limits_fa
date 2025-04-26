@@ -1,17 +1,15 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
-import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
-import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import TableSkeleton from "@/components/admin/Skeletons/TableSkeleton/TableSkeleton";
 import Table from "@/components/admin/Table/Table";
 import TableBody from "@/components/admin/Table/TableBody";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
 import TableHeader from "@/components/admin/Table/TableHeader";
 import TableRows from "@/components/admin/Table/TableRows";
+import UserRoleSelect from "@/components/admin/UserRoleSelect/UserRoleSelect";
 import { formatDate } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Badge, Box, Container, HStack, Stack } from "@chakra-ui/react";
+import { Badge, Box, Container, HStack } from "@chakra-ui/react";
 import React from "react";
 
 interface IAttribute {
@@ -58,12 +56,9 @@ async function Users() {
         ).data;
 
         const parsedGroups = JSON.parse(userGroupData as string);
-        console.log(userGroupData);
-        console.log(parsedGroups);
 
         const groups =
           parsedGroups?.Groups?.map((group: any) => group.GroupName) || [];
-        console.log(groups);
         return {
           ...user,
           groups, // Add the groups array here
@@ -101,15 +96,15 @@ async function Users() {
                             "username",
                             "email",
                             "date registered",
-                            "verified",
-                            "",
+                            "status",
+                            "role",
                           ].map((head, i) => {
                             return (
                               <TableColumnHeader
                                 key={head}
                                 textAlign={"left"}
-                                pl={i === 0 ? "10px" : "0"}
-                                fontWeight={"500"}
+                                pl={i === 0 || i === 4 ? "10px" : "0"}
+                                fontWeight={"700"}
                               >
                                 {head}
                               </TableColumnHeader>
@@ -122,7 +117,7 @@ async function Users() {
                       <>
                         {usersWithGroups.map((user) => {
                           return (
-                            <TableRows key={user.Username}>
+                            <TableRows key={user.Username} h={"65px"}>
                               <>
                                 <TableCell pl={"10px"}>
                                   {findAttribute(
@@ -156,9 +151,14 @@ async function Users() {
                                   </Badge>
                                 </TableCell>
                                 <TableCell>
-                                  <CustomMenu>
-                                    <></>
-                                  </CustomMenu>
+                                  <UserRoleSelect
+                                    role={
+                                      cogGroups.includes(user.groups[0])
+                                        ? user.groups[0]
+                                        : "User"
+                                    }
+                                    userId={user.Username}
+                                  />
                                 </TableCell>
                               </>
                             </TableRows>

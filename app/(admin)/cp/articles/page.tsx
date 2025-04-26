@@ -46,8 +46,8 @@ async function Articles() {
           ) : articles.length < 1 ? (
             <CustomAlert
               status="info"
-              title="No Teams."
-              message={"No team available, create some to get started."}
+              title="No Articles."
+              message={"No article available, create some to get started."}
             />
           ) : (
             <Table>

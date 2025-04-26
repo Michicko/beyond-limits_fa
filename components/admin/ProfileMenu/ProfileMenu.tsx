@@ -17,10 +17,11 @@ import Logout from "@/components/Auth/Logout";
 import { usePageContext } from "@/contexts/pageContext";
 
 function ProfileMenu() {
-  const { username, loading } = usePageContext();
+  const { username, loading, userGroup } = usePageContext();
+  const cogGroups = ["Admin", "Writer"];
 
   return (
-    <Skeleton asChild loading={loading}>
+    <Skeleton asChild loading={loading || !username}>
       <HStack>
         <HStack>
           <AvatarGroup>
@@ -42,7 +43,7 @@ function ProfileMenu() {
               {username}
             </Heading>
             <Text fontSize={"sm"} fontWeight={400} color={"gray.500"}>
-              Admin
+              {cogGroups.includes(userGroup) ? userGroup : "User"}
             </Text>
           </Stack>
         </HStack>

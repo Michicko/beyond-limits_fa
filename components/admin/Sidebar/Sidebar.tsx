@@ -4,6 +4,7 @@ import { Box, List, Flex, IconButton, Image, Icon } from "@chakra-ui/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getIcon } from "@/lib/icons";
+import { usePageContext } from "@/contexts/pageContext";
 
 const links = [
   {
@@ -58,6 +59,10 @@ const links = [
   },
 ];
 
+const filteredLinks = links.filter(
+  (el) => el.name === "articles" || el.name === "dashboard"
+);
+
 function Sidebar({
   isOpen,
   setIsOpen,
@@ -111,6 +116,8 @@ function Sidebar({
     setIsOpen(false);
   };
 
+  const { userGroup } = usePageContext();
+
   return (
     <Box
       css={boxStyles}
@@ -147,7 +154,7 @@ function Sidebar({
           alignSelf={"center"}
         />
         <List.Root>
-          {links.map((el) => {
+          {(userGroup === "Admin" ? links : filteredLinks).map((el) => {
             return (
               <List.Item w={"full"} key={el.name}>
                 <Link href={el.link} onClick={closeSidebar}>
