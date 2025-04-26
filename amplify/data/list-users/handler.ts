@@ -9,9 +9,14 @@ type Handler = Schema["listUsers"]["functionHandler"];
 const client = new CognitoIdentityProviderClient();
 
 export const handler: Handler = async () => {
-  const command = new ListUsersCommand({
-    UserPoolId: env.AMPLIFY_AUTH_USERPOOL_ID,
-  });
-  const response = await client.send(command);
-  return response;
+  try {
+    const command = new ListUsersCommand({
+      UserPoolId: env.AMPLIFY_AUTH_USERPOOL_ID,
+    });
+    const response = await client.send(command);
+    return response;
+  } catch (error) {
+    console.error("Error listing users:", error);
+    throw new Error("Failed to list users");
+  }
 };
