@@ -30,13 +30,6 @@ async function Seasons() {
     authMode: "userPool",
   });
 
-  const { promiseToast } = useToast();
-
-  const handleDelete = (id: string, name: string) => {
-    const promise = deleteSeason(id);
-    promiseToast(promise, name);
-  };
-
   return (
     <>
       <PageTitle pageTitle="Seasons" />

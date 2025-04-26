@@ -215,6 +215,9 @@ function ArticleForm({
           })}
         </HStack>
       </Stack>
+      {articleCategories.length < 1 && (
+        <Text my={5}>Add Category before creating an article.</Text>
+      )}
       <form onSubmit={handleSubmit} ref={formRef}>
         <HStack justifyContent={"flex-end"} gap={4} flexWrap={"wrap"} mb={"6"}>
           <Button
@@ -225,7 +228,7 @@ function ArticleForm({
             color={"primary_variant"}
             _hover={{ bg: "primary_variant", color: "gray.100" }}
             _disabled={{ bg: "primary_variant", color: "gray.100" }}
-            disabled={isPending}
+            disabled={isPending || articleCategories.length < 1}
             type="submit"
           >
             {getButtonStatus(article, "Article", isPending)}
@@ -266,7 +269,6 @@ function ArticleForm({
         <Field.Root required mb={"5"}>
           <Input
             placeholder="Add Title"
-            border={"transparent"}
             p={"0 10px"}
             _placeholder={{
               fontSize: "lg",

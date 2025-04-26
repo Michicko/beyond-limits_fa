@@ -1,6 +1,8 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { addUserToGroup } from "./add-user-to-group/resource";
 import { listUsers } from "./list-users/resource";
+import { removeUserFromGroup } from "./remove-user-from-group/resource";
+import { listGroupsForUser } from "./list-groups-for-user/resource";
 
 const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
@@ -339,10 +341,29 @@ const schema = a.schema({
     .handler(a.handler.function(addUserToGroup))
     .returns(a.json()),
 
+  removeUserFromGroup: a
+    .mutation()
+    .arguments({
+      userId: a.string().required(),
+      groupName: a.string().required(),
+    })
+    .authorization((allow) => [allow.group("Admin")])
+    .handler(a.handler.function(removeUserFromGroup))
+    .returns(a.json()),
+
   listUsers: a
     .query()
     .authorization((allow) => [allow.group("Admin")])
     .handler(a.handler.function(listUsers))
+    .returns(a.json()),
+
+  listGroupsForUser: a
+    .query()
+    .arguments({
+      userId: a.string().required(),
+    })
+    .authorization((allow) => [allow.group("Admin")])
+    .handler(a.handler.function(listGroupsForUser))
     .returns(a.json()),
 });
 
