@@ -180,9 +180,13 @@ function PlayerForm({
                       lower: true,
                     }
                   )}
-                  onUploaded={(res: any) =>
-                    setTempData({ ...tempData, homeKit: res.url })
-                  }
+                  onUploaded={(res: any) => {
+                    const url = res.secure_url.replace(
+                      "/upload/",
+                      "/upload/e_background_removal,f_auto,q_auto/"
+                    );
+                    setTempData({ ...tempData, homeKit: url });
+                  }}
                 />
               )}
             </Field.Root>
@@ -202,9 +206,13 @@ function PlayerForm({
                       lower: true,
                     }
                   )}
-                  onUploaded={(res: any) =>
-                    setTempData({ ...tempData, awayKit: res.url })
-                  }
+                  onUploaded={(res: any) => {
+                    const url = res.secure_url.replace(
+                      "/upload/",
+                      "/upload/e_background_removal,f_auto,q_auto/"
+                    );
+                    setTempData({ ...tempData, awayKit: url });
+                  }}
                 />
               )}
             </Field.Root>

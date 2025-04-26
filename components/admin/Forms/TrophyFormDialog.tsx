@@ -143,7 +143,7 @@ function TrophyFormDialog({
                 <CustomFileUpload
                   description="trophy image"
                   onUploaded={(res: any) => {
-                    setTempData({ ...tempData, image: res.url });
+                    setTempData({ ...tempData, image: res.secure_url });
                   }}
                   id="trophy-image"
                   filename={slugify(`${competiton?.longName} trophy`, {

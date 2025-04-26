@@ -1,6 +1,7 @@
 .player {
   position: relative;
   border-radius: var(--base);
+  overflow: hidden;
 }
 
 .player__img-box::before {

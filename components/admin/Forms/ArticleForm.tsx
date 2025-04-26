@@ -320,7 +320,7 @@ function ArticleForm({
             <CustomFileUpload
               description="cover image"
               onUploaded={(res: any) => {
-                setTempData({ ...tempData, coverImage: res.url });
+                setTempData({ ...tempData, coverImage: res.secure_url });
               }}
               id="cover-image"
               filename={slugify(tempData.title, { lower: true })}

@@ -5,7 +5,6 @@ import React from "react";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import PlayerForm from "@/components/admin/Forms/PlayerForm";
 import { IPlayer } from "@/lib/definitions";
-import { Schema } from "@/amplify/data/resource";
 
 async function PlayerFormWrapper({ player }: { player?: IPlayer | null }) {
   const { data: positions, errors: positionErrors } =

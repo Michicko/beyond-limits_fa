@@ -156,7 +156,7 @@ function CompetitionForm({
             <CustomFileUpload
               description="competition logo"
               onUploaded={(res: any) => {
-                setLogo(res.url);
+                setLogo(res.secure_url);
               }}
               id="competition-logo"
               filename={slugify(shortName, { lower: true })}

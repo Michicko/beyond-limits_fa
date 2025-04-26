@@ -151,7 +151,7 @@ function TeamForm({ team }: { team?: ITeam | null }) {
             <CustomFileUpload
               description="team logo"
               onUploaded={(res: any) => {
-                setLogo(res.url);
+                setLogo(res.secure_url);
               }}
               id="team-logo"
               filename={slugify(shortName, { lower: true })}
