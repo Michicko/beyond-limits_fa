@@ -12,6 +12,7 @@ export const auth = defineAuth({
       required: true,
     },
   },
+
   groups: ["Admin", "Writer"],
 
   access: (allow) => [
