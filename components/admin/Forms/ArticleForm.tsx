@@ -8,6 +8,7 @@ import {
   Image,
   Input,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import { JSONContent } from "@tiptap/react";
