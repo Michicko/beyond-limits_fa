@@ -49,8 +49,8 @@ async function Dashboard() {
               Welcome Admin
             </Heading>
             <Text>
-              To Get started, create a season, competition, competition season,
-              matches, rounds, teams and other resources.
+              To Get started, create a season, competitions, teams, competition
+              season, matches, rounds and other resources.
             </Text>
           </Card.Body>
         </Card.Root>

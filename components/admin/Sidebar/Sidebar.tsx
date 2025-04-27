@@ -4,7 +4,6 @@ import { Box, List, Flex, IconButton, Image, Icon } from "@chakra-ui/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getIcon } from "@/lib/icons";
-import { usePageContext } from "@/contexts/pageContext";
 
 const links = [
   {
@@ -57,18 +56,33 @@ const links = [
     link: "/cp/articles",
     icon: getIcon("articles"),
   },
+  {
+    name: "highlights",
+    link: "/cp/highlights",
+    icon: getIcon("video"),
+  },
+  // {
+  //   name: "settings",
+  //   link: "/cp/settings",
+  //   icon: getIcon("settings"),
+  // },
 ];
 
 const filteredLinks = links.filter(
-  (el) => el.name === "articles" || el.name === "dashboard"
+  (el) =>
+    el.name === "articles" ||
+    el.name === "dashboard" ||
+    el.name === "highlights"
 );
 
 function Sidebar({
   isOpen,
   setIsOpen,
+  userGroup,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  userGroup: string;
 }) {
   const boxStyles = {
     bg: "white",
@@ -116,8 +130,6 @@ function Sidebar({
     setIsOpen(false);
   };
 
-  const { userGroup } = usePageContext();
-
   return (
     <Box
       css={boxStyles}
@@ -152,9 +164,10 @@ function Sidebar({
           alt="Naruto Uzumaki"
           mb={"20px"}
           alignSelf={"center"}
+          loading={"eager"}
         />
         <List.Root>
-          {(userGroup === "Admin" ? links : filteredLinks).map((el) => {
+          {(userGroup === "Writer" ? filteredLinks : links).map((el) => {
             return (
               <List.Item w={"full"} key={el.name}>
                 <Link href={el.link} onClick={closeSidebar}>

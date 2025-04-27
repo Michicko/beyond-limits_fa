@@ -152,14 +152,6 @@ export async function deleteCompetitionSeason(id: string) {
       leagueRounds = res2.data || [];
     }
 
-    const { data: trophies } = await cookiesClient.models.Trophy.list({
-      filter: {
-        competitionId: {
-          eq: id,
-        },
-      },
-    });
-
     // 3. Delete related records in safe order
     for (const row of standingRows) {
       await cookiesClient.models.Standing.delete({ id: row.id });
@@ -183,10 +175,6 @@ export async function deleteCompetitionSeason(id: string) {
 
     for (const league of leagues) {
       await cookiesClient.models.League.delete({ id: league.id });
-    }
-
-    for (const trophy of trophies) {
-      await cookiesClient.models.Trophy.delete({ id: trophy.id });
     }
 
     // Delete the CompetitionSeason itself

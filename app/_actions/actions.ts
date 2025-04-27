@@ -551,7 +551,6 @@ export async function fetchDashboardData() {
 
 export async function fetchHomepageData() {
   const auth = await isLoggedIn();
-  console.log(auth);
   try {
     const { upcomingMatch, lastMatch, fixtures } = await getPrevNextMatch(
       auth ? "auth" : "guest"

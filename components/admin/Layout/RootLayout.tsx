@@ -1,12 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
 import Sidebar from "../Sidebar/Sidebar";
 import Main from "../Main/Main";
 import Navbar from "../Navbar/Navbar";
+import { usePageContext } from "@/contexts/pageContext";
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { userGroup } = usePageContext();
 
   return (
     <Box
@@ -18,7 +20,11 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     >
       <Grid templateColumns={{ base: "1fr", lg: "250px calc(100% - 250px)" }}>
         <GridItem colSpan={{ base: 0, lg: "auto" }}>
-          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+          <Sidebar
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            userGroup={userGroup}
+          />
         </GridItem>
         <GridItem colSpan={{ base: 6, lg: "auto" }} h={"full"} w={"full"}>
           <Navbar setIsOpen={setIsOpen} />

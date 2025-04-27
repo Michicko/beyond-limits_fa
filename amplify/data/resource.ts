@@ -331,6 +331,23 @@ const schema = a.schema({
         .to(["create", "read", "delete", "update"]),
     ]),
 
+  Highlight: a
+    .model({
+      title: a.string().required(),
+      coverImage: a.string().required(),
+      url: a.string().required(),
+      description: a.json(),
+      tags: a.string().array(),
+    })
+    .secondaryIndexes((index) => [index("title")])
+    .authorization((allow) => [
+      allow.guest().to(["read"]),
+      allow.authenticated("identityPool").to(["read"]),
+      allow
+        .groups(["Admin", "Writer"])
+        .to(["create", "read", "delete", "update"]),
+    ]),
+
   addUserToGroup: a
     .mutation()
     .arguments({
