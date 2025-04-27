@@ -1,6 +1,7 @@
 import ArticleList from "@/components/Article/ArticleList";
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
 import Pagination from "@/components/Pagination/Pagination";
+import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
@@ -16,11 +17,11 @@ async function News({
 }) {
   const currentPage = +(searchParams.page ?? 1);
   const limit = 10;
-  let token;
   let articleList;
+  let errs;
 
   if (searchParams.category) {
-    const { data: articleData } =
+    const { data: articleData, errors } =
       await cookiesClient.models.ArticleCategory.listArticleCategoryByCategory(
         {
           category: searchParams.category,
@@ -35,18 +36,18 @@ async function News({
           ],
         }
       );
+
+    if (errors) {
+      errs = [...errors];
+    }
+
     articleList =
       articleData[0] &&
       articleData[0].articles.filter((el) => el.status === "PUBLISHED");
   } else {
-    const {
-      data: articles,
-      errors,
-      nextToken,
-    } = await cookiesClient.models.Article.list({
-      limit,
+    const { data: articles, errors } = await cookiesClient.models.Article.list({
+      limit: 150,
       authMode: (await isAuthenticated()) ? "userPool" : "iam",
-      nextToken: token,
       selectionSet: [
         "id",
         "articleCategory.category",
@@ -58,27 +59,38 @@ async function News({
         "createdAt",
       ],
     });
-
+    if (errors) {
+      errs = [...errors];
+    }
     articleList =
       articles && articles.filter((el) => el.status === "PUBLISHED");
   }
 
+  const { paginatedItems: articles, hasNextPage } = clientPaginate(
+    articleList,
+    currentPage,
+    limit
+  );
+
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
       <div className="main-container">
+        {errs && <p>{`Something went wrong, ${errs[0].message}`}</p>}
         {searchParams.category && (
-          <h3>Fetching articles for {searchParams.category}</h3>
+          <h3>Showing articles for {searchParams.category}</h3>
         )}
         {!articleList ? (
           <div>No Articles</div>
         ) : (
-          <ArticleList articles={articleList} />
+          <>
+            <ArticleList articles={articles} />
+            <Pagination
+              currentPage={currentPage}
+              hasNextPage={hasNextPage}
+              basePath="/news"
+            />
+          </>
         )}
-        {/* <Pagination
-          currentPage={currentPage}
-          hasNextPage={!nextToken}
-          basePath="/news"
-        /> */}
       </div>
     </ArticleLayout>
   );

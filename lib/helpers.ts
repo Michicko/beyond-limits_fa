@@ -148,3 +148,19 @@ export function formDataToObject<T = Record<string, any>>(
 
   return obj as T;
 }
+
+export function clientPaginate<T>(
+  items: T[],
+  currentPage: number,
+  limit: number
+) {
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+  const paginatedItems = items.slice(start, end);
+  const hasNextPage = end < items.length;
+
+  return {
+    paginatedItems,
+    hasNextPage,
+  };
+}

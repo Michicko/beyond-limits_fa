@@ -7,6 +7,7 @@ import { formula_condensed, roboto } from "@/app/styles/fonts";
 import Footer from "@/components/main/Footer/footer";
 import NextTopLoader from "nextjs-toploader";
 import Auth from "@/components/Auth/Auth";
+import { Toaster as ReactToaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: {
@@ -67,6 +68,7 @@ export default function RootLayout({
       className={`${formula_condensed.variable} ${roboto.variable}`}
     >
       <body className={clsx(styles.layout)}>
+        <ReactToaster />
         <NextTopLoader color="#ffd700" height={4} />
         <Auth>
           <Nav />
