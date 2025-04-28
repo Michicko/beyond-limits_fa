@@ -11,7 +11,7 @@ export interface IDTeam {
   shortName: string;
   longName: string;
   isBeyondLimits: boolean;
-  stadium: Nullable<string>;
+  stadium?: Nullable<string>;
   id: string;
 }
 

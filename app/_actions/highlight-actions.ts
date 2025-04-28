@@ -3,6 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
   deleteEntity,
+  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -17,6 +18,16 @@ const checkUniqueHighlightTitle = async (title: string) => {
     });
 
   return existing;
+};
+
+export const getHighlights = async () => {
+  const highlightsGetter = getEntityFactory<Highlight>();
+
+  return highlightsGetter({
+    modelName: "Highlight",
+    limit: 200,
+    selectionSet: ["id", "title", "coverImage", "createdAt", "url", "tags"],
+  });
 };
 
 export const createHighlight = async (formData: FormData) => {

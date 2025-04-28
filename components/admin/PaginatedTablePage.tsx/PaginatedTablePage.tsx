@@ -50,8 +50,12 @@ function PaginatedTablePage({
       <PageTitle pageTitle={pageTitle} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <Container maxW={"4xl"} fluid margin={"0 auto"}>
-          <HStack justify={"flex-end"} mb={"20px"} gap="4">
-            <Skeleton loading={isLoading} h={"40px"} w={"160px"}>
+          <HStack justify={"flex-end"} mb={"20px"} gap="4" w={"full"}>
+            <Skeleton
+              loading={isLoading}
+              h={isLoading ? "40px" : "auto"}
+              w={isLoading ? "160px" : "auto"}
+            >
               <CreateButton
                 link={`/cp/${resource.toLowerCase()}s/create`}
                 text={`Create ${resource}`}
@@ -67,43 +71,44 @@ function PaginatedTablePage({
             />
           ) : isLoading ? (
             <TableSkeleton rows={5} cols={3} />
-          ) : !currentPageListItems ? (
+          ) : !currentPageListItems ||
+            currentPageListItems.length < 1 ||
+            !list ||
+            list.length < 1 ? (
             <CustomAlert
               status="info"
               title={`No ${resource}s.`}
               message={`No ${resource} available, create some to get started.`}
             />
           ) : (
-            <>
-              <Table>
-                <>
-                  <TableHeader>
-                    <TableRows>
-                      <>
-                        {headerCols.map((head, i) => {
-                          return (
-                            <TableColumnHeader
-                              key={head}
-                              textAlign={"left"}
-                              pl={i === 0 ? "10px" : "0"}
-                              fontWeight={"700"}
-                            >
-                              {head}
-                            </TableColumnHeader>
-                          );
-                        })}
-                      </>
-                    </TableRows>
-                  </TableHeader>
-                  <TableBody>
-                    <>{children}</>
-                  </TableBody>
-                </>
-              </Table>
-            </>
+            <Table>
+              <>
+                <TableHeader>
+                  <TableRows>
+                    <>
+                      {headerCols.map((head, i) => {
+                        return (
+                          <TableColumnHeader
+                            key={head}
+                            textAlign={"left"}
+                            pl={i === 0 ? "10px" : "0"}
+                            fontWeight={"700"}
+                          >
+                            {head}
+                          </TableColumnHeader>
+                        );
+                      })}
+                    </>
+                  </TableRows>
+                </TableHeader>
+                <TableBody>
+                  <>{children}</>
+                </TableBody>
+              </>
+            </Table>
           )}
-          {currentPageListItems && totalPages && totalPages > 1 && (
-            <>
+          {totalPages && totalPages > 1 ? (
+            <HStack justifyContent={"center"}>
               <HStack
                 display={{ base: "flex", sm: "none" }}
                 justifyContent={"center"}
@@ -128,7 +133,9 @@ function PaginatedTablePage({
                   type="web"
                 />
               </HStack>
-            </>
+            </HStack>
+          ) : (
+            <></>
           )}
         </Container>
       </Box>

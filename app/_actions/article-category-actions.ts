@@ -3,6 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
   deleteEntity,
+  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -17,6 +18,16 @@ const checkUniqueCategory = async (category: string) => {
     });
 
   return existing;
+};
+
+export const getArticleCategories = async () => {
+  const articleCategoriesGetter = getEntityFactory<ArticleCategory>();
+
+  return articleCategoriesGetter({
+    modelName: "ArticleCategory",
+    limit: 20,
+    selectionSet: ["id", "category"],
+  });
 };
 
 export const createArticleCategory = async (formData: FormData) => {

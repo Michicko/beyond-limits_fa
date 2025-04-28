@@ -1,3 +1,4 @@
+"use client";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import PageTitle from "@/components/admin/Layout/PageTitle";
@@ -9,20 +10,20 @@ import {
   HStack,
   List,
   ListItem,
+  Skeleton,
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
-import { cookiesClient } from "@/utils/amplify-utils";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import { deletePosition } from "@/app/_actions/position-actions";
+import { deletePosition, getPositions } from "@/app/_actions/position-actions";
+import useSWR from "swr";
 
-async function Positions() {
-  const { data: positions, errors } =
-    await cookiesClient.models.PlayerPosition.list({
-      selectionSet: ["id", "longName", "attributes"],
-    });
+function Positions() {
+  const { data, error, isLoading } = useSWR("positions", getPositions);
+  const positions = data && data.data;
+
   return (
     <>
       <PageTitle pageTitle="Positions" />
@@ -30,13 +31,22 @@ async function Positions() {
         <HStack justify={"flex-end"} mb={"20px"} gap="2">
           <CreateButton link="/cp/positions/create" text="Create Position" />
         </HStack>
-        {errors ? (
+        {error ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
-            message={errors[0].message}
+            message={error.message}
           />
-        ) : positions.length < 1 ? (
+        ) : isLoading ? (
+          <Flex wrap={"wrap"} gap={"5"}>
+            <Skeleton w={"250px"} h={"120px"} />
+            <Skeleton w={"250px"} h={"120px"} />
+            <Skeleton w={"250px"} h={"120px"} />
+            <Skeleton w={"250px"} h={"120px"} />
+            <Skeleton w={"250px"} h={"120px"} />
+            <Skeleton w={"250px"} h={"120px"} />
+          </Flex>
+        ) : !positions || positions.length < 1 ? (
           <CustomAlert
             status="info"
             title="No Positions."

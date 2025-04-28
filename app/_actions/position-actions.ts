@@ -3,6 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
   deleteEntity,
+  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -16,6 +17,16 @@ const checkPositionUniqueShortName = async (shortName: string) => {
     });
 
   return existing;
+};
+
+export const getPositions = async () => {
+  const positionGetter = getEntityFactory<PlayerPosition>();
+
+  return positionGetter({
+    modelName: "PlayerPosition",
+    limit: 20,
+    selectionSet: ["id", "longName", "attributes"],
+  });
 };
 
 export const createPosition = async (formData: FormData) => {

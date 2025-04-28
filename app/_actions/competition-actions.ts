@@ -2,6 +2,7 @@
 import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
+  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -17,6 +18,16 @@ const checkUniqueCompetitionName = async (longName: string) => {
     });
 
   return existing;
+};
+
+export const getCompetitions = async () => {
+  const competitionsGetter = getEntityFactory<Competition>();
+
+  return competitionsGetter({
+    modelName: "Competition",
+    limit: 20,
+    selectionSet: ["id", "logo", "shortName", "longName", "competitionType"],
+  });
 };
 
 export const createCompetition = async (formData: FormData) => {

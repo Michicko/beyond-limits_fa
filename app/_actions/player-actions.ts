@@ -3,11 +3,63 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
   deleteEntity,
+  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 type Player = Schema["Player"]["type"];
+
+export const getAgeGroups = () => {
+  return cookiesClient.enums.AgeGroup.values();
+};
+
+export const getPlayersLazyLoaded = async () => {
+  return cookiesClient.models.Player.list({
+    selectionSet: [
+      "id",
+      "firstname",
+      "lastname",
+      "ageGroup",
+      "homeKit",
+      "squadNo",
+      "playerPosition.shortName",
+      "playerPosition.longName",
+      "dob",
+      "dominantFoot",
+      "status",
+      "isTwoFooted",
+      "playerPosition.id",
+      "awayKit",
+    ],
+  });
+};
+
+export const getPlayers = async () => {
+  const playersGetter = getEntityFactory<Player>();
+
+  return playersGetter({
+    modelName: "Player",
+    limit: 200,
+    selectionSet: [
+      "id",
+      "firstname",
+      "lastname",
+      "ageGroup",
+      "homeKit",
+      "squadNo",
+      "playerPosition.shortName",
+      "playerPosition.longName",
+      "dob",
+      "dominantFoot",
+      "status",
+      "isTwoFooted",
+      "playerPosition.id",
+      "awayKit",
+    ],
+  });
+};
 
 export const createPlayer = async (formData: FormData) => {
   const base = formDataToObject<Player>(formData);

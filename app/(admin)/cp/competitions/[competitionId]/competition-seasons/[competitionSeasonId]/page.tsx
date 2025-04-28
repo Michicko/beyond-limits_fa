@@ -86,16 +86,19 @@ async function CompetitionSeason({
                   season={competitionSeason.season}
                   status={competitionSeason.status}
                 />
-                {competitionSeason.type === "LEAGUE" && league && matches && (
-                  <League
-                    teams={teams}
-                    leagueRounds={league.leagueRounds}
-                    matches={matches}
-                    league={league}
-                    competitionStatus={competitionSeason.status}
-                    type={competitionSeason.type}
-                  />
-                )}
+                {competitionSeason.type === "LEAGUE" &&
+                  league &&
+                  matches &&
+                  teams && (
+                    <League
+                      teams={teams}
+                      leagueRounds={league.leagueRounds}
+                      matches={matches}
+                      league={league}
+                      competitionStatus={competitionSeason.status}
+                      type={competitionSeason.type}
+                    />
+                  )}
                 {competitionSeason.type === "CUP" &&
                   competitionSeason &&
                   matches &&
@@ -119,7 +122,7 @@ async function CompetitionSeason({
                       </Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
-                      {league && league.standings && matches && (
+                      {league && league.standings && matches && teams && (
                         <League
                           teams={teams}
                           leagueRounds={league.leagueRounds}

@@ -3,6 +3,8 @@ import { Schema } from "@/amplify/data/resource";
 import { Nullable } from "@/lib/definitions";
 import {
   createEntityFactory,
+  getEntityFactory,
+  getOneEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -21,6 +23,45 @@ const checkUniqueCompetitionSeason = async (season: string) => {
     });
 
   return existing;
+};
+
+export const getCompetitionSeasons = async (competitionId: string) => {
+  const competitionSeasonGetter = getEntityFactory<CompetitionSeason>();
+
+  return competitionSeasonGetter({
+    modelName: "CompetitionSeason",
+    limit: 150,
+    selectionSet: ["id", "status", "name", "season", "cupId", "leagueId"],
+    filter: {
+      competitionId: {
+        eq: competitionId,
+      },
+    },
+  });
+};
+
+export const getCompetitionSeason = async (id: string) => {
+  const teamGetter = getOneEntityFactory<CompetitionSeason>();
+
+  return teamGetter({
+    modelName: "CompetitionSeason",
+    id,
+    selectionSet: [
+      "id",
+      "name",
+      "logo",
+      "season",
+      "type",
+      "status",
+      "cupId",
+      "leagueId",
+      "matches.*",
+      "league.*",
+      "cup.playOffs.*",
+      "league.standings.*",
+      "league.leagueRounds.*",
+    ],
+  });
 };
 
 export const createCompetitionSeason = async (formData: FormData) => {

@@ -14,7 +14,6 @@ import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
-import { CldImage } from "next-cloudinary";
 import { IPlayer } from "../../../lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
 import { deletePlayer } from "@/app/_actions/player-actions";
@@ -74,7 +73,7 @@ function PlayerCard({ player }: { player: IPlayer }) {
               position={"relative"}
               colSpan={1}
             >
-              <CldImage
+              <Image
                 src={player.homeKit}
                 width="300"
                 height="300"

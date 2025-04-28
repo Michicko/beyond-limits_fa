@@ -1,6 +1,10 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
-import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
+import {
+  createEntityFactory,
+  deleteEntity,
+  getEntityFactory,
+} from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 
@@ -13,6 +17,13 @@ const checkUniqueTrophyName = async (trophyName: string) => {
     });
 
   return existing;
+};
+
+export const getTrophies = async () => {
+  return cookiesClient.models.Trophy.list({
+    selectionSet: ["id", "image", "competition.longName", "trophyName"],
+    authMode: "userPool",
+  });
 };
 
 export const createTrophy = async (formData: FormData) => {

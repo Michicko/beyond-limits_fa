@@ -20,6 +20,31 @@ const checkUniqueArticleTitle = async (title: string) => {
   return existing;
 };
 
+export const filterArticle = async (text: string) => {
+  return cookiesClient.models.Article.list({
+    filter: {
+      title: {
+        contains: text,
+      },
+    },
+    authMode: "userPool",
+    selectionSet: ["id", "title"],
+  });
+};
+
+export const getLazyLoadedArticles = async () => {
+  return cookiesClient.models.Article.list({
+    selectionSet: [
+      "id",
+      "title",
+      "articleCategory.category",
+      "status",
+      "createdAt",
+    ],
+    authMode: "userPool",
+  });
+};
+
 export const createArticle = async (formData: FormData) => {
   const base = formDataToObject<Article>(formData);
   const articleCreator = createEntityFactory<Article, Article>();

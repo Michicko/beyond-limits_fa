@@ -6,8 +6,42 @@ import {
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 type Match = Schema["Match"]["type"];
+
+export const getMatches = async () => {
+  return cookiesClient.models.Match.list({
+    selectionSet: [
+      "id",
+      "status",
+      "competitionSeasonId",
+      "competitionSeason.id",
+      "competitionSeason.logo",
+      "competitionSeason.name",
+      "competitionSeason.season",
+      "date",
+      "time",
+      "venue",
+      "status",
+      "aboutKeyPlayer",
+      "keyPlayerId",
+      "aboutMvp",
+      "mvpId",
+      "time",
+      "status",
+      "review",
+      "report",
+      "lineup",
+      "substitutes",
+      "homeTeam.*",
+      "awayTeam.*",
+      "coach.name",
+      "coach.role",
+      "scorers",
+    ],
+  });
+};
 
 export const createMatch = async (formData: FormData) => {
   const base = formDataToObject<Match>(formData);

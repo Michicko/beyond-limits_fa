@@ -19,17 +19,11 @@ import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import { Schema } from "@/amplify/data/resource";
 import useToast from "@/hooks/useToast";
 import { createTrophy } from "@/app/_actions/tropy-actions";
+import ArticleFilterModal from "../ArticleFIlterModal/ArticleFilterModal";
 
 type ICompetition = Pick<Schema["Competition"]["type"], "id" | "longName">;
-type IArticle = Pick<Schema["Article"]["type"], "id" | "title">;
 
-function TrophyFormDialog({
-  competitions,
-  articles,
-}: {
-  competitions: ICompetition[];
-  articles: IArticle[];
-}) {
+function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
   const btnStyles = {
     p: "10px 20px",
     fontSize: "md",
@@ -84,6 +78,11 @@ function TrophyFormDialog({
     });
   };
 
+  const [article, setArticle] = useState<{ id: string; title: string } | null>(
+    null
+  );
+  const [openArticleModal, setOpenArticleModal] = useState(false);
+
   return (
     <HStack justify={"flex-end"} mb={"20px"} gap="2">
       <FormDialog
@@ -122,7 +121,7 @@ function TrophyFormDialog({
             <Field.Root required>
               <FormLabel>Trophy image</FormLabel>
               {tempData.image && (
-                <HStack gap={4}>
+                <HStack gap={4} position={"relative"}>
                   <Image
                     src={tempData.image}
                     width="75"
@@ -130,6 +129,9 @@ function TrophyFormDialog({
                     alt={"trophy image"}
                   />
                   <IconButton
+                    position={"absolute"}
+                    top={"10px"}
+                    right={"10px"}
                     size={"2xs"}
                     title="delete"
                     colorPalette={"red"}
@@ -152,22 +154,27 @@ function TrophyFormDialog({
                 />
               )}
             </Field.Root>
-            <Field.Root>
+            <Field.Root position={"relative"}>
               <Field.Label color={"text_lg"}>Article</Field.Label>
-              <CustomSelect
-                options={articles.map((el) => {
-                  return {
-                    label: el.title,
-                    value: el.id,
-                  };
-                })}
-                name="articleId"
-                description="article"
-                selectedValue={tempData.articleId}
-                handleOnChange={(e) =>
-                  setTempData({ ...tempData, articleId: e.target.value })
-                }
-              />
+              <Button
+                type="button"
+                variant={"outline"}
+                colorPalette={"gray"}
+                w={"full"}
+                py={"2"}
+                onClick={() => setOpenArticleModal(true)}
+                textAlign={"left"}
+                justifyContent={"flex-start"}
+                pl={"10px"}
+              >
+                {article ? article.title : "Search Articles"}
+              </Button>
+              {openArticleModal && (
+                <ArticleFilterModal
+                  setOpenArticleModal={setOpenArticleModal}
+                  setArticle={setArticle}
+                />
+              )}
             </Field.Root>
             <FormBtn disabled={isPending}>
               {getButtonStatus(false, "Trophy", isPending)}

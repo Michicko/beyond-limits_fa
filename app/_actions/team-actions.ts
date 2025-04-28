@@ -3,6 +3,8 @@ import { Schema } from "@/amplify/data/resource";
 import {
   createEntityFactory,
   deleteEntity,
+  getEntityFactory,
+  getOneEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -18,6 +20,40 @@ const checkUniqueTeamName = async (longName: string) => {
   );
 
   return existing;
+};
+
+export const getTeams = async () => {
+  const teamsGetter = getEntityFactory<Team>();
+
+  return teamsGetter({
+    modelName: "Team",
+    limit: 150,
+    selectionSet: [
+      "id",
+      "logo",
+      "longName",
+      "shortName",
+      "isBeyondLimits",
+      "stadium",
+    ],
+  });
+};
+
+export const getTeam = async (id: string) => {
+  const teamGetter = getOneEntityFactory<Team>();
+
+  return teamGetter({
+    modelName: "Team",
+    id,
+    selectionSet: [
+      "id",
+      "logo",
+      "shortName",
+      "longName",
+      "isBeyondLimits",
+      "stadium",
+    ],
+  });
 };
 
 export const createTeam = async (formData: FormData) => {

@@ -1,6 +1,19 @@
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 
+type GetEntityOptions<TOutput> = {
+  modelName: keyof typeof cookiesClient.models;
+  limit: number;
+  selectionSet?: string[];
+  filter?: Record<string, any>;
+};
+
+type GetOneEntityOptions<TOutput> = {
+  modelName: keyof typeof cookiesClient.models;
+  id: string;
+  selectionSet?: string[];
+};
+
 type CreateEntityOptions<TInput, TOutput> = {
   modelName: keyof typeof cookiesClient.models;
   input: TInput;
@@ -19,6 +32,101 @@ type UpdateEntityOptions<TInput, TOutput> = {
   preprocess?: (input: TInput) => Promise<TInput> | TInput;
   selectionSet?: string[];
 };
+
+export function getOneEntityFactory<TOutput>() {
+  return async ({
+    modelName,
+    id,
+    selectionSet,
+  }: GetOneEntityOptions<TOutput>) => {
+    try {
+      const model = cookiesClient.models[modelName] as unknown as {
+        get: (options?: {
+          id: string;
+          authMode?: "userPool";
+          selectionSet?: string[];
+        }) => Promise<{
+          data: TOutput | null;
+          errors?: { message: string }[];
+        }>;
+      };
+
+      const { data, errors } = await model.get({
+        id,
+        authMode: "userPool",
+        selectionSet,
+      });
+
+      if (errors && errors.length > 0) {
+        return {
+          status: "error",
+          message: errors[0].message || "An unknown error occurred",
+        };
+      }
+
+      return {
+        status: "success",
+        data: data ?? [],
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "error",
+        message: (error as Error).message || "An unknown error occurred",
+      };
+    }
+  };
+}
+
+export function getEntityFactory<TOutput>() {
+  return async ({
+    modelName,
+    limit,
+    selectionSet,
+    filter,
+  }: GetEntityOptions<TOutput>) => {
+    try {
+      const model = cookiesClient.models[modelName] as unknown as {
+        list: (options?: {
+          authMode?: "userPool";
+          selectionSet?: string[];
+          limit: number;
+          sortDirection: string;
+          filter?: Record<string, any>;
+        }) => Promise<{
+          data: TOutput[] | null;
+          errors?: { message: string }[];
+        }>;
+      };
+
+      const { data, errors } = await model.list({
+        authMode: "userPool",
+        selectionSet,
+        limit,
+        sortDirection: "ASC",
+        filter,
+      });
+
+      if (errors && errors.length > 0) {
+        return {
+          status: "error",
+          message: errors[0].message || "An unknown error occurred",
+        };
+      }
+
+      return {
+        status: "success",
+        data: data ?? [],
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "error",
+        message: (error as Error).message || "An unknown error occurred",
+      };
+    }
+  };
+}
 
 export function createEntityFactory<TInput, TOutput>() {
   return async ({

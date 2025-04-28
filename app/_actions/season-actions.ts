@@ -4,6 +4,7 @@ import {
   createEntityFactory,
   deleteEntity,
   updateEntityFactory,
+  getEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
@@ -20,32 +21,13 @@ const checkUniqueSeason = async (season: string) => {
 };
 
 export const fetchSeasons = async () => {
-  try {
-    const { data: seasons, errors } = await cookiesClient.models.Season.list({
-      selectionSet: ["id", "season", "createdAt"],
-      authMode: "userPool",
-      limit: 50,
-      sortDirection: "ASC",
-    });
+  const seasonsGetter = getEntityFactory<Season>();
 
-    if (errors && errors.length > 0) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
-
-    return {
-      status: "success",
-      data: seasons,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      status: "error",
-      message: (error as Error).message || "An unknown error occurred",
-    };
-  }
+  return seasonsGetter({
+    modelName: "Season",
+    limit: 50,
+    selectionSet: ["id", "season", "createdAt"],
+  });
 };
 
 export const createSeason = async (formData: FormData) => {

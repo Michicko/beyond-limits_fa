@@ -1,63 +1,67 @@
+"use client";
 import TrophyCard from "@/components/admin/Card/TrophyCard";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Skeleton, Stack } from "@chakra-ui/react";
 import React from "react";
 import TrophyFormDialog from "@/components/admin/Forms/TrophyFormDialog";
-import { cookiesClient } from "@/utils/amplify-utils";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
+import useSWR from "swr";
+import { getTrophies } from "@/app/_actions/tropy-actions";
+import { getCompetitions } from "@/app/_actions/competition-actions";
 
-async function Trophies() {
-  const [trophiesResult, articlesResult, competitionsResult] =
-    await Promise.all([
-      cookiesClient.models.Trophy.list({
-        selectionSet: ["id", "image", "competition.longName", "trophyName"],
-        authMode: "userPool",
-      }),
-      cookiesClient.models.Article.list({
-        selectionSet: ["title", "id"],
-        authMode: "userPool",
-      }),
-      cookiesClient.models.Competition.list({
-        selectionSet: ["id", "longName"],
-        authMode: "userPool",
-      }),
-    ]);
+function Trophies() {
+  const {
+    data: trophiesData,
+    error: trophiesError,
+    isLoading,
+  } = useSWR("trophies", getTrophies);
+  const {
+    data: competitionsData,
+    error: competitionsError,
+    isLoading: competitionsLoading,
+  } = useSWR("competitions", getCompetitions);
 
-  const { data: trophies, errors: trophiesErrors } = trophiesResult;
-  const { data: articles, errors: articleErrors } = articlesResult;
-  const { data: competitions, errors: competitionsErrors } = competitionsResult;
+  const competitions = competitionsData && competitionsData.data;
+  const trophies = trophiesData && trophiesData.data;
 
   return (
     <>
       <PageTitle pageTitle="Trophies" />
       <Box w={"full"} h={"full"} mt={"20px"}>
-        {articleErrors || competitionsErrors ? (
+        {competitionsLoading ? (
+          <HStack justify={"flex-end"} mb={"20px"} gap="2">
+            <Skeleton
+              h={isLoading ? "40px" : "auto"}
+              w={isLoading ? "140px" : "auto"}
+              loading={isLoading}
+            />
+          </HStack>
+        ) : competitionsError ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
-            message={
-              (articleErrors && articleErrors[0].message) ||
-              (competitionsErrors && competitionsErrors[0].message)
-            }
+            message={competitionsError.message}
           />
         ) : (
-          competitions &&
-          articles && (
+          competitions && (
             <HStack justify={"flex-end"} mb={"20px"} gap="2">
-              <TrophyFormDialog
-                competitions={competitions}
-                articles={articles}
-              />
+              <TrophyFormDialog competitions={competitions} />
             </HStack>
           )
         )}
-        {trophiesErrors ? (
+        {isLoading ? (
+          <Stack gap={4}>
+            <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
+            <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
+            <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
+          </Stack>
+        ) : trophiesError ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
-            message={trophiesErrors[0].message}
+            message={trophiesError.message}
           />
-        ) : trophies.length < 1 ? (
+        ) : !trophies || trophies.length < 1 ? (
           <CustomAlert
             status="info"
             title="No Trophy."
