@@ -1,96 +1,68 @@
 "use client";
-import { redirect, usePathname } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { fetchAuthSession } from "aws-amplify/auth";
+import toast from "react-hot-toast";
 import AuthClient from "./AuthClient";
-import styles from "./Auth.module.css";
-import clsx from "clsx";
-import { toast } from "react-hot-toast";
 import { Hub } from "aws-amplify/utils";
 
-function Login() {
+const Login = () => {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "authenticated" | "unauthenticated"
+  >("idle");
 
-  const redirectPath = useMemo(() => {
-    return searchParams.get("redirectTo") || "/cp/dashboard";
-  }, [searchParams]);
+  const redirectTo = searchParams.get("redirectTo") || "/cp/dashboard";
 
-  console.log(
-    "loading",
-    loading,
-    "isAuthenticated: ",
-    isAuthenticated,
-    "link: ",
-    redirectPath,
-    "pathname ",
-    pathname
-  );
+  useEffect(() => {
+    const checkAuth = async () => {
+      setStatus("loading");
 
-  const getAuthenticatedUser = useCallback(async () => {
-    try {
-      const res = await fetchAuthSession();
-      console.log(res);
-      if (res.tokens && res.tokens.accessToken) {
-        setIsAuthenticated(true);
-        setLoading(false);
-      } else {
-        setIsAuthenticated(false);
-        setLoading(false);
-        toast.error(`No auth token or token expired. Login again!`, {
-          duration: 6000,
+      try {
+        const { tokens } = await fetchAuthSession();
+        console.log("Auth tokens =>", tokens);
+
+        if (tokens) {
+          setStatus("authenticated");
+        } else {
+          setStatus("unauthenticated");
+        }
+      } catch (error) {
+        console.error("Authentication error:", error);
+        toast.dismiss();
+        toast.error((error as Error).message || "Unknown error occurred", {
+          duration: 8000,
         });
+        setStatus("unauthenticated");
       }
-    } catch (error) {
-      toast.error(`Something went wrong, ${(error as Error).message}`, {
-        duration: 6000,
-      });
-      setLoading(false);
-      setIsAuthenticated(false);
-    }
-  }, [isAuthenticated, loading]);
+    };
 
-  useEffect(() => {
-    if (isAuthenticated && pathname.startsWith("/login")) {
-      redirect(redirectPath);
-    } else {
-      getAuthenticatedUser();
-    }
-  }, [isAuthenticated]);
+    checkAuth();
 
-  useEffect(() => {
-    const hubListenerCancelToken = Hub.listen("auth", ({ payload }) => {
-      switch (payload.event) {
-        case "signedIn":
-          console.log("signedIn");
-          setIsAuthenticated(true);
-          break;
-        case "signedOut":
-          console.log("signedOut");
-          setIsAuthenticated(false);
-          break;
+    const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
+      if (payload.event === "signedIn") {
+        setStatus("authenticated");
       }
     });
 
     return () => {
-      hubListenerCancelToken();
+      hubListenerCancel();
     };
   }, []);
 
-  if (loading) {
-    return (
-      <div className={clsx(styles["loading-container"])}>
-        <div className={styles.loading}></div>
-      </div>
-    );
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace(redirectTo);
+    }
+  }, [status, redirectTo, router]);
+
+  if (status === "loading" || status === "idle") {
+    return <div>Loading...</div>;
   }
 
-  console.log("reached here!");
-
+  // Unauthenticated case: show login form
   return <AuthClient />;
-}
+};
 
 export default Login;

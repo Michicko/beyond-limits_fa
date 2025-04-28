@@ -120,7 +120,7 @@ async function CompetitionSeasons({
               </>
             </Table>
             <HStack justify={"center"} w={"full"}>
-              <Pagination />
+              {/* <Pagination /> */}
             </HStack>
           </>
         )}

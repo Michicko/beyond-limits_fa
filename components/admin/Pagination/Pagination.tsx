@@ -1,6 +1,5 @@
 "use client";
-import React, { useState } from "react";
-
+import React from "react";
 import { getIcon } from "@/lib/icons";
 import {
   Pagination as ChakraPagination,
@@ -8,21 +7,45 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 
-function Pagination() {
+interface PaginationProps {
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  type: "mobile" | "web";
+}
+
+function Pagination({
+  page,
+  pageCount,
+  pageSize,
+  onPageChange,
+  type,
+}: PaginationProps) {
   return (
-    <ChakraPagination.Root count={10} pageSize={2} defaultPage={1}>
+    <ChakraPagination.Root
+      count={pageCount}
+      page={page}
+      pageSize={pageSize}
+      defaultPage={1}
+      onPageChange={(details) => onPageChange(details.page)}
+    >
       <ButtonGroup variant="ghost" size="sm">
         <ChakraPagination.PrevTrigger asChild>
           <IconButton>{getIcon("prev")}</IconButton>
         </ChakraPagination.PrevTrigger>
 
-        <ChakraPagination.Items
-          render={(page) => (
-            <IconButton variant={{ base: "ghost", _selected: "outline" }}>
-              {page.value}
-            </IconButton>
-          )}
-        />
+        {type === "mobile" ? (
+          <ChakraPagination.PageText />
+        ) : (
+          <ChakraPagination.Items
+            render={(page) => (
+              <IconButton variant={{ base: "ghost", _selected: "outline" }}>
+                {page.value}
+              </IconButton>
+            )}
+          />
+        )}
 
         <ChakraPagination.NextTrigger asChild>
           <IconButton>{getIcon("next")}</IconButton>

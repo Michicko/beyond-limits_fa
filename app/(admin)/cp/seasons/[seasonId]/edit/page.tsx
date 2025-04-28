@@ -1,8 +1,9 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
+import BackButton from "@/components/admin/BackButton";
 import SeasonForm from "@/components/admin/Forms/SeasonForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Box } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 import React, { Suspense } from "react";
 
 async function EditSeason({ params }: { params: { seasonId: string } }) {
@@ -18,6 +19,9 @@ async function EditSeason({ params }: { params: { seasonId: string } }) {
     <>
       <PageTitle pageTitle="Edit Season" />
       <Box w={"full"} h={"full"} mt={"30px"}>
+        <HStack justify={"flex-end"} mb={"20px"} gap="2">
+          <BackButton />
+        </HStack>
         {!season ? (
           <CustomAlert
             title={`No season with id ${params.seasonId}`}

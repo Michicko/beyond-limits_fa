@@ -1,132 +1,71 @@
-import PageTitle from "@/components/admin/Layout/PageTitle";
-import React from "react";
-import { Box, Button, Container, HStack } from "@chakra-ui/react";
-import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
+"use client";
+import React, { useState } from "react";
 import TableCell from "@/components/admin/Table/TableCell";
-import Pagination from "@/components/admin/Pagination/Pagination";
-import Table from "@/components/admin/Table/Table";
-import TableHeader from "@/components/admin/Table/TableHeader";
 import TableRows from "@/components/admin/Table/TableRows";
-import TableBody from "@/components/admin/Table/TableBody";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import Link from "next/link";
-import { cookiesClient } from "@/utils/amplify-utils";
-import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import { formatDate } from "@/lib/helpers";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import useToast from "@/hooks/useToast";
-import { deleteSeason } from "@/app/_actions/season-actions";
+import { deleteSeason, fetchSeasons } from "@/app/_actions/season-actions";
+import useSWR from "swr";
+import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
 
-async function Seasons() {
-  const btnStyles = {
-    p: "10px 20px",
-    fontSize: "md",
-    fontWeight: "semibold",
-  };
+function Seasons() {
+  const { data, error, isLoading } = useSWR("seasons", fetchSeasons);
 
-  const { data: seasons, errors } = await cookiesClient.models.Season.list({
-    selectionSet: ["id", "season", "createdAt"],
-    authMode: "userPool",
-  });
+  const seasons = data?.data;
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Number of items per page
+  // Calculate the start and end index for the current page
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentSeasons = seasons?.slice(startIndex, endIndex);
 
   return (
-    <>
-      <PageTitle pageTitle="Seasons" />
-      <Box w={"full"} h={"full"} mt={"30px"}>
-        <Container maxW={"4xl"} fluid margin={"0 auto"}>
-          <HStack justify={"flex-end"} mb={"20px"} gap="4">
-            <Button
-              colorPalette={"blue"}
-              variant={"solid"}
-              css={btnStyles}
-              size={"md"}
-              asChild
-            >
-              <Link href={"/cp/seasons/create"}>Create Season</Link>
-            </Button>
-          </HStack>
-          {errors ? (
-            <CustomAlert
-              status="error"
-              title="Something went wrong."
-              message={errors[0].message}
-            />
-          ) : seasons.length < 1 ? (
-            <CustomAlert
-              status="info"
-              title="No Seasons."
-              message={"No season available, create some to get started."}
-            />
-          ) : (
-            <>
-              <Table>
+    <PaginatedTablePage
+      error={error}
+      headerCols={["season", "created", ""]}
+      isLoading={isLoading}
+      pageTitle="Seasons"
+      resource="Season"
+      list={seasons}
+      currentPage={currentPage}
+      setCurrentPage={setCurrentPage}
+      startIndex={startIndex}
+      endIndex={endIndex}
+      pageSize={pageSize}
+    >
+      <>
+        {currentSeasons &&
+          currentSeasons.map((season) => {
+            return (
+              <TableRows key={season.season}>
                 <>
-                  <TableHeader>
-                    <TableRows>
+                  <TableCell pl={"10px"}>{season.season}</TableCell>
+                  <TableCell>{formatDate(season.createdAt)}</TableCell>
+                  <TableCell>
+                    <CustomMenu>
                       <>
-                        {["season", "created", ""].map((head, i) => {
-                          return (
-                            <TableColumnHeader
-                              key={head}
-                              textAlign={"left"}
-                              pl={i === 0 ? "10px" : "0"}
-                              fontWeight={"500"}
-                            >
-                              {head}
-                            </TableColumnHeader>
-                          );
-                        })}
+                        <CustomMenuItem label="Edit" showBorder={true}>
+                          <Link href={`/cp/seasons/${season.id}/edit`}>
+                            Edit
+                          </Link>
+                        </CustomMenuItem>
+                        <DeleteBtn
+                          name={season.season}
+                          id={season.id}
+                          onDelete={deleteSeason}
+                        />
                       </>
-                    </TableRows>
-                  </TableHeader>
-                  <TableBody>
-                    <>
-                      {seasons.map((season) => {
-                        return (
-                          <TableRows key={season.season}>
-                            <>
-                              <TableCell pl={"10px"}>{season.season}</TableCell>
-                              <TableCell>
-                                {formatDate(season.createdAt)}
-                              </TableCell>
-                              <TableCell>
-                                <CustomMenu>
-                                  <>
-                                    <CustomMenuItem
-                                      label="Edit"
-                                      showBorder={true}
-                                    >
-                                      <Link
-                                        href={`/cp/seasons/${season.id}/edit`}
-                                      >
-                                        Edit
-                                      </Link>
-                                    </CustomMenuItem>
-                                    <DeleteBtn
-                                      name={season.season}
-                                      id={season.id}
-                                      onDelete={deleteSeason}
-                                    />
-                                  </>
-                                </CustomMenu>
-                              </TableCell>
-                            </>
-                          </TableRows>
-                        );
-                      })}
-                    </>
-                  </TableBody>
+                    </CustomMenu>
+                  </TableCell>
                 </>
-              </Table>
-              {/* <HStack justify={"center"} w={"full"}>
-                <Pagination />
-              </HStack> */}
-            </>
-          )}
-        </Container>
-      </Box>
-    </>
+              </TableRows>
+            );
+          })}
+      </>
+    </PaginatedTablePage>
   );
 }
 

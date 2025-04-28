@@ -19,6 +19,35 @@ const checkUniqueSeason = async (season: string) => {
   return existing;
 };
 
+export const fetchSeasons = async () => {
+  try {
+    const { data: seasons, errors } = await cookiesClient.models.Season.list({
+      selectionSet: ["id", "season", "createdAt"],
+      authMode: "userPool",
+      limit: 50,
+      sortDirection: "ASC",
+    });
+
+    if (errors && errors.length > 0) {
+      return {
+        status: "error",
+        message: errors[0].message || "An unknown error occurred",
+      };
+    }
+
+    return {
+      status: "success",
+      data: seasons,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: "error",
+      message: (error as Error).message || "An unknown error occurred",
+    };
+  }
+};
+
 export const createSeason = async (formData: FormData) => {
   const base = formDataToObject<Season>(formData);
   const seasonCreator = createEntityFactory<Season, Season>();

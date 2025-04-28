@@ -117,7 +117,7 @@ async function Articles() {
           )}
           {articles && articles.length > 1 && (
             <HStack justify={"center"} w={"full"}>
-              <Pagination />
+              {/* <Pagination /> */}
             </HStack>
           )}
         </Container>

@@ -120,7 +120,7 @@ async function Teams() {
           )}
           {teams && teams.length > 0 && (
             <HStack justify={"center"} w={"full"}>
-              <Pagination />
+              {/* <Pagination /> */}
             </HStack>
           )}
         </Container>

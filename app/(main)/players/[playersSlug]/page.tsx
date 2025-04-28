@@ -81,7 +81,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
               type="primary"
               color="white"
               center={true}
-            >{`${params.playersSlug} Players`}</Heading>
+            >{`${params.playersSlug.replace(/_/g, " ")} Players`}</Heading>
           </>
         </LayoutHeader>
       </Header>

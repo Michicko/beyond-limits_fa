@@ -93,7 +93,7 @@ async function Matches() {
         )}
         {matches && matches.length > 0 && (
           <HStack justify={"center"} w={"full"}>
-            <Pagination />
+            {/* <Pagination /> */}
           </HStack>
         )}
       </Box>
