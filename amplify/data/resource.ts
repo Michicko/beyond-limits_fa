@@ -239,6 +239,8 @@ const schema = a.schema({
         reds: a.string(),
       }),
       scorers: a.json(),
+      homeForm: a.string(),
+      awayForm: a.string(),
     })
     .secondaryIndexes((index) => [index("date").sortKeys(["status"])])
     .authorization((allow) => [

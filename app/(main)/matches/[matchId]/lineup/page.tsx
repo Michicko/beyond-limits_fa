@@ -59,7 +59,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
   const match = matchData ?? ([] as unknown as IMatch);
   const players = playersData ?? [];
 
-  if (!match) return <div>NO Match</div>;
+  if (!match) return <div>No Match</div>;
 
   const lineup =
     match.lineup &&
