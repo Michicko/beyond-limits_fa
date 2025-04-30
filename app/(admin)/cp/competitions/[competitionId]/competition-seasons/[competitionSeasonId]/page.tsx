@@ -1,41 +1,29 @@
+"use client";
+import { getCompetitionSeasonLazyLoaded } from "@/app/_actions/competition-season-actions";
+import { getTeamsLazyLoaded } from "@/app/_actions/team-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import CompetitionSeasonCard from "@/components/admin/CompetitionSeasonCard/CompetitionSeasonCard";
 import Cup from "@/components/admin/Cup/Cup";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import League from "@/components/admin/League/League";
-import { cookiesClient } from "@/utils/amplify-utils";
-import { Box, HStack, Stack, Tabs } from "@chakra-ui/react";
+import { Box, HStack, Skeleton, Stack, Tabs } from "@chakra-ui/react";
+import useSWR from "swr";
 
-async function CompetitionSeason({
+function CompetitionSeason({
   params,
 }: {
   params: { competitionId: string; competitionSeasonId: string };
 }) {
-  const { data: competitionSeason, errors } =
-    await cookiesClient.models.CompetitionSeason.get(
-      {
-        id: params.competitionSeasonId,
-      },
-      {
-        selectionSet: [
-          "id",
-          "name",
-          "logo",
-          "season",
-          "type",
-          "status",
-          "cupId",
-          "leagueId",
-          "matches.*",
-          "league.*",
-          "cup.playOffs.*",
-          "league.standings.*",
-          "league.leagueRounds.*",
-        ],
-      }
-    );
+  const {
+    data: competitionSeasonData,
+    error,
+    isLoading,
+  } = useSWR("competition-season", () =>
+    getCompetitionSeasonLazyLoaded(params.competitionSeasonId)
+  );
 
+  const competitionSeason = competitionSeasonData && competitionSeasonData.data;
   const league = competitionSeason && competitionSeason.league;
 
   const cupRounds =
@@ -45,31 +33,34 @@ async function CompetitionSeason({
 
   const matches = competitionSeason && competitionSeason.matches;
 
-  const teams = (
-    await cookiesClient.models.Team.list({
-      selectionSet: [
-        "id",
-        "logo",
-        "shortName",
-        "longName",
-        "isBeyondLimits",
-        "stadium",
-      ],
-    })
-  ).data;
+  const {
+    data: teamsData,
+    error: teamsError,
+    isLoading: isTeamsLoading,
+  } = useSWR(["lazy-teams", params.competitionSeasonId], getTeamsLazyLoaded);
+
+  const teams = teamsData && teamsData.data;
 
   return (
     <>
       <PageTitle pageTitle={`${competitionSeason?.season} season`} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <HStack mb={8}>
-          <BackButton />
+          <Skeleton h={"40px"} w={"80px"} loading={isLoading}>
+            <BackButton />
+          </Skeleton>
         </HStack>
-        {errors ? (
+        {isLoading ? (
+          <Stack maxW={"960px"} m={"0 auto"} gap={"5"}>
+            <Skeleton h={"165px"} w={"full"} loading={isLoading} />
+            <Skeleton h={"400px"} w={"full"} loading={isTeamsLoading} />
+            <Skeleton h={"300px"} w={"full"} loading={isLoading} />
+          </Stack>
+        ) : error ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
-            message={errors[0].message}
+            message={error.message}
           />
         ) : !competitionSeason ? (
           <CustomAlert
@@ -81,10 +72,12 @@ async function CompetitionSeason({
             <Box p={"5"} w={"full"}>
               <Stack maxW={"960px"} m={"0 auto"} gap={"5"}>
                 <CompetitionSeasonCard
+                  competitionSeasonId={competitionSeason.id}
                   competitionName={competitionSeason.name}
                   competitionType={competitionSeason.type}
                   season={competitionSeason.season}
                   status={competitionSeason.status}
+                  teams={teams}
                 />
                 {competitionSeason.type === "LEAGUE" &&
                   league &&

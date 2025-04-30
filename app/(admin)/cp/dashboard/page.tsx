@@ -1,3 +1,4 @@
+"use client";
 import { fetchDashboardData } from "@/app/_actions/actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import MatchCard from "@/components/admin/Card/MatchCard";
@@ -5,6 +6,7 @@ import MatchStats from "@/components/admin/Card/MatchStats";
 import StatCard from "@/components/admin/Card/StatCard";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import Scorers from "@/components/admin/Scorers/Scorers";
+import DashboardSkeleton from "@/components/admin/Skeletons/DashboardSkeleton";
 import Standing from "@/components/admin/Standing/Standing";
 import {
   Box,
@@ -16,21 +18,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import useSWR from "swr";
 
-async function Dashboard() {
-  const {
-    data: dashboardContent,
-    status,
-    message,
-  } = await fetchDashboardData();
+function Dashboard() {
+  const { data, error, isLoading } = useSWR("dashboard", fetchDashboardData);
 
-  const dashboardData = dashboardContent && dashboardContent;
+  const dashboardData = data && data.data;
 
   return (
     <>
       <PageTitle pageTitle="Dashboard" />
-      {status === "error" ? (
-        message && <CustomAlert status="error" title={message} />
+      {error ? (
+        <CustomAlert status="error" title={error.message} />
+      ) : isLoading ? (
+        <DashboardSkeleton isLoading={isLoading} />
       ) : !dashboardData || !dashboardData.totalCompetitions ? (
         <Card.Root
           size="md"

@@ -5,6 +5,7 @@ import Calendar from "@/components/main/Calendar/Calendar";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getMatches } from "@/lib/helpers";
+import Text from "@/components/main/Typography/Text";
 
 async function Fixtures(props: {
   searchParams: Promise<{
@@ -43,10 +44,10 @@ async function Fixtures(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!fixtures ? (
-          <div>No fixtures</div>
-        ) : fixtures && fixtures.length < 1 ? (
-          <div>No Fixtures available at the moment.</div>
+        {!fixtures || (fixtures && fixtures.length < 1) ? (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Fixtures available at the moment.
+          </Text>
         ) : (
           <Flex
             align="center"

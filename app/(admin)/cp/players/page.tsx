@@ -10,6 +10,7 @@ import {
   getPlayersLazyLoaded,
 } from "@/app/_actions/player-actions";
 import useSWR from "swr";
+import PlayersSkeleton from "@/components/admin/Skeletons/PlayersSkeleton";
 
 function Players() {
   const { data: ageGroupsData } = useSWR("age-groups", getAgeGroups);
@@ -38,22 +39,7 @@ function Players() {
             message={error.message}
           />
         ) : isLoading ? (
-          <Box>
-            <HStack mb={4} flexWrap={"wrap"}>
-              <Skeleton h={"40px"} w={"150px"} />
-              <Skeleton h={"40px"} w={"150px"} />
-              <Skeleton h={"40px"} w={"150px"} />
-            </HStack>
-            <HStack mb={4} w={"full"}>
-              <Skeleton h={"40px"} w={"50%"} />
-              <Skeleton h={"40px"} w={"50%"} />
-            </HStack>
-            <Stack gap={4}>
-              <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
-              <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
-              <Skeleton h={"300px"} w={"full"} maxW={"600px"} />
-            </Stack>
-          </Box>
+          <PlayersSkeleton isLoading={isLoading} />
         ) : !players || players.length < 1 ? (
           <CustomAlert
             status="info"

@@ -44,7 +44,7 @@ interface ILeagueRound {
   status: "PENDING" | "COMPLETED" | null;
 }
 
-async function League({
+function League({
   teams,
   leagueRounds,
   matches,

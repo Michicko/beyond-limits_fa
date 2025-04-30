@@ -25,6 +25,31 @@ const checkUniqueCompetitionSeason = async (season: string) => {
   return existing;
 };
 
+export const getCompetitionSeasonLazyLoaded = async (id: string) => {
+  return cookiesClient.models.CompetitionSeason.get(
+    {
+      id,
+    },
+    {
+      selectionSet: [
+        "id",
+        "name",
+        "logo",
+        "season",
+        "type",
+        "status",
+        "cupId",
+        "leagueId",
+        "matches.*",
+        "league.*",
+        "cup.playOffs.*",
+        "league.standings.*",
+        "league.leagueRounds.*",
+      ],
+    }
+  );
+};
+
 export const getCompetitionSeasons = async (competitionId: string) => {
   const competitionSeasonGetter = getEntityFactory<CompetitionSeason>();
 

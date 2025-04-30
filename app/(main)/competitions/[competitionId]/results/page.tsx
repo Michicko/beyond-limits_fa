@@ -48,13 +48,9 @@ async function CompetitionResults({
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!results ? (
-          <Text size="md" color="white" letterCase="normal">
-            No Results available
-          </Text>
-        ) : results && results.length < 1 ? (
-          <Text size="md" color="white" letterCase="normal">
-            No Results available
+        {!results || (results && results.length < 1) ? (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Results available at the moment.
           </Text>
         ) : (
           <Grid gap="sm">

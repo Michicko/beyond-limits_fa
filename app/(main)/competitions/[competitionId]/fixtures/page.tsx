@@ -49,13 +49,9 @@ async function CompetitionFixtures({
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!fixtures ? (
-          <Text size="md" color="white" letterCase="normal">
-            No Fixtures available
-          </Text>
-        ) : fixtures && fixtures.length < 1 ? (
-          <Text size="md" color="white" letterCase="normal">
-            No Fixtures available
+        {!fixtures || (fixtures && fixtures.length < 1) ? (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Fixtures available at the moment.
           </Text>
         ) : (
           <Grid gap="sm">

@@ -26,6 +26,7 @@ function CustomSelect({
       variant={"outline"}
       colorPalette={"gray"}
       textTransform={"capitalize"}
+      minW={fixedWidth ? "150px" : "2xs"}
       maxW={fixedWidth ? "2xs" : "full"}
       disabled={disabled}
     >
@@ -38,6 +39,7 @@ function CustomSelect({
         lineHeight={1.5}
         name={name}
         value={selectedValue}
+        flexShrink={0}
         onChange={handleOnChange}
         id={id}
       >

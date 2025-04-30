@@ -7,6 +7,7 @@ import styles from "../../Competitions.module.css";
 import Knockout from "@/components/main/Knockout/Knockout";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getFirstLetter } from "@/lib/helpers";
+import Text from "@/components/main/Typography/Text";
 
 async function CompetitionStanding({
   params,
@@ -68,6 +69,11 @@ async function CompetitionStanding({
       competitionId={params.competitionId}
     >
       <div className={clsx(styles["competition-box"])}>
+        {!competition && (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Competition Season available at the moment.
+          </Text>
+        )}
         {competition &&
           competition.type === "MIXED" &&
           playoffs &&
@@ -86,7 +92,7 @@ async function CompetitionStanding({
         )}
         {competition && competition.type === "LEAGUE" && (
           <>
-            {standing && (
+            {standing && standing.length > 0 && (
               <Standing
                 name={getFirstLetter(competition.name)}
                 standings={standing}

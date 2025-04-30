@@ -5,6 +5,7 @@ import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { getMatches } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
+import Text from "@/components/main/Typography/Text";
 
 async function Results(props: {
   searchParams: Promise<{
@@ -40,10 +41,10 @@ async function Results(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!results ? (
-          <div>No Results</div>
-        ) : results && results.length < 1 ? (
-          <div>No Results available at the moment.</div>
+        {!results || (results && results.length < 1) ? (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Results available at the moment.
+          </Text>
         ) : (
           <Flex
             align="center"

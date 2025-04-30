@@ -22,6 +22,19 @@ const checkUniqueTeamName = async (longName: string) => {
   return existing;
 };
 
+export const getTeamsLazyLoaded = async () => {
+  return cookiesClient.models.Team.list({
+    selectionSet: [
+      "id",
+      "logo",
+      "shortName",
+      "longName",
+      "isBeyondLimits",
+      "stadium",
+    ],
+  });
+};
+
 export const getTeams = async () => {
   const teamsGetter = getEntityFactory<Team>();
 

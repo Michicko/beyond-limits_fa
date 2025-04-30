@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./MatchCard.module.css";
 import clsx from "clsx";
 import Text from "../Typography/Text";
+import { formatTime } from "@/lib/helpers";
 
 function MatchScoreBoard({
   status,
@@ -16,12 +17,13 @@ function MatchScoreBoard({
   size: "sm" | "md" | "lg" | "xl" | "xxl" | "iv";
   time: string;
 }) {
+  console.log("time", time);
   return (
     <div className={clsx(styles["matchscoreboard"], styles[size])}>
       {status === "UPCOMING" ? (
         <>
           <Text weight="light" size="sm">
-            {time}
+            {formatTime(time)}
           </Text>
         </>
       ) : status === "FINISHED" ? (

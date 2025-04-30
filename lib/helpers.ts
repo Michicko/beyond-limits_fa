@@ -1,6 +1,23 @@
 import moment from "moment";
-import { IMatch } from "./definitions";
+import { IMatch, Nullable } from "./definitions";
 import { months } from "./placeholder-data";
+
+interface IPlayer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  squadNo: Nullable<number>;
+  playerPosition: {
+    id: string;
+    longName: string;
+    shortName: string;
+  };
+}
+
+interface IPos {
+  position: string;
+  players: IPlayer[];
+}
 
 export const getObjectValue = <T extends Object>(
   obj: T,
@@ -47,7 +64,21 @@ export const getButtonStatus = (
 };
 
 export const formatDate = (date: string) => {
-  return moment(date).startOf("minutes").fromNow();
+  const dateStr = moment("2025-05-09");
+  if (
+    moment().diff(dateStr, "days") > 7 ||
+    moment().diff(dateStr, "days") < -7
+  ) {
+    return dateStr.format("MMM D, YYYY");
+  }
+  return dateStr.startOf("minutes").fromNow();
+};
+
+export const formatTime = (time: string) => {
+  const [hour, minute] = time.split(":").map(Number);
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12; // Convert 0 to 12 for midnight
+  return `${hour12}:${minute.toString().padStart(2, "0")} ${suffix}`;
 };
 
 export const playOffsLabels = [
@@ -164,3 +195,56 @@ export function clientPaginate<T>(
     hasNextPage,
   };
 }
+
+const positions = [
+  "goalkeeper",
+  "fullback",
+  "left back",
+  "right back",
+  "central back",
+  "defensive midfielder",
+  "central midfielder",
+  "attacking midfielder",
+  "winger",
+  "attacker",
+  "forward",
+  "striker",
+];
+
+export const groupPlayersByPositions = (players: IPlayer[]) => {
+  const position_rows: IPos[] = [];
+
+  // group player by positions in p
+  players.forEach((player) => {
+    const pos = position_rows.find(
+      (role) =>
+        role.position.replace(/\s+/g, "").toLowerCase() ===
+        player.playerPosition.longName.replace(/\s+/g, "").toLowerCase()
+    );
+
+    if (player.playerPosition) {
+      if (!pos) {
+        position_rows.push({
+          position: player.playerPosition.longName,
+          players: [player],
+        });
+      } else {
+        pos.players.push(player);
+      }
+    }
+  });
+
+  // sort and filter positions according to available position group
+  const playersByPositions = positions.map((el) => {
+    const found_position = position_rows.find((col) => {
+      return (
+        el.replace(/\s+/g, "").toLowerCase() ===
+        col.position.replace(/\s+/g, "").toLowerCase()
+      );
+    });
+    if (!found_position) return;
+    return found_position;
+  });
+
+  return playersByPositions;
+};
