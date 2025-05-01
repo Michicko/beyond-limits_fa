@@ -9,7 +9,7 @@ import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
 async function Highlight({ params }: { params: { highlightId: string } }) {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
 
-  const { data: highlightsData, errors: matchErrors } =
+  const { data: highlightsData, errors } =
     await cookiesClient.models.Highlight.get(
       { id: params.highlightId },
       {
