@@ -19,7 +19,7 @@ import { deleteHighlight } from "@/app/_actions/highlight-actions";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
-  "id" | "coverImage" | "description" | "title" | "url" | "tags"
+  "id" | "coverImage" | "description" | "title" | "videoId" | "tags"
 >;
 
 function HighlightCard({ highlight }: { highlight: IHighlight }) {
@@ -76,7 +76,7 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
               target="_blank"
               color={"primary"}
               textDecoration={"underline"}
-              href={highlight.url}
+              href={`https://www.youtube.com/watch?v=${highlight.videoId}`}
             >
               Watch on Youtube
             </Link>
