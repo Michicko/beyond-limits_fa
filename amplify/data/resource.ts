@@ -337,7 +337,7 @@ const schema = a.schema({
     .model({
       title: a.string().required(),
       coverImage: a.string().required(),
-      url: a.string().required(),
+      videoId: a.string().required(),
       description: a.json(),
       tags: a.string().array(),
     })

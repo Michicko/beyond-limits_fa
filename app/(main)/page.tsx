@@ -10,11 +10,11 @@ import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
 import Text from "@/components/main/Typography/Text";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
-import { match_highlights, months } from "@/lib/placeholder-data";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
+import { months } from "@/lib/placeholder-data";
 
 export default async function Home() {
   const { data: homepageContent, status } = await fetchHomepageData();
@@ -152,7 +152,9 @@ export default async function Home() {
           </Flex>
         </Container>
         <Container as="section" size="md">
-          <VideoCards videos={match_highlights.slice(0, 3)} />
+          {homepageContent && homepageContent?.highlights && (
+            <VideoCards videos={homepageContent.highlights} />
+          )}
         </Container>
       </main>
     </>

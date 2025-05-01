@@ -1,6 +1,6 @@
 .gallery {
   margin-top: 8rem;
-  padding: var(--xxl) var(--md);
+  padding: var(--xxl) 0;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

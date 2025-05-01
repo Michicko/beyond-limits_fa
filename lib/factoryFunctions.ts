@@ -220,8 +220,6 @@ export function updateEntityFactory<TInput, TOutput>() {
           options?: { authMode?: "userPool"; selectionSet?: string[] }
         ) => Promise<{ data: TOutput | null; errors?: { message: string }[] }>;
       };
-
-      console.log(finalInput, id);
       const { data, errors } = await model.update(
         { id, ...finalInput },
         {

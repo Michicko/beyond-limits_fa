@@ -1,7 +1,7 @@
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
+import Pagination from "@/components/Pagination/Pagination";
 import { clientPaginate } from "@/lib/helpers";
-import { match_highlights } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
@@ -30,13 +30,15 @@ async function BeyondTv({
     limit
   );
 
-  console.log(highlights);
-
   return (
     <ArticleLayout bg="trans" theme="theme-1" links={links}>
       <div className="main-container">
-        <VideoCards videos={match_highlights} />
-        {/* pagination */}
+        <VideoCards videos={highlights} />
+        <Pagination
+          currentPage={currentPage}
+          hasNextPage={hasNextPage}
+          basePath="/beyond-tv"
+        />
       </div>
     </ArticleLayout>
   );

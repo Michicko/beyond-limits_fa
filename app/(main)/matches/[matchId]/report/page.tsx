@@ -1,4 +1,3 @@
-import { matches, players } from "@/lib/placeholder-data";
 import React, { Suspense } from "react";
 import styles from "../../Match.module.css";
 import clsx from "clsx";
@@ -202,7 +201,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                   <Text
                     color="secondary"
                     size="sm"
-                    weight="regular"
+                    weight="semibold"
                     letterCase="upper"
                     mb={"sm"}
                   >

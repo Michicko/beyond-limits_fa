@@ -34,8 +34,8 @@ function Standing({
     <div className={clsx(styles.standing)}>
       <Card theme="light">
         <p className={clsx(styles["standing-title"])}>{name} Standing</p>
-        <>
-          <table className={clsx(showFull)}>
+        <div className={clsx(styles["standing-box"])}>
+          <table className={clsx(styles.showFull)}>
             <CardHeader as="thead" theme="trans" border={true}>
               <tr>
                 {theads.map((el, i) => {
@@ -76,7 +76,7 @@ function Standing({
               </>
             </CardBody>
           </table>
-        </>
+        </div>
       </Card>
     </div>
   );

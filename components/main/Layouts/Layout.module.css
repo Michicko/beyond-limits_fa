@@ -40,6 +40,60 @@
   justify-content: center;
 }
 
+.legal-main,
+.legal-header {
+  /* padding: 0 var(--base); */
+}
+
+.legal-header {
+  min-height: 4rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8rem;
+}
+
+.legal-main-title,
+.legal-options-title {
+  color: var(--white);
+}
+
+.legal-main-title {
+  font-weight: 700;
+  font-size: var(--xl);
+  line-height: 1.5;
+}
+
+.legal-options-title {
+  font-size: var(--md);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.legal-intro-text,
+.legal-option {
+  font-size: var(--base);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.end-note {
+  margin-top: 1rem;
+}
+
+.legal-options {
+  padding: 0 var(--xxl);
+  list-style-type: disc;
+}
+
+.legal-options > *:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
 .layout__container {
   width: 100%;
   background: var(--primary-dark);
@@ -111,6 +165,16 @@
   .layout__header.article {
     padding-bottom: 10%;
   }
+
+  .legal-main-title {
+    font-size: var(--xxl);
+  }
+
+  .legal-intro-text,
+  .legal-option {
+    font-size: var(--md);
+    font-weight: 400;
+  }
 }
 
 @media only screen and (min-width: 48rem) {
@@ -123,8 +187,28 @@
     padding: 0 var(--vii);
     padding-bottom: 15%;
   }
+
+  .legal-main-title {
+    font-size: var(--iv);
+  }
+
+  .legal-intro-text,
+  .legal-option {
+    font-size: var(--lg);
+  }
+
   .layout__header.article {
     padding-bottom: 10%;
+  }
+
+  .legal-main,
+  .legal-header {
+    padding: 0 var(--xl);
+  }
+
+  .legal-header {
+    min-height: 6rem;
+    margin-top: 10rem;
   }
 
   .match-layout__header-box {
@@ -136,6 +220,11 @@
 
   .match-layout__header-box > *:nth-child(1) {
     margin-bottom: var(--lg);
+  }
+
+  .legal-intro-text,
+  .legal-option {
+    font-size: var(--md);
   }
 }
 
@@ -152,10 +241,22 @@
   .match-layout__header-box > *:nth-child(1) {
     margin-bottom: var(--xxl);
   }
+  .legal-main,
+  .legal-header {
+    /* padding: 0 var(--xl); */
+  }
+
+  .legal-header {
+    margin-top: 10rem;
+  }
 }
 
 @media only screen and (min-width: 75rem) {
   .match-layout__header-box {
     max-width: 500px;
+  }
+
+  .legal-main-title {
+    font-size: var(--vi);
   }
 }

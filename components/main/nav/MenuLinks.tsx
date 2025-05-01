@@ -1,3 +1,9 @@
+import { getIcon } from "@/lib/icons";
+import { months } from "@/lib/placeholder-data";
+
+const date = new Date();
+const month = date.getMonth();
+
 const MenuLinks = [
   {
     innerLinks: ["/"],
@@ -24,6 +30,21 @@ const MenuLinks = [
     ],
     description:
       "At Beyond Limits Football Academy, we believe in more than just developing exceptional football talent; we strive to shape responsible, empowered individuals who contribute positively to society. As the juniors of the esteemed Remo Stars in the Nigerian Professional Football League, we take pride in our commitment to community development.",
+  },
+  {
+    innerLinks: ["/fixtures"],
+    id: 259,
+    name: "FIXTURES",
+    icon: getIcon("player_position"),
+    subMenu: [
+      {
+        id: 268,
+        link: `/fixtures?month=${months[month]}`,
+        name: "Fixtures",
+        image: "/images/tables.jpg",
+      },
+    ],
+    description: "Check out our fixtures",
   },
   {
     innerLinks: ["/news", "/beyond-tv"],

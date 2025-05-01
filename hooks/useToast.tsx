@@ -41,9 +41,7 @@ function useToast() {
   ) => {
     toaster.promise(promise, {
       success: (res) => {
-        console.log(res);
         if (res.data) {
-          console.log(res.data);
           onUploaded(res.data.url);
           return {
             title: `Successfully Uploaded ${name}!`,

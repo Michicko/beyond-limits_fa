@@ -65,7 +65,7 @@
 .nav-link,
 .nav-text {
   font-family: var(--font-body);
-  font-size: var(--xs);
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
@@ -73,12 +73,20 @@
   display: none;
   font-size: var(--md);
   text-transform: uppercase;
+  position: absolute;
+  left: -45%;
+  transform: translateX(-50%);
 }
 
 .nav-link {
   text-transform: uppercase;
   color: var(--white);
   cursor: pointer;
+}
+
+.nav-link.with-icon svg {
+  height: 1.8rem;
+  width: 1.8rem;
 }
 
 .nav-text,
@@ -371,7 +379,7 @@
   }
 
   .nav-menu__sublinkbody {
-    max-height: 20rem;
+    max-height: 22rem;
   }
 
   .nav-menu__links {
@@ -409,6 +417,10 @@
 @media only screen and (min-width: 64rem) {
   .nav-sm {
     padding: var(--md) var(--vii);
+  }
+
+  .nav-menu__sublinkbody {
+    max-height: 30rem;
   }
 
   .nav-main {

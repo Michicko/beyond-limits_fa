@@ -17,7 +17,6 @@ function MatchScoreBoard({
   size: "sm" | "md" | "lg" | "xl" | "xxl" | "iv";
   time: string;
 }) {
-  console.log("time", time);
   return (
     <div className={clsx(styles["matchscoreboard"], styles[size])}>
       {status === "UPCOMING" ? (

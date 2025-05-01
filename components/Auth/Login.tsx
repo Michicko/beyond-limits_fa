@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { fetchAuthSession } from "aws-amplify/auth";
+import { fetchAuthSession, signOut } from "aws-amplify/auth";
 import toast from "react-hot-toast";
 import AuthClient from "./AuthClient";
 import { Hub } from "aws-amplify/utils";
@@ -13,6 +13,8 @@ const Login = () => {
     "idle" | "loading" | "authenticated" | "unauthenticated"
   >("idle");
 
+  console.log("status => ", status);
+
   const redirectTo = searchParams.get("redirectTo") || "/cp/dashboard";
 
   useEffect(() => {
@@ -21,15 +23,34 @@ const Login = () => {
 
       try {
         const { tokens } = await fetchAuthSession();
-        console.log("Auth tokens =>", tokens);
 
         if (tokens) {
           setStatus("authenticated");
         } else {
           setStatus("unauthenticated");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Authentication error:", error);
+
+        const isNetworkError =
+          error?.name === "NetworkError" ||
+          error?.toString().includes("NetworkError") ||
+          error?.underlyingError?.toString().includes("fetch failed");
+
+        if (isNetworkError) {
+          try {
+            await signOut({ global: true }); // Clean up Amplify session
+          } catch (signOutError) {
+            console.error("Error during sign out:", signOutError);
+          }
+
+          // Clear all cookies manually (if needed)
+          document.cookie.split(";").forEach((cookie) => {
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+          });
+        }
         toast.dismiss();
         toast.error((error as Error).message || "Unknown error occurred", {
           duration: 8000,

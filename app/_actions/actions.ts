@@ -1,6 +1,6 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
-import { createEntityFactory, deleteEntity } from "@/lib/factoryFunctions";
+import { createEntityFactory } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
@@ -280,7 +280,6 @@ function getPlayerGoalCounts(matches: IMatch[]) {
 
 export async function isLoggedIn() {
   const { tokens } = await getRole();
-  console.log("tokens: => ", tokens);
   return tokens && tokens.accessToken && tokens.idToken;
 }
 
@@ -595,6 +594,12 @@ export async function fetchHomepageData() {
       ],
     });
 
+    const { data: highlights } = await cookiesClient.models.Highlight.list({
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["id", "coverImage", "title"],
+      limit: 3,
+    });
+
     const homepageContent = {
       upcomingMatch,
       lastMatch,
@@ -602,6 +607,7 @@ export async function fetchHomepageData() {
       articles,
       players,
       fixtures,
+      highlights,
     };
 
     return {

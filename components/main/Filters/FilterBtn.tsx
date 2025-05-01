@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./Filters.module.css";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -19,6 +19,7 @@ function FilterBtn({
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const selectFilterValue = () => {
     const params = new URLSearchParams(searchParams);
@@ -37,12 +38,24 @@ function FilterBtn({
     [searchParams, filterName]
   );
 
+  // Scroll current filter button into view
+  useEffect(() => {
+    if (current === filterValue && buttonRef.current) {
+      buttonRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [current, filterValue]);
+
   return (
     <button
       className={clsx(styles.filter__btn, {
         [styles.current]: current === filterValue,
       })}
       onClick={selectFilterValue}
+      ref={buttonRef}
     >
       {filterValue}
     </button>

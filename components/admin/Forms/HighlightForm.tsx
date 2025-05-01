@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useTransition } from "react";
+import React, { useRef, useState } from "react";
 import {
   Field,
   HStack,
@@ -26,7 +26,7 @@ import {
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
-  "id" | "coverImage" | "description" | "title" | "url" | "tags"
+  "id" | "coverImage" | "description" | "title" | "videoId" | "tags"
 >;
 
 function HighlightForm({
@@ -43,7 +43,7 @@ function HighlightForm({
     description: highlight
       ? JSON.parse(highlight.description as string)
       : ({} as JSONContent),
-    url: highlight?.url || "",
+    videoId: highlight?.videoId || "",
     tags: highlight?.tags || [],
   });
 
@@ -60,7 +60,7 @@ function HighlightForm({
     const formData = new FormData();
     formData.append("title", tempData.title);
     formData.append("coverImage", tempData.coverImage);
-    formData.append("url", tempData.url);
+    formData.append("url", tempData.videoId);
     formData.append("tags", JSON.stringify(tags));
     formData.append("description", JSON.stringify(tempData.description));
 
@@ -78,7 +78,7 @@ function HighlightForm({
           title: "",
           coverImage: "",
           description: {} as JSONContent,
-          url: "",
+          videoId: "",
           tags: [],
         });
       } catch (error) {
@@ -134,17 +134,15 @@ function HighlightForm({
           </Field.Root>
           <Field.Root required mb={"5"}>
             <Input
-              name="url"
-              placeholder="Youtube url"
+              name="videoId"
+              placeholder="Youtube video id"
               p={"0 10px"}
-              value={tempData.url}
+              value={tempData.videoId}
               onChange={(e) =>
-                setTempData({ ...tempData, url: e.target.value })
+                setTempData({ ...tempData, videoId: e.target.value })
               }
             />
-            <Field.HelperText>
-              Enter url e.g: https://youtube.com
-            </Field.HelperText>
+            <Field.HelperText>Enter url e.g: k-SvlnHFA6c</Field.HelperText>
           </Field.Root>
           <Field.Root>
             <FormLabel>Cover image</FormLabel>

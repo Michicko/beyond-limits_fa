@@ -1,3 +1,13 @@
+.standing-box {
+  overflow-x: auto;
+  display: block;
+  position: relative;
+}
+
+.standing {
+  overflow: hidden;
+}
+
 .standing table {
   table-layout: fixed;
   border-collapse: collapse;
@@ -5,6 +15,7 @@
   border: none;
   margin-bottom: 0.5rem;
   color: var(--white);
+  min-width: 22.5rem;
 }
 
 .standing table,
@@ -69,7 +80,7 @@ tr.shade {
 }
 
 .standing-title {
-  font-size: var(--md);
+  font-size: var(--sm);
   font-weight: 500;
   color: var(--secondary-light);
   margin-left: var(--sm);
@@ -112,6 +123,10 @@ tr.shade {
   .standing td {
     font-size: var(--base);
   }
+
+  .standing-title {
+    font-size: var(--base);
+  }
 }
 
 @media only screen and (min-width: 48rem) {
@@ -125,6 +140,10 @@ tr.shade {
   .standing th:nth-child(2),
   .standing td:nth-child(2) {
     text-align: left;
+  }
+
+  .standing-title {
+    /* font-size: var(--md); */
   }
 }
 

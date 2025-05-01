@@ -113,7 +113,9 @@ export interface IHighlight {
   title: string;
   date: string;
   thumbnail: string;
-  videoUrl: string;
+  url: string;
+  tags: string[];
+  description: JSONContent;
 }
 
 export interface ILink {

@@ -69,9 +69,6 @@ function Nav() {
     };
   }, [lastScrollYRef.current]);
 
-  const date = new Date();
-  const month = date.getMonth();
-
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -101,16 +98,10 @@ function Nav() {
         <div className={clsx(styles["nav-sm"])}>
           <div className={clsx(styles.left)}>
             <NavLink link={{ href: "/gallery", name: "gallery" }} />
-            <NavLink
-              link={{
-                href: `/fixtures?month=${months[month]}`,
-                name: "fixtures",
-              }}
-            />
+            <NavLink link={{ href: "/contact", name: "Contact us" }} />
           </div>
           <p className={clsx(styles["nav-text"])}>No Limits</p>
           <div className={clsx(styles.right)}>
-            <NavLink link={{ href: "/contact", name: "Contact us" }} />
             <NavLink
               link={
                 authenticated

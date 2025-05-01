@@ -129,7 +129,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                     <Text
                       color="white"
                       size="base"
-                      weight="regular"
+                      weight="semibold"
                       letterCase="upper"
                     >
                       {match.homeTeam?.shortName}
@@ -137,7 +137,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                     <Text
                       color="white"
                       size="base"
-                      weight="regular"
+                      weight="semibold"
                       letterCase="capitalize"
                     >
                       {match.homeTeam?.longName}
