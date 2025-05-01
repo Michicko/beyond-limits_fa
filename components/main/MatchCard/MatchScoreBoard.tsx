@@ -21,31 +21,23 @@ function MatchScoreBoard({
   return (
     <div className={clsx(styles["matchscoreboard"], styles[size])}>
       {status === "UPCOMING" ? (
-        <>
-          <Text weight="light" size="sm">
-            {formatTime(time)}
-          </Text>
-        </>
-      ) : status === "FINISHED" ? (
+        <Text weight="light" size="sm">
+          {formatTime(time)}
+        </Text>
+      ) : status === "COMPLETED" ? (
         <>
           <p className={clsx(styles.score)}>{home_score}</p>
           <div className={clsx(styles.versus)}></div>
           <p className={clsx(styles.score)}>{away_score}</p>
         </>
       ) : status === "ABANDONED" ? (
-        <>
-          <p>Abandoned</p>
-          <Text weight="bold" size="md">
-            Abandoned
-          </Text>
-        </>
+        <Text weight="bold" size="md">
+          Abandoned
+        </Text>
       ) : (
-        <>
-          <p>Abandoned</p>
-          <Text weight="bold" size="md">
-            Canceled
-          </Text>
-        </>
+        <Text weight="bold" size="md">
+          Canceled
+        </Text>
       )}
     </div>
   );

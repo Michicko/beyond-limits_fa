@@ -41,11 +41,13 @@ function MatchLayout({
   children,
   currentLink,
 }: {
-  match: IMatch;
+  match?: IMatch;
   children: React.ReactNode;
-  currentLink: string;
+  currentLink?: string;
 }) {
-  return (
+  return !match ? (
+    <div className={clsx(styles["match-layout"])}>{children}</div>
+  ) : (
     <div className={clsx(styles["match-layout"])}>
       <div className={clsx(styles["match-layout__header-box"])}>
         <div className={clsx(styles["match-layout__header"])}>
@@ -57,7 +59,7 @@ function MatchLayout({
             />
           )}
           <div className={clsx(styles["match-header__details"])}>
-            <MatchDate date={match.date} size="lg" />
+            <MatchDate date={match.date} size="md" />
             {match.homeTeam && match.awayTeam && (
               <MatchScoreBoard
                 status={match.status ? match.status : ""}

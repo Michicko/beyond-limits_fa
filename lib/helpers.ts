@@ -64,7 +64,7 @@ export const getButtonStatus = (
 };
 
 export const formatDate = (date: string) => {
-  const dateStr = moment("2025-05-09");
+  const dateStr = moment(date);
   if (
     moment().diff(dateStr, "days") > 7 ||
     moment().diff(dateStr, "days") < -7

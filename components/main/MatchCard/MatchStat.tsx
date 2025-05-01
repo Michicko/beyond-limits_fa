@@ -8,26 +8,28 @@ function MatchStat({
   away,
   stat,
 }: {
-  home: number;
-  away: number;
+  home: number | string;
+  away: number | string;
   stat: string;
 }) {
-  const scale = home === away ? "equal" : "";
+  const scale = +home === +away ? "equal" : "";
 
   return (
     <div className={clsx(styles["match-stat"])}>
-      <p className={clsx(styles[scale], home > away && styles.greater)}>
+      <p className={clsx(styles[scale], +home > +away && styles.greater)}>
         {home}
         <span
           className={clsx(
             styles.line,
             styles.home,
             styles[scale],
-            home > away && styles.greater,
-            away > home && styles.less
+            +home > +away && styles.greater,
+            +away > +home && styles.less
           )}
           style={{
-            width: `${home + away === 0 ? 0 : calcWidth(home + away, home)}%`,
+            width: `${
+              +home + +away === 0 ? 0 : calcWidth(+home + +away, +home)
+            }%`,
           }}
         ></span>
       </p>
@@ -39,11 +41,13 @@ function MatchStat({
             styles.line,
             styles.away,
             styles[scale],
-            away > home && styles.greater,
-            home > away && styles.less
+            +away > +home && styles.greater,
+            +home > +away && styles.less
           )}
           style={{
-            width: `${home + away === 0 ? 0 : calcWidth(home + away, away)}%`,
+            width: `${
+              +home + +away === 0 ? 0 : calcWidth(+home + +away, +away)
+            }%`,
           }}
         ></span>
       </p>

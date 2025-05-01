@@ -1,19 +1,20 @@
-import Card from "@/components/main/Card/Card";
-import MatchLayout from "@/components/main/Layouts/MatchLayout/MatchLayout";
+import { matches, players } from "@/lib/placeholder-data";
 import React, { Suspense } from "react";
 import styles from "../../Match.module.css";
 import clsx from "clsx";
+import MatchLayout from "@/components/main/Layouts/MatchLayout/MatchLayout";
+import Card from "@/components/main/Card/Card";
 import CardHeader from "@/components/main/Card/CardHeader";
 import Heading from "@/components/main/Typography/Heading";
-import Text from "@/components/main/Typography/Text";
 import CardBody from "@/components/main/Card/CardBody";
-import TeamForm from "@/components/main/MatchCard/TeamForm";
+import Text from "@/components/main/Typography/Text";
+import MatchScoreTime from "@/components/main/MatchCard/MatchScoreTime";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import TextEditor from "@/components/TextEditor/TextEditor";
+import { IMatchScorer } from "@/lib/definitions";
 
-async function Review({ params }: { params: { matchId: string } }) {
+async function Report({ params }: { params: { matchId: string } }) {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
-
   const { data: matchData, errors: matchErrors } =
     await cookiesClient.models.Match.get(
       { id: params.matchId },
@@ -38,18 +39,19 @@ async function Review({ params }: { params: { matchId: string } }) {
           "scorers",
           "review",
           "report",
+          "scorers",
         ],
       }
     );
 
   const match = matchData && matchData;
-  const keyPlayer =
+  const mvp =
     (match &&
-      match.keyPlayerId &&
+      match.mvpId &&
       (
         await cookiesClient.models.Player.get(
           {
-            id: match.keyPlayerId,
+            id: match.mvpId,
           },
           {
             authMode,
@@ -77,7 +79,7 @@ async function Review({ params }: { params: { matchId: string } }) {
     );
 
   return (
-    <MatchLayout match={match} currentLink={`/matches/${match.id}/preview`}>
+    <MatchLayout match={match} currentLink={`/matches/${match.id}/report`}>
       <div className={clsx(styles.preview)}>
         <Card theme={"trans"}>
           <>
@@ -96,7 +98,7 @@ async function Review({ params }: { params: { matchId: string } }) {
             <CardBody as="div" theme={"light"}>
               <Suspense fallback={null}>
                 <TextEditor
-                  content={JSON.parse(match.review as string)}
+                  content={JSON.parse(match.report as string)}
                   readOnly={true}
                 />
               </Suspense>
@@ -113,71 +115,69 @@ async function Review({ params }: { params: { matchId: string } }) {
                   color="secondary"
                   type="section"
                 >
-                  Team Form
+                  Goal Scorers
                 </Heading>
               </div>
             </CardHeader>
             <CardBody as="div" theme={"light"}>
               <div className={clsx(styles.preview__body, styles["py-b"])}>
-                <ul className={clsx(styles["team-form__list"])}>
-                  <li
-                    className={clsx(
-                      styles["preview-item"],
-                      styles["item-name"]
+                {match.scorers &&
+                JSON.parse(match.scorers as string).length > 0 ? (
+                  <ul className={clsx(styles["team-form__list"])}>
+                    {JSON.parse(match.scorers as string).map(
+                      (scorer: IMatchScorer, i: number) => {
+                        if (!scorer.isOpponent) {
+                          return (
+                            <li
+                              className={clsx(styles["preview-item"])}
+                              key={scorer.name + "-" + i}
+                            >
+                              <Text
+                                color="white"
+                                size="base"
+                                weight="regular"
+                                letterCase="normal"
+                              >
+                                {scorer.name}
+                              </Text>
+                              <MatchScoreTime
+                                time={scorer.time}
+                                theme="light"
+                              />
+                            </li>
+                          );
+                        }
+                        return (
+                          <li
+                            className={clsx(styles["preview-item"], styles.col)}
+                            key={scorer.name + "-" + i}
+                          >
+                            <Text
+                              color="secondary"
+                              size="sm"
+                              weight="semibold"
+                              letterCase="normal"
+                            >
+                              Opponent
+                            </Text>
+                            <div className={clsx(styles["match-score-tile"])}>
+                              <Text
+                                color="white"
+                                size="sm"
+                                weight="regular"
+                                letterCase="normal"
+                              >
+                                {scorer.name}
+                              </Text>
+                            </div>
+                          </li>
+                        );
+                      }
                     )}
-                  >
-                    <Text
-                      color="white"
-                      size="base"
-                      weight="regular"
-                      letterCase="upper"
-                    >
-                      {match.homeTeam?.shortName}
-                    </Text>
-                    <Text
-                      color="white"
-                      size="base"
-                      weight="regular"
-                      letterCase="capitalize"
-                    >
-                      {match.homeTeam?.longName}
-                    </Text>
-                    {/* <div className={clsx(styles["team-form"])}>
-                      {match.home.form.split(",").map((el, i) => {
-                        return <TeamForm form={el} key={match.id + i} />;
-                      })}
-                    </div> */}
-                  </li>
-
-                  <li
-                    className={clsx(
-                      styles["preview-item"],
-                      styles["item-name"]
-                    )}
-                  >
-                    <Text
-                      color="white"
-                      size="base"
-                      weight="regular"
-                      letterCase="upper"
-                    >
-                      {match.awayTeam?.shortName}
-                    </Text>
-                    <Text
-                      color="white"
-                      size="base"
-                      weight="regular"
-                      letterCase="capitalize"
-                    >
-                      {match.awayTeam?.longName}
-                    </Text>
-                    {/* <div className={clsx(styles["team-form"])}>
-                      {match.away.form.split(",").map((el, i) => {
-                        return <TeamForm form={el} key={match.id + (i + 2)} />;
-                      })}
-                    </div> */}
-                  </li>
-                </ul>
+                  </ul>
+                ) : (
+                  <></>
+                )}
               </div>
             </CardBody>
           </>
@@ -192,25 +192,34 @@ async function Review({ params }: { params: { matchId: string } }) {
                   color="secondary"
                   type="section"
                 >
-                  key player
+                  Mvp
                 </Heading>
               </div>
             </CardHeader>
             <CardBody as="div" theme={"light"}>
-              <div className={clsx(styles.preview__body, styles.p)}>
-                <Text
-                  color="secondary"
-                  size="sm"
-                  letterCase={"upper"}
-                  weight="semibold"
-                  mb={"sm"}
-                >
-                  {keyPlayer?.firstname} {keyPlayer?.lastname}
-                </Text>
-                <Text color="white" size="base" weight="regular">
-                  {match.aboutKeyPlayer}
-                </Text>
-              </div>
+              {match.aboutMvp ? (
+                <div className={clsx(styles.preview__body, styles.p)}>
+                  <Text
+                    color="secondary"
+                    size="sm"
+                    weight="regular"
+                    letterCase="upper"
+                    mb={"sm"}
+                  >
+                    {mvp?.firstname} {mvp?.lastname}
+                  </Text>
+                  <Text
+                    color="white"
+                    size="base"
+                    weight="regular"
+                    letterCase="normal"
+                  >
+                    {match.aboutMvp}
+                  </Text>
+                </div>
+              ) : (
+                <></>
+              )}
             </CardBody>
           </>
         </Card>
@@ -231,16 +240,16 @@ async function Review({ params }: { params: { matchId: string } }) {
             <CardBody as="div" theme={"light"}>
               <div className={clsx(styles.preview__body, styles["py-b"])}>
                 <ul className={clsx(styles["preview-list"])}>
-                  {match.competitionSeason && (
-                    <li className={clsx(styles["preview-item"], styles.col)}>
-                      <Text
-                        color="secondary"
-                        size="sm"
-                        letterCase={"upper"}
-                        weight="semibold"
-                      >
-                        Competition
-                      </Text>
+                  <li className={clsx(styles["preview-item"], styles.col)}>
+                    <Text
+                      color="secondary"
+                      size="sm"
+                      letterCase={"upper"}
+                      weight="semibold"
+                    >
+                      Competition
+                    </Text>
+                    {match.competitionSeason && (
                       <Text
                         color="white"
                         size="base"
@@ -249,8 +258,8 @@ async function Review({ params }: { params: { matchId: string } }) {
                       >
                         {match.competitionSeason.name}
                       </Text>
-                    </li>
-                  )}
+                    )}
+                  </li>
                   <li className={clsx(styles["preview-item"], styles.col)}>
                     <Text
                       color="secondary"
@@ -279,4 +288,4 @@ async function Review({ params }: { params: { matchId: string } }) {
   );
 }
 
-export default Review;
+export default Report;
