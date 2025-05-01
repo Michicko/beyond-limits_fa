@@ -12,7 +12,14 @@ async function EditHighlight({ params }: { params: { highlightId: string } }) {
       id: params.highlightId,
     },
     {
-      selectionSet: ["id", "title", "coverImage", "description", "tags", "url"],
+      selectionSet: [
+        "id",
+        "title",
+        "coverImage",
+        "description",
+        "tags",
+        "videoId",
+      ],
     }
   );
 
