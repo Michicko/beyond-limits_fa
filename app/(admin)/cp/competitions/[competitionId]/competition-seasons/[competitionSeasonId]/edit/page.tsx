@@ -17,7 +17,7 @@ async function EditCompetitionSeason({
         id: params.competitionSeasonId,
       },
       {
-        selectionSet: ["id", "season", "winnerId", "competitionId"],
+        selectionSet: ["id", "season", "winner.*", "competitionId"],
       }
     );
 

@@ -44,7 +44,7 @@ interface ICompetitionSeason {
   createdAt: string;
   cupId?: Nullable<string>;
   leagueId?: Nullable<string>;
-  winnerId: Nullable<string>;
+  winner: any;
   status: string | null;
 }
 

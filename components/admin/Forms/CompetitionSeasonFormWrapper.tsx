@@ -7,7 +7,7 @@ import CompetitionSeasonForm from "./CompetitionSeasonForm";
 
 type ICompetitionSeason = Pick<
   Schema["CompetitionSeason"]["type"],
-  "id" | "season" | "status" | "winnerId" | "competitionId"
+  "id" | "season" | "status" | "winner" | "competitionId"
 >;
 
 async function CompetitionSeasonFormWrapper({

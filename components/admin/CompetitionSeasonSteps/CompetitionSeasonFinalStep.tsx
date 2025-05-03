@@ -39,7 +39,7 @@ function CompetitionSeasonFinalStep({
     formData.append("season", season);
     formData.append("competitionId", competitionId);
     formData.append("status", "PENDING");
-    formData.append("winnerId", "");
+    formData.append("winner", "");
     formData.append("name", competitionName);
     formData.append("logo", competitionLogo);
 

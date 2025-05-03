@@ -574,7 +574,6 @@ export async function fetchHomepageData() {
       ],
     });
 
-    console.log(articles);
     const { data: players } = await cookiesClient.models.Player.list({
       filter: {
         ageGroup: {
