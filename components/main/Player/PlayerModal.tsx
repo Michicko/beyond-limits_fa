@@ -4,6 +4,7 @@ import styles from "./Player.module.css";
 import clsx from "clsx";
 import PlayerInfo from "./PlayerInfo";
 import ImageComp from "@/components/ImageComp/ImageComp";
+import { removeImgBg } from "@/lib/helpers";
 
 function PlayerModal({ player }: { player: IPlayer }) {
   return (
@@ -11,17 +12,17 @@ function PlayerModal({ player }: { player: IPlayer }) {
       <div className={clsx(styles["player-kit"])}>
         {player.homeKit && (
           <ImageComp
-            image={player.homeKit}
+            image={removeImgBg(player.homeKit)}
             alt={player.firstname}
-            placeholder={"/images/playerback.png"}
+            placeholder={"/images/pl-bg.png"}
             priority={false}
           />
         )}
         {player.awayKit && (
           <ImageComp
-            image={player.awayKit}
+            image={removeImgBg(player.awayKit)}
             alt={player.firstname}
-            placeholder={"/images/playerback.png"}
+            placeholder={"/images/pl-bg.png"}
             priority={false}
           />
         )}

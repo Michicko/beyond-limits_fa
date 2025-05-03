@@ -43,7 +43,7 @@ function CompetitionSeason({
 
   return (
     <>
-      <PageTitle pageTitle={`${competitionSeason?.season} season`} />
+      <PageTitle pageTitle={`${competitionSeason?.season ?? ""} season`} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <HStack mb={8}>
           <Skeleton h={"40px"} w={"80px"} loading={isLoading}>
@@ -77,7 +77,7 @@ function CompetitionSeason({
                   competitionType={competitionSeason.type}
                   season={competitionSeason.season}
                   status={competitionSeason.status}
-                  teams={teams}
+                  winner={competitionSeason.winner}
                 />
                 {competitionSeason.type === "LEAGUE" &&
                   league &&

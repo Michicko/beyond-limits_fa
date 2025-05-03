@@ -8,11 +8,15 @@ function FormDialog({
   children,
   scrollable,
   name,
+  openForm,
+  setOpenForm,
 }: {
   btn: React.ReactElement;
   children: React.ReactElement;
   scrollable?: boolean;
   name: string;
+  openForm?: boolean;
+  setOpenForm?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -22,6 +26,8 @@ function FormDialog({
       scrollBehavior={scrollable ? "inside" : "outside"}
       closeOnInteractOutside={false}
       modal={false}
+      open={openForm}
+      onOpenChange={(details) => setOpenForm?.(details.open)} //
     >
       <Dialog.Trigger asChild>{btn}</Dialog.Trigger>
       <Portal>

@@ -1,4 +1,3 @@
-import MatchCard from "@/components/main/MatchCard/MatchCard";
 import React, { Suspense } from "react";
 import Flex from "@/components/main/Container/Flex";
 import Calendar from "@/components/main/Calendar/Calendar";
@@ -6,6 +5,7 @@ import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/Com
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getMatches } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
+import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
 
 async function Fixtures(props: {
   searchParams: Promise<{
@@ -63,7 +63,6 @@ async function Fixtures(props: {
                   showName={true}
                   theme="light"
                   key={match.id}
-                  iconSize="xl"
                 />
               );
             })}

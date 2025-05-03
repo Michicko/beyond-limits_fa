@@ -29,11 +29,13 @@ function TextEditor({
   setContent,
   handleOnUpdate,
   readOnly,
+  editorKey,
 }: {
   content: JSONContent | string;
   setContent?: React.Dispatch<React.SetStateAction<JSONContent>>;
   handleOnUpdate?: (json: JSONContent) => void;
   readOnly?: boolean;
+  editorKey?: number;
 }) {
   const editor = useEditor({
     extensions,
@@ -58,7 +60,10 @@ function TextEditor({
   }
 
   return (
-    <div className={clsx(styles.editor, readOnly && styles["read-only"])}>
+    <div
+      className={clsx(styles.editor, readOnly && styles["read-only"])}
+      key={editorKey}
+    >
       {!readOnly && <MenuBar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

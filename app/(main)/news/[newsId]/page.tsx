@@ -11,6 +11,7 @@ import ArticleCategory from "@/components/Article/ArticleCategory";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Article from "@/components/Article/Article";
+import { formatDate } from "@/lib/helpers";
 
 async function NewsArticle({ params }: { params: { newsId: string } }) {
   let recommendedArticles;
@@ -63,7 +64,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
     <>
       <Header
         bg={"/images/under-19-bg.png"}
-        alt="2024 / 2025 ongoing campaign"
+        alt="ongoing campaign"
         overlay={true}
       >
         <LayoutHeader article={true}>
@@ -76,14 +77,16 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
             >
               {article?.title}
             </Heading>
-            <Text
-              letterCase="upper"
-              weight="bold"
-              size="sm"
-              color={"secondary"}
-            >
-              December 15, 2025
-            </Text>
+            {article && (
+              <Text
+                letterCase="upper"
+                weight="bold"
+                size="sm"
+                color={"secondary"}
+              >
+                {formatDate(article.createdAt)}
+              </Text>
+            )}
             {article && article.articleCategory.category && (
               <ArticleCategory
                 category={article.articleCategory.category}
@@ -94,34 +97,45 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         </LayoutHeader>
       </Header>
       <LayoutMain>
-        <div className={clsx(styles["article-container"], styles.article)}>
-          <div className={clsx(styles["article-content__box"])}>
-            {article && (
-              // <div dangerouslySetInnerHTML={{ __html: article.content }} />
-              <Suspense fallback={null}>
-                <TextEditor
-                  content={JSON.parse(article.content as string)}
-                  readOnly={true}
-                />
-              </Suspense>
-            )}
-            <SocialShareLinks
-              text={`Check out this article: ${article?.title}`}
-              url={`/news/${params.newsId}`}
-            />
-          </div>
-          <div className={clsx(styles["articles__box"])}>
-            <Heading level={2} letterCase="upper" type="secondary">
-              Other Articles
-            </Heading>
-            <div className={clsx(styles["col-3"])}>
-              {recommendedArticles &&
-                recommendedArticles.map((article) => {
-                  return <Article article={article} />;
-                })}
+        <>
+          {errors && (
+            <Text
+              color="white"
+              letterCase={"lower"}
+              size="base"
+              weight="regular"
+            >
+              {`Something went wrong, ${errors[0].message}`}
+            </Text>
+          )}
+          <div className={clsx(styles["article-container"], styles.article)}>
+            <div className={clsx(styles["article-content__box"])}>
+              {article && (
+                <Suspense fallback={null}>
+                  <TextEditor
+                    content={JSON.parse(article.content as string)}
+                    readOnly={true}
+                  />
+                </Suspense>
+              )}
+              <SocialShareLinks
+                text={`Check out this article: ${article?.title}`}
+                url={`/news/${params.newsId}`}
+              />
+            </div>
+            <div className={clsx(styles["articles__box"])}>
+              <Heading level={2} letterCase="upper" type="secondary">
+                Other Articles
+              </Heading>
+              <div className={clsx(styles["col-3"])}>
+                {recommendedArticles &&
+                  recommendedArticles.map((article) => {
+                    return <Article article={article} />;
+                  })}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       </LayoutMain>
     </>
   );

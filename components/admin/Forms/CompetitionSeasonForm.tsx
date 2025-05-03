@@ -14,7 +14,7 @@ import { getButtonStatus } from "@/lib/helpers";
 
 type ICompetitionSeason = Pick<
   Schema["CompetitionSeason"]["type"],
-  "id" | "season" | "status" | "winnerId" | "competitionId"
+  "id" | "season" | "status" | "winner" | "competitionId"
 >;
 type ITeam = Pick<Schema["Team"]["type"], "id" | "logo" | "longName">;
 type ISeason = Pick<Schema["Season"]["type"], "id" | "season">;
@@ -40,7 +40,7 @@ function CompetitionSeasonForm({
     season: competitionSeason?.season || "",
     competitionId,
     status: competitionSeason?.status || "PENDING",
-    winnerId: competitionSeason?.winnerId || "",
+    winner: competitionSeason?.winner || "",
   });
 
   const handleOnChange = (e: { target: { name: string; value: string } }) => {
@@ -112,21 +112,6 @@ function CompetitionSeasonForm({
             name="status"
             description="status"
             selectedValue={tempData.status}
-            handleOnChange={handleOnChange}
-          />
-        </Field.Root>
-        <Field.Root>
-          <FormLabel>Winner</FormLabel>
-          <CustomSelect
-            options={teams.map((el) => {
-              return {
-                label: el.longName,
-                value: el.id,
-              };
-            })}
-            name="winnerId"
-            description="winner"
-            selectedValue={tempData.winnerId}
             handleOnChange={handleOnChange}
           />
         </Field.Root>

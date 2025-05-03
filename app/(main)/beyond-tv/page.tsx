@@ -1,4 +1,5 @@
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
+import Text from "@/components/main/Typography/Text";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
 import Pagination from "@/components/Pagination/Pagination";
 import { clientPaginate } from "@/lib/helpers";
@@ -33,12 +34,21 @@ async function BeyondTv({
   return (
     <ArticleLayout bg="trans" theme="theme-1" links={links}>
       <div className="main-container">
-        <VideoCards videos={highlights} />
-        <Pagination
-          currentPage={currentPage}
-          hasNextPage={hasNextPage}
-          basePath="/beyond-tv"
-        />
+        {errors && (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {`Something went wrong, ${errors[0].message}`}
+          </Text>
+        )}
+        {highlights && (
+          <>
+            <VideoCards videos={highlights} />
+            <Pagination
+              currentPage={currentPage}
+              hasNextPage={hasNextPage}
+              basePath="/beyond-tv"
+            />
+          </>
+        )}
       </div>
     </ArticleLayout>
   );

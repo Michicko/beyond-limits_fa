@@ -2,7 +2,7 @@
 import TrophyCard from "@/components/admin/Card/TrophyCard";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import { Box, Flex, HStack, Skeleton, Stack } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import TrophyFormDialog from "@/components/admin/Forms/TrophyFormDialog";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import useSWR from "swr";
@@ -23,6 +23,28 @@ function Trophies() {
 
   const competitions = competitionsData && competitionsData.data;
   const trophies = trophiesData && trophiesData.data;
+  const [editTrophy, setEditTrophy] = useState(false);
+  const [trophy, setTrophy] = useState({
+    id: "",
+    image: "",
+    competitionId: "",
+    articleId: "",
+    trophyName: "",
+  });
+
+  const onEdit = (id: string) => {
+    if (!trophies) return;
+    const troph = trophies.find((el) => el.id === id);
+    if (troph) {
+      setTrophy({
+        id: troph.id,
+        image: troph.image,
+        articleId: troph.articleId ?? "",
+        trophyName: troph.trophyName,
+        competitionId: troph.competitionId ?? "",
+      });
+    }
+  };
 
   return (
     <>
@@ -45,7 +67,13 @@ function Trophies() {
         ) : (
           competitions && (
             <HStack justify={"flex-end"} mb={"20px"} gap="2">
-              <TrophyFormDialog competitions={competitions} />
+              <TrophyFormDialog
+                competitions={competitions}
+                trophy={trophy}
+                openForm={editTrophy}
+                setOpenForm={setEditTrophy}
+                setTrophy={setTrophy}
+              />
             </HStack>
           )
         )}
@@ -70,7 +98,15 @@ function Trophies() {
         ) : (
           <Flex my={"20px"} direction={"column"} gap={"4"}>
             {trophies.map((trophy) => {
-              return <TrophyCard key={trophy.id} trophy={trophy} />;
+              return (
+                <TrophyCard
+                  key={trophy.id}
+                  trophy={trophy}
+                  setEditTrophy={setEditTrophy}
+                  onEdit={onEdit}
+                  id={trophy.id}
+                />
+              );
             })}
           </Flex>
         )}

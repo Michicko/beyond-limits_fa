@@ -59,7 +59,9 @@ async function MatchFormWrapper({
     <CustomAlert
       status="info"
       title="No Competition."
-      message={"No competition available, create some to get started."}
+      message={
+        "No competition available, You can't create a match without starting a competition season."
+      }
     />
   ) : (
     <MatchForm

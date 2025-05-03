@@ -60,7 +60,7 @@ function HighlightForm({
     const formData = new FormData();
     formData.append("title", tempData.title);
     formData.append("coverImage", tempData.coverImage);
-    formData.append("url", tempData.videoId);
+    formData.append("videoId", tempData.videoId);
     formData.append("tags", JSON.stringify(tags));
     formData.append("description", JSON.stringify(tempData.description));
 
@@ -70,7 +70,7 @@ function HighlightForm({
         const res = await createHighlight(formData);
         if (res.status === "success" && res.data) {
           toast.success(`Successfully created ${res.data.title} highlight`, {
-            duration: 6000,
+            duration: 8000,
           });
         }
         setIsLoading(false);
@@ -81,11 +81,14 @@ function HighlightForm({
           videoId: "",
           tags: [],
         });
+        setTags([]);
+        handleHighlightDescription({});
       } catch (error) {
         setIsLoading(false);
         const message = (error as Error).message;
-        console.log(message);
-        toast.error(`Failed to create, ${message}`);
+        toast.error(`Failed to create, ${message}`, {
+          duration: 8000,
+        });
       }
     }
 
@@ -100,7 +103,7 @@ function HighlightForm({
         );
         if (res.status === "success" && res.data) {
           toast.success(`Successfully updated ${res.data.title} highlight`, {
-            duration: 6000,
+            duration: 8000,
           });
         }
         setIsLoading(false);
@@ -108,7 +111,9 @@ function HighlightForm({
         setIsLoading(false);
         const message = (error as Error).message;
         console.log(message);
-        toast.error(`Failed to create, ${message}`);
+        toast.error(`Failed to create, ${message}`, {
+          duration: 8000,
+        });
       }
     }
   };

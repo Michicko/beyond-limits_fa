@@ -81,10 +81,25 @@ function ArticleForm({
   const handleArticleContent = (json: JSONContent) => {
     setTempData({ ...tempData, content: json });
   };
+  const [editorKey, setEditorKey] = useState(12);
+
+  const resetForm = () => {
+    setTempData({
+      title: "",
+      coverImage: "",
+      content: {} as JSONContent, // force cast to ensure shape
+      status: "UNPUBLISHED",
+      articleCategoryId: "",
+    });
+    setMatchId("");
+    setEditorKey((prev) => prev + 1); // force TextEditor re-mount
+  };
 
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast, mutationPromiseToast } = useToast();
   const [matchId, setMatchId] = useState(article?.matchId || "");
+
+  const match = matches.find((match) => match.id === matchId);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -96,10 +111,15 @@ function ArticleForm({
     formData.delete("matchId");
     formData.append("content", JSON.stringify(tempData.content));
 
+    if (matchId && match && match.homeTeam && match.awayTeam) {
+      formData.append("matchId", matchId);
+      formData.append("matchHomeTeamLogo", match.homeTeam.logo);
+      formData.append("matchAwayTeamLogo", match.awayTeam.logo);
+    }
+
     if (article) {
       startTransition(async () => {
         const res = await updateArticle(article.id, formData, article.title);
-
         if (res.status === "success" && res.data) {
           if (matchId) {
             formData.append("matchId", matchId);
@@ -112,21 +132,11 @@ function ArticleForm({
       });
     } else {
       startTransition(async () => {
-        if (matchId) {
-          formData.append("matchId", matchId);
-        }
         const res = await createArticle(formData);
         if (res.status === "success" && res.data) {
           mutationToast("article", res.data.title, "create");
+          resetForm();
           formRef.current?.reset();
-          setTempData({
-            title: "",
-            coverImage: "",
-            content: {},
-            status: "UNPUBLISHED",
-            articleCategoryId: "",
-          });
-          handleArticleContent({});
         }
         if (res.status === "error") {
           errorToast(res.message);
@@ -298,39 +308,6 @@ function ArticleForm({
             }
           />
         </Field.Root>
-        <Field.Root required mb={"5"}>
-          <FormLabel>Cover Image</FormLabel>
-          {tempData.coverImage && (
-            <HStack gap={4}>
-              <Image
-                src={tempData.coverImage}
-                width="200"
-                height="200"
-                alt={tempData.title}
-              />
-              <IconButton
-                size={"2xs"}
-                title="delete"
-                colorPalette={"red"}
-                alignSelf={"flex-start"}
-                onClick={() => setTempData({ ...tempData, coverImage: "" })}
-              >
-                {getIcon("close")}
-              </IconButton>
-            </HStack>
-          )}
-          {!tempData.coverImage && tempData.title && (
-            <CustomFileUpload
-              description="cover image"
-              onUploaded={(res: any) => {
-                setTempData({ ...tempData, coverImage: res.secure_url });
-              }}
-              id="cover-image"
-              filename={slugify(tempData.title, { lower: true })}
-              type="drag-drop"
-            />
-          )}
-        </Field.Root>
         <Field.Root mb={5}>
           <Field.Label>Match</Field.Label>
           <CustomSelect
@@ -347,11 +324,50 @@ function ArticleForm({
                 value: match.id,
               };
             })}
-            handleOnChange={(e) => setMatchId(e.target.value)}
+            handleOnChange={(e) => {
+              setMatchId(e.target.value);
+            }}
             id={"match"}
           />
         </Field.Root>
+        {!matchId && (
+          <Field.Root required mb={"5"}>
+            <FormLabel>Cover Image</FormLabel>
+            {tempData.coverImage && (
+              <HStack gap={4}>
+                <Image
+                  src={tempData.coverImage}
+                  width="200"
+                  height="200"
+                  alt={tempData.title}
+                />
+                <IconButton
+                  size={"2xs"}
+                  title="delete"
+                  colorPalette={"red"}
+                  alignSelf={"flex-start"}
+                  onClick={() => setTempData({ ...tempData, coverImage: "" })}
+                >
+                  {getIcon("close")}
+                </IconButton>
+              </HStack>
+            )}
+            {!tempData.coverImage && tempData.title && (
+              <CustomFileUpload
+                description="cover image"
+                onUploaded={(res: any) => {
+                  setTempData({ ...tempData, coverImage: res.secure_url });
+                }}
+                id="cover-image"
+                filename={slugify(tempData.title, { lower: true })}
+                type="drag-drop"
+              />
+            )}
+          </Field.Root>
+        )}
+
         <TextEditor
+          editorKey={editorKey}
           content={tempData.content}
           handleOnUpdate={handleArticleContent}
         />

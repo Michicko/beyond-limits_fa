@@ -166,12 +166,15 @@ export interface IArticle {
   createdAt: string;
   articleCategoryId?: Nullable<string>;
   coverImage: Nullable<string>;
+  matchId?: Nullable<string>;
   match?: IMatch;
   tags?: Nullable<string>[] | null;
   content: any;
   articleCategory: {
     category: string;
   };
+  matchHomeTeamLogo?: Nullable<string>;
+  matchAwayTeamLogo?: Nullable<string>;
 }
 
 export interface ISeason {

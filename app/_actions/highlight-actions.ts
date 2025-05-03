@@ -26,7 +26,7 @@ export const getHighlights = async () => {
   return highlightsGetter({
     modelName: "Highlight",
     limit: 200,
-    selectionSet: ["id", "title", "coverImage", "createdAt", "url", "tags"],
+    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"],
   });
 };
 

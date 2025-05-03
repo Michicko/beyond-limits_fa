@@ -18,6 +18,7 @@ async function EditArticle({ params }: { params: { articleId: string } }) {
         "coverImage",
         "content",
         "articleCategoryId",
+        "matchId",
       ],
       authMode: "userPool",
     }

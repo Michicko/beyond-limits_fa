@@ -42,6 +42,7 @@ interface IMatch {
     goals: Nullable<string>;
   } | null;
   scorers: any;
+  review: string | number | boolean | object | any[] | null;
 }
 
 interface IMatchScorer {
@@ -567,8 +568,13 @@ export async function fetchHomepageData() {
         "coverImage",
         "status",
         "createdAt",
+        "matchId",
+        "matchHomeTeamLogo",
+        "matchAwayTeamLogo",
       ],
     });
+
+    console.log(articles);
     const { data: players } = await cookiesClient.models.Player.list({
       filter: {
         ageGroup: {
@@ -741,3 +747,5 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
     };
   }
 }
+
+export async function deleteCloudinaryImage(publicId: string) {}

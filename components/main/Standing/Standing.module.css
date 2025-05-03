@@ -1,6 +1,7 @@
 .standing-box {
   overflow-x: auto;
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
@@ -27,8 +28,8 @@
 .standing tr,
 .standing thead,
 .standing th {
-  height: 3.5rem !important;
-  min-height: 3.5rem !important;
+  height: 3rem !important;
+  min-height: 3rem !important;
 }
 
 .tr td {
@@ -84,7 +85,7 @@ tr.shade {
   font-weight: 500;
   color: var(--secondary-light);
   margin-left: var(--sm);
-  margin-top: var(--sm);
+  margin-top: var(--xxs);
   text-transform: uppercase;
 }
 
@@ -92,7 +93,7 @@ tr.shade {
   display: none;
 }
 
-.standing tbody > *:not(:last-child) {
+.standing tbody > * {
   border-bottom: 1px solid var(--t-border);
 }
 
@@ -118,6 +119,15 @@ tr.shade {
   display: none;
 }
 
+.standing-btn {
+  text-align: center;
+  color: var(--secondary-light);
+  text-decoration: underline;
+  margin: 0 auto;
+  margin-bottom: 0.5rem;
+  font-size: var(--sm);
+}
+
 @media only screen and (min-width: 36rem) {
   .standing th,
   .standing td {
@@ -125,7 +135,7 @@ tr.shade {
   }
 
   .standing-title {
-    font-size: var(--base);
+    /* font-size: var(--base); */
   }
 }
 

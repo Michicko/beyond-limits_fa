@@ -1,5 +1,12 @@
 "use client";
-import { Field, HStack, IconButton, Input, Stack } from "@chakra-ui/react";
+import {
+  Field,
+  HStack,
+  IconButton,
+  Input,
+  Stack,
+  Image,
+} from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
@@ -10,7 +17,6 @@ import slugify from "slugify";
 import { getButtonStatus } from "@/lib/helpers";
 import useToast from "@/hooks/useToast";
 import { createTeam, updateTeam } from "@/app/_actions/team-actions";
-import { CldImage } from "next-cloudinary";
 import { getIcon } from "@/lib/icons";
 
 type ITeam = Pick<
@@ -133,15 +139,18 @@ function TeamForm({ team }: { team?: ITeam | null }) {
           </Field.HelperText>
         </Field.Root>
         <Field.Root required>
-          <FormLabel>Competition Logo</FormLabel>
+          <FormLabel>Team Logo</FormLabel>
           {logo && (
-            <HStack gap={4}>
-              <CldImage src={logo} width="75" height="75" alt={shortName} />
+            <HStack gap={4} position={"relative"}>
+              <Image src={logo} width="75" height="75" alt={shortName} />
               <IconButton
                 size={"2xs"}
                 title="delete"
                 colorPalette={"red"}
                 onClick={() => setLogo("")}
+                position={"absolute"}
+                top={"10px"}
+                right={"10px"}
               >
                 {getIcon("close")}
               </IconButton>

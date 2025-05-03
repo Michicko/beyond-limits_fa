@@ -11,7 +11,13 @@
 }
 
 .player__img-box img {
-  object-fit: contain !important;
+  object-fit: cover !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--base);
 }
 
 .player__img-box {
@@ -19,6 +25,7 @@
   max-width: 100%;
   height: auto;
   padding: 2rem 0;
+  overflow: hidden;
 }
 
 .player__list {
@@ -40,7 +47,7 @@
 
 .player__info-box {
   position: relative;
-  border: 1px solid var(--blue-400);
+  /* border: 1px solid var(--blue-400); */
   height: 100%;
   width: 100%;
   border-radius: var(--base);
@@ -104,7 +111,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* padding-bottom: var(--sm); */
+  cursor: pointer;
 }
 
 .player__btn {

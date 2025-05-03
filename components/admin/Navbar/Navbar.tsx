@@ -48,6 +48,11 @@ function Navbar({
             letterSpacing={"1px"}
             as={"h1"}
             fontSize={{ base: "md", md: "xl" }}
+            whiteSpace={"nowrap"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            title={pageTitle ?? ""}
+            maxW={{ base: "100px", sm: "unset" }}
           >
             {pageTitle || <Skeleton height={"25px"} w={"150px"} />}
           </Heading>

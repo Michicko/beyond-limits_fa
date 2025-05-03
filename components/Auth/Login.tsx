@@ -5,6 +5,8 @@ import { fetchAuthSession, signOut } from "aws-amplify/auth";
 import toast from "react-hot-toast";
 import AuthClient from "./AuthClient";
 import { Hub } from "aws-amplify/utils";
+import styles from "./Auth.module.css";
+import clsx from "clsx";
 
 const Login = () => {
   const searchParams = useSearchParams();
@@ -14,8 +16,6 @@ const Login = () => {
   >("idle");
 
   console.log("status => ", status);
-
-  const redirectTo = searchParams.get("redirectTo") || "/cp/dashboard";
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -74,12 +74,21 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace(redirectTo);
+      const timeout = setTimeout(() => {
+        const redirectTo = searchParams.get("redirectTo") || "/cp/dashboard";
+        router.replace(redirectTo);
+      }, 100); // 100ms delay
+
+      return () => clearTimeout(timeout);
     }
-  }, [status, redirectTo, router]);
+  }, [status, router, searchParams]);
 
   if (status === "loading" || status === "idle") {
-    return <div>Loading...</div>;
+    return (
+      <div className={clsx(styles["loading-container"])}>
+        <div className={clsx(styles.loading)}></div>
+      </div>
+    );
   }
 
   // Unauthenticated case: show login form

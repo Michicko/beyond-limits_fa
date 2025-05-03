@@ -1,5 +1,11 @@
 "use client";
-import React, { useRef, useState, useTransition } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import FormDialog from "../FormDialog/FormDialog";
 import {
   Button,
@@ -18,12 +24,32 @@ import slugify from "slugify";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import { Schema } from "@/amplify/data/resource";
 import useToast from "@/hooks/useToast";
-import { createTrophy } from "@/app/_actions/tropy-actions";
+import { createTrophy, updateTrophy } from "@/app/_actions/tropy-actions";
 import ArticleFilterModal from "../ArticleFIlterModal/ArticleFilterModal";
+import { getArticle } from "@/app/_actions/article-actions";
 
 type ICompetition = Pick<Schema["Competition"]["type"], "id" | "longName">;
+interface ITrophy {
+  id: string;
+  image: string;
+  competitionId: string;
+  articleId: string;
+  trophyName: string;
+}
 
-function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
+function TrophyFormDialog({
+  competitions,
+  trophy,
+  openForm,
+  setOpenForm,
+  setTrophy,
+}: {
+  competitions: ICompetition[];
+  trophy?: ITrophy;
+  openForm?: boolean;
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTrophy: React.Dispatch<React.SetStateAction<ITrophy>>;
+}) {
   const btnStyles = {
     p: "10px 20px",
     fontSize: "md",
@@ -36,6 +62,24 @@ function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
     articleId: "",
     trophyName: "",
   });
+
+  const resetOpenForm = () => {
+    setTempData({
+      image: "",
+      competitionId: "",
+      articleId: "",
+      trophyName: "",
+    });
+    setTrophy({
+      id: "",
+      image: "",
+      competitionId: "",
+      articleId: "",
+      trophyName: "",
+    });
+    setOpenForm(true);
+    setArticle(null);
+  };
 
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
@@ -54,34 +98,78 @@ function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
       "trophyName",
       `${competiton?.longName.toString()} trophy` || ""
     );
+    if (article) {
+      formData.append("articleId", article.id);
+    }
 
-    startTransition(async () => {
-      const res = await createTrophy(formData);
+    if (trophy) {
+      startTransition(async () => {
+        const res = await updateTrophy(trophy.id, formData, trophy.trophyName);
 
-      if (res.status === "success" && res.data) {
-        mutationToast(
-          "trophy",
-          competiton?.longName || "competition",
-          "create"
-        );
-        formRef.current?.reset();
-        setTempData({
-          image: "",
-          competitionId: "",
-          articleId: "",
-          trophyName: "",
-        });
-      }
-      if (res.status === "error") {
-        errorToast(res.message);
-      }
-    });
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "trophy",
+            competiton?.longName || "competition",
+            "update"
+          );
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
+    } else {
+      startTransition(async () => {
+        const res = await createTrophy(formData);
+
+        if (res.status === "success" && res.data) {
+          mutationToast(
+            "trophy",
+            competiton?.longName || "competition",
+            "create"
+          );
+          formRef.current?.reset();
+          setTempData({
+            image: "",
+            competitionId: "",
+            articleId: "",
+            trophyName: "",
+          });
+          setArticle(null);
+        }
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
+    }
   };
 
   const [article, setArticle] = useState<{ id: string; title: string } | null>(
     null
   );
   const [openArticleModal, setOpenArticleModal] = useState(false);
+
+  const fetchArticle = useCallback(async (articleId: string) => {
+    try {
+      const response = (await getArticle(articleId)).data;
+      if (response && response.title) {
+        setArticle({ id: articleId, title: response.title });
+      }
+    } catch (error) {
+      console.error("Failed to fetch article:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (trophy) {
+      setTempData({
+        image: trophy.image || "",
+        competitionId: trophy.competitionId || "",
+        articleId: trophy.articleId || "",
+        trophyName: trophy.trophyName || "",
+      });
+      fetchArticle(trophy.articleId);
+    }
+  }, [trophy]);
 
   return (
     <HStack justify={"flex-end"} mb={"20px"} gap="2">
@@ -92,12 +180,15 @@ function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
             variant={"solid"}
             css={btnStyles}
             size={"md"}
+            onClick={resetOpenForm}
           >
             Create Trophy
           </Button>
         }
         scrollable={true}
-        name="Player"
+        name="Trophy"
+        openForm={openForm}
+        setOpenForm={setOpenForm}
       >
         <form ref={formRef} onSubmit={handleSubmit}>
           <Stack gap="2">
@@ -177,7 +268,7 @@ function TrophyFormDialog({ competitions }: { competitions: ICompetition[] }) {
               )}
             </Field.Root>
             <FormBtn disabled={isPending}>
-              {getButtonStatus(false, "Trophy", isPending)}
+              {getButtonStatus(trophy, "Trophy", isPending)}
             </FormBtn>
           </Stack>
         </form>

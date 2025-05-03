@@ -1,11 +1,19 @@
 "use client";
-import { Button, Card, Field, HStack, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  Field,
+  HStack,
+  RadioGroup,
+  RadioGroupValueChangeDetails,
+  Stack,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import Info from "@/components/admin/Info/Info";
-import { IDTeam } from "@/lib/definitions";
-import CustomSelect from "../CustomSelect/CustomSelect";
 import useToast from "@/hooks/useToast";
 import { updateCompetitionSeason } from "@/app/_actions/competition-season-actions";
+import FormLabel from "../Forms/FormLabel";
+import { Nullable } from "@/lib/definitions";
 
 function CompetitionSeasonCard({
   competitionSeasonId,
@@ -13,17 +21,28 @@ function CompetitionSeasonCard({
   competitionType,
   season,
   status,
-  teams,
+  winner,
 }: {
   competitionSeasonId: string;
   competitionName: string;
   competitionType?: string | null;
   season: string;
   status: string | null;
-  teams?: IDTeam[];
+  winner: { isBeyondLimits: Nullable<boolean> } | null;
 }) {
-  const [winnerId, setWinnerId] = useState("");
+  const [winnerOpt, setWinnerOpt] = useState(
+    winner || { isBeyondLimits: false }
+  );
+  const [radioVal, setRadioVal] = useState<string | null>("");
 
+  const handleOnChange = (e: RadioGroupValueChangeDetails) => {
+    setRadioVal(e.value);
+    if (e.value === "isBeyondLimits") {
+      setWinnerOpt({ isBeyondLimits: true });
+    } else {
+      setWinnerOpt({ isBeyondLimits: false });
+    }
+  };
   const { mutationPromiseToast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -43,7 +62,7 @@ function CompetitionSeasonCard({
     };
 
     const formData = new FormData();
-    formData.append("winnerId", winnerId);
+    formData.append("winner", JSON.stringify(winnerOpt));
 
     const promise = updateCompetitionSeason(
       competitionSeasonId,
@@ -78,21 +97,45 @@ function CompetitionSeasonCard({
             <form onSubmit={handleSetWinner}>
               <HStack flexWrap={{ base: "wrap", md: "unset" }} gap={2}>
                 <Field.Root>
-                  {teams && (
-                    <CustomSelect
-                      name={"winnerId"}
-                      description={"winner"}
-                      selectedValue={winnerId}
-                      options={teams.map((team) => {
-                        return { label: team.longName, value: team.id };
-                      })}
-                      handleOnChange={(e: {
-                        target: { name: string; value: string };
-                      }) => setWinnerId(e.target.value)}
-                      fixedWidth={true}
-                      disabled={status === "PENDING"}
-                    />
-                  )}
+                  <FormLabel>Competition Winner</FormLabel>
+                  <RadioGroup.Root
+                    value={radioVal}
+                    defaultValue={
+                      status === "COMPLETED" && winner?.isBeyondLimits
+                        ? "isBeyondLimits"
+                        : "notBeyondLimits"
+                    }
+                    onValueChange={handleOnChange}
+                  >
+                    <HStack gap="2" flexWrap={{ base: "wrap", sm: "unset" }}>
+                      <RadioGroup.Item
+                        key={"isBeyondLimits"}
+                        value={"isBeyondLimits"}
+                      >
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemIndicator
+                          border={"1px solid"}
+                          borderColor={"gray.200"}
+                        />
+                        <RadioGroup.ItemText>
+                          {"BeyondLimits"}
+                        </RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      <RadioGroup.Item
+                        key={"notBeyondLimits"}
+                        value={"notBeyondLimits"}
+                      >
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemIndicator
+                          border={"1px solid"}
+                          borderColor={"gray.200"}
+                        />
+                        <RadioGroup.ItemText>
+                          {"Not BeyondLimits"}
+                        </RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                    </HStack>
+                  </RadioGroup.Root>
                 </Field.Root>
                 <Button
                   size={"sm"}

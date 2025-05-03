@@ -45,6 +45,18 @@ export const getLazyLoadedArticles = async () => {
   });
 };
 
+export const getArticle = async (id: string) => {
+  return cookiesClient.models.Article.get(
+    {
+      id,
+    },
+    {
+      selectionSet: ["id", "title"],
+      authMode: "userPool",
+    }
+  );
+};
+
 export const createArticle = async (formData: FormData) => {
   const base = formDataToObject<Article>(formData);
   const articleCreator = createEntityFactory<Article, Article>();

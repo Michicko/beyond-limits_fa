@@ -1,11 +1,11 @@
 import Calendar from "@/components/main/Calendar/Calendar";
 import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
-import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { getMatches } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 import Text from "@/components/main/Typography/Text";
+import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
 
 async function Results(props: {
   searchParams: Promise<{
@@ -60,7 +60,6 @@ async function Results(props: {
                   showName={true}
                   theme="light"
                   key={match.id}
-                  iconSize="xl"
                 />
               );
             })}

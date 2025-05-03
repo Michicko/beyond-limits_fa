@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination/Pagination";
 import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
+import Text from "@/components/main/Typography/Text";
 
 const links = [
   { name: "Academy news", href: "/news" },
@@ -33,6 +34,9 @@ async function News({
             "articles.*",
             "category",
             "articles.articleCategory.category",
+            "articles.matchHomeTeamLogo",
+            "articles.matchAwayTeamLogo",
+            "articles.matchId",
           ],
         }
       );
@@ -57,6 +61,9 @@ async function News({
         "coverImage",
         "status",
         "createdAt",
+        "matchId",
+        "matchHomeTeamLogo",
+        "matchAwayTeamLogo",
       ],
     });
     if (errors) {
@@ -75,7 +82,11 @@ async function News({
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
       <div className="main-container">
-        {errs && <p>{`Something went wrong, ${errs[0].message}`}</p>}
+        {errs && (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {`Something went wrong, ${errs[0].message}`}
+          </Text>
+        )}
         {searchParams.category && (
           <h3>Showing articles for {searchParams.category}</h3>
         )}

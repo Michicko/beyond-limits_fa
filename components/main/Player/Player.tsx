@@ -10,21 +10,14 @@ const Player = ({
   player: IPlayer;
   handleOnClick: (playerId: string) => void;
 }) => {
-  const playerStyles = {
-    background: `url(/images/player-bg.png)`,
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  };
-
   return (
-    <div style={playerStyles} className={clsx(styles.player)}>
+    <div className={clsx(styles.player)}>
       <div className={clsx(styles["player__img-box"])}>
         {player.homeKit && (
           <ImageComp
             image={player.homeKit}
             alt={player.firstname}
-            placeholder={"/images/player-bg.png"}
+            placeholder={"/images/pl-bg-light.png"}
             priority={false}
           />
         )}

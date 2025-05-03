@@ -77,7 +77,9 @@ const schema = a.schema({
       leagueId: a.id(),
       league: a.hasOne("League", "competitionSeasonId"),
       matches: a.hasMany("Match", "competitionSeasonId"),
-      winnerId: a.id(),
+      winner: a.customType({
+        isBeyondLimits: a.boolean(),
+      }),
       status: a.ref("CompetitionStatus"),
     })
     .secondaryIndexes((index) => [index("season")])
@@ -321,6 +323,8 @@ const schema = a.schema({
       coverImage: a.string(),
       content: a.json(),
       matchId: a.string(),
+      matchHomeTeamLogo: a.string(),
+      matchAwayTeamLogo: a.string(),
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
     })

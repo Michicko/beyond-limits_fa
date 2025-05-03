@@ -45,6 +45,7 @@ export const getCompetitionSeasonLazyLoaded = async (id: string) => {
         "cup.playOffs.*",
         "league.standings.*",
         "league.leagueRounds.*",
+        "winner.*",
       ],
     }
   );

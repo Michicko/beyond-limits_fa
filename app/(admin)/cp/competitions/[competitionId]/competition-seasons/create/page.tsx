@@ -48,6 +48,16 @@ async function CreateCompetitionSeason({
                 : "something went wrong."
             }
           />
+        ) : !teams || teams.length < 1 ? (
+          <CustomAlert
+            status="error"
+            title={`No teams. Please create some teams before starting a competition season`}
+          />
+        ) : !seasons || seasons.length < 1 ? (
+          <CustomAlert
+            status="error"
+            title={`No season. Please start a season before creating a competition season`}
+          />
         ) : !competition ? (
           <CustomAlert
             status="error"

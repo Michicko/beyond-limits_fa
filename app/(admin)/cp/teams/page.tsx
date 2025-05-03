@@ -7,7 +7,7 @@ import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
-import { HStack } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import useSWR from "swr";
@@ -45,6 +45,14 @@ function Teams() {
                 <>
                   <TableCell pl={"10px"}>
                     <HStack align={"center"}>
+                      <Box
+                        as={"span"}
+                        height={"8px"}
+                        w={"8px"}
+                        flexShrink={0}
+                        borderRadius={"50%"}
+                        bg={team.isBeyondLimits ? "green.500" : "transparent"}
+                      ></Box>
                       <MatchIcon src={team.logo} size={"xl"} radius={false} />
                       {team.longName}
                     </HStack>

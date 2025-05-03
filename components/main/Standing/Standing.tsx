@@ -6,6 +6,7 @@ import CardHeader from "../Card/CardHeader";
 import CardBody from "../Card/CardBody";
 import { IStandingRow } from "@/lib/definitions";
 import StandingRow from "./StandingRow";
+import Link from "next/link";
 
 function Standing({
   name,
@@ -76,6 +77,11 @@ function Standing({
               </>
             </CardBody>
           </table>
+          {/* {!showFull && (
+            <Link href="/standing" className={clsx(styles["standing-btn"])}>
+              view full table
+            </Link>
+          )} */}
         </div>
       </Card>
     </div>

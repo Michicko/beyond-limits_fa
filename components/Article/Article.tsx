@@ -2,7 +2,6 @@
 import { IArticle } from "@/lib/definitions";
 import styles from "./Article.module.css";
 import clsx from "clsx";
-
 import ArticleCategory from "./ArticleCategory";
 import Link from "next/link";
 import ImageComp from "@/components/ImageComp/ImageComp";
@@ -16,13 +15,13 @@ const Article = ({ article }: { article: IArticle }) => {
   ), url(${article.coverImage})`;
 
   const cardStyles =
-    article.articleCategory.category &&
-    article.articleCategory.category === "MATCH PREVIEW"
+    article.matchId &&
+    article.articleCategory.category.toUpperCase() === "MATCH PREVIEW"
       ? {
           background: "#30353B",
         }
-      : article.articleCategory.category &&
-        article.articleCategory.category === "MATCH REPORT"
+      : article.matchId &&
+        article.articleCategory.category.toUpperCase() === "MATCH REPORT"
       ? {
           background: "#01305b",
         }
@@ -46,9 +45,9 @@ const Article = ({ article }: { article: IArticle }) => {
       })}
       style={cardStyles}
     >
-      {article.match &&
-        article.match.homeTeam &&
-        article.match.awayTeam &&
+      {article.matchId &&
+        article.matchHomeTeamLogo &&
+        article.matchAwayTeamLogo &&
         article.articleCategory.category &&
         selected_categories.includes(
           article.articleCategory.category.toLowerCase()
@@ -56,14 +55,14 @@ const Article = ({ article }: { article: IArticle }) => {
           <div className={styles.match__teams}>
             <div className={styles["team__img-box"]}>
               <ImageComp
-                image={article.match.homeTeam.logo}
-                alt={article.match.homeTeam.longName}
+                image={article.matchHomeTeamLogo ?? ""}
+                alt={article.title}
               />
             </div>
             <div className={styles["team__img-box"]}>
               <ImageComp
-                image={article.match.awayTeam.logo}
-                alt={article.match.awayTeam.longName}
+                image={article.matchAwayTeamLogo ?? ""}
+                alt={article.title}
               />
             </div>
           </div>

@@ -8,16 +8,35 @@ import Text from "@/components/main/Typography/Text";
 import LayoutMain from "@/components/main/Layouts/CompetitionsLayout/LayoutMain";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import Button from "@/components/main/Button/Button";
-import { honors } from "@/lib/placeholder-data";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
+import { getHonorsStats } from "@/lib/helpers";
 
-function Honours() {
+async function Honours() {
+  const authMode = (await isAuthenticated()) ? "userPool" : "iam";
+  const { data: honors, errors } = await cookiesClient.models.Trophy.list({
+    authMode,
+    selectionSet: [
+      "id",
+      "competition.competitionSeasons.season",
+      "competition.competitionSeasons.winner.*",
+      "trophyName",
+      "articleId",
+      "image",
+    ],
+  });
+
+  let stats: {
+    numbersWon: number;
+    seasonsWon: string[];
+  };
+
+  if (honors) {
+    stats = getHonorsStats(honors);
+  }
+
   return (
     <>
-      <Header
-        bg={"/images/home-header-bg.png"}
-        alt="2024 / 2025 ongoing campaign"
-        overlay={true}
-      >
+      <Header bg={"/images/home-header-bg.png"} alt="honours" overlay={true}>
         <LayoutHeader>
           <>
             <Heading color="white" level={1} letterCase="upper" type="primary">
@@ -27,61 +46,76 @@ function Honours() {
         </LayoutHeader>
       </Header>
       <LayoutMain>
-        <div className={clsx(styles["honours-container"])}>
-          <div className={clsx(styles["honours-intro"])}>
-            <Text color="white" size="base" cssStyles={{ lineHeight: "1.5" }}>
-              At Beyond the Limits, we pride ourselves on our accomplishments.
-              Our devotion to developing young, talented players and pushing the
-              boundaries has earned us numerous prestigious honours.
-            </Text>
-          </div>
-          <div className={clsx(styles["honors"])}>
-            {honors.map((honor) => {
-              return (
-                <div
-                  key={honor.competition.short}
-                  className={clsx(styles.honor)}
-                >
-                  <div className={clsx(styles["honor-img__box"])}>
-                    <div className={clsx(styles["honor-img"])}>
-                      <ImageComp
-                        alt={honor.competition.long}
-                        image={honor.trophy}
-                        placeholder={honor.trophy}
-                        priority={false}
-                      />
+        <>
+          <div className={clsx(styles["honours-container"])}>
+            <div className={clsx(styles["honours-intro"])}>
+              <Text color="white" size="base" cssStyles={{ lineHeight: "1.5" }}>
+                At Beyond the Limits, we pride ourselves on our accomplishments.
+                Our devotion to developing young, talented players and pushing
+                the boundaries has earned us numerous prestigious honours.
+              </Text>
+            </div>
+            {errors && (
+              <Text
+                color="white"
+                letterCase={"lower"}
+                size="base"
+                weight="regular"
+              >
+                {`Something went wrong, ${errors[0].message}`}
+              </Text>
+            )}
+            <div className={clsx(styles["honors"])}>
+              {honors &&
+                honors.map((honor) => {
+                  return (
+                    <div key={honor.trophyName} className={clsx(styles.honor)}>
+                      <div className={clsx(styles["honor-img__box"])}>
+                        <div className={clsx(styles["honor-img"])}>
+                          <ImageComp
+                            alt={honor.trophyName}
+                            image={honor.image}
+                            placeholder={honor.image}
+                            priority={false}
+                          />
+                        </div>
+                        <h3 className={clsx(styles["honors-won"])}>
+                          {stats.numbersWon}
+                        </h3>
+                      </div>
+                      {stats && (
+                        <div className={clsx(styles["honor-details"])}>
+                          <h3 className={clsx(styles["honor-name"])}>
+                            {honor.trophyName.replace(/trophy/gi, "")}
+                          </h3>
+                          <ul className={clsx(styles["honors-years"])}>
+                            {stats.seasonsWon.map((season, i) => {
+                              return (
+                                <li
+                                  className={clsx(styles["honor-year"])}
+                                  key={season}
+                                >
+                                  {season}
+                                  {i < stats.seasonsWon.length - 1 ? "," : ""}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          <Button
+                            isLink={true}
+                            text={"Learn more"}
+                            url={`/news/${honor.articleId}`}
+                            type="secondary"
+                            size="lg"
+                          />
+                        </div>
+                      )}
                     </div>
-                    <h3 className={clsx(styles["honors-won"])}>
-                      {honor.numbers_won}
-                    </h3>
-                  </div>
-                  <div className={clsx(styles["honor-details"])}>
-                    <h3 className={clsx(styles["honor-name"])}>
-                      {honor.competition.long}
-                    </h3>
-                    <ul className={clsx(styles["honors-years"])}>
-                      {honor.years.map((year, i) => {
-                        return (
-                          <li className={clsx(styles["honor-year"])} key={year}>
-                            {year}
-                            {i < honor.years.length - 1 ? "," : ""}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <Button
-                      isLink={true}
-                      text={"Learn more"}
-                      url={`/news/${honor.article_id}`}
-                      type="secondary"
-                      size="lg"
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+            </div>
           </div>
-        </div>
+        </>
       </LayoutMain>
     </>
   );

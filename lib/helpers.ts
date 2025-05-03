@@ -19,6 +19,21 @@ interface IPos {
   players: IPlayer[];
 }
 
+type Honor = {
+  id: string;
+  image: string;
+  trophyName: string;
+  articleId: string | null;
+  competition: {
+    competitionSeasons: {
+      winner: {
+        isBeyondLimits: boolean | null;
+      } | null;
+      season: string;
+    }[];
+  };
+};
+
 export const getObjectValue = <T extends Object>(
   obj: T,
   key: string | number | symbol
@@ -247,4 +262,36 @@ export const groupPlayersByPositions = (players: IPlayer[]) => {
   });
 
   return playersByPositions;
+};
+
+export const removeImgBg = (src: string) => {
+  return src.replace("/upload", "/upload/e_background_removal,f_auto,q_auto");
+};
+
+export const isLessThan24HoursAgo = (dateString: string) => {
+  const inputDate = new Date(dateString);
+  const now = new Date();
+
+  const diffInMs = now.getTime() - inputDate.getTime();
+  const hoursInMs = 24 * 60 * 60 * 1000;
+
+  return diffInMs < hoursInMs;
+};
+
+export const getHonorsStats = (honors: Honor[]) => {
+  return honors.reduce(
+    (acc, honor) => {
+      honor.competition.competitionSeasons.forEach((seasonObj) => {
+        if (seasonObj.winner?.isBeyondLimits) {
+          acc.numbersWon += 1;
+          acc.seasonsWon.push(seasonObj.season);
+        }
+      });
+      return acc;
+    },
+    {
+      numbersWon: 0,
+      seasonsWon: [] as string[],
+    }
+  );
 };

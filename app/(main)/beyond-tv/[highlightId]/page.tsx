@@ -5,6 +5,7 @@ import TextEditor from "@/components/TextEditor/TextEditor";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { Nullable } from "@/lib/definitions";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
+import Text from "@/components/main/Typography/Text";
 
 async function Highlight({ params }: { params: { highlightId: string } }) {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
@@ -19,7 +20,16 @@ async function Highlight({ params }: { params: { highlightId: string } }) {
     );
 
   const tags: Nullable<string>[] = highlightsData?.tags ?? [];
-  const description = highlightsData?.description ?? {};
+
+  if (errors) {
+    return (
+      <main className={clsx(styles["highlight-main"])}>
+        <Text color="white" letterCase={"lower"} size="base" weight="regular">
+          {`Something went wrong, ${errors[0].message}`}
+        </Text>
+      </main>
+    );
+  }
 
   return (
     <>
@@ -34,12 +44,14 @@ async function Highlight({ params }: { params: { highlightId: string } }) {
         ></iframe>
       </header>
       <main className={clsx(styles["highlight-main"])}>
-        <Suspense fallback={null}>
-          <TextEditor
-            content={JSON.parse(description as string)}
-            readOnly={true}
-          />
-        </Suspense>
+        {highlightsData && (
+          <Suspense fallback={null}>
+            <TextEditor
+              content={JSON.parse(highlightsData.description as string)}
+              readOnly={true}
+            />
+          </Suspense>
+        )}
         <div className={clsx(styles.tags)}>
           {tags.map((tag) => {
             return (

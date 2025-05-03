@@ -1,5 +1,12 @@
 "use client";
-import { Field, HStack, IconButton, Input, Stack } from "@chakra-ui/react";
+import {
+  Field,
+  HStack,
+  IconButton,
+  Input,
+  Stack,
+  Image,
+} from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
@@ -141,7 +148,7 @@ function CompetitionForm({
           <FormLabel>Competition Logo</FormLabel>
           {logo && (
             <HStack gap={4}>
-              <CldImage src={logo} width="75" height="75" alt={shortName} />
+              <Image src={logo} width="75" height="75" alt={shortName} />
               <IconButton
                 size={"2xs"}
                 title="delete"

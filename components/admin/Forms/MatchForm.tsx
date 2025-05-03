@@ -19,7 +19,7 @@ import MatchPreview from "./MatchPreview";
 import MatchReport from "./MatchReport";
 import Lineup from "./Lineup";
 import MatchStats from "./MatchStats";
-import { IMatch, Nullable } from "@/lib/definitions";
+import { Nullable } from "@/lib/definitions";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
 import {
@@ -31,6 +31,7 @@ import { JSONContent } from "@tiptap/react";
 import { createMatch, updateMatch } from "@/app/_actions/match-actions";
 import useToast from "@/hooks/useToast";
 import { Schema } from "@/amplify/data/resource";
+import MatchTeamForm from "./MatchTeamForm";
 
 interface ICompetitionSeason {
   id: string;
@@ -82,6 +83,8 @@ type IMatchI = Pick<
   | "time"
   | "status"
   | "competitionSeasonId"
+  | "homeForm"
+  | "awayForm"
 >;
 
 function MatchForm({
@@ -174,6 +177,8 @@ function MatchForm({
     homeTeam: getTeamStats("homeTeam"),
     awayTeam: getTeamStats("awayTeam"),
     scorers: match?.scorers ? JSON.parse(match.scorers as string) : [],
+    homeForm: match?.homeForm || "",
+    awayForm: match?.awayForm || "",
   });
 
   const selectedCompetition = match
@@ -505,6 +510,22 @@ function MatchForm({
               />
             )}
           </Field.Root>
+        </GridItem>
+        <GridItem>
+          <MatchTeamForm
+            value={data.homeForm ?? ""}
+            team="home"
+            handleOnChange={handleOnChange}
+            name="homeForm"
+          />
+        </GridItem>
+        <GridItem>
+          <MatchTeamForm
+            value={data.awayForm ?? ""}
+            team="away"
+            handleOnChange={handleOnChange}
+            name="awayForm"
+          />
         </GridItem>
       </Grid>
       <Box my={"5"}>

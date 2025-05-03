@@ -9,6 +9,7 @@ import LayoutMain from "@/components/main/Layouts/CompetitionsLayout/LayoutMain"
 import Tab from "@/components/main/Tab/Tab";
 import LinkTab from "@/components/main/Tab/LinkTab";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
+import Text from "@/components/main/Typography/Text";
 
 const links = [
   { name: "Under-19", href: "/players/under_19" },
@@ -87,6 +88,16 @@ async function Players({ params }: { params: { playersSlug: string } }) {
       </Header>
       <LayoutMain>
         <>
+          {errors && (
+            <Text
+              color="white"
+              letterCase={"lower"}
+              size="base"
+              weight="regular"
+            >
+              {`Something went wrong, ${errors[0].message}`}
+            </Text>
+          )}
           <div className={clsx(styles["tab-container"])}>
             <Suspense fallback={null}>
               <Tab theme="theme-2" bg="trans">

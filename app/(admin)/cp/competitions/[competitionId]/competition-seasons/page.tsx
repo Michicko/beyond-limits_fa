@@ -49,6 +49,7 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
         startIndex={startIndex}
         endIndex={endIndex}
         pageSize={pageSize}
+        createUrl={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
       >
         <>
           {currentCompetitionSeasons &&

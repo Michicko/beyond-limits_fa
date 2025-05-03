@@ -26,20 +26,25 @@ function LegalComp({
       <main className={clsx(styles["legal-main"])}>
         <p className={clsx(styles["legal-intro-text"])}>{introText}</p>
         <>
-          {infos.map((info) => {
+          {infos.map((info, i) => {
             return (
-              <>
+              <React.Fragment key={i + (i + 3)}>
                 <h3 className={clsx(styles["legal-options-title"])}>
                   {info.title}
                 </h3>
                 <ul className={clsx(styles["legal-options"])}>
                   {info.options.map((option) => {
                     return (
-                      <li className={clsx(styles["legal-option"])}>{option}</li>
+                      <li
+                        className={clsx(styles["legal-option"])}
+                        key={option.substring(0, 10)}
+                      >
+                        {option}
+                      </li>
                     );
                   })}
                 </ul>
-              </>
+              </React.Fragment>
             );
           })}
         </>

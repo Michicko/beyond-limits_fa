@@ -6,13 +6,12 @@ function MatchTeamForm({
   value,
   team,
   handleOnChange,
+  name,
 }: {
   value: string;
   team: "home" | "away";
-  handleOnChange: (
-    e: { target: { name: string; value: any } },
-    team: "home" | "away"
-  ) => void;
+  name: string;
+  handleOnChange: (e: { target: { name: string; value: any } }) => void;
 }) {
   const pattern = /^(w{1,5}|l{1,5}|d{1,5})(,(w{1,5}|l{1,5}|d{1,5})){0,4}$/g;
 
@@ -20,7 +19,7 @@ function MatchTeamForm({
     <Field.Root invalid={value ? !pattern.test(value) : false}>
       <FormLabel>{team} Forms</FormLabel>
       <Input
-        name="form"
+        name={name}
         p={"0 10px"}
         id={`${team}-form`}
         placeholder={`${team} Form`}
@@ -30,7 +29,7 @@ function MatchTeamForm({
         mb={"1"}
         pattern="^(w{1,5}|l{1,5}|d{1,5})(,(w{1,5}|l{1,5}|d{1,5})){0,4}$"
         value={value}
-        onChange={(e) => handleOnChange(e, team)}
+        onChange={handleOnChange}
       />
       <Field.ErrorText fontSize={"smaller"}>Invalid format</Field.ErrorText>
       <Field.HelperText fontSize={"smaller"} color={"text_base"}>

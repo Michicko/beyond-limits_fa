@@ -1,5 +1,13 @@
 "use client";
-import { Field, Image, Input, SimpleGrid, Stack } from "@chakra-ui/react";
+import {
+  Field,
+  HStack,
+  IconButton,
+  Image,
+  Input,
+  SimpleGrid,
+  Stack,
+} from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
@@ -12,6 +20,7 @@ import useToast from "@/hooks/useToast";
 import { createPlayer, updatePlayer } from "@/app/_actions/player-actions";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
+import { getIcon } from "@/lib/icons";
 
 function PlayerForm({
   player,
@@ -167,7 +176,25 @@ function PlayerForm({
             <Field.Root required>
               <FormLabel>Home kit</FormLabel>
               {tempData.homeKit && (
-                <Image src={tempData.homeKit} width="600" height="600" alt="" />
+                <HStack gap={4} position={"relative"}>
+                  <Image
+                    src={tempData.homeKit}
+                    width="600"
+                    height="600"
+                    alt=""
+                  />
+                  <IconButton
+                    size={"2xs"}
+                    title="delete"
+                    colorPalette={"red"}
+                    onClick={() => setTempData({ ...tempData, homeKit: "" })}
+                    position={"absolute"}
+                    top={"10px"}
+                    right={"10px"}
+                  >
+                    {getIcon("close")}
+                  </IconButton>
+                </HStack>
               )}
               {!tempData.homeKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
@@ -181,11 +208,7 @@ function PlayerForm({
                     }
                   )}
                   onUploaded={(res: any) => {
-                    const url = res.secure_url.replace(
-                      "/upload/",
-                      "/upload/e_background_removal,f_auto,q_auto/"
-                    );
-                    setTempData({ ...tempData, homeKit: url });
+                    setTempData({ ...tempData, homeKit: res.secure_url });
                   }}
                 />
               )}
@@ -193,7 +216,25 @@ function PlayerForm({
             <Field.Root required>
               <FormLabel>Away kit</FormLabel>
               {tempData.awayKit && (
-                <Image src={tempData.awayKit} width="600" height="600" alt="" />
+                <HStack gap={4} position={"relative"}>
+                  <Image
+                    src={tempData.awayKit}
+                    width="600"
+                    height="600"
+                    alt=""
+                  />
+                  <IconButton
+                    size={"2xs"}
+                    title="delete"
+                    colorPalette={"red"}
+                    onClick={() => setTempData({ ...tempData, awayKit: "" })}
+                    position={"absolute"}
+                    top={"10px"}
+                    right={"10px"}
+                  >
+                    {getIcon("close")}
+                  </IconButton>
+                </HStack>
               )}
               {!tempData.awayKit && tempData.firstname && tempData.lastname && (
                 <CustomFileUpload
@@ -207,11 +248,7 @@ function PlayerForm({
                     }
                   )}
                   onUploaded={(res: any) => {
-                    const url = res.secure_url.replace(
-                      "/upload/",
-                      "/upload/e_background_removal,f_auto,q_auto/"
-                    );
-                    setTempData({ ...tempData, awayKit: url });
+                    setTempData({ ...tempData, awayKit: res.secure_url });
                   }}
                 />
               )}
@@ -355,7 +392,9 @@ function PlayerForm({
             }}
             showLabel={true}
           />
-          <FormBtn>{getButtonStatus(player, "Player", isPending)}</FormBtn>
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(player, "Player", isPending)}
+          </FormBtn>
         </Stack>
       </form>
     </>

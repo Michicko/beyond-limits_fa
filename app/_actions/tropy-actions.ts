@@ -4,6 +4,7 @@ import {
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
+  updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
@@ -21,7 +22,14 @@ const checkUniqueTrophyName = async (trophyName: string) => {
 
 export const getTrophies = async () => {
   return cookiesClient.models.Trophy.list({
-    selectionSet: ["id", "image", "competition.longName", "trophyName"],
+    selectionSet: [
+      "id",
+      "image",
+      "competition.longName",
+      "trophyName",
+      "articleId",
+      "competitionId",
+    ],
     authMode: "userPool",
   });
 };
@@ -42,6 +50,41 @@ export const createTrophy = async (formData: FormData) => {
           valid: false,
           message: `trophyName "${input.trophyName}" already exists.`,
         };
+      }
+      return { valid: true };
+    },
+  });
+};
+
+export const updateTrophy = async (
+  id: string,
+  formData: FormData,
+  currentUniqueValue: string
+) => {
+  const base = formDataToObject<Trophy>(formData);
+  const trophyUpdater = updateEntityFactory<Trophy, Trophy>();
+
+  return await trophyUpdater({
+    modelName: "Trophy",
+    id,
+    input: base,
+    selectionSet: [
+      "id",
+      "image",
+      "trophyName",
+      "competition.longName",
+      "articleId",
+    ],
+    pathToRevalidate: "/cp/trophies",
+    validate: async (input) => {
+      if (input.trophyName !== currentUniqueValue) {
+        if ((await checkUniqueTrophyName(input.trophyName)).length > 0) {
+          return {
+            status: "error",
+            valid: false,
+            message: `trophyName "${input.trophyName}" already exists.`,
+          };
+        }
       }
       return { valid: true };
     },

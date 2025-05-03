@@ -2,7 +2,6 @@ import Button from "@/components/main/Button/Button";
 import Container from "@/components/main/Container/Container";
 import Flex from "@/components/main/Container/Flex";
 import Grid from "@/components/main/Container/Grid";
-import MatchCard from "@/components/main/MatchCard/MatchCard";
 import PlayerList from "@/components/main/Player/PlayerList";
 import Slider from "@/components/main/Slider/Slider";
 import Standing from "@/components/main/Standing/Standing";
@@ -15,6 +14,7 @@ import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
 import { months } from "@/lib/placeholder-data";
+import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
 
 export default async function Home() {
   const { data: homepageContent, status } = await fetchHomepageData();
@@ -33,15 +33,15 @@ export default async function Home() {
                     {homepageContent.lastMatch && (
                       <MatchCard
                         match={homepageContent?.lastMatch}
+                        fixedHeight={true}
                         theme="light"
-                        iconSize={"md"}
                       />
                     )}
                     {homepageContent.upcomingMatch && (
                       <MatchCard
                         match={homepageContent.upcomingMatch}
+                        fixedHeight={true}
                         theme="light"
-                        iconSize={"md"}
                       />
                     )}
                   </>
@@ -117,7 +117,7 @@ export default async function Home() {
                     <MatchCard
                       match={match}
                       theme={i === 0 ? "dark" : i === 1 ? "light" : "dark"}
-                      iconSize={"md"}
+                      key={match.id}
                     />
                   );
                 })}

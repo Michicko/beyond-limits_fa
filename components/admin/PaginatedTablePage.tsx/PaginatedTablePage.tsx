@@ -25,6 +25,7 @@ function PaginatedTablePage({
   pageSize,
   startIndex,
   endIndex,
+  createUrl,
 }: {
   children: React.ReactNode;
   list?: any[];
@@ -38,6 +39,7 @@ function PaginatedTablePage({
   pageSize: number;
   startIndex: number;
   endIndex: number;
+  createUrl?: string;
 }) {
   const currentPageListItems = list?.slice(startIndex, endIndex);
   const totalPages = list && Math.ceil(list.length / pageSize);
@@ -57,7 +59,7 @@ function PaginatedTablePage({
               w={isLoading ? "160px" : "auto"}
             >
               <CreateButton
-                link={`/cp/${resource.toLowerCase()}s/create`}
+                link={createUrl ?? `/cp/${resource.toLowerCase()}s/create`}
                 text={`Create ${resource}`}
               />
             </Skeleton>

@@ -17,31 +17,33 @@ import {
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
 import { getFirstLetter } from "@/lib/helpers";
+import Text from "@/components/main/Typography/Text";
 
 async function TeamStats() {
   const year = new Date().getUTCFullYear();
-  const { data: seasons } = await cookiesClient.models.CompetitionSeason.list({
-    filter: {
-      season: {
-        contains: `${year}`,
+  const { data: seasons, errors } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        season: {
+          contains: `${year}`,
+        },
       },
-    },
-    authMode: (await isAuthenticated()) ? "userPool" : "iam",
-    selectionSet: [
-      "id",
-      "name",
-      "type",
-      "status",
-      "logo",
-      "leagueId",
-      "cupId",
-      "league.*",
-      "league.standings.*",
-      "cup.*",
-      "cup.playOffs.*",
-      "league.leagueRounds.*",
-    ],
-  });
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      selectionSet: [
+        "id",
+        "name",
+        "type",
+        "status",
+        "logo",
+        "leagueId",
+        "cupId",
+        "league.*",
+        "league.standings.*",
+        "cup.*",
+        "cup.playOffs.*",
+        "league.leagueRounds.*",
+      ],
+    });
 
   let leagues: any[] = [];
   let cups: any[] = [];
@@ -140,97 +142,109 @@ async function TeamStats() {
         </LayoutHeader>
       </Header>
       <LayoutMain>
-        <div className={clsx(styles["team-stats"])}>
-          <Card theme={"trans"}>
-            <>
-              <CardHeader theme={"dark"} border={true} as="div">
-                <div className={clsx(styles["team-stats__heading"])}>
-                  <Heading
-                    level={3}
-                    letterCase="upper"
-                    color="secondary"
-                    type="section"
-                  >
-                    Competitions
-                  </Heading>
-                </div>
-              </CardHeader>
-              <CardBody as="div" theme={"light"}>
-                <div className={clsx(styles["team-stats__body"], styles.py)}>
-                  <ul className={clsx(styles["competition-list"])}>
-                    {leagues.map((league, i) => {
-                      if (
-                        league.type === "MIXED" &&
-                        league.status === "COMPLETED"
-                      )
-                        return;
-                      return (
-                        <TeamStat
-                          competition_logo={league.logo}
-                          competition_name={league.name}
-                          position={league.standing.position}
-                          key={league.name + i + (i + 3) + i + 2}
-                        />
-                      );
-                    })}
-                  </ul>
-                  <ul className={clsx(styles["competition-list"])}>
-                    {cups.map((cup, i) => {
-                      if (!cup.round) return;
-                      return (
-                        <TeamStat
-                          competition_logo={cup.logo}
-                          competition_name={cup.name}
-                          position={cup.round}
-                          key={cup.id + i + (i + 2) + i + 3}
-                        />
-                      );
-                    })}
-                  </ul>
-                </div>
-              </CardBody>
-            </>
-          </Card>
-          <div className={clsx(styles["team-stats__streaks"])}>
-            <div className={clsx(styles["team-stats__streak"])}>
-              <h4>Wins</h4>
-              <p>{roundsCounts.wins}</p>
-            </div>
-            <div className={clsx(styles["team-stats__streak"])}>
-              <h4>Draws</h4>
-              <p>{roundsCounts.draws}</p>
-            </div>
-            <div className={clsx(styles["team-stats__streak"])}>
-              <h4>Defeat</h4>
-              <p>{roundsCounts.losses}</p>
-            </div>
-          </div>
-          <Card theme={"trans"}>
-            <>
-              <CardHeader theme={"dark"} border={true} as="div">
-                <div className={clsx(styles["team-stats__heading"])}>
-                  <Heading
-                    level={3}
-                    letterCase="upper"
-                    color="secondary"
-                    type="section"
-                  >
-                    Form
-                  </Heading>
-                </div>
-              </CardHeader>
-              <CardBody as="div" theme={"light"}>
-                <div className={clsx(styles["team-stats__body"], styles.p)}>
-                  <div className={clsx(styles["team-stats__forms"])}>
-                    {forms.map((form, i) => {
-                      return <TeamForm form={form} key={i} />;
-                    })}
+        <>
+          {errors && (
+            <Text
+              color="white"
+              letterCase={"lower"}
+              size="base"
+              weight="regular"
+            >
+              {`Something went wrong, ${errors[0].message}`}
+            </Text>
+          )}
+          <div className={clsx(styles["team-stats"])}>
+            <Card theme={"trans"}>
+              <>
+                <CardHeader theme={"dark"} border={true} as="div">
+                  <div className={clsx(styles["team-stats__heading"])}>
+                    <Heading
+                      level={3}
+                      letterCase="upper"
+                      color="secondary"
+                      type="section"
+                    >
+                      Competitions
+                    </Heading>
                   </div>
-                </div>
-              </CardBody>
-            </>
-          </Card>
-        </div>
+                </CardHeader>
+                <CardBody as="div" theme={"light"}>
+                  <div className={clsx(styles["team-stats__body"], styles.py)}>
+                    <ul className={clsx(styles["competition-list"])}>
+                      {leagues.map((league, i) => {
+                        if (
+                          league.type === "MIXED" &&
+                          league.status === "COMPLETED"
+                        )
+                          return;
+                        return (
+                          <TeamStat
+                            competition_logo={league.logo}
+                            competition_name={league.name}
+                            position={league.standing.position}
+                            key={league.name + i + (i + 3) + i + 2}
+                          />
+                        );
+                      })}
+                    </ul>
+                    <ul className={clsx(styles["competition-list"])}>
+                      {cups.map((cup, i) => {
+                        if (!cup.round) return;
+                        return (
+                          <TeamStat
+                            competition_logo={cup.logo}
+                            competition_name={cup.name}
+                            position={cup.round}
+                            key={cup.id + i + (i + 2) + i + 3}
+                          />
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </CardBody>
+              </>
+            </Card>
+            <div className={clsx(styles["team-stats__streaks"])}>
+              <div className={clsx(styles["team-stats__streak"])}>
+                <h4>Wins</h4>
+                <p>{roundsCounts.wins}</p>
+              </div>
+              <div className={clsx(styles["team-stats__streak"])}>
+                <h4>Draws</h4>
+                <p>{roundsCounts.draws}</p>
+              </div>
+              <div className={clsx(styles["team-stats__streak"])}>
+                <h4>Defeat</h4>
+                <p>{roundsCounts.losses}</p>
+              </div>
+            </div>
+            <Card theme={"trans"}>
+              <>
+                <CardHeader theme={"dark"} border={true} as="div">
+                  <div className={clsx(styles["team-stats__heading"])}>
+                    <Heading
+                      level={3}
+                      letterCase="upper"
+                      color="secondary"
+                      type="section"
+                    >
+                      Form
+                    </Heading>
+                  </div>
+                </CardHeader>
+                <CardBody as="div" theme={"light"}>
+                  <div className={clsx(styles["team-stats__body"], styles.p)}>
+                    <div className={clsx(styles["team-stats__forms"])}>
+                      {forms.map((form, i) => {
+                        return <TeamForm form={form} key={i} />;
+                      })}
+                    </div>
+                  </div>
+                </CardBody>
+              </>
+            </Card>
+          </div>
+        </>
       </LayoutMain>
     </>
   );
