@@ -15,8 +15,6 @@ const Login = () => {
     "idle" | "loading" | "authenticated" | "unauthenticated"
   >("idle");
 
-  console.log("status => ", status);
-
   useEffect(() => {
     const checkAuth = async () => {
       setStatus("loading");

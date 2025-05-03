@@ -110,7 +110,6 @@ function HighlightForm({
       } catch (error) {
         setIsLoading(false);
         const message = (error as Error).message;
-        console.log(message);
         toast.error(`Failed to create, ${message}`, {
           duration: 8000,
         });
