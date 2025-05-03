@@ -10,7 +10,7 @@ import LinkTab from "../../Tab/LinkTab";
 import styles from "../Layout.module.css";
 import { months, seasons } from "@/lib/placeholder-data";
 import SeasonFilter from "../../Filters/SeasonFilter";
-import { getDefaultSeason } from "@/lib/helpers";
+import { appendMonthToLink, getDefaultSeason } from "@/lib/helpers";
 
 function CompetitionsLayout({
   children,
@@ -29,11 +29,11 @@ function CompetitionsLayout({
     ? [
         {
           name: "Results",
-          href: `/competitions/${competitionId}/results?month=${months[month]}`,
+          href: appendMonthToLink(`/competitions/${competitionId}/results`),
         },
         {
           name: "Fixtures",
-          href: `/competitions/${competitionId}/fixtures?month=${months[month]}`,
+          href: appendMonthToLink(`/competitions/${competitionId}/fixtures`),
         },
 
         {
@@ -44,11 +44,11 @@ function CompetitionsLayout({
     : [
         {
           name: "fixtures",
-          href: `/fixtures?month=${months[month]}`,
+          href: appendMonthToLink("/fixtures"),
         },
         {
           name: "results",
-          href: `/results?month=${months[month]}`,
+          href: appendMonthToLink("/results"),
         },
         {
           name: "standing",

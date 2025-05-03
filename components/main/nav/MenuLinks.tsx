@@ -1,8 +1,5 @@
+import { appendMonthToLink } from "@/lib/helpers";
 import { getIcon } from "@/lib/icons";
-import { months } from "@/lib/placeholder-data";
-
-const date = new Date();
-const month = date.getMonth();
 
 const MenuLinks = [
   {
@@ -39,7 +36,7 @@ const MenuLinks = [
     subMenu: [
       {
         id: 268,
-        link: `/fixtures?month=${months[month]}`,
+        link: appendMonthToLink("/fixtures"),
         name: "Fixtures",
         image: "/images/tables.jpg",
       },

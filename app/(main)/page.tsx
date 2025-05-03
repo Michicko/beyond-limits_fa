@@ -13,12 +13,11 @@ import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
-import { months } from "@/lib/placeholder-data";
 import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
+import { appendMonthToLink } from "@/lib/helpers";
 
 export default async function Home() {
   const { data: homepageContent, status } = await fetchHomepageData();
-  const month = months[new Date().getUTCMonth()];
 
   return (
     <>
@@ -129,7 +128,7 @@ export default async function Home() {
               isLink={true}
               size={"md"}
               text={"View more matches"}
-              url={`/fixtures?month=${month}`}
+              url={appendMonthToLink("/fixtures")}
             />
           </Flex>
         </Container>

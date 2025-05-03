@@ -295,3 +295,9 @@ export const getHonorsStats = (honors: Honor[]) => {
     }
   );
 };
+
+export const appendMonthToLink = (link: string) => {
+  const date = new Date();
+  const month = date.getMonth();
+  return `${link}?month=${months[month]}`;
+};

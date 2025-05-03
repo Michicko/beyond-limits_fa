@@ -3,6 +3,7 @@ import { addUserToGroup } from "./add-user-to-group/resource";
 import { listUsers } from "./list-users/resource";
 import { removeUserFromGroup } from "./remove-user-from-group/resource";
 import { listGroupsForUser } from "./list-groups-for-user/resource";
+import { globalSearch } from "./global-search/resource";
 
 const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
@@ -387,6 +388,19 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.group("Admin")])
     .handler(a.handler.function(listGroupsForUser))
+    .returns(a.json()),
+
+  globalSearch: a
+    .query()
+    .arguments({
+      keyword: a.string().required(),
+    })
+    .authorization((allow) => [
+      allow.guest(),
+      allow.groups(["Admin", "Writer"]),
+      allow.authenticated(),
+    ])
+    .handler(a.handler.function(globalSearch))
     .returns(a.json()),
 });
 

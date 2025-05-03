@@ -36,8 +36,6 @@ async function Fixtures(props: {
     competitionSeasons[0] &&
     getMatches(competitionSeasons[0].matches, "UPCOMING", searchParams.month);
 
-  const month = date.getUTCMonth();
-
   return (
     <CompetitionsLayout pageTitle="Fixtures">
       <>

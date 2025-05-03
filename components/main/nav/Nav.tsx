@@ -9,7 +9,6 @@ import Hamburger from "./Hamburger";
 import NavLogo from "./NavLogo";
 import NavSearchBtn from "./NavSearchBtn";
 import { usePathname } from "next/navigation";
-import { months } from "@/lib/placeholder-data";
 import { fetchAuthSession } from "@aws-amplify/auth";
 
 function Nav() {
