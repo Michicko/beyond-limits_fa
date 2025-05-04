@@ -301,3 +301,22 @@ export const appendMonthToLink = (link: string) => {
   const month = date.getMonth();
   return `${link}?month=${months[month]}`;
 };
+
+export const getCloudinaryPublicId = (url: string): string | null => {
+  try {
+    const parts = new URL(url).pathname.split("/");
+
+    // Find the index of "upload"
+    const uploadIndex = parts.findIndex((part) => part === "upload");
+    if (uploadIndex === -1 || uploadIndex + 1 >= parts.length) return null;
+
+    // Get everything after /upload/ and remove file extension
+    const publicIdWithExt = parts.slice(uploadIndex + 1).join("/");
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension like .jpg
+
+    return publicId;
+  } catch (err) {
+    console.error("Invalid URL:", url);
+    return null;
+  }
+};
