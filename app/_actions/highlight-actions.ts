@@ -1,25 +1,16 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
-import { cookiesClient } from "@/utils/amplify-utils";
 import { deleteCloudinaryImage } from "./actions";
 
 type Highlight = Schema["Highlight"]["type"];
-
-const checkUniqueHighlightTitle = async (title: string) => {
-  const { data: existing } =
-    await cookiesClient.models.Highlight.listHighlightByTitle({
-      title,
-    });
-
-  return existing;
-};
 
 export const getHighlights = async () => {
   const highlightsGetter = getEntityFactory<Highlight>();
@@ -42,10 +33,17 @@ export const createHighlight = async (formData: FormData) => {
     pathToRevalidate: "/cp/highlights",
     preprocess: (input) => ({
       ...input,
+      title: input.title.toLowerCase(),
       tags: JSON.parse(formData.get("tags") as string),
     }),
     validate: async (input) => {
-      if ((await checkUniqueHighlightTitle(input.title)).length > 0) {
+      if (
+        (
+          await checkUniqueField("Highlight", {
+            title: input.title.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -73,11 +71,18 @@ export const updateHighlight = async (
     pathToRevalidate: "/cp/highlights",
     preprocess: (input) => ({
       ...input,
+      title: input.title.toLowerCase(),
       tags: JSON.parse(formData.get("tags") as string),
     }),
     validate: async (input) => {
       if (input.title !== currentUniqueValue) {
-        if ((await checkUniqueHighlightTitle(input.title)).length > 0) {
+        if (
+          (
+            await checkUniqueField("Highlight", {
+              title: input.title.toLowerCase(),
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

@@ -2,6 +2,7 @@
 import { Schema } from "@/amplify/data/resource";
 import { Nullable } from "@/lib/definitions";
 import {
+  checkUniqueField,
   createEntityFactory,
   getEntityFactory,
   getOneEntityFactory,
@@ -15,15 +16,6 @@ type CompetitionSeason = Schema["CompetitionSeason"]["type"];
 type Standing = Schema["Standing"]["type"];
 type LeagueRound = Schema["LeagueRound"]["type"];
 type PlayOff = Schema["PlayOff"]["type"];
-
-const checkUniqueCompetitionSeason = async (season: string) => {
-  const { data: existing } =
-    await cookiesClient.models.CompetitionSeason.listCompetitionSeasonBySeason({
-      season,
-    });
-
-  return existing;
-};
 
 export const getCompetitionSeasonLazyLoaded = async (id: string) => {
   return cookiesClient.models.CompetitionSeason.get(
@@ -103,11 +95,14 @@ export const createCompetitionSeason = async (formData: FormData) => {
     selectionSet: ["id", "name", "season", "createdAt"],
     pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons",
     validate: async (base) => {
-      const uniqueSeason = await checkUniqueCompetitionSeason(base.season);
-      const existing = uniqueSeason.find(
-        (el) => el.name === base.name && el.season === base.season
-      );
-      if (existing) {
+      if (
+        (
+          await checkUniqueField("CompetitionSeason", {
+            name: base.name.toLowerCase(),
+            season: base.season,
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -138,7 +133,14 @@ export const updateCompetitionSeason = async (
     pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons/",
     validate: async (input) => {
       if (input.name !== currentUniqueValue) {
-        if ((await checkUniqueCompetitionSeason(input.name)).length > 0) {
+        if (
+          (
+            await checkUniqueField("CompetitionSeason", {
+              name: base.name.toLowerCase(),
+              season: base.season,
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

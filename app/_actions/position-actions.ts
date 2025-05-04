@@ -1,6 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
@@ -9,15 +10,6 @@ import {
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 type PlayerPosition = Schema["PlayerPosition"]["type"];
-
-const checkPositionUniqueShortName = async (shortName: string) => {
-  const { data: existing } =
-    await cookiesClient.models.PlayerPosition.listPlayerPositionByShortName({
-      shortName,
-    });
-
-  return existing;
-};
 
 export const getPositions = async () => {
   const positionGetter = getEntityFactory<PlayerPosition>();
@@ -40,13 +32,19 @@ export const createPosition = async (formData: FormData) => {
     pathToRevalidate: "/cp/positions",
     preprocess: (input) => ({
       ...input,
+      shortName: base.shortName.toLowerCase(),
+      longName: base.longName.toLowerCase(),
       attributes: JSON.parse(formData.get("attributes") as string),
     }),
     validate: async (input) => {
-      const uniqueShortName = await checkPositionUniqueShortName(
-        input.shortName
-      );
-      if (uniqueShortName && uniqueShortName.length > 0) {
+      if (
+        (
+          await checkUniqueField("PlayerPosition", {
+            longName: input.longName.toLowerCase(),
+            shortName: input.shortName.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -78,7 +76,14 @@ export const updatePosition = async (
     }),
     validate: async (input) => {
       if (input.shortName !== currentUniqueValue) {
-        if ((await checkPositionUniqueShortName(input.shortName)).length > 0) {
+        if (
+          (
+            await checkUniqueField("PlayerPosition", {
+              longName: input.longName.toLowerCase(),
+              shortName: input.shortName.toLowerCase(),
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

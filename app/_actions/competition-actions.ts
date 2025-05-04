@@ -1,6 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   getEntityFactory,
   updateEntityFactory,
@@ -11,15 +12,6 @@ import { revalidatePath } from "next/cache";
 import { deleteCloudinaryImage } from "./actions";
 
 type Competition = Schema["Competition"]["type"];
-
-const checkUniqueCompetitionName = async (longName: string) => {
-  const { data: existing } =
-    await cookiesClient.models.Competition.listCompetitionByLongName({
-      longName,
-    });
-
-  return existing;
-};
 
 export const getCompetitions = async () => {
   const competitionsGetter = getEntityFactory<Competition>();
@@ -40,8 +32,19 @@ export const createCompetition = async (formData: FormData) => {
     input: base,
     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
     pathToRevalidate: "/cp/competitions",
+    preprocess: (input) => ({
+      ...input,
+      longName: input.longName.toLowerCase(),
+      shortName: input.shortName.toLowerCase(),
+    }),
     validate: async (input) => {
-      if ((await checkUniqueCompetitionName(input.longName)).length > 0) {
+      if (
+        (
+          await checkUniqueField("Competition", {
+            longName: base.longName.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -67,9 +70,20 @@ export const updateCompetition = async (
     input: base,
     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
     pathToRevalidate: "/cp/competitions",
+    preprocess: (input) => ({
+      ...input,
+      longName: input.longName.toLowerCase(),
+      shortName: input.shortName.toLowerCase(),
+    }),
     validate: async (input) => {
       if (input.longName !== currentUniqueValue) {
-        if ((await checkUniqueCompetitionName(input.longName)).length > 0) {
+        if (
+          (
+            await checkUniqueField("Competition", {
+              longName: base.longName.toLowerCase(),
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

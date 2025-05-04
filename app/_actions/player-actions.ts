@@ -71,6 +71,12 @@ export const createPlayer = async (formData: FormData) => {
     input: base,
     selectionSet: ["id", "firstname", "lastname", "ageGroup", "dob"],
     pathToRevalidate: "/cp/players",
+    preprocess: (input) => ({
+      ...input,
+      firstname: base.firstname.toLowerCase(),
+      lastname: base.lastname.toLowerCase(),
+      attributes: JSON.parse(formData.get("attributes") as string),
+    }),
   });
 };
 

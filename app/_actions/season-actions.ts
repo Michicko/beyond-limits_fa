@@ -8,22 +8,8 @@ import {
   checkUniqueField,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
-import { cookiesClient } from "@/utils/amplify-utils";
 
 type Season = Schema["Season"]["type"];
-
-// const checkUniqueSeason = async (season: string) => {
-//   const { data: existing } =
-//     await cookiesClient.models.Season.list({
-//       filter: {
-//         season: {
-//           contains: season
-//         }
-//       }
-//     });
-
-//   return existing;
-// };
 
 export const fetchSeasons = async () => {
   const seasonsGetter = getEntityFactory<Season>();
@@ -46,7 +32,7 @@ export const createSeason = async (formData: FormData) => {
     pathToRevalidate: "/cp/seasons",
     validate: async (input) => {
       if (
-        (await checkUniqueField("Season", "season", input.season)).length > 0
+        (await checkUniqueField("Season", { season: input.season })).length > 0
       ) {
         return {
           status: "error",
@@ -76,7 +62,8 @@ export const updateSeason = async (
     validate: async (input) => {
       if (input.season !== currentUniqueValue) {
         if (
-          (await checkUniqueField("Season", "season", input.season)).length > 0
+          (await checkUniqueField("Season", { season: input.season })).length >
+          0
         ) {
           return {
             status: "error",

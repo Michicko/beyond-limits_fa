@@ -1,6 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
@@ -11,15 +12,6 @@ import { cookiesClient } from "@/utils/amplify-utils";
 import { deleteCloudinaryImage } from "./actions";
 
 type Trophy = Schema["Trophy"]["type"];
-
-const checkUniqueTrophyName = async (trophyName: string) => {
-  const { data: existing } =
-    await cookiesClient.models.Trophy.listTrophyByTrophyName({
-      trophyName,
-    });
-
-  return existing;
-};
 
 export const getTrophies = async () => {
   return cookiesClient.models.Trophy.list({
@@ -45,7 +37,13 @@ export const createTrophy = async (formData: FormData) => {
     selectionSet: ["id", "image", "trophyName", "competition.longName"],
     pathToRevalidate: "/cp/trophies",
     validate: async (input) => {
-      if ((await checkUniqueTrophyName(input.trophyName)).length > 0) {
+      if (
+        (
+          await checkUniqueField("Trophy", {
+            trophyName: input.trophyName.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -79,7 +77,13 @@ export const updateTrophy = async (
     pathToRevalidate: "/cp/trophies",
     validate: async (input) => {
       if (input.trophyName !== currentUniqueValue) {
-        if ((await checkUniqueTrophyName(input.trophyName)).length > 0) {
+        if (
+          (
+            await checkUniqueField("Trophy", {
+              trophyName: input.trophyName.toLowerCase(),
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

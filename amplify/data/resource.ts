@@ -37,7 +37,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Season: a
@@ -47,7 +47,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Competition: a
@@ -62,7 +62,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   CompetitionSeason: a
@@ -86,7 +86,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   League: a
@@ -106,7 +106,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   LeagueRound: a
@@ -132,7 +132,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Standing: a
@@ -154,7 +154,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Cup: a
@@ -172,7 +172,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   PlayOff: a
@@ -188,7 +188,7 @@ const schema = a.schema({
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Match: a
@@ -248,7 +248,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("date").sortKeys(["status"])])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Trophy: a
@@ -262,7 +262,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("trophyName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   Player: a
@@ -285,7 +285,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("ageGroup")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
   PlayerPosition: a
@@ -298,7 +298,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("shortName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow.group("Admin").to(["create", "read", "delete", "update"]),
     ]),
 
@@ -310,7 +310,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("category")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow
         .groups(["Admin", "Writer"])
         .to(["create", "read", "delete", "update"]),
@@ -332,7 +332,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow
         .groups(["Admin", "Writer"])
         .to(["create", "read", "delete", "update"]),
@@ -349,7 +349,7 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
-      allow.authenticated("identityPool").to(["read"]),
+      allow.authenticated().to(["read"]),
       allow
         .groups(["Admin", "Writer"])
         .to(["create", "read", "delete", "update"]),

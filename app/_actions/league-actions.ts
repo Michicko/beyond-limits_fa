@@ -1,19 +1,10 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
-import { createEntityFactory } from "@/lib/factoryFunctions";
+import { checkUniqueField, createEntityFactory } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 
 type League = Schema["League"]["type"];
-
-const checkUniqueLeague = async (competitionNameSeason: string) => {
-  const { data: existing } =
-    await cookiesClient.models.League.listLeagueByCompetitionNameSeason({
-      competitionNameSeason,
-    });
-
-  return existing;
-};
 
 export const createLeague = async (formData: FormData) => {
   const base = formDataToObject<League>(formData);
@@ -24,8 +15,13 @@ export const createLeague = async (formData: FormData) => {
     input: base,
     selectionSet: ["id", "competitionNameSeason"],
     validate: async (input) => {
-      const uniqueLeague = await checkUniqueLeague(input.competitionNameSeason);
-      if (uniqueLeague && uniqueLeague.length > 0) {
+      if (
+        (
+          await checkUniqueField("League", {
+            competitionNameSeason: input.competitionNameSeason.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,

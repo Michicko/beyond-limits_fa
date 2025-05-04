@@ -1,6 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
@@ -10,15 +11,6 @@ import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 
 type ArticleCategory = Schema["ArticleCategory"]["type"];
-
-const checkUniqueCategory = async (category: string) => {
-  const { data: existing } =
-    await cookiesClient.models.ArticleCategory.listArticleCategoryByCategory({
-      category,
-    });
-
-  return existing;
-};
 
 export const getArticleCategories = async () => {
   const articleCategoriesGetter = getEntityFactory<ArticleCategory>();
@@ -43,7 +35,13 @@ export const createArticleCategory = async (formData: FormData) => {
     selectionSet: ["id", "category"],
     pathToRevalidate: "/cp/article-categories",
     validate: async (input) => {
-      if ((await checkUniqueCategory(input.category)).length > 0) {
+      if (
+        (
+          await checkUniqueField("ArticleCategory", {
+            category: input.category.toLowerCase(),
+          })
+        ).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -75,7 +73,13 @@ export const updateArticleCategory = async (
     pathToRevalidate: "/cp/article-categories",
     validate: async (input) => {
       if (input.category !== currentUniqueValue) {
-        if ((await checkUniqueCategory(input.category)).length > 0) {
+        if (
+          (
+            await checkUniqueField("ArticleCategory", {
+              category: input.category.toLowerCase(),
+            })
+          ).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

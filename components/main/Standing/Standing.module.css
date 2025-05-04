@@ -84,7 +84,7 @@ tr.shade {
   font-size: var(--sm);
   font-weight: 500;
   color: var(--secondary-light);
-  margin-left: var(--sm);
+  margin-left: var(--xs);
   margin-top: var(--xxs);
   text-transform: uppercase;
 }

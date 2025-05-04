@@ -67,6 +67,11 @@ export const createArticle = async (formData: FormData) => {
     input: base,
     selectionSet: ["id", "title", "content", "coverImage"],
     pathToRevalidate: "/cp/articles",
+    preprocess: (input) => ({
+      ...input,
+      title: base.title.toLowerCase(),
+      attributes: JSON.parse(formData.get("attributes") as string),
+    }),
     validate: async (input) => {
       if ((await checkUniqueArticleTitle(input.title)).length > 0) {
         return {
@@ -94,6 +99,11 @@ export const updateArticle = async (
     input: base,
     selectionSet: ["id", "title", "content", "coverImage"],
     pathToRevalidate: "/cp/articles",
+    preprocess: (input) => ({
+      ...input,
+      title: base.title.toLowerCase(),
+      attributes: JSON.parse(formData.get("attributes") as string),
+    }),
     validate: async (input) => {
       if (input.title !== currentUniqueValue) {
         if ((await checkUniqueArticleTitle(input.title)).length > 0) {
