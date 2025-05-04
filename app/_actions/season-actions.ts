@@ -5,20 +5,25 @@ import {
   deleteEntity,
   updateEntityFactory,
   getEntityFactory,
+  checkUniqueField,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 
 type Season = Schema["Season"]["type"];
 
-const checkUniqueSeason = async (season: string) => {
-  const { data: existing } =
-    await cookiesClient.models.Season.listSeasonBySeason({
-      season,
-    });
+// const checkUniqueSeason = async (season: string) => {
+//   const { data: existing } =
+//     await cookiesClient.models.Season.list({
+//       filter: {
+//         season: {
+//           contains: season
+//         }
+//       }
+//     });
 
-  return existing;
-};
+//   return existing;
+// };
 
 export const fetchSeasons = async () => {
   const seasonsGetter = getEntityFactory<Season>();
@@ -40,7 +45,9 @@ export const createSeason = async (formData: FormData) => {
     selectionSet: ["id", "season", "createdAt"],
     pathToRevalidate: "/cp/seasons",
     validate: async (input) => {
-      if ((await checkUniqueSeason(input.season)).length > 0) {
+      if (
+        (await checkUniqueField("Season", "season", input.season)).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -68,7 +75,9 @@ export const updateSeason = async (
     pathToRevalidate: "/cp/seasons",
     validate: async (input) => {
       if (input.season !== currentUniqueValue) {
-        if ((await checkUniqueSeason(input.season)).length > 0) {
+        if (
+          (await checkUniqueField("Season", "season", input.season)).length > 0
+        ) {
           return {
             status: "error",
             valid: false,

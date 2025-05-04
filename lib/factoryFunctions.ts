@@ -33,6 +33,24 @@ type UpdateEntityOptions<TInput, TOutput> = {
   selectionSet?: string[];
 };
 
+export const checkUniqueField = async (
+  modelName: keyof typeof cookiesClient.models,
+  field: string,
+  value: string
+) => {
+  const model = cookiesClient.models[modelName] as any;
+
+  const { data: existing } = await model.list({
+    filter: {
+      [field]: {
+        contains: value,
+      },
+    },
+  });
+
+  return existing;
+};
+
 export function getOneEntityFactory<TOutput>() {
   return async ({
     modelName,

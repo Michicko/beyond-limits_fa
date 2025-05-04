@@ -747,4 +747,15 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
   }
 }
 
-export async function deleteCloudinaryImage(publicId: string) {}
+export const deleteCloudinaryImage = async (publicId: string) => {
+  const res = await fetch("/api/delete-image", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ publicId }),
+  });
+
+  const data = await res.json();
+  return data;
+};
