@@ -21,11 +21,11 @@ const links = [
     link: "/cp/teams",
     icon: getIcon("team"),
   },
-  {
-    name: "positions",
-    link: "/cp/positions",
-    icon: getIcon("player_position"),
-  },
+  // {
+  //   name: "positions",
+  //   link: "/cp/positions",
+  //   icon: getIcon("player_position"),
+  // },
   {
     name: "players",
     link: "/cp/players",
@@ -41,11 +41,11 @@ const links = [
     link: "/cp/matches",
     icon: getIcon("ball"),
   },
-  {
-    name: "trophies",
-    link: "/cp/trophies",
-    icon: getIcon("trophy"),
-  },
+  // {
+  //   name: "trophies",
+  //   link: "/cp/trophies",
+  //   icon: getIcon("trophy"),
+  // },
   {
     name: "articles",
     link: "/cp/articles",

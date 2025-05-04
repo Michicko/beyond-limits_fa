@@ -21,14 +21,14 @@ import React from "react";
 import useSWR from "swr";
 
 function Dashboard() {
-  const { data, error, isLoading } = useSWR("dashboard", fetchDashboardData);
+  // const { data, error, isLoading } = useSWR("dashboard", fetchDashboardData);
 
-  const dashboardData = data && data.data;
+  // const dashboardData = data && data.data;
 
   return (
     <>
       <PageTitle pageTitle="Dashboard" />
-      {error ? (
+      {/* {error ? (
         <CustomAlert status="error" title={error.message} />
       ) : isLoading ? (
         <DashboardSkeleton isLoading={isLoading} />
@@ -145,7 +145,7 @@ function Dashboard() {
             </SimpleGrid>
           </Box>
         </>
-      )}
+      )} */}
     </>
   );
 }

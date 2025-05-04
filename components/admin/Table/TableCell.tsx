@@ -12,6 +12,9 @@ function TableCell(
       color={"text_md"}
       {...props}
       verticalAlign={"middle"}
+      border={"1px solid"}
+      borderColor={"gray.100"}
+      pl={"5px"}
     >
       {props.children}
     </ChakraTable.Cell>

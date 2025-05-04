@@ -12,6 +12,9 @@ function Table({ children }: { children: React.ReactElement }) {
           variant={"line"}
           mb={"10px"}
           userSelect={"none"}
+          border={"1px solid"}
+          borderColor={"gray.100"}
+          borderCollapse={"collapse"}
         >
           {children}
         </ChakraTable.Root>

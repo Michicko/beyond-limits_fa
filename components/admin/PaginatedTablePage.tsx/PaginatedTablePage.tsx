@@ -26,6 +26,7 @@ function PaginatedTablePage({
   startIndex,
   endIndex,
   createUrl,
+  showCreateButton,
 }: {
   children: React.ReactNode;
   list?: any[];
@@ -40,6 +41,7 @@ function PaginatedTablePage({
   startIndex: number;
   endIndex: number;
   createUrl?: string;
+  showCreateButton?: boolean;
 }) {
   const currentPageListItems = list?.slice(startIndex, endIndex);
   const totalPages = list && Math.ceil(list.length / pageSize);
@@ -52,18 +54,20 @@ function PaginatedTablePage({
       <PageTitle pageTitle={pageTitle} />
       <Box w={"full"} h={"full"} mt={"30px"}>
         <Container maxW={"4xl"} fluid margin={"0 auto"}>
-          <HStack justify={"flex-end"} mb={"20px"} gap="4" w={"full"}>
-            <Skeleton
-              loading={isLoading}
-              h={isLoading ? "40px" : "auto"}
-              w={isLoading ? "160px" : "auto"}
-            >
-              <CreateButton
-                link={createUrl ?? `/cp/${resource.toLowerCase()}s/create`}
-                text={`Create ${resource}`}
-              />
-            </Skeleton>
-          </HStack>
+          {showCreateButton && (
+            <HStack justify={"flex-end"} mb={"20px"} gap="4" w={"full"}>
+              <Skeleton
+                loading={isLoading}
+                h={isLoading ? "40px" : "auto"}
+                w={isLoading ? "160px" : "auto"}
+              >
+                <CreateButton
+                  link={createUrl ?? `/cp/${resource.toLowerCase()}s/create`}
+                  text={`Create ${resource}`}
+                />
+              </Skeleton>
+            </HStack>
+          )}
 
           {error ? (
             <CustomAlert

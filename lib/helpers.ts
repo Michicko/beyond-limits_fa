@@ -306,13 +306,19 @@ export const getCloudinaryPublicId = (url: string): string | null => {
   try {
     const parts = new URL(url).pathname.split("/");
 
-    // Find the index of "upload"
     const uploadIndex = parts.findIndex((part) => part === "upload");
-    if (uploadIndex === -1 || uploadIndex + 1 >= parts.length) return null;
+    if (uploadIndex === -1) return null;
 
-    // Get everything after /upload/ and remove file extension
-    const publicIdWithExt = parts.slice(uploadIndex + 1).join("/");
-    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // remove extension like .jpg
+    // Start from the part right after "upload"
+    const publicIdParts = parts.slice(uploadIndex + 1);
+
+    // Remove version part if it matches the format v1234567890
+    if (/^v\d+$/.test(publicIdParts[0])) {
+      publicIdParts.shift();
+    }
+
+    const publicIdWithExt = publicIdParts.join("/");
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove file extension
 
     return publicId;
   } catch (err) {

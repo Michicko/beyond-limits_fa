@@ -279,10 +279,12 @@ export async function deleteEntity<T>({
   modelName,
   id,
   pathToRevalidate,
+  postDelete,
 }: {
   modelName: keyof typeof cookiesClient.models;
   id: string;
   pathToRevalidate?: string;
+  postDelete?: (id: string) => Promise<void> | void;
 }) {
   try {
     const model = cookiesClient.models[modelName] as {
@@ -294,6 +296,10 @@ export async function deleteEntity<T>({
 
     // Call the delete method on the specified model
     await model.delete({ id }, { authMode: "userPool" });
+
+    if (postDelete) {
+      await postDelete(id);
+    }
 
     // Revalidate path if provided
     if (pathToRevalidate) {
