@@ -34,7 +34,6 @@ const schema = a.schema({
       stadium: a.string(),
       isBeyondLimits: a.boolean().required().default(false),
     })
-    .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -44,7 +43,6 @@ const schema = a.schema({
     .model({
       season: a.string().required(),
     })
-    .secondaryIndexes((index) => [index("season")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -59,7 +57,6 @@ const schema = a.schema({
       competitionSeasons: a.hasMany("CompetitionSeason", "competitionId"),
       trophy: a.hasOne("Trophy", "competitionId"),
     })
-    .secondaryIndexes((index) => [index("longName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -103,7 +100,6 @@ const schema = a.schema({
       teams: a.id().array().required(),
       winnerId: a.id(),
     })
-    .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -169,7 +165,6 @@ const schema = a.schema({
       playOffs: a.hasMany("PlayOff", "cupId"),
       winnerId: a.id(),
     })
-    .secondaryIndexes((index) => [index("competitionNameSeason")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -259,7 +254,6 @@ const schema = a.schema({
       competition: a.belongsTo("Competition", "competitionId"),
       articleId: a.id(),
     })
-    .secondaryIndexes((index) => [index("trophyName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -295,7 +289,6 @@ const schema = a.schema({
       players: a.hasMany("Player", "playerPositionId"),
       attributes: a.string().array(),
     })
-    .secondaryIndexes((index) => [index("shortName")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -307,7 +300,6 @@ const schema = a.schema({
       category: a.string().required(),
       articles: a.hasMany("Article", "articleCategoryId"),
     })
-    .secondaryIndexes((index) => [index("category")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
