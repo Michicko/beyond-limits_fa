@@ -14,7 +14,7 @@ import {
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
 import LeagueStandingRow from "./LeagueStandingRow";
-import { createStandingRow, endLeague } from "@/app/_actions/actions";
+import { createStandingRow } from "@/app/_actions/actions";
 import { objectToFormData, sortArray } from "@/lib/helpers";
 import toast from "react-hot-toast";
 import useToast from "@/hooks/useToast";

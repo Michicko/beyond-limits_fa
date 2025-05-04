@@ -45,7 +45,6 @@ interface ICompetitionSeason {
   isWinner?: boolean | null;
   status?: "PENDING" | "COMPLETED" | null;
   teamIds?: Nullable<string>[] | null;
-  standingIds?: Nullable<string>[] | null;
   format?: IFormat | null;
   groupStageEnded?: boolean | null;
 }
@@ -79,7 +78,6 @@ function CompetitionSeasonFormDialog({
     isWinner: false,
     status: dbCompetitionSeason?.status || "",
     teamIds: [],
-    standingIds: [],
     format: {
       groupStage: false,
       playOff: false,
@@ -100,7 +98,6 @@ function CompetitionSeasonFormDialog({
       isWinner: false,
       status: "",
       teamIds: [],
-      standingIds: [],
       format: {
         groupStage: false,
         playOff: false,
@@ -184,7 +181,6 @@ function CompetitionSeasonFormDialog({
         isWinner: dbCompetitionSeason.isWinner || false,
         status: dbCompetitionSeason.status || "",
         teamIds: (dbCompetitionSeason.teamIds as []) || [],
-        standingIds: (dbCompetitionSeason.standingIds as []) || [],
         format: {
           groupStage: dbCompetitionSeason.format?.groupStage || false,
           playOff: dbCompetitionSeason.format?.playOff || false,

@@ -37,12 +37,12 @@ interface IRound {
 function PlayoffRound({
   dbRounds,
   matches,
-  cupId,
+  competitionSeasonId,
   competitionStatus,
 }: {
   dbRounds: IRound[];
   matches: IMatch[];
-  cupId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
@@ -66,11 +66,11 @@ function PlayoffRound({
               No matches available, please add a match to create round
             </Text>
           ) : (
-            cupId && (
+            competitionSeasonId && (
               <PlayOffRoundForm
                 playOffsLabels={playOffsLabels}
                 matches={matches}
-                cupId={cupId}
+                competitionSeasonId={competitionSeasonId}
                 competitionStatus={competitionStatus}
               />
             )

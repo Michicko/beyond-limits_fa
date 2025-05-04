@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
 import LeagueStanding from "../LeagueStanding/LeagueStanding";
-import { IDBLeague, IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
+import { IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
 import LeagueRound from "../LeagueRound/LeagueRound";
 
 interface IMatch {

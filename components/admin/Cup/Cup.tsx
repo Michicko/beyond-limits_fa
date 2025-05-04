@@ -32,12 +32,12 @@ interface IRound {
 function Cup({
   rounds,
   matches,
-  cupId,
+  competitionSeasonId,
   competitionStatus,
 }: {
   rounds?: IRound[];
   matches?: IMatch[];
-  cupId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const transformedRounds =
@@ -60,7 +60,7 @@ function Cup({
     <PlayoffRound
       dbRounds={transformedRounds}
       matches={matches}
-      cupId={cupId}
+      competitionSeasonId={competitionSeasonId}
       competitionStatus={competitionStatus}
     />
   );

@@ -6,11 +6,9 @@ import {
 } from "@/app/_actions/competition-season-actions";
 import { getTeams } from "@/app/_actions/team-actions";
 import BackButton from "@/components/admin/BackButton";
-import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import EndSeason from "@/components/admin/EndEntityBtn/EndSeason";
 import CompetitionSeasonFormDialog from "@/components/admin/Forms/CompetitionSeasonFormDialog";
 import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
 import TableCell from "@/components/admin/Table/TableCell";
@@ -38,7 +36,6 @@ interface ICompetitionSeason {
   isWinner?: boolean | null;
   status?: "PENDING" | "COMPLETED" | null;
   teamIds?: Nullable<string>[] | null;
-  standingIds?: Nullable<string>[] | null;
   format?: IFormat | null;
   groupStageEnded?: boolean | null;
 }
@@ -94,7 +91,6 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
         isWinner: comp.isWinner,
         status: comp.status,
         teamIds: comp.teamIds,
-        standingIds: comp.standingIds,
         format: {
           groupStage: comp.format?.groupStage ?? false,
           playOff: comp.format?.playOff ?? false,

@@ -10,10 +10,14 @@ function useToast() {
     });
   };
 
-  const sendError = (name: string, type: "delete" | "upload") => {
+  const sendError = (
+    name: string,
+    type: "delete" | "upload",
+    message?: string
+  ) => {
     return {
       title: `Failed ${type === "delete" ? "Deleting" : "Uploading"} ${name}!`,
-      description: "Something went wrong",
+      description: message || "Something went wrong",
     };
   };
 
@@ -29,7 +33,9 @@ function useToast() {
           return sendError(name, "delete");
         }
       },
-      error: sendError(name, "delete"),
+      error: (err: any) => {
+        return sendError(name, "delete", (err as Error).message);
+      },
       loading: { title: `Deleting ${name}...`, description: "Please wait" },
     });
   };

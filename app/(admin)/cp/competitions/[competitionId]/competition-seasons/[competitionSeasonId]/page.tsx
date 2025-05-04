@@ -1,7 +1,5 @@
 "use client";
 import { fetchAll } from "@/app/_actions/actions";
-import { getCompetitionSeason } from "@/app/_actions/competition-season-actions";
-import { getTeam, getTeamsLazyLoaded } from "@/app/_actions/team-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import CompetitionSeasonCard from "@/components/admin/CompetitionSeasonCard/CompetitionSeasonCard";
@@ -27,21 +25,6 @@ function CompetitionSeason({
   const teams = data?.teams.data ?? [];
   const competitionSeason = data?.competitionSeason.data ?? null;
   const leagueRounds = data?.leagueRounds.data ?? [];
-
-  console.log(
-    "standing",
-    standings,
-    "matches:",
-    matches,
-    "playoff",
-    playOffs,
-    "teams:",
-    teams,
-    "season",
-    competitionSeason,
-    "leaguerounds",
-    leagueRounds
-  );
 
   return (
     <>
@@ -94,51 +77,54 @@ function CompetitionSeason({
                       standings={standings}
                     />
                   )}
-                {/* {competitionSeason.type === "CUP" &&
+                {competitionSeason.type === "CUP" &&
                   competitionSeason &&
                   matches &&
-                  cupRounds && (
+                  playOffs && (
                     <Cup
-                      rounds={cupRounds}
+                      rounds={playOffs}
                       matches={matches}
-                      cupId={competitionSeason.cupId}
+                      competitionSeasonId={competitionSeason.id}
                       competitionStatus={competitionSeason.status}
                     />
-                  )} */}
+                  )}
                 {competitionSeason.type === "MIXED" && (
                   <Tabs.Root defaultValue="league" fitted w={"full"}>
                     <Tabs.List mb={5}>
                       <Tabs.Trigger value="league">Main</Tabs.Trigger>
                       <Tabs.Trigger
                         value="cup"
-                        // disabled={league?.status === "PENDING"}
+                        disabled={!competitionSeason.groupStageEnded}
                       >
                         Knockout
                       </Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
-                      {/* {league && league.standings && matches && teams && (
-                        <League
-                          teams={teams}
-                          leagueRounds={league.leagueRounds}
-                          matches={matches}
-                          league={league}
-                          competitionStatus={competitionSeason.status}
-                          type={competitionSeason.type}
-                        />
-                      )} */}
-                      <></>
+                      {competitionSeason &&
+                        standings &&
+                        matches &&
+                        teams &&
+                        competitionSeason.teamIds && (
+                          <League
+                            teams={teams}
+                            leagueRounds={leagueRounds}
+                            matches={matches}
+                            competitionStatus={competitionSeason.status}
+                            selectedTeams={competitionSeason.teamIds}
+                            competitionSeasonId={competitionSeason.id}
+                            standings={standings}
+                          />
+                        )}
                     </Tabs.Content>
                     <Tabs.Content value="cup">
-                      {/* {competitionSeason.cupId && cupRounds && matches && (
+                      {playOffs && matches && (
                         <Cup
-                          rounds={cupRounds}
+                          rounds={playOffs}
                           matches={matches}
-                          cupId={competitionSeason.cupId}
+                          competitionSeasonId={competitionSeason.id}
                           competitionStatus={competitionSeason.status}
                         />
-                      )} */}
-                      <></>
+                      )}
                     </Tabs.Content>
                   </Tabs.Root>
                 )}

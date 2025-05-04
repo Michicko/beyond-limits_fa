@@ -34,16 +34,16 @@ interface IMatch {
 function PlayOffRoundForm({
   playOffsLabels,
   matches,
-  cupId,
+  competitionSeasonId,
   competitionStatus,
 }: {
   playOffsLabels: { label: string; value: string }[];
   matches: IMatch[];
-  cupId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const [tempData, setTempData] = useState({
-    cupId,
+    competitionSeasonId,
     matchId: "",
     round: "",
     homeForm: "",
