@@ -19,7 +19,7 @@ interface ILeagueRoundStanding {
 
 interface ILeagueRound {
   id: string;
-  leagueId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
   matchId: Nullable<string>;

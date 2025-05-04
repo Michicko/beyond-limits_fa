@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
 import LeagueStanding from "../LeagueStanding/LeagueStanding";
-import { IDBLeague, IDTeam, Nullable } from "@/lib/definitions";
+import { IDBLeague, IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
 import LeagueRound from "../LeagueRound/LeagueRound";
 
 interface IMatch {
@@ -34,7 +34,7 @@ interface ILeagueRoundStanding {
 
 interface ILeagueRound {
   id: string;
-  leagueId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
   matchId: Nullable<string>;
@@ -48,18 +48,20 @@ function League({
   teams,
   leagueRounds,
   matches,
-  league,
   competitionStatus,
-  type,
+  competitionSeasonId,
+  standings,
+  selectedTeams,
 }: {
   teams: IDTeam[];
+  selectedTeams: Nullable<string>[];
   leagueRounds: ILeagueRound[];
   matches: IMatch[];
-  league: IDBLeague;
-  type: "MIXED" | "LEAGUE" | "CUP";
   competitionStatus: "PENDING" | "COMPLETED" | null;
+  competitionSeasonId: string;
+  standings: IDBStandings[];
 }) {
-  const transformedStanding = league.standings
+  const transformedStanding = standings
     .map((row) => {
       const team = teams.find((team) => team.id === row.teamId);
       if (!team) return;
@@ -75,14 +77,14 @@ function League({
       <LeagueStanding
         serverStanding={transformedStanding}
         teams={teams}
-        league={league}
+        selectedTeams={selectedTeams}
         competitionStatus={competitionStatus}
-        type={type}
+        competitionSeasonId={competitionSeasonId}
       />
       <LeagueRound
         dbRounds={leagueRounds}
         matches={matches}
-        leagueId={league.id}
+        competitionSeasonId={competitionSeasonId}
         competitionStatus={competitionStatus}
       />
     </Stack>

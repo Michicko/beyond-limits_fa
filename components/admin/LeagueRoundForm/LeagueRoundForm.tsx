@@ -44,7 +44,7 @@ interface IMatch {
 }
 
 interface ILeagueRound {
-  leagueId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
   matchId: Nullable<string>;
@@ -55,11 +55,11 @@ interface ILeagueRound {
 }
 
 const LeagueRoundForm = ({
-  leagueId,
+  competitionSeasonId,
   dbRounds,
   matches,
 }: {
-  leagueId: string;
+  competitionSeasonId: string;
   dbRounds: ILeagueRound[];
   matches: IMatch[];
 }) => {
@@ -92,7 +92,7 @@ const LeagueRoundForm = ({
       formData.append("matchId", match);
       formData.delete("result");
       formData.append("standing", JSON.stringify(standing));
-      formData.append("leagueId", leagueId);
+      formData.append("competitionSeasonId", competitionSeasonId);
       startTransition(async () => {
         const res = await createLeagueRound(formData);
         if (res.status === "success" && res.data) {

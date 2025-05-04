@@ -36,7 +36,7 @@ interface ILeagueRoundStanding {
 
 interface ILeagueRound {
   id: string;
-  leagueId: Nullable<string>;
+  competitionSeasonId: Nullable<string>;
   round: string;
   standing: ILeagueRoundStanding | null;
   matchId: Nullable<string>;
@@ -49,12 +49,12 @@ interface ILeagueRound {
 function LeagueRound({
   dbRounds,
   matches,
-  leagueId,
+  competitionSeasonId,
   competitionStatus,
 }: {
   dbRounds: ILeagueRound[];
   matches: IMatch[];
-  leagueId: string;
+  competitionSeasonId: string;
   competitionStatus: "PENDING" | "COMPLETED" | null;
 }) {
   const cH = {
@@ -84,7 +84,7 @@ function LeagueRound({
             <LeagueRoundForm
               dbRounds={dbRounds}
               matches={matches}
-              leagueId={leagueId}
+              competitionSeasonId={competitionSeasonId}
             />
           )}
         </HStack>

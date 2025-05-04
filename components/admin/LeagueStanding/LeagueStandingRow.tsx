@@ -6,12 +6,12 @@ import { Button, HStack, Image, Input, Table, Text } from "@chakra-ui/react";
 import React, { useState, useTransition } from "react";
 
 function LeagueStandingRow({
-  leagueId,
+  competitionSeasonId,
   team,
   standing,
   competitionStatus,
 }: {
-  leagueId: string;
+  competitionSeasonId: string;
   team: IDTeam;
   standing: IDBStandings;
   competitionStatus: "PENDING" | "COMPLETED" | null;
@@ -39,7 +39,7 @@ function LeagueStandingRow({
 
   const [stateStanding, setStateStanding] = useState({
     id: standing.id,
-    leagueId,
+    competitionSeasonId,
     teamId: team.id,
     name: team.longName,
     logo: team.logo,

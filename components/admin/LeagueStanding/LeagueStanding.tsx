@@ -1,5 +1,5 @@
 "use client";
-import { IDBLeague, IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
+import { IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
 import {
   Card,
   Heading,
@@ -10,7 +10,6 @@ import {
   Spinner,
   Alert,
   Text,
-  ButtonGroup,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
@@ -22,16 +21,16 @@ import useToast from "@/hooks/useToast";
 
 function LeagueStanding({
   teams,
-  league,
+  selectedTeams,
   serverStanding,
   competitionStatus,
-  type,
+  competitionSeasonId,
 }: {
   teams: IDTeam[];
-  league: IDBLeague;
+  selectedTeams: Nullable<string>[];
   serverStanding: IDBStandings[];
-  type: "MIXED" | "CUP" | "LEAGUE";
   competitionStatus: "PENDING" | "COMPLETED" | null;
+  competitionSeasonId: string;
 }) {
   const cH = {
     fontWeight: "700",
@@ -46,14 +45,14 @@ function LeagueStanding({
 
   const generateStanding = async () => {
     setError("");
-    if (!league.teams || league.teams.length < 1) {
+    if (!teams || teams.length < 1) {
       toast("No teams available, please add teams to generate standing");
       return;
     }
 
     setIsGenerating(true);
 
-    const leagueTeams = league.teams
+    const leagueTeams = selectedTeams
       .map((teamId) => {
         const currTeam = teams.find((team) => team.id === teamId);
         return currTeam;
@@ -62,7 +61,7 @@ function LeagueStanding({
       .sort((a, b) => a.longName.localeCompare(b.longName));
 
     const standing = leagueTeams.map((team, index) => ({
-      leagueId: league.id,
+      competitionSeasonId: competitionSeasonId,
       teamId: team.id,
       name: team.longName,
       logo: team.logo,
@@ -118,6 +117,8 @@ function LeagueStanding({
     }
   };
 
+  console.log(standing);
+
   const getStandingRow = (standing: IDBStandings) => {
     const team = teams.find((el) => el.id === standing.teamId);
 
@@ -128,7 +129,7 @@ function LeagueStanding({
 
     return (
       <LeagueStandingRow
-        leagueId={league.id}
+        competitionSeasonId={competitionSeasonId}
         team={team}
         standing={standing}
         key={(standing.teamId as string) + standing.position}
@@ -138,20 +139,6 @@ function LeagueStanding({
   };
 
   const sortedStanding = standing.length > 0 && sortArray(standing, "position");
-
-  const { mutationPromiseToast } = useToast();
-  const [isEnding, setIsEnding] = useState(false);
-
-  const endLeagueFn = async () => {
-    setIsEnding(true);
-    mutationPromiseToast(
-      endLeague(league.id),
-      { title: "League ended", desc: `League ended successfully!` },
-      { title: "Failed to end league", desc: `Failed to end league` },
-      { title: "Ending league", desc: `Ending league, please wait...` },
-      setIsEnding
-    );
-  };
 
   return (
     <>
@@ -169,45 +156,26 @@ function LeagueStanding({
             gap={2}
           >
             <Heading mb="2">Standing</Heading>
-            <ButtonGroup flexWrap={"wrap"} gap={2}>
-              {type === "MIXED" && (
-                <Button
-                  px={"20px"}
-                  variant={"solid"}
-                  colorPalette={"cyan"}
-                  disabled={
-                    competitionStatus === "COMPLETED" ||
-                    league.status === "COMPLETED" ||
-                    isEnding
-                  }
-                  onClick={async () => {
-                    await endLeagueFn();
-                  }}
-                >
-                  {isEnding ? "Ending Main Round..." : "End Main Round"}
-                </Button>
+            <Button
+              px={"20px"}
+              variant={"solid"}
+              colorPalette={"teal"}
+              disabled={
+                standing.length > 0 ||
+                isGenerating ||
+                competitionStatus === "COMPLETED"
+              }
+              onClick={async () => await generateStanding()}
+            >
+              {isGenerating ? (
+                <HStack gap={2} alignItems={"center"}>
+                  <Spinner size="sm" border={"1px solid blue"} />
+                  <Text as={"span"}>Generating...</Text>
+                </HStack>
+              ) : (
+                "Generate Standing"
               )}
-              <Button
-                px={"20px"}
-                variant={"solid"}
-                colorPalette={"teal"}
-                disabled={
-                  standing.length > 0 ||
-                  isGenerating ||
-                  competitionStatus === "COMPLETED"
-                }
-                onClick={async () => await generateStanding()}
-              >
-                {isGenerating ? (
-                  <HStack gap={2} alignItems={"center"}>
-                    <Spinner size="sm" border={"1px solid blue"} />
-                    <Text as={"span"}>Generating...</Text>
-                  </HStack>
-                ) : (
-                  "Generate Standing"
-                )}
-              </Button>
-            </ButtonGroup>
+            </Button>
           </HStack>
           <CustomSeparator />
           <Stack>

@@ -36,6 +36,7 @@ function Teams() {
       startIndex={startIndex}
       endIndex={endIndex}
       pageSize={pageSize}
+      showCreateButton={true}
     >
       <>
         {currentTeams &&

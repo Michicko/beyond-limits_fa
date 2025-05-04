@@ -67,7 +67,6 @@ const schema = a.schema({
       isWinner: a.boolean(),
       status: a.ref("CompetitionStatus"),
       teamIds: a.string().array(),
-      standingIds: a.string().array(),
       format: a.customType({
         groupStage: a.boolean().required(),
         playOff: a.boolean().required(),

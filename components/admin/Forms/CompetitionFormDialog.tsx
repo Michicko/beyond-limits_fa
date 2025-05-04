@@ -146,7 +146,7 @@ function CompetitionFormDialog({
           />
         }
         scrollable={true}
-        name="Trophy"
+        name="Competition"
         openForm={openForm}
         setOpenForm={setOpenForm}
       >
@@ -171,7 +171,7 @@ function CompetitionFormDialog({
               description={"Enter long name e.g nigerian national league"}
             />
             <Field.Root required>
-              <Field.Label color={"text_lg"}>Competition</Field.Label>
+              <Field.Label color={"text_lg"}>Type</Field.Label>
               <CustomSelect
                 options={["CUP", "LEAGUE", "MIXED"].map((el) => {
                   return {

@@ -9,6 +9,7 @@ import {
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { deleteCloudinaryImage } from "./actions";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 type Competition = Schema["Competition"]["type"];
 
@@ -31,6 +32,20 @@ export const getCompetitions = async () => {
   });
 };
 
+export const getCompetition = async (id: string) => {
+  return (
+    await cookiesClient.models.Competition.get(
+      {
+        id,
+      },
+      {
+        selectionSet: ["id", "logo", "longName", "type"],
+        authMode: "userPool",
+      }
+    )
+  ).data;
+};
+
 export const createCompetition = async (formData: FormData) => {
   const base = formDataToObject<Competition>(formData);
   const competitionCreator = createEntityFactory<Competition, Competition>();
@@ -42,7 +57,7 @@ export const createCompetition = async (formData: FormData) => {
     pathToRevalidate: "/cp/competitions",
     validate: async (input) => {
       if (
-        (await checkUniqueField("Competition", "longName", input.longName))
+        (await checkUniqueField("Competition", { longName: input.longName }))
           .length > 0
       ) {
         return {
@@ -73,7 +88,7 @@ export const updateCompetition = async (
     validate: async (input) => {
       if (input.longName !== currentUniqueValue) {
         if (
-          (await checkUniqueField("Competition", "longName", input.longName))
+          (await checkUniqueField("Competition", { longName: input.longName }))
             .length > 0
         ) {
           return {
@@ -89,7 +104,6 @@ export const updateCompetition = async (
 };
 
 export async function deleteCompetition(id: string, images: string[]) {
-  console.log(id, images);
   return await deleteEntity({
     id,
     modelName: "Competition",

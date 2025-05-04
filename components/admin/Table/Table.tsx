@@ -13,7 +13,7 @@ function Table({ children }: { children: React.ReactElement }) {
           mb={"10px"}
           userSelect={"none"}
           border={"1px solid"}
-          borderColor={"gray.100"}
+          borderColor={"gray.200"}
           borderCollapse={"collapse"}
         >
           {children}

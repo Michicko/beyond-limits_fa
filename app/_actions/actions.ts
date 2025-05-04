@@ -116,7 +116,7 @@ export const createStandingRow = async (formData: FormData) => {
       "l",
       "g",
       "gd",
-      "leagueId",
+      "competitionSeasonId",
     ],
   });
 };
@@ -140,7 +140,7 @@ export const updateStandingRow = async (id: string, formData: FormData) => {
         "l",
         "g",
         "gd",
-        "leagueId",
+        "competitionSeasonId",
       ],
     });
 
@@ -757,4 +757,49 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
 export const deleteCloudinaryImage = async (publicId: string) => {
   if (!publicId) throw new Error("Missing publicId");
   return await cloudinary.uploader.destroy(publicId, { invalidate: true });
+};
+
+export const fetchAll = async (id: string) => {
+  const [standings, matches, playOffs, teams, competitionSeason, leagueRounds] =
+    await Promise.all([
+      cookiesClient.models.Standing.list({
+        filter: {
+          competitionSeasonId: {
+            eq: id,
+          },
+        },
+      }),
+      cookiesClient.models.Match.list({
+        filter: {
+          competitionSeasonId: {
+            eq: id,
+          },
+        },
+      }),
+      cookiesClient.models.PlayOff.list({
+        filter: {
+          competitionSeasonId: {
+            eq: id,
+          },
+        },
+      }),
+      cookiesClient.models.Team.list(),
+      cookiesClient.models.CompetitionSeason.get({ id }),
+      cookiesClient.models.LeagueRound.list({
+        filter: {
+          competitionSeasonId: {
+            eq: id,
+          },
+        },
+      }),
+    ]);
+
+  return {
+    standings,
+    matches,
+    playOffs,
+    teams,
+    competitionSeason,
+    leagueRounds,
+  };
 };

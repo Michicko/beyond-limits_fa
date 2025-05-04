@@ -1,6 +1,7 @@
 "use client";
-import { getCompetitionSeasonLazyLoaded } from "@/app/_actions/competition-season-actions";
-import { getTeamsLazyLoaded } from "@/app/_actions/team-actions";
+import { fetchAll } from "@/app/_actions/actions";
+import { getCompetitionSeason } from "@/app/_actions/competition-season-actions";
+import { getTeam, getTeamsLazyLoaded } from "@/app/_actions/team-actions";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import CompetitionSeasonCard from "@/components/admin/CompetitionSeasonCard/CompetitionSeasonCard";
@@ -15,31 +16,32 @@ function CompetitionSeason({
 }: {
   params: { competitionId: string; competitionSeasonId: string };
 }) {
-  const {
-    data: competitionSeasonData,
-    error,
-    isLoading,
-  } = useSWR("competition-season", () =>
-    getCompetitionSeasonLazyLoaded(params.competitionSeasonId)
+  const { data, error, isLoading } = useSWR(
+    ["competition-season", params.competitionSeasonId],
+    () => fetchAll(params.competitionSeasonId)
   );
 
-  const competitionSeason = competitionSeasonData && competitionSeasonData.data;
-  const league = competitionSeason && competitionSeason.league;
+  const standings = data?.standings.data ?? [];
+  const matches = data?.matches.data ?? [];
+  const playOffs = data?.playOffs.data ?? [];
+  const teams = data?.teams.data ?? [];
+  const competitionSeason = data?.competitionSeason.data ?? null;
+  const leagueRounds = data?.leagueRounds.data ?? [];
 
-  const cupRounds =
-    competitionSeason &&
-    competitionSeason.cupId &&
-    competitionSeason.cup.playOffs;
-
-  const matches = competitionSeason && competitionSeason.matches;
-
-  const {
-    data: teamsData,
-    error: teamsError,
-    isLoading: isTeamsLoading,
-  } = useSWR(["lazy-teams", params.competitionSeasonId], getTeamsLazyLoaded);
-
-  const teams = teamsData && teamsData.data;
+  console.log(
+    "standing",
+    standings,
+    "matches:",
+    matches,
+    "playoff",
+    playOffs,
+    "teams:",
+    teams,
+    "season",
+    competitionSeason,
+    "leaguerounds",
+    leagueRounds
+  );
 
   return (
     <>
@@ -53,7 +55,7 @@ function CompetitionSeason({
         {isLoading ? (
           <Stack maxW={"960px"} m={"0 auto"} gap={"5"}>
             <Skeleton h={"165px"} w={"full"} loading={isLoading} />
-            <Skeleton h={"400px"} w={"full"} loading={isTeamsLoading} />
+            <Skeleton h={"400px"} w={"full"} loading={isLoading} />
             <Skeleton h={"300px"} w={"full"} loading={isLoading} />
           </Stack>
         ) : error ? (
@@ -77,22 +79,22 @@ function CompetitionSeason({
                   competitionType={competitionSeason.type}
                   season={competitionSeason.season}
                   status={competitionSeason.status}
-                  winner={competitionSeason.winner}
                 />
                 {competitionSeason.type === "LEAGUE" &&
-                  league &&
                   matches &&
+                  competitionSeason.teamIds &&
                   teams && (
                     <League
                       teams={teams}
-                      leagueRounds={league.leagueRounds}
+                      leagueRounds={leagueRounds}
                       matches={matches}
-                      league={league}
                       competitionStatus={competitionSeason.status}
-                      type={competitionSeason.type}
+                      selectedTeams={competitionSeason.teamIds}
+                      competitionSeasonId={competitionSeason.id}
+                      standings={standings}
                     />
                   )}
-                {competitionSeason.type === "CUP" &&
+                {/* {competitionSeason.type === "CUP" &&
                   competitionSeason &&
                   matches &&
                   cupRounds && (
@@ -102,20 +104,20 @@ function CompetitionSeason({
                       cupId={competitionSeason.cupId}
                       competitionStatus={competitionSeason.status}
                     />
-                  )}
+                  )} */}
                 {competitionSeason.type === "MIXED" && (
                   <Tabs.Root defaultValue="league" fitted w={"full"}>
                     <Tabs.List mb={5}>
                       <Tabs.Trigger value="league">Main</Tabs.Trigger>
                       <Tabs.Trigger
                         value="cup"
-                        disabled={league?.status === "PENDING"}
+                        // disabled={league?.status === "PENDING"}
                       >
                         Knockout
                       </Tabs.Trigger>
                     </Tabs.List>
                     <Tabs.Content value="league">
-                      {league && league.standings && matches && teams && (
+                      {/* {league && league.standings && matches && teams && (
                         <League
                           teams={teams}
                           leagueRounds={league.leagueRounds}
@@ -124,17 +126,19 @@ function CompetitionSeason({
                           competitionStatus={competitionSeason.status}
                           type={competitionSeason.type}
                         />
-                      )}
+                      )} */}
+                      <></>
                     </Tabs.Content>
                     <Tabs.Content value="cup">
-                      {competitionSeason.cupId && cupRounds && matches && (
+                      {/* {competitionSeason.cupId && cupRounds && matches && (
                         <Cup
                           rounds={cupRounds}
                           matches={matches}
                           cupId={competitionSeason.cupId}
                           competitionStatus={competitionSeason.status}
                         />
-                      )}
+                      )} */}
+                      <></>
                     </Tabs.Content>
                   </Tabs.Root>
                 )}

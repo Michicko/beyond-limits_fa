@@ -7,7 +7,6 @@ import BackButton from "@/components/admin/BackButton";
 import MatchIcon from "@/components/admin/Card/MatchIcon";
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
-import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import CompetitionFormDialog from "@/components/admin/Forms/CompetitionFormDialog";
 import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
 import TableCell from "@/components/admin/Table/TableCell";
@@ -67,7 +66,6 @@ function Competitions() {
 
   const handleDelete = async (competition: ICompetition) => {
     if (confirm("Are you sure?") && competition.id) {
-      console.log("deleting");
       const images: string[] = [];
 
       if (competition.trophyImage && competition.logo) {
@@ -137,16 +135,6 @@ function Competitions() {
                     <TableCell textAlign={"center"}>
                       <CustomMenu>
                         <>
-                          <CustomMenuItem
-                            label="Create season"
-                            showBorder={true}
-                          >
-                            <Link
-                              href={`/cp/competitions/${competition.id}/competition-seasons/create`}
-                            >
-                              Create Season
-                            </Link>
-                          </CustomMenuItem>
                           <CustomMenuItem
                             label="View seasons"
                             showBorder={true}

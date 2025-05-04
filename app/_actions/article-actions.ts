@@ -32,18 +32,18 @@ export const filterArticle = async (text: string) => {
   });
 };
 
-export const getLazyLoadedArticles = async () => {
-  return cookiesClient.models.Article.list({
-    selectionSet: [
-      "id",
-      "title",
-      "articleCategory.category",
-      "status",
-      "createdAt",
-    ],
-    authMode: "userPool",
-  });
-};
+// export const getLazyLoadedArticles = async () => {
+//   return cookiesClient.models.Article.list({
+//     selectionSet: [
+//       "id",
+//       "title",
+//       "articleCategory.category",
+//       "status",
+//       "createdAt",
+//     ],
+//     authMode: "userPool",
+//   });
+// };
 
 export const getArticle = async (id: string) => {
   return cookiesClient.models.Article.get(

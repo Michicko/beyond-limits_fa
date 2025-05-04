@@ -35,18 +35,16 @@ type UpdateEntityOptions<TInput, TOutput> = {
 
 export const checkUniqueField = async (
   modelName: keyof typeof cookiesClient.models,
-  field: string,
-  value: string
+  fields: Record<string, string>
 ) => {
   const model = cookiesClient.models[modelName] as any;
 
-  const { data: existing } = await model.list({
-    filter: {
-      [field]: {
-        contains: value,
-      },
-    },
-  });
+  const filter = Object.entries(fields).reduce((acc, [key, value]) => {
+    acc[key] = { contains: value };
+    return acc;
+  }, {} as Record<string, { contains: string }>);
+
+  const { data: existing } = await model.list({ filter });
 
   return existing;
 };

@@ -1,6 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   getEntityFactory,
@@ -11,16 +12,6 @@ import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 
 type Team = Schema["Team"]["type"];
-
-const checkUniqueTeamName = async (longName: string) => {
-  const { data: existing } = await cookiesClient.models.Team.listTeamByLongName(
-    {
-      longName,
-    }
-  );
-
-  return existing;
-};
 
 export const getTeamsLazyLoaded = async () => {
   return cookiesClient.models.Team.list({
@@ -79,7 +70,9 @@ export const createTeam = async (formData: FormData) => {
     selectionSet: ["id", "logo", "shortName", "longName", "createdAt"],
     pathToRevalidate: "/cp/teams",
     validate: async (input) => {
-      if ((await checkUniqueTeamName(input.longName)).length > 0) {
+      if (
+        (await checkUniqueField("Team", "longName", input.longName)).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -107,7 +100,10 @@ export const updateTeam = async (
     pathToRevalidate: "/cp/teams",
     validate: async (input) => {
       if (input.longName !== currentUniqueValue) {
-        if ((await checkUniqueTeamName(input.longName)).length > 0) {
+        if (
+          (await checkUniqueField("Team", "longName", input.longName)).length >
+          0
+        ) {
           return {
             status: "error",
             valid: false,

@@ -14,7 +14,7 @@ function TableColumnHeader(
       verticalAlign={"middle"}
       {...props}
       border={"1px solid"}
-      borderColor={"gray.100"}
+      borderColor={"gray.200"}
       pl={"5px"}
     >
       {props.children}

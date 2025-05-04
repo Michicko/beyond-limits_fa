@@ -1,78 +1,21 @@
 "use client";
-import {
-  Button,
-  Card,
-  Field,
-  HStack,
-  RadioGroup,
-  RadioGroupValueChangeDetails,
-  Stack,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Card, HStack, Stack } from "@chakra-ui/react";
+import React from "react";
 import Info from "@/components/admin/Info/Info";
-import useToast from "@/hooks/useToast";
-import { updateCompetitionSeason } from "@/app/_actions/competition-season-actions";
-import FormLabel from "../Forms/FormLabel";
 import { Nullable } from "@/lib/definitions";
 
 function CompetitionSeasonCard({
-  competitionSeasonId,
   competitionName,
   competitionType,
   season,
   status,
-  winner,
 }: {
   competitionSeasonId: string;
   competitionName: string;
   competitionType?: string | null;
   season: string;
   status: string | null;
-  winner: { isBeyondLimits: Nullable<boolean> } | null;
 }) {
-  const [winnerOpt, setWinnerOpt] = useState(
-    winner || { isBeyondLimits: false }
-  );
-  const [radioVal, setRadioVal] = useState<string | null>("");
-
-  const handleOnChange = (e: RadioGroupValueChangeDetails) => {
-    setRadioVal(e.value);
-    if (e.value === "isBeyondLimits") {
-      setWinnerOpt({ isBeyondLimits: true });
-    } else {
-      setWinnerOpt({ isBeyondLimits: false });
-    }
-  };
-  const { mutationPromiseToast } = useToast();
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const handleSetWinner = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const success = {
-      title: "Season winner updated",
-      desc: `Season winner updated successfully!`,
-    };
-    const err = {
-      title: "Error updating season winner",
-      desc: `Failed to update season winner`,
-    };
-    const loading = {
-      title: "updating season winner",
-      desc: `updating season winner, please wait...`,
-    };
-
-    const formData = new FormData();
-    formData.append("winner", JSON.stringify(winnerOpt));
-
-    const promise = updateCompetitionSeason(
-      competitionSeasonId,
-      formData,
-      competitionName
-    );
-
-    mutationPromiseToast(promise, success, err, loading, setIsUpdating);
-  };
-
   return (
     <Card.Root size="md" p={"5"} border={"1px solid"} borderColor={"gray.200"}>
       <Card.Body color="fg.muted">
@@ -92,63 +35,7 @@ function CompetitionSeasonCard({
             )}
             <Info name="Season" value={season} />
             {status && <Info name="Status" value={status.toLowerCase()} />}
-          </Stack>
-          <Stack alignSelf={"flex-end"}>
-            <form onSubmit={handleSetWinner}>
-              <HStack flexWrap={{ base: "wrap", md: "unset" }} gap={2}>
-                <Field.Root>
-                  <FormLabel>Competition Winner</FormLabel>
-                  <RadioGroup.Root
-                    value={radioVal}
-                    defaultValue={
-                      status === "COMPLETED" && winner?.isBeyondLimits
-                        ? "isBeyondLimits"
-                        : "notBeyondLimits"
-                    }
-                    onValueChange={handleOnChange}
-                  >
-                    <HStack gap="2" flexWrap={{ base: "wrap", sm: "unset" }}>
-                      <RadioGroup.Item
-                        key={"isBeyondLimits"}
-                        value={"isBeyondLimits"}
-                      >
-                        <RadioGroup.ItemHiddenInput />
-                        <RadioGroup.ItemIndicator
-                          border={"1px solid"}
-                          borderColor={"gray.200"}
-                        />
-                        <RadioGroup.ItemText>
-                          {"BeyondLimits"}
-                        </RadioGroup.ItemText>
-                      </RadioGroup.Item>
-                      <RadioGroup.Item
-                        key={"notBeyondLimits"}
-                        value={"notBeyondLimits"}
-                      >
-                        <RadioGroup.ItemHiddenInput />
-                        <RadioGroup.ItemIndicator
-                          border={"1px solid"}
-                          borderColor={"gray.200"}
-                        />
-                        <RadioGroup.ItemText>
-                          {"Not BeyondLimits"}
-                        </RadioGroup.ItemText>
-                      </RadioGroup.Item>
-                    </HStack>
-                  </RadioGroup.Root>
-                </Field.Root>
-                <Button
-                  size={"sm"}
-                  variant={"solid"}
-                  colorPalette={"cyan"}
-                  type="submit"
-                  px={"15px"}
-                  disabled={status === "PENDING" || isUpdating}
-                >
-                  {isUpdating ? "Saving..." : "Save"}
-                </Button>
-              </HStack>
-            </form>
+            <Info name="Winner" value={""} />
           </Stack>
         </HStack>
       </Card.Body>

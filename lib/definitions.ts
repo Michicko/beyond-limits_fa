@@ -21,7 +21,7 @@ export interface IDBStandings {
   position: number;
   p: number;
   w: number;
-  leagueId?: Nullable<string>;
+  competitionSeasonId?: Nullable<string>;
   teamId?: Nullable<string>;
   d: number;
   l: number;
