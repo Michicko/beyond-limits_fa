@@ -6,8 +6,9 @@ import {
   getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
+import { deleteCloudinaryImage } from "./actions";
 
 type Highlight = Schema["Highlight"]["type"];
 
@@ -95,5 +96,15 @@ export async function deleteHighlight(id: string) {
     id,
     modelName: "Highlight",
     pathToRevalidate: "/cp/highlights",
+    // postDelete: async () => {
+    //   try {
+    //     const publicId = getCloudinaryPublicId(image);
+    //     if (publicId) {
+    //       await deleteCloudinaryImage(publicId);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error deleting images:", error);
+    //   }
+    // },
   });
 }

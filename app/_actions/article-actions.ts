@@ -5,9 +5,10 @@ import {
   deleteEntity,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
+import { deleteCloudinaryImage } from "./actions";
 
 type Article = Schema["Article"]["type"];
 
@@ -135,5 +136,15 @@ export async function deleteArticle(id: string) {
     id,
     modelName: "Article",
     pathToRevalidate: "/cp/articles",
+    // postDelete: async () => {
+    //   try {
+    //     const publicId = getCloudinaryPublicId(image);
+    //     if (publicId) {
+    //       await deleteCloudinaryImage(publicId);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error deleting images:", error);
+    //   }
+    // },
   });
 }

@@ -6,8 +6,9 @@ import {
   getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
+import { deleteCloudinaryImage } from "./actions";
 
 type Player = Schema["Player"]["type"];
 
@@ -91,5 +92,18 @@ export async function deletePlayer(id: string) {
     id,
     modelName: "Player",
     pathToRevalidate: "/cp/players",
+    // postDelete: async () => {
+    //   const images = [...playerImages];
+    //   try {
+    //     for (const image of images) {
+    //       const publicId = getCloudinaryPublicId(image);
+    //       if (publicId) {
+    //         await deleteCloudinaryImage(publicId);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error("Error deleting images:", error);
+    //   }
+    // },
   });
 }

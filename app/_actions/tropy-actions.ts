@@ -6,8 +6,9 @@ import {
   getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
+import { deleteCloudinaryImage } from "./actions";
 
 type Trophy = Schema["Trophy"]["type"];
 
@@ -96,5 +97,15 @@ export async function deleteTrophy(id: string) {
     id,
     modelName: "Trophy",
     pathToRevalidate: "/cp/trophies",
+    // postDelete: async () => {
+    //   try {
+    //     const publicId = getCloudinaryPublicId(image);
+    //     if (publicId) {
+    //       await deleteCloudinaryImage(publicId);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error deleting images:", error);
+    //   }
+    // },
   });
 }

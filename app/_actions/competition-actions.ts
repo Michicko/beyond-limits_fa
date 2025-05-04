@@ -5,9 +5,10 @@ import {
   getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
+import { deleteCloudinaryImage } from "./actions";
 
 type Competition = Schema["Competition"]["type"];
 
@@ -118,7 +119,11 @@ export async function deleteCompetition(id: string) {
       };
     }
 
+    const public_id = getCloudinaryPublicId(competition.logo);
     await cookiesClient.models.Competition.delete({ id });
+    if (public_id) {
+      await deleteCloudinaryImage(public_id);
+    }
 
     revalidatePath("/cp/competitions");
     return {

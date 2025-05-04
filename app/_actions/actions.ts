@@ -4,6 +4,7 @@ import { createEntityFactory } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
+import { v2 as cloudinary } from "cloudinary";
 
 type Nullable<T> = T | null;
 
@@ -747,15 +748,13 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
   }
 }
 
-export const deleteCloudinaryImage = async (publicId: string) => {
-  const res = await fetch("/api/delete-image", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ publicId }),
-  });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-  const data = await res.json();
-  return data;
+export const deleteCloudinaryImage = async (publicId: string) => {
+  if (!publicId) throw new Error("Missing publicId");
+  return await cloudinary.uploader.destroy(publicId, { invalidate: true });
 };
