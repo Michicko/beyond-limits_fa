@@ -12,11 +12,6 @@ const links = [
     icon: getIcon("dashboard"),
   },
   {
-    name: "seasons",
-    link: "/cp/seasons",
-    icon: getIcon("year"),
-  },
-  {
     name: "competitions",
     link: "/cp/competitions",
     icon: getIcon("competition"),

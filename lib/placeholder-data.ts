@@ -1561,3 +1561,8 @@ export const honors = [
     article_id: 3,
   },
 ];
+
+export const PLAYER_POSITIONS = {
+  GK: { label: "Goalkeeper", attributes: [] },
+  DEF: { label: "Defender", attributes: [] },
+};
