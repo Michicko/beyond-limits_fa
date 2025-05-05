@@ -8,7 +8,7 @@ import CompetitionMenuItemLink from "@/components/admin/CompetitionMenuItemLink"
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import EndSeason from "@/components/admin/EndEntityBtn/EndSeason";
-import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
+import PaginatedTablePage from "@/components/admin/PaginatedTablePage/PaginatedTablePage";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
 import { HStack } from "@chakra-ui/react";

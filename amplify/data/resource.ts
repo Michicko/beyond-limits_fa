@@ -318,6 +318,7 @@ const schema = a.schema({
       matchId: a.string(),
       matchHomeTeamLogo: a.string(),
       matchAwayTeamLogo: a.string(),
+
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
     })

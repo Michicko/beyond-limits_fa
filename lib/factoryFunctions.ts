@@ -200,7 +200,6 @@ export function createEntityFactory<TInput, TOutput>() {
         data,
       };
     } catch (error) {
-      console.error(error);
       return {
         status: "error",
         message: (error as Error).message || "An unknown error occurred",
@@ -309,6 +308,7 @@ export async function deleteEntity<T>({
     return {
       status: "success",
       message: `${modelName} deleted successfully`,
+      data: true,
     };
   } catch (error) {
     return {

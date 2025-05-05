@@ -1,25 +1,16 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import {
+  checkUniqueField,
   createEntityFactory,
   deleteEntity,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
+import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
-import { deleteCloudinaryImage } from "./actions";
 
 type Article = Schema["Article"]["type"];
-
-const checkUniqueArticleTitle = async (title: string) => {
-  const { data: existing } =
-    await cookiesClient.models.Article.listArticleByTitle({
-      title,
-    });
-
-  return existing;
-};
 
 export const filterArticle = async (text: string) => {
   return cookiesClient.models.Article.list({
@@ -41,8 +32,10 @@ export const getLazyLoadedArticles = async () => {
       "articleCategory.category",
       "status",
       "createdAt",
+      "coverImage",
     ],
     authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 
@@ -70,10 +63,11 @@ export const createArticle = async (formData: FormData) => {
     preprocess: (input) => ({
       ...input,
       title: base.title.toLowerCase(),
-      attributes: JSON.parse(formData.get("attributes") as string),
     }),
     validate: async (input) => {
-      if ((await checkUniqueArticleTitle(input.title)).length > 0) {
+      if (
+        (await checkUniqueField("Article", { title: input.title })).length > 0
+      ) {
         return {
           status: "error",
           valid: false,
@@ -102,11 +96,12 @@ export const updateArticle = async (
     preprocess: (input) => ({
       ...input,
       title: base.title.toLowerCase(),
-      attributes: JSON.parse(formData.get("attributes") as string),
     }),
     validate: async (input) => {
       if (input.title !== currentUniqueValue) {
-        if ((await checkUniqueArticleTitle(input.title)).length > 0) {
+        if (
+          (await checkUniqueField("Article", { title: input.title })).length > 0
+        ) {
           return {
             status: "error",
             valid: false,
@@ -146,15 +141,5 @@ export async function deleteArticle(id: string) {
     id,
     modelName: "Article",
     pathToRevalidate: "/cp/articles",
-    // postDelete: async () => {
-    //   try {
-    //     const publicId = getCloudinaryPublicId(image);
-    //     if (publicId) {
-    //       await deleteCloudinaryImage(publicId);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error deleting images:", error);
-    //   }
-    // },
   });
 }

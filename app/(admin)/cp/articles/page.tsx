@@ -6,71 +6,61 @@ import TableRows from "@/components/admin/Table/TableRows";
 import Link from "next/link";
 import React, { useState } from "react";
 import { formatDate } from "@/lib/helpers";
-import {
-  deleteArticle,
-  getLazyLoadedArticles,
-} from "@/app/_actions/article-actions";
+import { getLazyLoadedArticles } from "@/app/_actions/article-actions";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import useSWR from "swr";
-import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
+import AdminPaginatedTable from "@/components/admin/PaginatedTablePage/AdminPaginatedTable";
+import AdminSearchInput from "@/components/admin/AdminSearch/AdminSearchInput";
+import useSearchFilter from "@/hooks/useSearchFilter";
 
 function Articles() {
   const { data, error, isLoading } = useSWR("articles", getLazyLoadedArticles);
-  const articles = data && data.data;
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10; // Number of items per page
-  // Calculate the start and end index for the current page
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentArticles = articles?.slice(startIndex, endIndex);
+  const articles = data?.data || [];
+  const { search, setSearch, filteredList } = useSearchFilter(
+    articles,
+    "title"
+  );
 
   return (
-    <PaginatedTablePage
-      error={error}
-      headerCols={["Title", "Category", "Status", "Created At", ""]}
+    <AdminPaginatedTable
+      resourceName="Article"
+      list={filteredList}
       isLoading={isLoading}
-      pageTitle="Articles"
-      resource="Article"
-      list={articles}
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      startIndex={startIndex}
-      endIndex={endIndex}
-      pageSize={pageSize}
-    >
-      <>
-        {currentArticles &&
-          currentArticles.map((article) => {
-            return (
-              <TableRows key={article.title}>
+      error={error}
+      columns={["Title", "Category", "Status", "Created At", ""]}
+      topContent={
+        <AdminSearchInput
+          search={search}
+          setSearch={setSearch}
+          name="article"
+        />
+      }
+      renderRow={(article) => (
+        <TableRows key={article.id}>
+          <>
+            <TableCell>{article.title}</TableCell>
+            <TableCell>{article.articleCategory?.category}</TableCell>
+            <TableCell>{article.status}</TableCell>
+            <TableCell>{formatDate(article.createdAt)}</TableCell>
+            <TableCell textAlign={"center"}>
+              <CustomMenu>
                 <>
-                  <TableCell pl={"10px"}>{article.title}</TableCell>
-                  <TableCell>{article.articleCategory.category}</TableCell>
-                  <TableCell>{article.status}</TableCell>
-                  <TableCell>{formatDate(article.createdAt)}</TableCell>
-                  <TableCell>
-                    <CustomMenu>
-                      <>
-                        <CustomMenuItem label="Edit" showBorder={true}>
-                          <Link href={`/cp/articles/${article.id}/edit`}>
-                            Edit
-                          </Link>
-                        </CustomMenuItem>
-                        <DeleteBtn
-                          name={article.title}
-                          id={article.id}
-                          onDelete={deleteArticle}
-                        />
-                      </>
-                    </CustomMenu>
-                  </TableCell>
+                  <CustomMenuItem label="Edit" showBorder>
+                    <Link href={`/cp/articles/${article.id}/edit`}>Edit</Link>
+                  </CustomMenuItem>
+                  <DeleteBtn
+                    name={article.title}
+                    id={article.id}
+                    module="Article"
+                    images={[article.coverImage]}
+                  />
                 </>
-              </TableRows>
-            );
-          })}
-      </>
-    </PaginatedTablePage>
+              </CustomMenu>
+            </TableCell>
+          </>
+        </TableRows>
+      )}
+    />
   );
 }
 

@@ -19,7 +19,14 @@ export const getCompetitions = async () => {
   return competitionsGetter({
     modelName: "Competition",
     limit: 20,
-    selectionSet: ["id", "logo", "shortName", "longName", "competitionType"],
+    selectionSet: [
+      "id",
+      "logo",
+      "shortName",
+      "longName",
+      "competitionType",
+      "competitionSeasons.season",
+    ],
   });
 };
 

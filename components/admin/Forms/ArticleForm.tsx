@@ -38,6 +38,8 @@ type IArticle = Pick<
   | "status"
   | "articleCategoryId"
   | "matchId"
+  | "matchHomeTeamLogo"
+  | "matchAwayTeamLogo"
 >;
 
 type IArticleCategory = Pick<
@@ -132,6 +134,7 @@ function ArticleForm({
       });
     } else {
       startTransition(async () => {
+        const data = Array.from(formData.entries(), ([k, v]) => [k, v]);
         const res = await createArticle(formData);
         if (res.status === "success" && res.data) {
           mutationToast("article", res.data.title, "create");

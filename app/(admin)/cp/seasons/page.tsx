@@ -9,7 +9,7 @@ import { formatDate } from "@/lib/helpers";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import { deleteSeason, fetchSeasons } from "@/app/_actions/season-actions";
 import useSWR from "swr";
-import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
+import PaginatedTablePage from "@/components/admin/PaginatedTablePage/PaginatedTablePage";
 
 function Seasons() {
   const { data, error, isLoading } = useSWR("seasons", fetchSeasons);

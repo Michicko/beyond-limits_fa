@@ -6,7 +6,7 @@ import {
 import CustomMenu from "@/components/admin/CustomMenu/CustomMenu";
 import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import PaginatedTablePage from "@/components/admin/PaginatedTablePage.tsx/PaginatedTablePage";
+import PaginatedTablePage from "@/components/admin/PaginatedTablePage/PaginatedTablePage";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
 import Link from "next/link";

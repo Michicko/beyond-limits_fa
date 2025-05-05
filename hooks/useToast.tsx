@@ -75,17 +75,12 @@ function useToast() {
         if (onSuccess) {
           onSuccess(res);
         }
-        if (res.data) {
-          return {
-            title: `${success.title}`,
-            description: `${success.desc}`,
-          };
-        } else {
-          return {
-            title: `${success.title}`,
-            description: `${success.desc}`,
-          };
-        }
+
+        return {
+          title: `${success.title}`,
+          description: `${success.desc}`,
+          duration: 6000,
+        };
       },
       error: (err) => {
         onLoading(false);
@@ -94,7 +89,11 @@ function useToast() {
           description: `${(err as Error).message}`,
         };
       },
-      loading: { title: `${loading.title}...`, description: "Please wait" },
+      loading: {
+        title: `${loading.title}...`,
+        description: "Please wait",
+        duration: 6000,
+      },
     });
   };
 

@@ -15,6 +15,7 @@ function TableColumnHeader(
       {...props}
       border={"1px solid"}
       borderColor={"gray.200"}
+      pl={"5px"}
     >
       {props.children}
     </ChakraTable.ColumnHeader>

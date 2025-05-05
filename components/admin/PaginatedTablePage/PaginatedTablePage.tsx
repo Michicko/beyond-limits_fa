@@ -26,6 +26,7 @@ function PaginatedTablePage({
   startIndex,
   endIndex,
   createUrl,
+  topContent,
 }: {
   children: React.ReactNode;
   list?: any[];
@@ -40,6 +41,7 @@ function PaginatedTablePage({
   startIndex: number;
   endIndex: number;
   createUrl?: string;
+  topContent?: React.ReactNode;
 }) {
   const currentPageListItems = list?.slice(startIndex, endIndex);
   const totalPages = list && Math.ceil(list.length / pageSize);
@@ -64,7 +66,17 @@ function PaginatedTablePage({
               />
             </Skeleton>
           </HStack>
-
+          {list && list.length > 0 && (
+            <HStack justify={"flex-start"} mb={"20px"} gap="4" w={"full"}>
+              <Skeleton
+                loading={isLoading}
+                h={isLoading ? "40px" : "auto"}
+                w={isLoading ? "160px" : "auto"}
+              >
+                {topContent}
+              </Skeleton>
+            </HStack>
+          )}
           {error ? (
             <CustomAlert
               status="error"
@@ -93,7 +105,6 @@ function PaginatedTablePage({
                           <TableColumnHeader
                             key={head}
                             textAlign={"left"}
-                            pl={i === 0 ? "10px" : "0"}
                             fontWeight={"700"}
                           >
                             {head}
