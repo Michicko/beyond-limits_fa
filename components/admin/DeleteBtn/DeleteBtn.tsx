@@ -15,7 +15,10 @@ type DeleteBtnProps = {
     | "Player"
     | "PlayerPosition"
     | "Season"
-    | "Trophy";
+    | "Trophy"
+    | "ArticleCategory"
+    | "Highlight"
+    | "CompetitionSeason";
   images?: Nullable<string>[];
   type?: "menu" | "btn";
 };

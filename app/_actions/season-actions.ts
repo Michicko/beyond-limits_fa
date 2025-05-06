@@ -8,6 +8,7 @@ import {
   checkUniqueField,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 type Season = Schema["Season"]["type"];
 
@@ -19,6 +20,17 @@ export const fetchSeasons = async () => {
     limit: 50,
     selectionSet: ["id", "season", "createdAt"],
   });
+};
+
+export const getSeason = async (id: string) => {
+  return cookiesClient.models.Season.get(
+    {
+      id,
+    },
+    {
+      selectionSet: ["id", "season", "createdAt"],
+    },
+  );
 };
 
 export const createSeason = async (formData: FormData) => {
@@ -48,7 +60,7 @@ export const createSeason = async (formData: FormData) => {
 export const updateSeason = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string
+  currentUniqueValue: string,
 ) => {
   const base = formDataToObject<Season>(formData);
   const seasonUpdater = updateEntityFactory<Season, Season>();

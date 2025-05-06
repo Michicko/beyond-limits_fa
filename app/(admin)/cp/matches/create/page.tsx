@@ -9,7 +9,7 @@ async function page() {
     <>
       <PageTitle pageTitle="Create Match" />
       <Box w={"full"} h={"full"} mt={"20px"}>
-        <HStack mb={"3"} justifyContent={"space-between"} gap={"4"} w={"full"}>
+        <HStack mb={"3"} justifyContent={"flex-start"}>
           <BackButton />
         </HStack>
         <MatchFormWrapper method="CREATE" />

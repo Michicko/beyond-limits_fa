@@ -56,6 +56,7 @@ function CompetitionSeasonFinalStep({
     }
 
     try {
+      formData.delete("winner");
       startTransition(async () => {
         const res = await createCompetitionSeason(formData);
         // update cup with competition season id
@@ -78,7 +79,7 @@ function CompetitionSeasonFinalStep({
           mutationToast(
             "competition season",
             res.data.name + " " + res.data.season,
-            "create"
+            "create",
           );
           formRef.current?.reset();
           const time = setTimeout(() => {

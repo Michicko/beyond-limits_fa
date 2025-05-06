@@ -7,7 +7,6 @@ import {
   IconButton,
   Image,
   Input,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
@@ -26,8 +25,6 @@ import {
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
-import CreateButton from "@/components/Buttons/CreateButton";
-import ArticleCategory from "@/components/Article/ArticleCategory";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -134,7 +131,6 @@ function ArticleForm({
       });
     } else {
       startTransition(async () => {
-        const data = Array.from(formData.entries(), ([k, v]) => [k, v]);
         const res = await createArticle(formData);
         if (res.status === "success" && res.data) {
           mutationToast("article", res.data.title, "create");
@@ -171,7 +167,7 @@ function ArticleForm({
           success,
           err,
           loading,
-          setIsTrashing
+          setIsTrashing,
         );
       }
     }
@@ -203,32 +199,13 @@ function ArticleForm({
         success,
         err,
         loading,
-        setIsPublishing
+        setIsPublishing,
       );
     }
   };
 
   return (
     <>
-      <Stack mb={"10"}>
-        <HStack justify={"flex-end"} mb={4}>
-          <CreateButton
-            link="/cp/article-categories/create"
-            text={"Create Category"}
-          />
-        </HStack>
-        <HStack flexWrap={"wrap"} columnGap={"3"} rowGap={"2"}>
-          {articleCategories.map((category) => {
-            return (
-              <ArticleCategory
-                key={category.id}
-                category={category.category}
-                link={`/cp/article-categories/${category.id}/edit`}
-              />
-            );
-          })}
-        </HStack>
-      </Stack>
       {articleCategories.length < 1 && (
         <Text my={5}>Add Category before creating an article.</Text>
       )}

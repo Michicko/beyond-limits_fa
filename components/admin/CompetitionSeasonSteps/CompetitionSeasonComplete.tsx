@@ -43,14 +43,6 @@ function CompetitionSeasonComplete({
         <Heading as={"h3"} fontWeight={"500"} fontSize={"2xl"} my={"2"}>
           Successfully created Season
         </Heading>
-        <HStack gap={"4"}>
-          <Text color="blue" textDecoration={"underline"} fontSize={"sm"}>
-            <Link href={`/cp/competitions`}>Go to Cup</Link>
-          </Text>
-          <Text color="blue" textDecoration={"underline"} fontSize={"sm"}>
-            <Link href={`/cp/competitions`}>Go to League</Link>
-          </Text>
-        </HStack>
         <Button colorPalette={"white"} variant={"outline"} px={"30px"} my={"5"}>
           <Link href={`/cp/competitions/${competitionId}/competition-seasons`}>
             Done

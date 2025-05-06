@@ -23,6 +23,7 @@ import {
   createHighlight,
   updateHighlight,
 } from "@/app/_actions/highlight-actions";
+import { Nullable } from "@/lib/definitions";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -48,11 +49,24 @@ function HighlightForm({
   });
 
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<Nullable<string>[]>(highlight?.tags || []);
   const [isLoading, setIsLoading] = useState(false);
+  const [editorKey, setEditorKey] = useState(101);
 
   const handleHighlightDescription = (json: JSONContent) => {
     setTempData({ ...tempData, description: json });
+  };
+  const resetForm = () => {
+    setTempData({
+      title: "",
+      coverImage: "",
+      description: {} as JSONContent,
+      videoId: "",
+      tags: [],
+    });
+    setTags([]);
+    formRef.current?.reset();
+    setEditorKey((prev) => prev + 1); // force TextEditor re-mount
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,20 +83,12 @@ function HighlightForm({
       try {
         const res = await createHighlight(formData);
         if (res.status === "success" && res.data) {
-          toast.success(`Successfully created ${res.data.title} highlight`, {
+          toast.success(`Successfully created "${res.data.title}" highlight`, {
             duration: 8000,
           });
         }
         setIsLoading(false);
-        setTempData({
-          title: "",
-          coverImage: "",
-          description: {} as JSONContent,
-          videoId: "",
-          tags: [],
-        });
-        setTags([]);
-        handleHighlightDescription({});
+        resetForm();
       } catch (error) {
         setIsLoading(false);
         const message = (error as Error).message;
@@ -99,10 +105,10 @@ function HighlightForm({
         const res = await updateHighlight(
           highlight.id,
           formData,
-          highlight.title
+          highlight.title,
         );
         if (res.status === "success" && res.data) {
-          toast.success(`Successfully updated ${res.data.title} highlight`, {
+          toast.success(`Successfully updated "${res.data.title}" highlight`, {
             duration: 8000,
           });
         }
@@ -190,6 +196,7 @@ function HighlightForm({
             <TextEditor
               content={tempData.description}
               handleOnUpdate={handleHighlightDescription}
+              editorKey={editorKey}
             />
           </Field.Root>
           <ListItemAdd

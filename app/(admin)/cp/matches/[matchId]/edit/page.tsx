@@ -40,14 +40,14 @@ async function page({ params }: { params: { matchId: string } }) {
         "coach.*",
         "scorers",
       ],
-    }
+    },
   );
 
   return (
     <>
       <PageTitle pageTitle="Edit Match" />
       <Box w={"full"} h={"full"} mt={"20px"}>
-        <HStack justify={"flex-end"} mb={"20px"} gap="2">
+        <HStack justifyContent={"flex-start"} mb={"20px"} gap="2">
           <BackButton />
         </HStack>
 

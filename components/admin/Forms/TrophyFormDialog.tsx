@@ -84,7 +84,7 @@ function TrophyFormDialog({
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
   const competiton = competitions.find(
-    (el) => el.id === tempData.competitionId
+    (el) => el.id === tempData.competitionId,
   );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -96,7 +96,7 @@ function TrophyFormDialog({
     formData.delete("articleId");
     formData.append(
       "trophyName",
-      `${competiton?.longName.toString()} trophy` || ""
+      `${competiton?.longName.toString()} trophy` || "",
     );
     if (article) {
       formData.append("articleId", article.id);
@@ -110,7 +110,7 @@ function TrophyFormDialog({
           mutationToast(
             "trophy",
             competiton?.longName || "competition",
-            "update"
+            "update",
           );
         }
         if (res.status === "error") {
@@ -125,7 +125,7 @@ function TrophyFormDialog({
           mutationToast(
             "trophy",
             competiton?.longName || "competition",
-            "create"
+            "create",
           );
           formRef.current?.reset();
           setTempData({
@@ -144,7 +144,7 @@ function TrophyFormDialog({
   };
 
   const [article, setArticle] = useState<{ id: string; title: string } | null>(
-    null
+    null,
   );
   const [openArticleModal, setOpenArticleModal] = useState(false);
 

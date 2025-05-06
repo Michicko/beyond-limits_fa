@@ -1,24 +1,18 @@
+"use client";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import BackButton from "@/components/admin/BackButton";
 import ArticleCategoryForm from "@/components/admin/Forms/ArticleCategoryForm";
 import PageTitle from "@/components/admin/Layout/PageTitle";
-import { cookiesClient } from "@/utils/amplify-utils";
 import { Box, HStack } from "@chakra-ui/react";
 import React from "react";
+import useSWR from "swr";
+import { getArticleCategory } from "@/app/_actions/article-category-actions";
 
-async function EditCategory({
-  params,
-}: {
-  params: { articleCategoryId: string };
-}) {
-  const { data: articleCategory, errors } =
-    await cookiesClient.models.ArticleCategory.get(
-      { id: params.articleCategoryId },
-      {
-        selectionSet: ["id", "category", "createdAt"],
-        authMode: "userPool",
-      }
-    );
+function EditCategory({ params }: { params: { articleCategoryId: string } }) {
+  const { data, error, isLoading } = useSWR("article-categories", () =>
+    getArticleCategory(params.articleCategoryId),
+  );
+  const articleCategory = data?.data ?? null;
 
   return (
     <>
@@ -27,11 +21,11 @@ async function EditCategory({
         <HStack mb={8}>
           <BackButton />
         </HStack>
-        {errors ? (
+        {error ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
-            message={errors[0].message}
+            message={error.message}
           />
         ) : !articleCategory ? (
           <CustomAlert

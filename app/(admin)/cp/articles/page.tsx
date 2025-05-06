@@ -18,16 +18,17 @@ function Articles() {
   const articles = data?.data || [];
   const { search, setSearch, filteredList } = useSearchFilter(
     articles,
-    "title"
+    "title",
   );
 
   return (
     <AdminPaginatedTable
-      resourceName="Article"
+      resourceName="Articles"
       list={filteredList}
       isLoading={isLoading}
       error={error}
       columns={["Title", "Category", "Status", "Created At", ""]}
+      createUrl="/cp/articles/create"
       topContent={
         <AdminSearchInput
           search={search}

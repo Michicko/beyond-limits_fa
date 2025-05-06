@@ -16,7 +16,6 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { IPlayer } from "../../../lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deletePlayer } from "@/app/_actions/player-actions";
 
 function PlayerCard({ player }: { player: IPlayer }) {
   const cardStyles = {
@@ -148,7 +147,8 @@ function PlayerCard({ player }: { player: IPlayer }) {
           <DeleteBtn
             name={`${player.firstname} ${player.lastname}`}
             id={player.id}
-            onDelete={deletePlayer}
+            module="Player"
+            images={[player.homeKit, player.awayKit]}
           />
         </>
       </CustomMenu>

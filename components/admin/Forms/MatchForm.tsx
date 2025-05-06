@@ -184,7 +184,7 @@ function MatchForm({
   const selectedCompetition = match
     ? competitions.find((el) => {
         const competitionSeason = el.competitionSeasons.find(
-          (comp) => comp.id === match.competitionSeasonId
+          (comp) => comp.id === match.competitionSeasonId,
         );
         if (competitionSeason) return el;
       })
@@ -193,7 +193,7 @@ function MatchForm({
   const [result, setResult] = useState((match && match.result) || "");
 
   const [competition, setCompetition] = useState<ICompetition | null>(
-    selectedCompetition || null
+    selectedCompetition || null,
   );
 
   const competitionOptions = competitions.map((el) => {
@@ -215,7 +215,7 @@ function MatchForm({
   const handleTeam = (
     name: string,
     value: string,
-    teamOption: "homeTeam" | "awayTeam"
+    teamOption: "homeTeam" | "awayTeam",
   ) => {
     const currentTeamData = data[teamOption];
 
@@ -309,7 +309,7 @@ function MatchForm({
           mutationToast(
             "Match",
             res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
-            "update"
+            "update",
           );
         }
         if (res.status === "error") {
@@ -325,7 +325,7 @@ function MatchForm({
           mutationToast(
             "Match",
             res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
-            "create"
+            "create",
           );
           formRef.current?.reset();
         }
@@ -471,7 +471,7 @@ function MatchForm({
                 }) => {
                   const { value } = e.target;
                   const competition = competitions.find(
-                    (el) => el.id === value
+                    (el) => el.id === value,
                   );
                   if (!competition) return;
                   setCompetition(competition);

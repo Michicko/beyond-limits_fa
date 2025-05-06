@@ -52,6 +52,11 @@ const links = [
     icon: getIcon("trophy"),
   },
   {
+    name: "categories",
+    link: "/cp/article-categories",
+    icon: getIcon("articles"),
+  },
+  {
     name: "articles",
     link: "/cp/articles",
     icon: getIcon("articles"),
@@ -72,7 +77,7 @@ const filteredLinks = links.filter(
   (el) =>
     el.name === "articles" ||
     el.name === "dashboard" ||
-    el.name === "highlights"
+    el.name === "highlights",
 );
 
 function Sidebar({

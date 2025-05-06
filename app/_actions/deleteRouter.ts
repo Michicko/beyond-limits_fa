@@ -8,7 +8,7 @@ import { deleteEntity } from "@/lib/factoryFunctions";
 async function retryDeleteCloudinaryImage(
   publicId: string,
   retries = 3,
-  delay = 1000 // in milliseconds
+  delay = 1000, // in milliseconds
 ): Promise<void> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -17,7 +17,7 @@ async function retryDeleteCloudinaryImage(
     } catch (err) {
       console.error(
         `Failed to delete Cloudinary image ${publicId} (attempt ${attempt}):`,
-        err
+        err,
       );
       if (attempt < retries) {
         await new Promise((res) => setTimeout(res, delay));
@@ -35,7 +35,10 @@ export type DeleteModule =
   | "Match"
   | "Player"
   | "Trophy"
-  | "Highlight";
+  | "Highlight"
+  | "CompetitionSeason"
+  | "PlayerPosition"
+  | "ArticleCategory";
 
 const deleteConfig: Record<
   DeleteModule,
@@ -43,15 +46,27 @@ const deleteConfig: Record<
     modelName: keyof typeof cookiesClient.models;
     pathToRevalidate: string;
     extraPostDelete?: (id: string) => Promise<void>;
+    checkBeforeDelete?: (id: string) => Promise<{
+      canDelete: boolean;
+      reason?: string;
+    }>;
   }
 > = {
   Article: {
     modelName: "Article",
     pathToRevalidate: "/cp/articles",
   },
+  ArticleCategory: {
+    modelName: "ArticleCategory",
+    pathToRevalidate: "/cp/articles",
+  },
   Player: {
     modelName: "Player",
     pathToRevalidate: "/cp/players",
+  },
+  PlayerPosition: {
+    modelName: "PlayerPosition",
+    pathToRevalidate: "/cp/positions",
   },
   Team: {
     modelName: "Team",
@@ -64,6 +79,10 @@ const deleteConfig: Record<
   Competition: {
     modelName: "Competition",
     pathToRevalidate: "/cp/competitions",
+  },
+  CompetitionSeason: {
+    modelName: "CompetitionSeason",
+    pathToRevalidate: "/cp/competitions/[competitionId]/competition-seasons",
   },
   Highlight: {
     modelName: "Highlight",
@@ -96,7 +115,7 @@ export async function deleteRouter({
     try {
       if (publicIds.length > 0) {
         await Promise.all(
-          publicIds.map((pid) => retryDeleteCloudinaryImage(pid))
+          publicIds.map((pid) => retryDeleteCloudinaryImage(pid)),
         );
       }
     } catch (err) {

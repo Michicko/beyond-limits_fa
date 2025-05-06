@@ -31,6 +31,8 @@ export const createTrophy = async (formData: FormData) => {
   const base = formDataToObject<Trophy>(formData);
   const trophyCreator = createEntityFactory<Trophy, Trophy>();
 
+  console.log(base);
+
   return await trophyCreator({
     modelName: "Trophy",
     input: base,
@@ -58,7 +60,7 @@ export const createTrophy = async (formData: FormData) => {
 export const updateTrophy = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string
+  currentUniqueValue: string,
 ) => {
   const base = formDataToObject<Trophy>(formData);
   const trophyUpdater = updateEntityFactory<Trophy, Trophy>();
@@ -101,15 +103,5 @@ export async function deleteTrophy(id: string) {
     id,
     modelName: "Trophy",
     pathToRevalidate: "/cp/trophies",
-    // postDelete: async () => {
-    //   try {
-    //     const publicId = getCloudinaryPublicId(image);
-    //     if (publicId) {
-    //       await deleteCloudinaryImage(publicId);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error deleting images:", error);
-    //   }
-    // },
   });
 }

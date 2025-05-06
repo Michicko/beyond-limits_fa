@@ -91,8 +91,8 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
                   {match.id && (
                     <DeleteBtn
                       id={match.id}
-                      name="match"
-                      onDelete={deleteMatch}
+                      name={`${match.homeTeam.longName} vs ${match.awayTeam.longName}`}
+                      module="Match"
                     />
                   )}
                 </>

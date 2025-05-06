@@ -18,8 +18,18 @@ export const getArticleCategories = async () => {
   return articleCategoriesGetter({
     modelName: "ArticleCategory",
     limit: 20,
-    selectionSet: ["id", "category"],
+    selectionSet: ["id", "category", "articles.title"],
   });
+};
+
+export const getArticleCategory = async (id: string) => {
+  return cookiesClient.models.ArticleCategory.get(
+    { id },
+    {
+      selectionSet: ["id", "category", "createdAt"],
+      authMode: "userPool",
+    },
+  );
 };
 
 export const createArticleCategory = async (formData: FormData) => {
@@ -57,7 +67,7 @@ export const createArticleCategory = async (formData: FormData) => {
 export const updateArticleCategory = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string
+  currentUniqueValue: string,
 ) => {
   const base = formDataToObject<ArticleCategory>(formData);
   const articleUpdater = updateEntityFactory<

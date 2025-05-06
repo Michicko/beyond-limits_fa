@@ -39,8 +39,25 @@ export const getCompetitionSeasonLazyLoaded = async (id: string) => {
         "league.leagueRounds.*",
         "winner.*",
       ],
-    }
+    },
   );
+};
+
+export const getCompetitionSeasonsForCompetition = async (
+  competitionId: string,
+) => {
+  const competitionSeasonGetter = getEntityFactory<CompetitionSeason>();
+
+  return competitionSeasonGetter({
+    modelName: "CompetitionSeason",
+    limit: 150,
+    selectionSet: ["id", "status", "name", "season", "matches.status"],
+    filter: {
+      competitionId: {
+        eq: competitionId,
+      },
+    },
+  });
 };
 
 export const getCompetitionSeasons = async (competitionId: string) => {
@@ -48,13 +65,8 @@ export const getCompetitionSeasons = async (competitionId: string) => {
 
   return competitionSeasonGetter({
     modelName: "CompetitionSeason",
-    limit: 150,
-    selectionSet: ["id", "status", "name", "season", "cupId", "leagueId"],
-    filter: {
-      competitionId: {
-        eq: competitionId,
-      },
-    },
+    limit: 200,
+    selectionSet: ["id", "status", "season"],
   });
 };
 
@@ -117,7 +129,7 @@ export const createCompetitionSeason = async (formData: FormData) => {
 export const updateCompetitionSeason = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string
+  currentUniqueValue: string,
 ) => {
   const base = formDataToObject<CompetitionSeason>(formData);
   const competitionSeasonUpdater = updateEntityFactory<
@@ -265,7 +277,7 @@ export async function deleteCompetitionSeason(id: string) {
 
 export async function endCompetitionSeason(
   seasonId: string,
-  resources: { cupId?: Nullable<string>; leagueId?: Nullable<string> }
+  resources: { cupId?: Nullable<string>; leagueId?: Nullable<string> },
 ) {
   try {
     const { data, errors } =
@@ -273,7 +285,7 @@ export async function endCompetitionSeason(
         { id: seasonId, status: "COMPLETED" },
         {
           selectionSet: ["id", "name", "season"],
-        }
+        },
       );
 
     if (resources.cupId) {

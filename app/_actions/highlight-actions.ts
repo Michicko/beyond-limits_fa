@@ -4,20 +4,15 @@ import {
   checkUniqueField,
   createEntityFactory,
   deleteEntity,
-  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
-import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
-import { deleteCloudinaryImage } from "./actions";
+import { formDataToObject } from "@/lib/helpers";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 type Highlight = Schema["Highlight"]["type"];
 
 export const getHighlights = async () => {
-  const highlightsGetter = getEntityFactory<Highlight>();
-
-  return highlightsGetter({
-    modelName: "Highlight",
-    limit: 200,
+  return cookiesClient.models.Highlight.list({
     selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"],
   });
 };
@@ -58,7 +53,7 @@ export const createHighlight = async (formData: FormData) => {
 export const updateHighlight = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string
+  currentUniqueValue: string,
 ) => {
   const base = formDataToObject<Highlight>(formData);
   const highlightUpdater = updateEntityFactory<Highlight, Highlight>();

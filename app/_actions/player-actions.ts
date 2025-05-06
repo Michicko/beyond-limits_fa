@@ -75,7 +75,6 @@ export const createPlayer = async (formData: FormData) => {
       ...input,
       firstname: base.firstname.toLowerCase(),
       lastname: base.lastname.toLowerCase(),
-      attributes: JSON.parse(formData.get("attributes") as string),
     }),
   });
 };
@@ -90,6 +89,11 @@ export const updatePlayer = async (id: string, formData: FormData) => {
     input: base,
     selectionSet: ["id", "firstname", "lastname", "ageGroup", "dob"],
     pathToRevalidate: "/cp/players",
+    preprocess: (input) => ({
+      ...input,
+      firstname: base.firstname.toLowerCase(),
+      lastname: base.lastname.toLowerCase(),
+    }),
   });
 };
 
@@ -98,18 +102,5 @@ export async function deletePlayer(id: string) {
     id,
     modelName: "Player",
     pathToRevalidate: "/cp/players",
-    // postDelete: async () => {
-    //   const images = [...playerImages];
-    //   try {
-    //     for (const image of images) {
-    //       const publicId = getCloudinaryPublicId(image);
-    //       if (publicId) {
-    //         await deleteCloudinaryImage(publicId);
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("Error deleting images:", error);
-    //   }
-    // },
   });
 }

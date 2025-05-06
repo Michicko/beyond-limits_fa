@@ -6,8 +6,9 @@ const useSearchFilter = <T extends SearchableItem>(list: T[], key: keyof T) => {
   const [search, setSearch] = useState("");
 
   const filteredList = useMemo(() => {
+    if (!list) return;
     return list.filter((item) =>
-      item[key]?.toString().toLowerCase().includes(search.toLowerCase())
+      item[key]?.toString().toLowerCase().includes(search.toLowerCase()),
     );
   }, [list, key, search]);
 

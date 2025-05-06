@@ -17,7 +17,7 @@ import Link from "next/link";
 import React from "react";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
-import { deletePosition, getPositions } from "@/app/_actions/position-actions";
+import { getPositions } from "@/app/_actions/position-actions";
 import useSWR from "swr";
 
 function Positions() {
@@ -86,7 +86,7 @@ function Positions() {
                           <DeleteBtn
                             name={position.longName}
                             id={position.id}
-                            onDelete={deletePosition}
+                            module="PlayerPosition"
                           />
                         </>
                       </CustomMenu>

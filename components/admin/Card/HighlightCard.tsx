@@ -1,7 +1,6 @@
 import { Schema } from "@/amplify/data/resource";
 import { getIcon } from "@/lib/icons";
 import {
-  Box,
   Card,
   Heading,
   HStack,
@@ -15,7 +14,6 @@ import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deleteHighlight } from "@/app/_actions/highlight-actions";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -110,9 +108,10 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
           </CustomMenuItem>
           {highlight.id && (
             <DeleteBtn
+              name={highlight.title}
               id={highlight.id}
-              name="highlight"
-              onDelete={deleteHighlight}
+              module="Highlight"
+              images={[highlight.coverImage]}
             />
           )}
         </>

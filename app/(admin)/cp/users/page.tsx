@@ -51,7 +51,7 @@ async function Users() {
             {
               userId: user.Username,
             },
-            { authMode: "userPool" }
+            { authMode: "userPool" },
           )
         ).data;
 
@@ -63,7 +63,7 @@ async function Users() {
           ...user,
           groups, // Add the groups array here
         };
-      })
+      }),
     );
   }
 
@@ -122,13 +122,13 @@ async function Users() {
                                 <TableCell pl={"10px"}>
                                   {findAttribute(
                                     user.Attributes,
-                                    "preferred_username"
+                                    "preferred_username",
                                   )}
                                 </TableCell>
                                 <TableCell textTransform={"lowercase"}>
                                   {findAttribute(
                                     user.Attributes,
-                                    "email"
+                                    "email",
                                   ).toLowerCase()}
                                 </TableCell>
                                 <TableCell textTransform={"lowercase"}>
@@ -150,7 +150,7 @@ async function Users() {
                                       : "unverified"}
                                   </Badge>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell px={"10px"}>
                                   <UserRoleSelect
                                     role={
                                       cogGroups.includes(user.groups[0])
