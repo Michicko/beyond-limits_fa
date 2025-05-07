@@ -5,7 +5,7 @@ import {
   updateCompetitionSeason,
 } from "@/app/_actions/competition-season-actions";
 import useToast from "@/hooks/useToast";
-import { Field, Stack } from "@chakra-ui/react";
+import { Field, Input, Stack } from "@chakra-ui/react";
 import { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomSelect from "../CustomSelect/CustomSelect";
@@ -14,22 +14,19 @@ import { getButtonStatus } from "@/lib/helpers";
 
 type ICompetitionSeason = Pick<
   Schema["CompetitionSeason"]["type"],
-  "id" | "season" | "status" | "winner" | "competitionId"
+  "id" | "season" | "status" | "isWinner" | "competitionId"
 >;
 type ITeam = Pick<Schema["Team"]["type"], "id" | "logo" | "longName">;
-type ISeason = Pick<Schema["Season"]["type"], "id" | "season">;
 
 function CompetitionSeasonForm({
   competitionId,
   competitionSeason,
   teams,
-  seasons,
   statuses,
 }: {
   competitionId: string;
   competitionSeason?: ICompetitionSeason | null;
   teams: ITeam[];
-  seasons: ISeason[];
   statuses: string[];
 }) {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -40,7 +37,7 @@ function CompetitionSeasonForm({
     season: competitionSeason?.season || "",
     competitionId,
     status: competitionSeason?.status || "PENDING",
-    winner: competitionSeason?.winner || "",
+    isWinner: competitionSeason?.isWinner || null,
   });
 
   const handleOnChange = (e: { target: { name: string; value: string } }) => {
@@ -51,7 +48,7 @@ function CompetitionSeasonForm({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    formData.delete("winner");
+    formData.delete("isWinner");
     formData.append("competitionId", tempData.competitionId);
 
     if (competitionSeason) {
@@ -86,19 +83,25 @@ function CompetitionSeasonForm({
     <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
-          <FormLabel>Competition Season</FormLabel>
-          <CustomSelect
-            options={seasons.map((el) => {
-              return {
-                label: el.season,
-                value: el.season,
-              };
-            })}
-            name="season"
-            description="season"
-            selectedValue={tempData.season}
-            handleOnChange={handleOnChange}
+          <FormLabel>Season</FormLabel>
+          <Input
+            name={"season"}
+            type={"text"}
+            placeholder="Enter Season"
+            px={"2"}
+            color={"text_lg"}
+            fontSize={"sm"}
+            fontWeight={"medium"}
+            mb={"5px"}
+            defaultValue={competitionSeason?.season || ""}
           />
+          <Field.HelperText
+            fontSize={"sm"}
+            fontWeight={"normal"}
+            color={"text_md"}
+          >
+            Enter season e.g 2023/2024
+          </Field.HelperText>
         </Field.Root>
         <Field.Root required>
           <FormLabel>Season Status</FormLabel>

@@ -12,14 +12,12 @@ function CompetitionSeasonSteps({
   competitionLogo,
   competitionId,
   competitionType,
-  seasons,
   competitionName,
   teams,
 }: {
   competitionLogo: string;
   competitionId: string;
   competitionType: "CUP" | "LEAGUE" | "MIXED" | null;
-  seasons: { season: string }[];
   competitionName: string;
   teams: Pick<Schema["Team"]["type"], "id" | "logo" | "longName">[];
 }) {
@@ -57,9 +55,9 @@ function CompetitionSeasonSteps({
           w={{ base: "auto", md: "full" }}
           margin={{ base: "unset", md: "0 auto" }}
         >
-          <Steps.Item index={0} title={"Select Season"}>
+          <Steps.Item index={0} title={"Enter Season"}>
             <Steps.Indicator />
-            <Steps.Title css={stepTitleStyles}>Select Season</Steps.Title>
+            <Steps.Title css={stepTitleStyles}>Enter Season</Steps.Title>
             <Steps.Separator />
           </Steps.Item>
           {competitionType === "CUP" && (
@@ -104,7 +102,6 @@ function CompetitionSeasonSteps({
           <CompetitionSeasonSelector
             goToNextStep={goToNextStep}
             season={season}
-            seasons={seasons}
             setSeason={setSeason}
           />
           {competitionType === "CUP" && (

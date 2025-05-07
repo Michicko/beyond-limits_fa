@@ -1,6 +1,6 @@
 "use client";
 import { getMatches } from "@/app/_actions/match-actions";
-import AdminPaginatedGrid from "@/components/admin/AdminPaginatedGrid/page";
+import AdminPaginatedGrid from "@/components/admin/AdminPaginatedGrid/AdminPaginatedGrid";
 import MatchCard from "@/components/admin/Card/MatchCard";
 import React from "react";
 

@@ -13,7 +13,6 @@ import Info from "@/components/admin/Info/Info";
 import useToast from "@/hooks/useToast";
 import { updateCompetitionSeason } from "@/app/_actions/competition-season-actions";
 import FormLabel from "../Forms/FormLabel";
-import { Nullable } from "@/lib/definitions";
 
 function CompetitionSeasonCard({
   competitionSeasonId,
@@ -21,26 +20,24 @@ function CompetitionSeasonCard({
   competitionType,
   season,
   status,
-  winner,
+  isWinner,
 }: {
   competitionSeasonId: string;
   competitionName: string;
   competitionType?: string | null;
   season: string;
   status: string | null;
-  winner: { isBeyondLimits: Nullable<boolean> } | null;
+  isWinner: boolean | null;
 }) {
-  const [winnerOpt, setWinnerOpt] = useState(
-    winner || { isBeyondLimits: false }
-  );
+  const [winnerOpt, setWinnerOpt] = useState(isWinner || false);
   const [radioVal, setRadioVal] = useState<string | null>("");
 
   const handleOnChange = (e: RadioGroupValueChangeDetails) => {
     setRadioVal(e.value);
     if (e.value === "isBeyondLimits") {
-      setWinnerOpt({ isBeyondLimits: true });
+      setWinnerOpt(true);
     } else {
-      setWinnerOpt({ isBeyondLimits: false });
+      setWinnerOpt(false);
     }
   };
   const { mutationPromiseToast } = useToast();
@@ -62,7 +59,7 @@ function CompetitionSeasonCard({
     };
 
     const formData = new FormData();
-    formData.append("winner", JSON.stringify(winnerOpt));
+    formData.append("isWinner", JSON.stringify(winnerOpt));
 
     const promise = updateCompetitionSeason(
       competitionSeasonId,
@@ -101,7 +98,7 @@ function CompetitionSeasonCard({
                   <RadioGroup.Root
                     value={radioVal}
                     defaultValue={
-                      status === "COMPLETED" && winner?.isBeyondLimits
+                      status === "COMPLETED" && isWinner
                         ? "isBeyondLimits"
                         : "notBeyondLimits"
                     }

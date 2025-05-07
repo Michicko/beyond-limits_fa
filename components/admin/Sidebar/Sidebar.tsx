@@ -11,11 +11,11 @@ const links = [
     link: "/cp/dashboard",
     icon: getIcon("dashboard"),
   },
-  {
-    name: "seasons",
-    link: "/cp/seasons",
-    icon: getIcon("year"),
-  },
+  // {
+  //   name: "seasons",
+  //   link: "/cp/seasons",
+  //   icon: getIcon("year"),
+  // },
   {
     name: "competitions",
     link: "/cp/competitions",
@@ -46,11 +46,11 @@ const links = [
     link: "/cp/matches",
     icon: getIcon("ball"),
   },
-  {
-    name: "trophies",
-    link: "/cp/trophies",
-    icon: getIcon("trophy"),
-  },
+  // {
+  //   name: "trophies",
+  //   link: "/cp/trophies",
+  //   icon: getIcon("trophy"),
+  // },
   {
     name: "categories",
     link: "/cp/article-categories",
@@ -77,7 +77,7 @@ const filteredLinks = links.filter(
   (el) =>
     el.name === "articles" ||
     el.name === "dashboard" ||
-    el.name === "highlights",
+    el.name === "highlights"
 );
 
 function Sidebar({

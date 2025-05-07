@@ -1,36 +1,44 @@
-import { Button, HStack, Steps, Text } from "@chakra-ui/react";
+import { Button, Field, HStack, Input, Steps, Text } from "@chakra-ui/react";
 import React from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import FormLabel from "../Forms/FormLabel";
 
 function CompetitionSeasonSelector({
   goToNextStep,
-  seasons,
   season,
   setSeason,
 }: {
   goToNextStep: () => void;
-  seasons: { season: string }[];
   season: string;
   setSeason: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
     <Steps.Content index={0} outline={"transparent"}>
       <HStack outline={"transparent"} border={"none"}>
-        <CompetitionSeasonCard title="Select Season">
-          <Text mb={"2"}>Select season to get started</Text>
-          <CustomSelect
-            options={seasons.map((el) => {
-              return {
-                label: el.season,
-                value: el.season,
-              };
-            })}
-            name="season"
-            description="season"
-            selectedValue={season}
-            handleOnChange={(e) => setSeason(e.target.value)}
-          />
+        <CompetitionSeasonCard title="Enter Season">
+          <Text mb={"2"}>Enter season to get started</Text>
+          <Field.Root required>
+            <FormLabel>Season</FormLabel>
+            <Input
+              name={"season"}
+              type={"text"}
+              placeholder="Enter Season"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              defaultValue={season}
+              onChange={(e) => setSeason(e.target.value)}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter season e.g 2023/2024
+            </Field.HelperText>
+          </Field.Root>
           <HStack justifyContent={"flex-end"} mt={"5"}>
             <Button
               px={"20px"}

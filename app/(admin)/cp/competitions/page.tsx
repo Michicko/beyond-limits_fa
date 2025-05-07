@@ -76,7 +76,7 @@ function Competitions() {
                     name={competition.longName}
                     id={competition.id}
                     module="Competition"
-                    images={[competition.logo]}
+                    images={[competition.logo, competition.trophyImage]}
                   />
                 </>
               </CustomMenu>

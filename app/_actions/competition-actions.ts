@@ -26,6 +26,8 @@ export const getCompetitions = async () => {
       "longName",
       "competitionType",
       "competitionSeasons.season",
+      "trophyImage",
+      "trophyArticleId",
     ],
   });
 };

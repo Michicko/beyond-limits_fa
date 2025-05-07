@@ -20,11 +20,6 @@ async function CreateCompetitionSeason({
       }
     );
 
-  const { data: seasons, errors: seasonsErrors } =
-    await cookiesClient.models.Season.list({
-      selectionSet: ["season"],
-    });
-
   const { data: teams, errors: teamsErrors } =
     await cookiesClient.models.Team.list({
       selectionSet: ["id", "logo", "longName"],
@@ -34,15 +29,13 @@ async function CreateCompetitionSeason({
     <>
       <PageTitle pageTitle="Create Season" />
       <Box w={"full"} h={"full"} mt={"30px"}>
-        {errors || seasonsErrors || teamsErrors ? (
+        {errors || teamsErrors ? (
           <CustomAlert
             status="error"
             title="Something went wrong."
             message={
               errors
                 ? errors[0].message
-                : seasonsErrors
-                ? seasonsErrors[0].message
                 : teamsErrors
                 ? teamsErrors[0].message
                 : "something went wrong."
@@ -53,11 +46,6 @@ async function CreateCompetitionSeason({
             status="error"
             title={`No teams. Please create some teams before starting a competition season`}
           />
-        ) : !seasons || seasons.length < 1 ? (
-          <CustomAlert
-            status="error"
-            title={`No season. Please start a season before creating a competition season`}
-          />
         ) : !competition ? (
           <CustomAlert
             status="error"
@@ -67,7 +55,6 @@ async function CreateCompetitionSeason({
           <CompetitionSeasonSteps
             competitionLogo={competition.logo}
             competitionType={competition.competitionType}
-            seasons={seasons}
             competitionName={competition.longName}
             teams={teams}
             competitionId={params.competitionId}

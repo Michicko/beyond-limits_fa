@@ -14,7 +14,7 @@ import useSWR from "swr";
 function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
   const { data, error, isLoading } = useSWR(
     ["competitionSeasons", params.competitionId],
-    () => getCompetitionSeasonsForCompetition(params.competitionId),
+    () => getCompetitionSeasonsForCompetition(params.competitionId)
   );
   const seasons = data?.data ?? [];
   const { search, setSearch, filteredList } = useSearchFilter(seasons, "name");
@@ -25,7 +25,7 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
       list={filteredList}
       isLoading={isLoading}
       error={error}
-      columns={["season", "status", "matches", ""]}
+      columns={["season", "status", "matches", "winner", ""]}
       createUrl={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
       topContent={
         <AdminSearchInput search={search} setSearch={setSearch} name="season" />
@@ -38,6 +38,9 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
             </TableCell>
             <TableCell>{season.status}</TableCell>
             <TableCell>{season.matches.length}</TableCell>
+            <TableCell>
+              {season.isWinner ? "Beyond Limits" : "Not Beyond Limits"}
+            </TableCell>
             <TableCell textAlign={"center"}>
               <CustomMenu>
                 <>

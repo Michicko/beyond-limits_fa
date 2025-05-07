@@ -19,6 +19,7 @@ function AdminSearchInput({
       name={name}
       id={name}
       onChange={(e) => setSearch(e.target.value)}
+      maxW={"250px"}
     />
   );
 }

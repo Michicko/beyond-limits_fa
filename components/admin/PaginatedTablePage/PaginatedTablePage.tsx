@@ -66,17 +66,17 @@ function PaginatedTablePage({
               />
             </Skeleton>
           </HStack>
-          {list && list.length > 0 && (
-            <HStack justify={"flex-start"} mb={"20px"} gap="4" w={"full"}>
-              <Skeleton
-                loading={isLoading}
-                h={isLoading ? "40px" : "auto"}
-                w={isLoading ? "160px" : "auto"}
-              >
-                {topContent}
-              </Skeleton>
-            </HStack>
-          )}
+
+          <HStack justify={"flex-start"} mb={"20px"} gap="4" w={"full"}>
+            <Skeleton
+              loading={isLoading}
+              h={isLoading ? "40px" : "auto"}
+              w={isLoading ? "160px" : "auto"}
+            >
+              {topContent}
+            </Skeleton>
+          </HStack>
+
           {error ? (
             <CustomAlert
               status="error"
@@ -85,10 +85,7 @@ function PaginatedTablePage({
             />
           ) : isLoading ? (
             <TableSkeleton rows={5} cols={3} />
-          ) : !currentPageListItems ||
-            currentPageListItems.length < 1 ||
-            !list ||
-            list.length < 1 ? (
+          ) : !list || list.length < 1 ? (
             <CustomAlert
               status="info"
               title={`No ${resource}s.`}

@@ -1,15 +1,7 @@
 "use client";
-import {
-  Field,
-  HStack,
-  IconButton,
-  Input,
-  Stack,
-  Image,
-} from "@chakra-ui/react";
+import { Field, Input, Stack } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
-import CustomFileUpload from "@/components/admin/CustomFileUpload/CustomFileUpload";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import FormBtn from "./FormBtn";
 import { Schema } from "@/amplify/data/resource";
@@ -19,13 +11,19 @@ import {
   createCompetition,
   updateCompetition,
 } from "@/app/_actions/competition-actions";
-import { getButtonStatus } from "@/lib/helpers";
-import { getIcon } from "@/lib/icons";
-import { CldImage } from "next-cloudinary";
+import { getButtonStatus, objectToFormData } from "@/lib/helpers";
+import UploadImage from "../CustomFileUpload/UploadImage";
+import SelectedArticle from "@/components/ArticleFilterModal/SelectedArticle";
 
 type ICompetition = Pick<
   Schema["Competition"]["type"],
-  "id" | "logo" | "shortName" | "longName" | "competitionType"
+  | "id"
+  | "logo"
+  | "shortName"
+  | "longName"
+  | "competitionType"
+  | "trophyArticleId"
+  | "trophyImage"
 >;
 
 function CompetitionForm({
@@ -35,18 +33,37 @@ function CompetitionForm({
   competition?: ICompetition | null;
   competitionTypes: string[];
 }) {
-  const [logo, setLogo] = useState(competition?.logo || "");
-  const [competitionType, setCompetitionType] = useState(
-    competition?.competitionType || ""
-  );
+  const [competitionData, setCompetitionData] = useState({
+    id: competition?.id || "",
+    logo: competition?.logo || "",
+    shortName: competition?.shortName || "",
+    longName: competition?.longName || "",
+    competitionType: competition?.competitionType || "",
+    trophyImage: competition?.trophyImage || "",
+    trophyArticleId: competition?.trophyArticleId || "",
+  });
+
+  const onChange = (e: { target: { name: string; value: string } }) => {
+    const { name, value } = e.target;
+    setCompetitionData({ ...competitionData, [name]: value });
+  };
+
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [shortName, setShortName] = useState(competition?.shortName || "");
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
+  const [article, setArticle] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+  const [openArticleModal, setOpenArticleModal] = useState(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    formData.append("logo", logo);
+    const formData = objectToFormData(competitionData);
+    formData.delete("trophyArticleId");
+    if (article) {
+      formData.append("trophyArticleId", article.id);
+    }
 
     if (competition) {
       startTransition(async () => {
@@ -63,14 +80,13 @@ function CompetitionForm({
         }
       });
     } else {
+      formData.delete("id");
+
       startTransition(async () => {
         const res = await createCompetition(formData);
         if (res.status === "success" && res.data) {
           mutationToast("competition", res.data.longName, "create");
           formRef.current?.reset();
-          setLogo("");
-          setShortName("");
-          setCompetitionType("");
         }
         if (res.status === "error") {
           errorToast(res.message);
@@ -93,11 +109,8 @@ function CompetitionForm({
             })}
             name="competitionType"
             description="competition Type"
-            selectedValue={competitionType}
-            handleOnChange={(e: { target: { value: string } }) => {
-              const { value } = e.target;
-              setCompetitionType(value);
-            }}
+            selectedValue={competitionData.competitionType}
+            handleOnChange={onChange}
             fixedWidth={true}
           />
         </Field.Root>
@@ -112,8 +125,8 @@ function CompetitionForm({
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            value={shortName}
-            onChange={(e) => setShortName(e.target.value)}
+            value={competitionData.shortName}
+            onChange={onChange}
           />
           <Field.HelperText
             fontSize={"sm"}
@@ -134,7 +147,8 @@ function CompetitionForm({
             fontSize={"sm"}
             fontWeight={"medium"}
             mb={"5px"}
-            defaultValue={competition?.longName || ""}
+            value={competitionData.longName}
+            onChange={onChange}
           />
           <Field.HelperText
             fontSize={"sm"}
@@ -144,32 +158,54 @@ function CompetitionForm({
             Enter long e.g nigerian national league
           </Field.HelperText>
         </Field.Root>
-        <Field.Root required>
-          <FormLabel>Competition Logo</FormLabel>
-          {logo && (
-            <HStack gap={4}>
-              <Image src={logo} width="75" height="75" alt={shortName} />
-              <IconButton
-                size={"2xs"}
-                title="delete"
-                colorPalette={"red"}
-                onClick={() => setLogo("")}
-              >
-                {getIcon("close")}
-              </IconButton>
-            </HStack>
-          )}
-          {!logo && shortName && (
-            <CustomFileUpload
-              description="competition logo"
-              onUploaded={(res: any) => {
-                setLogo(res.secure_url);
-              }}
-              id="competition-logo"
-              filename={slugify(shortName, { lower: true })}
+        {(competitionData.trophyImage ||
+          competitionData.logo ||
+          competitionData.longName) && (
+          <>
+            <UploadImage
+              image={competitionData.logo}
+              onClearImage={() =>
+                setCompetitionData({ ...competitionData, logo: "" })
+              }
+              imageSize={70}
+              filename={slugify(competitionData.longName, { lower: true })}
+              id={"logo"}
+              onUploaded={(res: any) =>
+                setCompetitionData({
+                  ...competitionData,
+                  logo: res.secure_url,
+                })
+              }
+              label={"Logo"}
             />
-          )}
-        </Field.Root>
+            <UploadImage
+              image={competitionData.trophyImage}
+              onClearImage={() =>
+                setCompetitionData({ ...competitionData, trophyImage: "" })
+              }
+              imageSize={250}
+              filename={slugify(`${competitionData.longName} trophy`, {
+                lower: true,
+              })}
+              id={"trophy-image"}
+              onUploaded={(res: any) =>
+                setCompetitionData({
+                  ...competitionData,
+                  trophyImage: res.secure_url,
+                })
+              }
+              label={"Trophy Image"}
+            />
+          </>
+        )}
+        <SelectedArticle
+          articleId={competitionData.trophyArticleId}
+          label={"Trophy Article"}
+          title={article?.title ?? ""}
+          openArticleModal={openArticleModal}
+          setOpenArticleModal={setOpenArticleModal}
+          setArticle={setArticle}
+        />
         <FormBtn disabled={isPending}>
           {getButtonStatus(competition, "Competition", isPending)}
         </FormBtn>

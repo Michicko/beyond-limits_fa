@@ -1,6 +1,6 @@
 "use client";
 import { getHighlights } from "@/app/_actions/highlight-actions";
-import AdminPaginatedGrid from "@/components/admin/AdminPaginatedGrid/page";
+import AdminPaginatedGrid from "@/components/admin/AdminPaginatedGrid/AdminPaginatedGrid";
 import HighlightCard from "@/components/admin/Card/HighlightCard";
 import React from "react";
 

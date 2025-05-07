@@ -13,17 +13,11 @@ import { getHonorsStats } from "@/lib/helpers";
 
 async function Honours() {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
-  const { data: honors, errors } = await cookiesClient.models.Trophy.list({
-    authMode,
-    selectionSet: [
-      "id",
-      "competition.competitionSeasons.season",
-      "competition.competitionSeasons.winner.*",
-      "trophyName",
-      "articleId",
-      "image",
-    ],
-  });
+  // const { data: honors, errors } = await cookiesClient.models.CompetitionSeason.list({
+  //   authMode,
+  // });
+
+  const honors = [] as [];
 
   let stats: {
     numbersWon: number;

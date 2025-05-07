@@ -30,7 +30,6 @@ function CupContent({
     const formData = new FormData();
     formData.append("competitionNameSeason", competitionName + " " + season);
     formData.append("status", "PENDING");
-    formData.append("winnerId", "");
 
     startTransition(async () => {
       const res = await createCup(formData);

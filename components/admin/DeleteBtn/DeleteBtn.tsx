@@ -14,8 +14,6 @@ type DeleteBtnProps = {
     | "Match"
     | "Player"
     | "PlayerPosition"
-    | "Season"
-    | "Trophy"
     | "ArticleCategory"
     | "Highlight"
     | "CompetitionSeason";
@@ -69,10 +67,11 @@ function DeleteBtn({ id, name, type, images, module }: DeleteBtnProps) {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (!res?.data) {
-          throw new Error(res?.error || "Delete failed with unknown error");
+        if (res.error) {
+          throw new Error(res.error);
         }
-        return res;
+
+        return res.data ?? res;
       });
 
     mutationPromiseToast(promise, success, error, loading, setIsPending);

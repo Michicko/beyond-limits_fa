@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import useSearchFilter from "@/hooks/useSearchFilter";
 import AdminSearchInput from "../AdminSearch/AdminSearchInput";
 
-type Props<T> = {
+type Props<T extends Record<string, any>> = {
   title: string;
   createButtonText: string;
   createButtonLink: string;
@@ -24,7 +24,7 @@ type Props<T> = {
   showSearch?: boolean;
 };
 
-function AdminPaginatedGrid<T>({
+function AdminPaginatedGrid<T extends Record<string, any>>({
   title,
   createButtonText,
   createButtonLink,
@@ -52,10 +52,10 @@ function AdminPaginatedGrid<T>({
     setCurrentPage(page);
   };
 
-  const { search, setSearch, filteredList } = useSearchFilter(
-    currentItems,
-    searchItem,
-  );
+  const { search, setSearch, filteredList } =
+    showSearch && searchItem
+      ? useSearchFilter(currentItems, searchItem as keyof T)
+      : { search: "", setSearch: () => {}, filteredList: currentItems };
 
   return (
     <>
@@ -116,12 +116,15 @@ function AdminPaginatedGrid<T>({
               }}
               gap="20px"
               mb="100px"
+              mt={4}
             >
-              {currentItems?.map((item: T, idx: number) => (
-                <GridItem key={idx}>
-                  <CardComponent data={item} />
-                </GridItem>
-              ))}
+              {(showSearch ? filteredList : currentItems)?.map(
+                (item: T, idx: number) => (
+                  <GridItem key={idx}>
+                    <CardComponent data={item} />
+                  </GridItem>
+                )
+              )}
             </Grid>
           </>
         )}

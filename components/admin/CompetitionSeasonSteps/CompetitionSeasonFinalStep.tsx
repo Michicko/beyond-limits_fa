@@ -39,7 +39,6 @@ function CompetitionSeasonFinalStep({
     formData.append("season", season);
     formData.append("competitionId", competitionId);
     formData.append("status", "PENDING");
-    formData.append("winner", "");
     formData.append("name", competitionName);
     formData.append("logo", competitionLogo);
 
@@ -56,7 +55,7 @@ function CompetitionSeasonFinalStep({
     }
 
     try {
-      formData.delete("winner");
+      formData.delete("isWinner");
       startTransition(async () => {
         const res = await createCompetitionSeason(formData);
         // update cup with competition season id
@@ -79,7 +78,7 @@ function CompetitionSeasonFinalStep({
           mutationToast(
             "competition season",
             res.data.name + " " + res.data.season,
-            "create",
+            "create"
           );
           formRef.current?.reset();
           const time = setTimeout(() => {

@@ -77,7 +77,7 @@ function CompetitionSeason({
                   competitionType={competitionSeason.type}
                   season={competitionSeason.season}
                   status={competitionSeason.status}
-                  winner={competitionSeason.winner}
+                  isWinner={competitionSeason.isWinner}
                 />
                 {competitionSeason.type === "LEAGUE" &&
                   league &&

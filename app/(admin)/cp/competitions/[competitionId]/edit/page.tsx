@@ -24,6 +24,8 @@ async function EditCompetition({
           "longName",
           "logo",
           "competitionType",
+          "trophyImage",
+          "trophyArticleId",
         ],
       }
     );
