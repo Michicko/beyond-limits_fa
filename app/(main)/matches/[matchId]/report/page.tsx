@@ -79,6 +79,12 @@ async function Report({ params }: { params: { matchId: string } }) {
 
   return (
     <MatchLayout match={match} currentLink={`/matches/${match.id}/report`}>
+      {
+        matchErrors ?   
+        <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {matchErrors[0].message}
+        </Text>
+         :
       <div className={clsx(styles.preview)}>
         <Card theme={"trans"}>
           <>
@@ -135,7 +141,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                                 color="white"
                                 size="base"
                                 weight="regular"
-                                letterCase="normal"
+                                letterCase="capitalize"
                               >
                                 {scorer.name}
                               </Text>
@@ -164,7 +170,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                                 color="white"
                                 size="sm"
                                 weight="regular"
-                                letterCase="normal"
+                                 letterCase="capitalize"
                               >
                                 {scorer.name}
                               </Text>
@@ -283,6 +289,7 @@ async function Report({ params }: { params: { matchId: string } }) {
           </>
         </Card>
       </div>
+}
     </MatchLayout>
   );
 }

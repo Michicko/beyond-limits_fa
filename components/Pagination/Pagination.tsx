@@ -1,4 +1,3 @@
-// components/Pagination.tsx
 import Link from "next/link";
 import styles from "./Pagination.module.css"; // assuming you're using CSS modules
 import clsx from "clsx";
@@ -18,7 +17,7 @@ export default function Pagination({
   const prevPage = currentPage - 1;
   const nextPage = currentPage + 1;
 
-  return (
+  return !hasNextPage ? <></> : (
     <div className={clsx(styles["pagination-box"])}>
       <div className={styles.pagination}>
         <Link

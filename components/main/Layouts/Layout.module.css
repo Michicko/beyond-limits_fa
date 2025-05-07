@@ -241,10 +241,6 @@
   .match-layout__header-box > *:nth-child(1) {
     margin-bottom: var(--xxl);
   }
-  .legal-main,
-  .legal-header {
-    /* padding: 0 var(--xl); */
-  }
 
   .legal-header {
     margin-top: 10rem;

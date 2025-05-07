@@ -23,33 +23,34 @@ async function News({
 
   if (searchParams.category) {
     const { data: articleData, errors } =
-      await cookiesClient.models.ArticleCategory.listArticleCategoryByCategory(
+      await cookiesClient.models.ArticleCategory.list(
         {
-          category: searchParams.category,
+          filter: {
+            category:{eq: searchParams.category.toLowerCase()},
+          },
+            authMode: (await isAuthenticated()) ? "userPool" : "iam",
+            selectionSet: [
+              "id",
+              "articles.*",
+              "category",
+              "articles.articleCategory.category",
+              "articles.matchHomeTeamLogo",
+              "articles.matchAwayTeamLogo",
+              "articles.matchId",
+              "articles.status"
+            ],
         },
-        {
-          authMode: (await isAuthenticated()) ? "userPool" : "iam",
-          selectionSet: [
-            "id",
-            "articles.*",
-            "category",
-            "articles.articleCategory.category",
-            "articles.matchHomeTeamLogo",
-            "articles.matchAwayTeamLogo",
-            "articles.matchId",
-          ],
-        }
+        
       );
 
     if (errors) {
       errs = [...errors];
     }
-
     articleList =
       articleData[0] &&
       articleData[0].articles.filter((el) => el.status === "PUBLISHED");
   } else {
-    const { data: articles, errors } = await cookiesClient.models.Article.list({
+    const { data: articlesData, errors } = await cookiesClient.models.Article.list({
       limit: 150,
       authMode: (await isAuthenticated()) ? "userPool" : "iam",
       selectionSet: [
@@ -69,8 +70,9 @@ async function News({
     if (errors) {
       errs = [...errors];
     }
+
     articleList =
-      articles && articles.filter((el) => el.status === "PUBLISHED");
+      articlesData && articlesData.filter((el) => el.status === "PUBLISHED");
   }
 
   const { paginatedItems: articles, hasNextPage } = clientPaginate(
@@ -88,10 +90,14 @@ async function News({
           </Text>
         )}
         {searchParams.category && (
-          <h3>Showing articles for {searchParams.category}</h3>
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            Showing articles for {searchParams.category}
+          </Text>
         )}
         {!articleList ? (
-          <div>No Articles</div>
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No articles available
+         </Text>
         ) : (
           <>
             <ArticleList articles={articles} />

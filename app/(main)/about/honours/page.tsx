@@ -13,11 +13,17 @@ import { getHonorsStats } from "@/lib/helpers";
 
 async function Honours() {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
-  // const { data: honors, errors } = await cookiesClient.models.CompetitionSeason.list({
-  //   authMode,
-  // });
+  const { data: honors, errors } = await cookiesClient.models.Competition.list({
+    authMode,
+    selectionSet: [
+      'id', 
+      "longName",
+      'trophyImage', 
+      'trophyArticleId', 
+      "competitionSeasons.isWinner", 
+      "competitionSeasons.season"]
+  });
 
-  const honors = [] as [];
 
   let stats: {
     numbersWon: number;
@@ -63,13 +69,13 @@ async function Honours() {
               {honors &&
                 honors.map((honor) => {
                   return (
-                    <div key={honor.trophyName} className={clsx(styles.honor)}>
+                    <div key={honor.longName} className={clsx(styles.honor)}>
                       <div className={clsx(styles["honor-img__box"])}>
                         <div className={clsx(styles["honor-img"])}>
                           <ImageComp
-                            alt={honor.trophyName}
-                            image={honor.image}
-                            placeholder={honor.image}
+                            alt={honor.longName}
+                            image={honor.trophyImage}
+                            placeholder={honor.trophyImage}
                             priority={false}
                           />
                         </div>
@@ -80,7 +86,7 @@ async function Honours() {
                       {stats && (
                         <div className={clsx(styles["honor-details"])}>
                           <h3 className={clsx(styles["honor-name"])}>
-                            {honor.trophyName.replace(/trophy/gi, "")}
+                            {honor.longName}
                           </h3>
                           <ul className={clsx(styles["honors-years"])}>
                             {stats.seasonsWon.map((season, i) => {
@@ -98,7 +104,7 @@ async function Honours() {
                           <Button
                             isLink={true}
                             text={"Learn more"}
-                            url={`/news/${honor.articleId}`}
+                            url={!honor.trophyArticleId ? '#' : `/news/${honor.trophyArticleId}`}
                             type="secondary"
                             size="lg"
                           />

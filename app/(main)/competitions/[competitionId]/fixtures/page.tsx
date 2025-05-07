@@ -4,7 +4,6 @@ import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/Com
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
 import { getMatches } from "@/lib/helpers";
-import { months } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
@@ -62,7 +61,6 @@ async function CompetitionFixtures({
                   key={match.id}
                   showName={true}
                   theme="light"
-                  iconSize="md"
                 />
               );
             })}

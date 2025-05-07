@@ -129,7 +129,7 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
           </>
         )}
 
-        {totalPages && totalPages > 1 && (
+        {totalPages && totalPages > 1 ? (
           <HStack justifyContent="center">
             <HStack
               display={{ base: "flex", sm: "none" }}
@@ -156,7 +156,7 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
               />
             </HStack>
           </HStack>
-        )}
+        ) : <></>}
       </Box>
     </>
   );

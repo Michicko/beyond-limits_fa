@@ -53,7 +53,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
         (player) => player.ageGroup === params.playersSlug.toUpperCase()
       );
 
-      return (
+      return filteredPlayers.length < 1 ? <></> : (
         <div key={row.longName}>
           <Heading
             letterCase="capitalize"

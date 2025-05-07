@@ -21,17 +21,12 @@ interface IPos {
 
 type Honor = {
   id: string;
-  image: string;
-  trophyName: string;
-  articleId: string | null;
-  competition: {
-    competitionSeasons: {
-      winner: {
-        isBeyondLimits: boolean | null;
-      } | null;
-      season: string;
-    }[];
-  };
+  longName: string;
+  trophyArticleId: string | null;
+  competitionSeasons: {
+    isWinner: Nullable<boolean>
+    season: string;
+  }[];
 };
 
 export const getObjectValue = <T extends Object>(
@@ -281,10 +276,10 @@ export const isLessThan24HoursAgo = (dateString: string) => {
 export const getHonorsStats = (honors: Honor[]) => {
   return honors.reduce(
     (acc, honor) => {
-      honor.competition.competitionSeasons.forEach((seasonObj) => {
-        if (seasonObj.winner?.isBeyondLimits) {
+      honor.competitionSeasons.forEach((seasonObj) => {
+        if (seasonObj.isWinner) {
           acc.numbersWon += 1;
-          acc.seasonsWon.push(seasonObj.season);
+          acc.seasonsWon.push(seasonObj.season.split('/')[0]);
         }
       });
       return acc;

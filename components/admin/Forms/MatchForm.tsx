@@ -122,6 +122,7 @@ function MatchForm({
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { errorToast, mutationToast } = useToast();
+  const [editorKey, setEditorKey] = useState(230);
 
   const teamOptions = teams.map((team) => {
     return { label: team.longName, value: team.id };
@@ -180,6 +181,33 @@ function MatchForm({
     homeForm: match?.homeForm || "",
     awayForm: match?.awayForm || "",
   });
+
+  const resetForm = ()=> {
+    setData({
+      id: "",
+      competitionSeasonId: "",
+      date:"",
+      time: "",
+      venue: "",
+      status:"UPCOMING",
+      result:  null,
+      keyPlayerId: "",
+      aboutKeyPlayer:  "",
+      mvpId: "",
+      aboutMvp:  "",
+      review: ({} as JSONContent),
+      report:({} as JSONContent),
+      lineup: [],
+      substitutes: [],
+      coach: { name: "", role: null },
+      homeTeam: getTeamStats("homeTeam"),
+      awayTeam: getTeamStats("awayTeam"),
+      scorers: [],
+      homeForm:  "",
+      awayForm: "",
+    })
+    setEditorKey(editorKey + 1)
+  }
 
   const selectedCompetition = match
     ? competitions.find((el) => {
@@ -328,6 +356,7 @@ function MatchForm({
             "create",
           );
           formRef.current?.reset();
+          resetForm();
         }
         if (res.status === "error") {
           errorToast(res.message);

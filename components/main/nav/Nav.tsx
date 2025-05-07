@@ -10,6 +10,7 @@ import NavLogo from "./NavLogo";
 import NavSearchBtn from "./NavSearchBtn";
 import { usePathname } from "next/navigation";
 import { fetchAuthSession } from "@aws-amplify/auth";
+import { Hub } from "aws-amplify/utils";
 
 function Nav() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -83,6 +84,18 @@ function Nav() {
     };
     checkAuthStatus();
   }, []);
+
+  useEffect(() => {
+     const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
+      if (payload.event === "signedIn") {
+        setAuthenticated(true);
+      }
+    });
+
+    return () => {
+      hubListenerCancel();
+    };
+  }, [])
 
   return (
     <>

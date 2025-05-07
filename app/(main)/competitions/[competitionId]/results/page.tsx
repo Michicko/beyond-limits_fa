@@ -61,7 +61,6 @@ async function CompetitionResults({
                   key={match.id}
                   showName={true}
                   theme="light"
-                  iconSize="md"
                 />
               );
             })}

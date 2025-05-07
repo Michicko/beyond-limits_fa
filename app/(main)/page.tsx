@@ -13,7 +13,7 @@ import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
-import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
+import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { appendMonthToLink } from "@/lib/helpers";
 
 export default async function Home() {

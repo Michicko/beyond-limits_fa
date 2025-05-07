@@ -65,12 +65,6 @@
   }
 }
 
-@media only screen and (min-width: 48rem) {
-  .header {
-    /* top: -5.5rem; */
-  }
-}
-
 @media only screen and (min-width: 64rem) {
   .header-landing {
     padding-bottom: 10rem;

@@ -1,44 +1,22 @@
 import React from "react";
 import styles from "./MatchCard.module.css";
-import clsx from "clsx";
-import Text from "../Typography/Text";
-import { formatTime } from "@/lib/helpers";
+import Link from "next/link";
 
 function MatchScoreBoard({
-  status,
-  home_score,
-  away_score,
-  size,
-  time,
+  homeScore,
+  awayScore,
+  url,
 }: {
-  status: string;
-  home_score: string;
-  away_score: string;
-  size: "sm" | "md" | "lg" | "xl" | "xxl" | "iv";
-  time: string;
+  homeScore: number | string;
+  awayScore: number | string;
+  url: string;
 }) {
   return (
-    <div className={clsx(styles["matchscoreboard"], styles[size])}>
-      {status === "UPCOMING" ? (
-        <Text weight="light" size="sm">
-          {formatTime(time)}
-        </Text>
-      ) : status === "COMPLETED" ? (
-        <>
-          <p className={clsx(styles.score)}>{home_score}</p>
-          <div className={clsx(styles.versus)}></div>
-          <p className={clsx(styles.score)}>{away_score}</p>
-        </>
-      ) : status === "ABANDONED" ? (
-        <Text weight="bold" size="md">
-          Abandoned
-        </Text>
-      ) : (
-        <Text weight="bold" size="md">
-          Canceled
-        </Text>
-      )}
-    </div>
+    <Link href={url} className={styles["matchscoreboard"]}>
+      <p className={styles.score}>{homeScore}</p>
+      <span className={styles["v-sep"]}></span>
+      <p className={styles.score}>{awayScore}</p>
+    </Link>
   );
 }
 

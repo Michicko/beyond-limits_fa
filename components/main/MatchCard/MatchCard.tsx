@@ -1,23 +1,23 @@
 import React from "react";
 import styles from "./MatchCard.module.css";
+import Image from "next/image";
+import MatchTeam from "./MatchTeam";
+import MatchInfo from "./MatchInfo";
+import MatchScoreBoard from "./MatchScoreBoard";
+import {
+  formatDate,
+  formatTime,
+  getFirstLetter,
+  isLessThan24HoursAgo,
+} from "@/lib/helpers";
 import clsx from "clsx";
-import Card from "../Card/Card";
 import { Nullable } from "@/lib/definitions";
-import CardHeader from "../Card/CardHeader";
-import Text from "../Typography/Text";
-import moment from "moment";
-import Logo from "./Logo";
-import CardBody from "../Card/CardBody";
-import Details from "./Details";
-import MatchCardTeam from "./MatchCardTeam";
 import Link from "next/link";
-import { getFirstLetter } from "@/lib/helpers";
 
 interface ICompetitionSeason {
   id?: string;
   logo: string;
   name: string;
-  // season: string;
 }
 
 interface IMatch {
@@ -44,110 +44,94 @@ interface IMatch {
     goals: Nullable<string>;
   } | null;
   scorers: any;
+  review: string | number | boolean | object | any[] | null;
 }
 
 function MatchCard({
   match,
+  fixedHeight,
   theme,
-  iconSize,
   showName,
 }: {
   match: IMatch;
-  theme?: "dark" | "light" | "trans";
-  iconSize: "sm" | "md" | "lg" | "xl" | "xxl";
+  fixedHeight?: boolean;
+  theme: "light" | "dark";
   showName?: boolean;
 }) {
   return (
-    <Card theme={theme || "trans"}>
-      <>
-        <CardHeader theme={theme ? theme : "light"} border={true} as="div">
-          <div className={clsx(styles["matchcard-header"])}>
-            {match.competitionSeason && (
-              <div className={clsx(styles["matchcard-comp"])}>
-                <Logo
-                  logo={match.competitionSeason.logo}
-                  name={getFirstLetter(match.competitionSeason.name)}
-                  size="md"
-                />
-                <Text
-                  color="white"
-                  letterCase={"upper"}
-                  size="sm"
-                  weight="semibold"
-                >
-                  {getFirstLetter(match.competitionSeason.name)}
-                </Text>
-              </div>
-            )}
-            <Text color="white" letterCase={"upper"} size="sm" weight="regular">
-              {moment(match.date).format("L")}
-            </Text>
+    <div
+      className={clsx(styles.matchcard, theme ? styles[theme] : styles.light)}
+    >
+      <div className={styles.header}>
+        <div className={styles["header-box"]}>
+          <Image
+            src={match.competitionSeason?.logo ?? ""}
+            height={200}
+            width={200}
+            alt={match.competitionSeason?.name ?? ""}
+          />
+          <p className={clsx(styles["header-text"])}>
+            {getFirstLetter(match.competitionSeason?.name ?? "").toUpperCase()}
+          </p>
+        </div>
+        <div className={styles["header-box"]}>
+          <p className={clsx(styles["header-text"], styles.venue)}>
+            {match.venue}
+          </p>
+        </div>
+      </div>
+      <div className={clsx(styles.body, fixedHeight && styles["fixed-height"])}>
+        <MatchTeam
+          team="home"
+          name={match.homeTeam?.longName ?? ""}
+          logo={match.homeTeam?.logo ?? ""}
+          showName={showName}
+        />
+        {match.status === "UPCOMING" &&
+          !match.review &&
+          !isLessThan24HoursAgo(match.date) && (
+            <MatchInfo
+              status={match.status}
+              time={formatTime(match.time)}
+              date={formatDate(match.date)}
+            />
+          )}
+
+        {match.status === "UPCOMING" &&
+          match.review &&
+          isLessThan24HoursAgo(match.date) && (
+            <div className={clsx(styles["preview-box"])}>
+              <Link
+                href={`/matches/${match.id}/preview`}
+                className={clsx(styles.preview)}
+              >
+                preview
+              </Link>
+              <p className={styles.time}>{formatTime(match.time)}</p>
+            </div>
+          )}
+
+        {(match.status === "CANCELED" || match.status === "ABANDONED") && (
+          <div className={styles["match-status"]}>
+            <span className={styles["v-sep"]}></span>
+            <span className={styles["ex-status"]}>{match.status}</span>
           </div>
-        </CardHeader>
-        <CardBody as="div" theme={theme || "light"} fixedBodyHeight={false}>
-          <>
-            {match.homeTeam && match.awayTeam && match.competitionSeason && (
-              <div className={clsx(styles["matchcard-body"])}>
-                <div className={clsx(styles["matchcard-status"])}>
-                  <Text
-                    color="secondary"
-                    letterCase="upper"
-                    size="xs"
-                    weight="semibold"
-                    center={true}
-                  >
-                    {match.status}
-                  </Text>
-                </div>
-                <div className={clsx(styles["matchcard-info"])}>
-                  <p className={clsx(styles.time)}>{match.time}</p>
-                  <span>|</span>
-                  <p className={clsx(styles.venue)}>{match.venue}</p>
-                </div>
-                <Link
-                  href={
-                    match.status === "COMPLETED"
-                      ? `/matches/${match.id}/report`
-                      : match.status === "UPCOMING"
-                      ? `/matches/${match.id}/preview`
-                      : "#"
-                  }
-                  className={clsx(
-                    styles["matchcard-teams"],
-                    styles[match.status ? match.status.toLowerCase() : ""],
-                    showName && styles["full"]
-                  )}
-                >
-                  <MatchCardTeam
-                    long_name={match.homeTeam.longName}
-                    short_name={match.homeTeam.shortName}
-                    iconSize={iconSize}
-                    logo={match.homeTeam.logo}
-                    showName={showName}
-                    team={"home"}
-                  />
-                  {match.status && (
-                    <Details
-                      home_score={match.homeTeam.goals}
-                      away_score={match.awayTeam.goals}
-                      status={match.status}
-                    />
-                  )}
-                  <MatchCardTeam
-                    long_name={match.awayTeam.longName}
-                    short_name={match.awayTeam.shortName}
-                    iconSize={iconSize}
-                    logo={match.awayTeam.logo}
-                    showName={showName}
-                    team={"away"}
-                  />
-                </Link>
-              </div>
-            )}
-          </>
-        </CardBody>
-      </>
-    </Card>
+        )}
+        {match.status === "COMPLETED" && (
+          <MatchScoreBoard
+            homeScore={match.homeTeam?.goals ?? ""}
+            awayScore={match.awayTeam?.goals ?? ""}
+            url={`/matches/${match.id}/report`}
+          />
+        )}
+        <MatchTeam
+          team="away"
+          name={match.awayTeam?.longName ?? ""}
+          logo={match.awayTeam?.logo ?? ""}
+          showName={showName}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { getMatches } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 import Text from "@/components/main/Typography/Text";
-import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
+import MatchCard from "@/components/main/MatchCard/MatchCard";
 
 async function Results(props: {
   searchParams: Promise<{

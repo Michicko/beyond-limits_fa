@@ -36,11 +36,12 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
   );
 
   if (article && article.articleCategoryId) {
-    const { data: categoryArticles } = await cookiesClient.models.Article.list({
+    const { data: articles } = await cookiesClient.models.Article.list({
       filter: {
-        articleCategoryId: {
-          eq: article.articleCategoryId,
+        id: {
+          ne: article.id
         },
+        articleCategoryId: {eq: article.articleCategoryId}
       },
       authMode: "iam",
       limit: 3,
@@ -57,7 +58,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
       ],
     });
 
-    recommendedArticles = categoryArticles;
+    recommendedArticles = articles.filter((el) => el.id !== article.id);
   }
 
   return (

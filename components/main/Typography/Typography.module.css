@@ -195,7 +195,7 @@
 
 .text.capitalize,
 .heading.capitalize {
-  text-transform: capitalize;
+  text-transform: capitalize !important;
 }
 
 .heading.normal,

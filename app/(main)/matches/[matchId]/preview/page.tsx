@@ -38,6 +38,8 @@ async function Review({ params }: { params: { matchId: string } }) {
           "scorers",
           "review",
           "report",
+          "homeForm",
+          "awayForm"
         ],
       }
     );
@@ -78,6 +80,12 @@ async function Review({ params }: { params: { matchId: string } }) {
 
   return (
     <MatchLayout match={match} currentLink={`/matches/${match.id}/preview`}>
+      {
+        matchErrors ?   
+        <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {matchErrors[0].message}
+        </Text>
+   :
       <div className={clsx(styles.preview)}>
         <Card theme={"trans"}>
           <>
@@ -120,7 +128,7 @@ async function Review({ params }: { params: { matchId: string } }) {
             <CardBody as="div" theme={"light"}>
               <div className={clsx(styles.preview__body, styles["py-b"])}>
                 <ul className={clsx(styles["team-form__list"])}>
-                  <li
+                 {match.homeForm && match.homeForm.split(',').length > 0 && <li
                     className={clsx(
                       styles["preview-item"],
                       styles["item-name"]
@@ -142,14 +150,14 @@ async function Review({ params }: { params: { matchId: string } }) {
                     >
                       {match.homeTeam?.longName}
                     </Text>
-                    {/* <div className={clsx(styles["team-form"])}>
-                      {match.home.form.split(",").map((el, i) => {
+                   {match.homeForm && <div className={clsx(styles["team-form"])}>
+                      {match.homeForm.split(",").map((el, i) => {
                         return <TeamForm form={el} key={match.id + i} />;
                       })}
-                    </div> */}
+                    </div>}
                   </li>
-
-                  <li
+}
+               { match.awayForm && match.awayForm.split(',').length > 0 &&  <li
                     className={clsx(
                       styles["preview-item"],
                       styles["item-name"]
@@ -171,12 +179,12 @@ async function Review({ params }: { params: { matchId: string } }) {
                     >
                       {match.awayTeam?.longName}
                     </Text>
-                    {/* <div className={clsx(styles["team-form"])}>
-                      {match.away.form.split(",").map((el, i) => {
+                   {match.awayForm && <div className={clsx(styles["team-form"])}>
+                      {match.awayForm.split(",").map((el, i) => {
                         return <TeamForm form={el} key={match.id + (i + 2)} />;
                       })}
-                    </div> */}
-                  </li>
+                    </div>}
+                  </li>}
                 </ul>
               </div>
             </CardBody>
@@ -275,6 +283,7 @@ async function Review({ params }: { params: { matchId: string } }) {
           </>
         </Card>
       </div>
+         }
     </MatchLayout>
   );
 }

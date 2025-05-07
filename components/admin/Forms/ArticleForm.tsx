@@ -25,6 +25,7 @@ import {
 import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
+import UploadImage from "../CustomFileUpload/UploadImage";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -311,39 +312,22 @@ function ArticleForm({
           />
         </Field.Root>
         {!matchId && (
-          <Field.Root required mb={"5"}>
-            <FormLabel>Cover Image</FormLabel>
-            {tempData.coverImage && (
-              <HStack gap={4}>
-                <Image
-                  src={tempData.coverImage}
-                  width="200"
-                  height="200"
-                  alt={tempData.title}
-                />
-                <IconButton
-                  size={"2xs"}
-                  title="delete"
-                  colorPalette={"red"}
-                  alignSelf={"flex-start"}
-                  onClick={() => setTempData({ ...tempData, coverImage: "" })}
-                >
-                  {getIcon("close")}
-                </IconButton>
-              </HStack>
-            )}
-            {!tempData.coverImage && tempData.title && (
-              <CustomFileUpload
-                description="cover image"
-                onUploaded={(res: any) => {
-                  setTempData({ ...tempData, coverImage: res.secure_url });
-                }}
-                id="cover-image"
-                filename={slugify(tempData.title, { lower: true })}
-                type="drag-drop"
-              />
-            )}
-          </Field.Root>
+          <UploadImage
+            image={tempData.coverImage}
+            onClearImage={() =>
+              setTempData({ ...tempData, coverImage: "" })
+            }
+            imageSize={200}
+            filename={slugify(tempData.title, { lower: true })}
+            id={"coverImage"}
+            onUploaded={(res: any) =>
+              setTempData({
+                ...tempData,
+                coverImage: res.secure_url,
+              })
+            }
+            label={"coverImage"}
+          />
         )}
 
         <TextEditor

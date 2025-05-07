@@ -5,7 +5,7 @@ import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/Com
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getMatches } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
-import MatchCard from "@/components/main/MatchCardDemo/MatchCard";
+import MatchCard from "@/components/main/MatchCard/MatchCard";
 
 async function Fixtures(props: {
   searchParams: Promise<{

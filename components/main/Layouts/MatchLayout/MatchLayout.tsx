@@ -6,12 +6,12 @@ import Tab from "../../Tab/Tab";
 import LinkTab from "../../Tab/LinkTab";
 import Logo from "../../MatchCard/Logo";
 import Heading from "../../Typography/Heading";
-import MatchScoreBoard from "../../MatchCard/MatchScoreBoard";
 import MatchDate from "../../MatchCard/MatchDate";
 import MatchLocation from "../../MatchCard/MatchLocation";
 import Flex from "../../Container/Flex";
 import Text from "../../Typography/Text";
 import { getFirstLetter } from "@/lib/helpers";
+import MatchScores from "../../MatchCard/MatchScores";
 
 const generateLink = (matchId: string) => {
   const links = [
@@ -61,7 +61,7 @@ function MatchLayout({
           <div className={clsx(styles["match-header__details"])}>
             <MatchDate date={match.date} size="md" />
             {match.homeTeam && match.awayTeam && (
-              <MatchScoreBoard
+              <MatchScores
                 status={match.status ? match.status : ""}
                 time={match.time}
                 home_score={match.homeTeam.goals ? match.homeTeam.goals : ""}
@@ -80,11 +80,11 @@ function MatchLayout({
           )}
         </div>
         <Heading
-          level={1}
-          letterCase="upper"
+          level={2}
+          letterCase="capitalize"
           center={true}
           type="section"
-        >{`${match.homeTeam?.longName} vs ${match.awayTeam?.longName}`}</Heading>
+        >{`${match.homeTeam?.longName.toLowerCase()} vs ${match.awayTeam?.longName.toLowerCase()}`}</Heading>
         <Flex align="center" justify="center" gap="xs">
           {match.competitionSeason && (
             <>

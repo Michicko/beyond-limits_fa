@@ -135,7 +135,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                                 color="white"
                                 size="base"
                                 weight="regular"
-                                letterCase="normal"
+                                letterCase="capitalize"
                                 key={el.squadNo}
                               >
                                 {`${el.squadNo}. ${el.firstname} ${el.lastname}`}

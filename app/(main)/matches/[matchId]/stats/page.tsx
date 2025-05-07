@@ -12,6 +12,7 @@ import Text from "@/components/main/Typography/Text";
 import MatchStat from "@/components/main/MatchCard/MatchStat";
 import Flex from "@/components/main/Container/Flex";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
+import MatchScores from "@/components/main/MatchCard/MatchScores";
 
 async function Stats({ params }: { params: { matchId: string } }) {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
@@ -116,7 +117,7 @@ async function Stats({ params }: { params: { matchId: string } }) {
                           {match.status &&
                             match.homeTeam.goals &&
                             match.awayTeam.goals && (
-                              <MatchScoreBoard
+                              <MatchScores
                                 status={match.status}
                                 home_score={match.homeTeam.goals}
                                 away_score={match.awayTeam.goals}
