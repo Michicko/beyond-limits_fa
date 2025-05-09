@@ -5,7 +5,6 @@ import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 import Text from "@/components/main/Typography/Text";
-import Link from "next/link";
 
 const links = [
   { name: "Academy news", href: "/news" },
@@ -15,11 +14,10 @@ const links = [
 async function News({
   searchParams,
 }: {
-  searchParams: { page?: string; category?: string, nextToken?: string | null };
+  searchParams: { page?: string; category?: string };
 }) {
   const currentPage = +(searchParams.page ?? 1);
-  const limit = 1;
-  let errs;
+  const limit = 12;
 
   const filter = {
     status: { eq: "PUBLISHED" },
@@ -30,9 +28,8 @@ async function News({
     }),
   };
 
-  const { data: articles, errors, nextToken } = await cookiesClient.models.Article.list({
-    limit,
-    nextToken: searchParams.nextToken,
+  const { data: articleList, errors } = await cookiesClient.models.Article.list({
+    limit: 150,
     authMode: (await isAuthenticated()) ? "userPool" : "iam",
     filter,
     sortDirection: "DESC",
@@ -51,13 +48,13 @@ async function News({
     ],
   });
 
-  // const { paginatedItems: articles, hasNextPage } = clientPaginate(
-  //   articleList,
-  //   currentPage,
-  //   limit
-  // );
 
-  const nextHref = `/news?${searchParams.category ? `category=${searchParams.category}&` : ''}nextToken=${encodeURIComponent(nextToken ?? '')}`
+  const { paginatedItems: articles, hasNextPage } = clientPaginate(
+    articleList,
+    currentPage,
+    limit
+  );
+
 
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
@@ -79,13 +76,11 @@ async function News({
         ) : (
           <>
             <ArticleList articles={articles} />
-            {/* <Link>prev</Link> */}
-            <Link href={nextHref}>next</Link>
-            {/* <Pagination
+            <Pagination
               currentPage={currentPage}
               hasNextPage={hasNextPage}
               basePath="/news"
-            /> */}
+            />
           </>
         )}
       </div>

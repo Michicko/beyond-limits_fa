@@ -21,8 +21,8 @@ function Search({
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (!keyword) return;
-    setIsOpened(false);
     router.replace(`/search?q=${keyword}`);
+    setIsOpened(false);
   };
   return (
     <div

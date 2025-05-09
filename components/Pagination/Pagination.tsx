@@ -17,7 +17,7 @@ export default function Pagination({
   const prevPage = currentPage - 1;
   const nextPage = currentPage + 1;
 
-  return !hasNextPage ? <></> : (
+  return (
     <div className={clsx(styles["pagination-box"])}>
       <div className={styles.pagination}>
         <Link

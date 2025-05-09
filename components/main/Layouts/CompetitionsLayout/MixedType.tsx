@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import LayoutHeader from "./LayoutHeader";
 import LayoutMain from "./LayoutMain";
 import LayoutContainer from "./LayoutContainer";
-import { ILink, ISeason } from "@/lib/definitions";
+import { ILink } from "@/lib/definitions";
 import Header from "../../Header/Header";
 import Heading from "../../Typography/Heading";
 import Tab from "../../Tab/Tab";
@@ -11,13 +11,11 @@ import LinkTab from "../../Tab/LinkTab";
 function MixedType({
   headerBg,
   pageTitle,
-  seasons,
   children,
   links,
 }: {
   headerBg?: string;
   pageTitle: string;
-  seasons: ISeason[];
   children: React.ReactElement;
   links: ILink[];
 }) {
@@ -43,24 +41,6 @@ function MixedType({
             <Heading color="white" level={1} letterCase="upper" type="primary">
               {pageTitle}
             </Heading>
-            <select name="season" id="season">
-              {seasons.map((el) => {
-                return (
-                  <option value={el.season} key={el.season}>
-                    {el.season}
-                  </option>
-                );
-              })}
-            </select>
-            <select name="season" id="season">
-              {phases.map((el) => {
-                return (
-                  <option value={el.value} key={el.value}>
-                    {el.name}
-                  </option>
-                );
-              })}
-            </select>
           </>
         </LayoutHeader>
       </Header>

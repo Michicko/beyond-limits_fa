@@ -12,6 +12,8 @@ import { revalidatePath } from "next/cache";
 
 type Article = Schema["Article"]["type"];
 
+
+
 export const filterArticle = async (text: string) => {
   return cookiesClient.models.Article.list({
     filter: {

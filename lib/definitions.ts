@@ -169,16 +169,10 @@ export interface IArticle {
   matchId?: Nullable<string>;
   match?: IMatch;
   tags?: Nullable<string>[] | null;
-  content: any;
+  content?: any;
   category: string;
   matchHomeTeamLogo?: Nullable<string>;
   matchAwayTeamLogo?: Nullable<string>;
-}
-
-export interface ISeason {
-  id: string;
-  season: string;
-  competitions?: ICompetition[];
 }
 
 export interface IHonor {
@@ -200,8 +194,6 @@ export interface ILeague {
   id: string;
   competition_id: string;
   competition?: ICompetition;
-  season_id: string;
-  season?: ISeason;
   standing?: string[] | IStandingRow[];
   status: CompetitionStatus;
   winner?: ITeam;
@@ -211,8 +203,6 @@ export interface ICup {
   id: string;
   competition_id: string;
   competition?: ICompetition;
-  season_id: string;
-  season?: ISeason;
   playOffs?: string[] | IMatch[];
   status: CompetitionStatus;
   winner?: ITeam;
@@ -240,8 +230,6 @@ export interface IMixedCup {
   id: string;
   competition_id: string;
   competition?: ICompetition;
-  season_id: string;
-  season?: ISeason;
   league: ILeague;
   cup: ICup;
   winner?: ITeam;

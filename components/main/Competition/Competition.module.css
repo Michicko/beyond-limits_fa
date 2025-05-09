@@ -1,0 +1,86 @@
+.competitions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base);
+}
+
+
+.competition {
+  display: flex;
+  align-items: center;
+  gap: var(--base);
+  background: var(--blue-400);
+  padding: var(--xs) var(--base);
+  border-radius: var(--xs);
+  transition: transform 0.3s linear;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.competition-icon__box {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--xxs);
+}
+
+.competition-icon__box p {
+  font-size: var(--base);
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--white);
+}
+
+.competition svg {
+  height: var(--md);
+  width: var(--md);
+  fill: var(--white);
+  margin-top: -0.3rem;
+}
+
+.competition-box {
+  margin-top: var(--sm);
+}
+
+.competition:hover {
+  transform: scale(0.99);
+}
+
+.competition__logo-box {
+  position: relative;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.competition__name {
+  font-family: var(--font-body);
+  font-size: var(--base);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.competition__name.long {
+  display: none;
+}
+
+@media only screen and (min-width: 36rem) {
+  .competition__logo-box {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+
+  .competition__name {
+    font-size: var(--md);
+  }
+}
+
+@media only screen and (min-width: 48rem) {
+  .competition__name.long {
+    display: block;
+    text-transform: capitalize;
+  }
+  .competition__name.short {
+    display: none;
+  }
+}

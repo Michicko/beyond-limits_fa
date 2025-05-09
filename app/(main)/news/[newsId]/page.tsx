@@ -24,7 +24,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
       selectionSet: [
         "id",
         "articleCategoryId",
-        "articleCategory.category",
+        "category",
         "content",
         "tags",
         "title",
@@ -41,14 +41,14 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         id: {
           ne: article.id
         },
-        articleCategoryId: {eq: article.articleCategoryId}
+        category: {eq: article.category}
       },
       authMode: "iam",
       limit: 3,
       selectionSet: [
         "id",
         "articleCategoryId",
-        "articleCategory.category",
+        "category",
         "content",
         "tags",
         "title",
@@ -88,10 +88,10 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
                 {formatDate(article.createdAt)}
               </Text>
             )}
-            {article && article.articleCategory.category && (
+            {article && article.category && (
               <ArticleCategory
-                category={article.articleCategory.category}
-                link={`/news?category=${article.articleCategory.category}`}
+                category={article.category}
+                link={`/news?category=${article.category}`}
               />
             )}
           </>

@@ -763,3 +763,131 @@ export const deleteCloudinaryImage = async (publicId: string) => {
   if (!publicId) throw new Error("Missing publicId");
   return await cloudinary.uploader.destroy(publicId, { invalidate: true });
 };
+
+
+// fetchers
+export async function fetchCompetitions(keyword: string) {
+  try {
+    const result = await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        or: [
+          { name: { contains: keyword } },
+          { season: { contains: keyword } },
+        ],
+      },
+      limit: 12,
+      selectionSet: ['id', 'name', 'logo', 'season']
+    });
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    throw new Error("Failed to fetch teams");
+  }
+}
+
+export async function fetchPlayers(keyword: string) {
+  try {
+    const result = await cookiesClient.models.Player.list({
+      filter: {
+        or: [
+          { firstname: { contains: keyword } },
+          { lastname: { contains: keyword } },
+        ],
+      },
+      limit: 12,
+      selectionSet: ['id', 'firstname', 'lastname', 'ageGroup', 'playerPosition.longName','playerPosition.shortName', "height", 'weight', 'squadNo', 'awayKit', 'homeKit', 'dob', 'dominantFoot']
+    });
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    throw new Error("Failed to fetch teams");
+  }
+}
+
+export async function fetchArticles(keyword: string) {
+  try {
+    const result = await cookiesClient.models.Article.list({
+      filter: {
+        or: [
+          { title: { contains: keyword } },
+          { category: { contains: keyword } },
+        ],
+      },
+      limit: 12,
+      selectionSet: [
+        'id', 
+        'title', 
+        'category', 
+        "createdAt",
+        "articleCategoryId",
+       "coverImage",
+        "matchId",
+        "tags",
+        "category",
+        "matchHomeTeamLogo",
+        "matchAwayTeamLogo"
+      ]
+    });
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    throw new Error("Failed to fetch teams");
+  }
+}
+
+export async function fetchHighlights(keyword: string) {
+  try {
+    const result = await cookiesClient.models.Highlight.list({
+      filter: {
+        or: [
+          { title: { contains: keyword } },
+          { videoId: { contains: keyword } },
+        ],
+      },
+      limit: 12,
+      selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags']
+    });
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+    throw new Error("Failed to fetch teams");
+  }
+}
+
+export async function globalSearch(keyword: string) {
+  try {
+   
+    if(!keyword){
+      return {
+        error: "Keyword is required",
+        status: 400
+      }
+    }
+
+    const keywordLower = keyword.toLowerCase();
+
+    // Assuming each fetch function is fetching from the respective data sources
+    const [competitions, players, articles, highlights] = await Promise.all([
+      fetchCompetitions(keywordLower),
+      fetchPlayers(keywordLower),
+      fetchArticles(keywordLower),
+      fetchHighlights(keywordLower),
+    ]);
+
+    return  {
+      status: 200,
+      data: {
+        competitions,
+        players,
+        articles,
+        highlights,
+      }
+    }
+  } catch (error) {
+    console.error("Error in global search:", error);
+    return { 
+      error: "Failed to search", 
+      status: 500 
+    }
+  }
+}

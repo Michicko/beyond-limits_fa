@@ -7,7 +7,7 @@ import { Schema } from "@/amplify/data/resource";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
-  "id" | "title" | "coverImage" | "content" | "status"
+  "id" | "title" | "coverImage" | "content" | "status" | "category"
 >;
 
 async function ArticleFormWrapper({ article }: { article?: IArticle | null }) {
