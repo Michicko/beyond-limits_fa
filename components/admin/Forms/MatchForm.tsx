@@ -32,6 +32,7 @@ import { createMatch, updateMatch } from "@/app/_actions/match-actions";
 import useToast from "@/hooks/useToast";
 import { Schema } from "@/amplify/data/resource";
 import MatchTeamForm from "./MatchTeamForm";
+import FormContainer from "./FormContainer";
 
 interface ICompetitionSeason {
   id: string;
@@ -44,7 +45,7 @@ interface ICompetitionSeason {
   createdAt: string;
   cupId?: Nullable<string>;
   leagueId?: Nullable<string>;
-  winner: any;
+  isWinner: Nullable<boolean>;
   status: string | null;
 }
 
@@ -366,7 +367,8 @@ function MatchForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
+   <FormContainer>
+     <form onSubmit={handleSubmit} ref={formRef}>
       <HStack justifyContent={"flex-end"} mb={4}>
         <FormBtn disabled={isPending}>
           {getButtonStatus(match, "Match", isPending)}
@@ -614,6 +616,7 @@ function MatchForm({
         </CustomTabs>
       </Box>
     </form>
+   </FormContainer>
   );
 }
 

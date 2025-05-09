@@ -22,7 +22,6 @@ import {
 import React, { useState } from "react";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
-import MatchForm from "./MatchForm";
 
 type IMatchI = Pick<
   Schema["Match"]["type"],

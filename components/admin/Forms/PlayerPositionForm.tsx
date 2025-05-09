@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { Suspense, useRef, useState, useTransition } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import { getIcon } from "@/lib/icons";
 import FormBtn from "./FormBtn";
@@ -22,6 +22,7 @@ import {
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
+import FormContainer from "./FormContainer";
 
 type Nullable<T> = T | null;
 type IAttributes = string[] | Nullable<string>[];
@@ -88,7 +89,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
   };
 
   return (
-    <Suspense fallback={null}>
+    <FormContainer>
       <form onSubmit={handleSubmit} ref={formRef}>
         <Stack gap={5} mb={10}>
           <Skeleton asChild loading={false}>
@@ -184,7 +185,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
           </FormBtn>
         </Stack>
       </form>
-    </Suspense>
+    </FormContainer>
   );
 }
 

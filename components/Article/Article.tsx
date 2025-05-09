@@ -16,12 +16,12 @@ const Article = ({ article }: { article: IArticle }) => {
 
   const cardStyles =
     article.matchId &&
-    article.articleCategory.category.toUpperCase() === "MATCH PREVIEW"
+    article.category.toUpperCase() === "MATCH PREVIEW"
       ? {
           background: "#30353B",
         }
       : article.matchId &&
-        article.articleCategory.category.toUpperCase() === "MATCH REPORT"
+        article.category.toUpperCase() === "MATCH REPORT"
       ? {
           background: "#01305b",
         }
@@ -38,9 +38,9 @@ const Article = ({ article }: { article: IArticle }) => {
     <article
       className={clsx(styles.news__article, {
         [styles["with-bg"]]:
-          article.articleCategory.category &&
+          article.category &&
           !selected_categories.includes(
-            article.articleCategory.category.toLowerCase()
+            article.category.toLowerCase()
           ),
       })}
       style={cardStyles}
@@ -48,9 +48,9 @@ const Article = ({ article }: { article: IArticle }) => {
       {article.matchId &&
         article.matchHomeTeamLogo &&
         article.matchAwayTeamLogo &&
-        article.articleCategory.category &&
+        article.category &&
         selected_categories.includes(
-          article.articleCategory.category.toLowerCase()
+          article.category.toLowerCase()
         ) && (
           <div className={styles.match__teams}>
             <div className={styles["team__img-box"]}>
@@ -68,10 +68,10 @@ const Article = ({ article }: { article: IArticle }) => {
           </div>
         )}
       <div className={clsx(styles.article__body)}>
-        {article.articleCategory.category && (
+        {article.category && (
           <ArticleCategory
-            category={article.articleCategory.category}
-            link={`/news/?category=${article.articleCategory.category}`}
+            category={article.category}
+            link={`/news/?category=${article.category}`}
           />
         )}
         <h3>{article.title}</h3>

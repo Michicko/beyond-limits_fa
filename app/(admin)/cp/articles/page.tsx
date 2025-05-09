@@ -40,7 +40,7 @@ function Articles() {
         <TableRows key={article.id}>
           <>
             <TableCell>{article.title}</TableCell>
-            <TableCell>{article.articleCategory?.category}</TableCell>
+            <TableCell>{article.category}</TableCell>
             <TableCell>{article.status}</TableCell>
             <TableCell>{formatDate(article.createdAt)}</TableCell>
             <TableCell textAlign={"center"}>

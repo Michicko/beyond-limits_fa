@@ -170,9 +170,7 @@ export interface IArticle {
   match?: IMatch;
   tags?: Nullable<string>[] | null;
   content: any;
-  articleCategory: {
-    category: string;
-  };
+  category: string;
   matchHomeTeamLogo?: Nullable<string>;
   matchAwayTeamLogo?: Nullable<string>;
 }

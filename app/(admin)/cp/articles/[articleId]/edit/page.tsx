@@ -14,7 +14,7 @@ async function EditArticle({ params }: { params: { articleId: string } }) {
         "id",
         "title",
         "status",
-        "articleCategory.category",
+        "category",
         "coverImage",
         "content",
         "articleCategoryId",

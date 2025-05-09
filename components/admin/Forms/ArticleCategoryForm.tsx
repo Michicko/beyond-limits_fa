@@ -10,6 +10,7 @@ import {
   createArticleCategory,
   updateArticleCategory,
 } from "@/app/_actions/article-category-actions";
+import FormContainer from "./FormContainer";
 
 type IArticleCategory = Pick<
   Schema["ArticleCategory"]["type"],
@@ -60,7 +61,8 @@ function ArticleCategoryForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
+   <FormContainer>
+     <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
           <FormLabel>Category</FormLabel>
@@ -88,6 +90,7 @@ function ArticleCategoryForm({
         </FormBtn>
       </Stack>
     </form>
+   </FormContainer>
   );
 }
 

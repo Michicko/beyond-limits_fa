@@ -79,6 +79,7 @@ function Lineup({
                 gap={"2"}
                 bg={"card_bg"}
                 p={"2"}
+                maxH={'40px'}
                 borderRadius={"xs"}
               >
                 {matchForm.lineup && (

@@ -144,12 +144,13 @@ function PlayerCard({ player }: { player: IPlayer }) {
           <CustomMenuItem label="Edit" showBorder={true}>
             <Link href={`/cp/players/${player.id}/edit`}>Edit</Link>
           </CustomMenuItem>
-          <DeleteBtn
-            name={`${player.firstname} ${player.lastname}`}
-            id={player.id}
-            module="Player"
-            images={[player.homeKit, player.awayKit]}
-          />
+           {player.homeKit && player.awayKit && 
+            <DeleteBtn
+              name={`${player.firstname} ${player.lastname}`}
+              id={player.id}
+              module="Player"
+              images={[player.homeKit, player.awayKit]}
+          />}
         </>
       </CustomMenu>
     </Card.Root>

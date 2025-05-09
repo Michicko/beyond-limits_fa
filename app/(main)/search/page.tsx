@@ -3,14 +3,21 @@ import styles from "./Search.module.css";
 import clsx from "clsx";
 import Link from "next/link";
 import { appendMonthToLink } from "@/lib/helpers";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 
 async function search(props: {
   searchParams: Promise<{
-    q?: string;
+    q: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
-  console.log(searchParams.q);
+    const {q} = searchParams;
+
+    const { data: searchResults, errors } = await cookiesClient.queries.globalSearch({ 
+      keyword: q
+      });
+
+    console.log(searchResults);
 
   return (
     <div className={clsx(styles.container)}>

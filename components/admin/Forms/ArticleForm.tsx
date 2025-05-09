@@ -4,8 +4,6 @@ import {
   Button,
   Field,
   HStack,
-  IconButton,
-  Image,
   Input,
   Text,
 } from "@chakra-ui/react";
@@ -13,7 +11,6 @@ import React, { useRef, useState, useTransition } from "react";
 import { JSONContent } from "@tiptap/react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import FormLabel from "./FormLabel";
-import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import slugify from "slugify";
 import useToast from "@/hooks/useToast";
 import {
@@ -26,6 +23,7 @@ import { Schema } from "@/amplify/data/resource";
 import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import UploadImage from "../CustomFileUpload/UploadImage";
+import FormContainer from "./FormContainer";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -34,6 +32,7 @@ type IArticle = Pick<
   | "coverImage"
   | "content"
   | "status"
+  | "category"
   | "articleCategoryId"
   | "matchId"
   | "matchHomeTeamLogo"
@@ -71,12 +70,15 @@ function ArticleForm({
   const [tempData, setTempData] = useState({
     title: article?.title || "",
     coverImage: article?.coverImage || "",
+    category: article?.category || '',
     content: article
       ? JSON.parse(article.content as string)
       : ({} as JSONContent),
     status: article?.status || "UNPUBLISHED",
     articleCategoryId: article?.articleCategoryId || "",
   });
+
+  const articleCategory = articleCategories.find((el) => el.id === tempData.articleCategoryId);
 
   const handleArticleContent = (json: JSONContent) => {
     setTempData({ ...tempData, content: json });
@@ -87,6 +89,7 @@ function ArticleForm({
     setTempData({
       title: "",
       coverImage: "",
+      category: '',
       content: {} as JSONContent, // force cast to ensure shape
       status: "UNPUBLISHED",
       articleCategoryId: "",
@@ -110,7 +113,12 @@ function ArticleForm({
     formData.delete("content");
     formData.delete("matchId");
     formData.append("content", JSON.stringify(tempData.content));
+    formData.delete('category');
 
+    if(articleCategory){
+      formData.append('category', articleCategory.category.toLowerCase());
+    }
+    
     if (matchId && match && match.homeTeam && match.awayTeam) {
       formData.append("matchId", matchId);
       formData.append("matchHomeTeamLogo", match.homeTeam.logo);
@@ -206,7 +214,7 @@ function ArticleForm({
   };
 
   return (
-    <>
+    <FormContainer>
       {articleCategories.length < 1 && (
         <Text my={5}>Add Category before creating an article.</Text>
       )}
@@ -260,12 +268,8 @@ function ArticleForm({
 
         <Field.Root required mb={"5"}>
           <Input
-            placeholder="Add Title"
+            placeholder="Title"
             p={"0 10px"}
-            _placeholder={{
-              fontSize: "lg",
-              fontWeight: "700",
-            }}
             value={tempData.title}
             onChange={(e) =>
               setTempData({ ...tempData, title: e.target.value })
@@ -336,7 +340,7 @@ function ArticleForm({
           handleOnUpdate={handleArticleContent}
         />
       </form>
-    </>
+    </FormContainer>
   );
 }
 

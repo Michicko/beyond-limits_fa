@@ -24,6 +24,8 @@ import {
   updateHighlight,
 } from "@/app/_actions/highlight-actions";
 import { Nullable } from "@/lib/definitions";
+import FormContainer from "./FormContainer";
+import useToast from "@/hooks/useToast";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -49,9 +51,10 @@ function HighlightForm({
   });
 
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<Nullable<string>[]>(highlight?.tags || []);
+  const [tags, setTags] = useState<string[]>(highlight?.tags as string[] || []);
   const [isLoading, setIsLoading] = useState(false);
   const [editorKey, setEditorKey] = useState(101);
+  const {mutationToast, errorToast} = useToast();
 
   const handleHighlightDescription = (json: JSONContent) => {
     setTempData({ ...tempData, description: json });
@@ -83,9 +86,7 @@ function HighlightForm({
       try {
         const res = await createHighlight(formData);
         if (res.status === "success" && res.data) {
-          toast.success(`Successfully created "${res.data.title}" highlight`, {
-            duration: 8000,
-          });
+          mutationToast("highlight", res.data.title, "create");
         }
         setIsLoading(false);
         resetForm();
@@ -108,34 +109,26 @@ function HighlightForm({
           highlight.title,
         );
         if (res.status === "success" && res.data) {
-          toast.success(`Successfully updated "${res.data.title}" highlight`, {
-            duration: 8000,
-          });
+          mutationToast("highlight", res.data.title, "update");
         }
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
         const message = (error as Error).message;
-        toast.error(`Failed to create, ${message}`, {
-          duration: 8000,
-        });
+        errorToast(message);
       }
     }
   };
 
   return (
-    <Stack mb={"20px"}>
+    <FormContainer>
       <form ref={formRef} onSubmit={handleSubmit}>
         <Stack gap="2">
           <Field.Root required mb={"5"}>
             <Input
               name="title"
-              placeholder="Add Title"
+              placeholder="Title"
               p={"0 10px"}
-              _placeholder={{
-                fontSize: "lg",
-                fontWeight: "700",
-              }}
               value={tempData.title}
               onChange={(e) =>
                 setTempData({ ...tempData, title: e.target.value })
@@ -145,14 +138,14 @@ function HighlightForm({
           <Field.Root required mb={"5"}>
             <Input
               name="videoId"
-              placeholder="Youtube video id"
+              placeholder="Youtube video Id"
               p={"0 10px"}
               value={tempData.videoId}
               onChange={(e) =>
                 setTempData({ ...tempData, videoId: e.target.value })
               }
             />
-            <Field.HelperText>Enter url e.g: k-SvlnHFA6c</Field.HelperText>
+            <Field.HelperText>Enter Youtube Id e.g: k-SvlnHFA6c</Field.HelperText>
           </Field.Root>
           <Field.Root>
             <FormLabel>Cover image</FormLabel>
@@ -211,7 +204,7 @@ function HighlightForm({
           </FormBtn>
         </Stack>
       </form>
-    </Stack>
+    </FormContainer>
   );
 }
 

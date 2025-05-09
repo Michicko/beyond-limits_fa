@@ -14,6 +14,7 @@ import {
 import { getButtonStatus, objectToFormData } from "@/lib/helpers";
 import UploadImage from "../CustomFileUpload/UploadImage";
 import SelectedArticle from "@/components/ArticleFilterModal/SelectedArticle";
+import FormContainer from "./FormContainer";
 
 type ICompetition = Pick<
   Schema["Competition"]["type"],
@@ -96,7 +97,8 @@ function CompetitionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
+   <FormContainer>
+     <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
           <FormLabel>Competition Type</FormLabel>
@@ -211,6 +213,7 @@ function CompetitionForm({
         </FormBtn>
       </Stack>
     </form>
+   </FormContainer>
   );
 }
 

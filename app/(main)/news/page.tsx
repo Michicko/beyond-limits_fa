@@ -5,6 +5,7 @@ import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 import Text from "@/components/main/Typography/Text";
+import Link from "next/link";
 
 const links = [
   { name: "Academy news", href: "/news" },
@@ -14,98 +15,77 @@ const links = [
 async function News({
   searchParams,
 }: {
-  searchParams: { page?: string; category?: string };
+  searchParams: { page?: string; category?: string, nextToken?: string | null };
 }) {
   const currentPage = +(searchParams.page ?? 1);
-  const limit = 10;
-  let articleList;
+  const limit = 1;
   let errs;
 
-  if (searchParams.category) {
-    const { data: articleData, errors } =
-      await cookiesClient.models.ArticleCategory.list(
-        {
-          filter: {
-            category:{eq: searchParams.category.toLowerCase()},
-          },
-            authMode: (await isAuthenticated()) ? "userPool" : "iam",
-            selectionSet: [
-              "id",
-              "articles.*",
-              "category",
-              "articles.articleCategory.category",
-              "articles.matchHomeTeamLogo",
-              "articles.matchAwayTeamLogo",
-              "articles.matchId",
-              "articles.status"
-            ],
-        },
-        
-      );
+  const filter = {
+    status: { eq: "PUBLISHED" },
+    ...(searchParams.category && {
+      category: { 
+        eq: searchParams.category.toLowerCase(),
+      },
+    }),
+  };
 
-    if (errors) {
-      errs = [...errors];
-    }
-    articleList =
-      articleData[0] &&
-      articleData[0].articles.filter((el) => el.status === "PUBLISHED");
-  } else {
-    const { data: articlesData, errors } = await cookiesClient.models.Article.list({
-      limit: 150,
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
-      selectionSet: [
-        "id",
-        "articleCategory.category",
-        "content",
-        "tags",
-        "title",
-        "coverImage",
-        "status",
-        "createdAt",
-        "matchId",
-        "matchHomeTeamLogo",
-        "matchAwayTeamLogo",
-      ],
-    });
-    if (errors) {
-      errs = [...errors];
-    }
+  const { data: articles, errors, nextToken } = await cookiesClient.models.Article.list({
+    limit,
+    nextToken: searchParams.nextToken,
+    authMode: (await isAuthenticated()) ? "userPool" : "iam",
+    filter,
+    sortDirection: "DESC",
+    selectionSet: [
+      "id",
+      "category",
+      "content",
+      "tags",
+      "title",
+      "coverImage",
+      "status",
+      "createdAt",
+      "matchId",
+      "matchHomeTeamLogo",
+      "matchAwayTeamLogo",
+    ],
+  });
 
-    articleList =
-      articlesData && articlesData.filter((el) => el.status === "PUBLISHED");
-  }
+  // const { paginatedItems: articles, hasNextPage } = clientPaginate(
+  //   articleList,
+  //   currentPage,
+  //   limit
+  // );
 
-  const { paginatedItems: articles, hasNextPage } = clientPaginate(
-    articleList,
-    currentPage,
-    limit
-  );
+  const nextHref = `/news?${searchParams.category ? `category=${searchParams.category}&` : ''}nextToken=${encodeURIComponent(nextToken ?? '')}`
 
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
       <div className="main-container">
-        {errs && (
+        {errors && (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
-            {`Something went wrong, ${errs[0].message}`}
+            {`Something went wrong, ${errors[0].message}`}
           </Text>
         )}
         {searchParams.category && (
-          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+          <Text color="white" letterCase={"lower"} size="md" weight="regular" cssStyles={{marginBottom: '2rem', fontSize: '1.4rem'}}>
             Showing articles for {searchParams.category}
           </Text>
         )}
-        {!articleList ? (
+        {!articles ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No articles available
          </Text>
         ) : (
           <>
             <ArticleList articles={articles} />
-            <Pagination
+            {/* <Link>prev</Link> */}
+            <Link href={nextHref}>next</Link>
+            {/* <Pagination
               currentPage={currentPage}
               hasNextPage={hasNextPage}
               basePath="/news"
-            />
+            /> */}
           </>
         )}
       </div>

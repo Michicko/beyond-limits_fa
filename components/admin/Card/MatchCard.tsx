@@ -88,7 +88,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
                   <CustomMenuItem label="Edit" showBorder={true}>
                     <Link href={`/cp/matches/${match.id}/edit`}>Edit</Link>
                   </CustomMenuItem>
-                  {match.id && (
+                  {match.id && match.homeTeam && match.awayTeam && (
                     <DeleteBtn
                       id={match.id}
                       name={`${match.homeTeam.longName} vs ${match.awayTeam.longName}`}

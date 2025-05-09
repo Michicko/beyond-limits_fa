@@ -56,6 +56,7 @@ function Substitutes({
               bg={"card_bg"}
               p={"2"}
               borderRadius={"xs"}
+              maxH={'40px'}
             >
               {matchForm.substitutes && (
                 <Field.Root>

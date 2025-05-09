@@ -29,7 +29,7 @@ function ArticleCategories() {
       list={filteredList}
       isLoading={isLoading}
       error={error}
-      columns={["category", "articles", ""]}
+      columns={["category", ""]}
       createUrl="/cp/article-categories/create"
       topContent={
         <AdminSearchInput
@@ -42,7 +42,6 @@ function ArticleCategories() {
         <TableRows key={category.id}>
           <>
             <TableCell>{category.category}</TableCell>
-            <TableCell>{category.articles.length}</TableCell>
             <TableCell textAlign={"center"}>
               <CustomMenu>
                 <>

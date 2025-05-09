@@ -18,6 +18,7 @@ import { getButtonStatus } from "@/lib/helpers";
 import useToast from "@/hooks/useToast";
 import { createTeam, updateTeam } from "@/app/_actions/team-actions";
 import { getIcon } from "@/lib/icons";
+import FormContainer from "./FormContainer";
 
 type ITeam = Pick<
   Schema["Team"]["type"],
@@ -72,7 +73,8 @@ function TeamForm({ team }: { team?: ITeam | null }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
+   <FormContainer>
+     <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
           <FormLabel>short name</FormLabel>
@@ -182,6 +184,7 @@ function TeamForm({ team }: { team?: ITeam | null }) {
         </FormBtn>
       </Stack>
     </form>
+   </FormContainer>
   );
 }
 

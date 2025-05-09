@@ -39,7 +39,7 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
             <TableCell>{season.status}</TableCell>
             <TableCell>{season.matches.length}</TableCell>
             <TableCell>
-              {season.isWinner ? "Beyond Limits" : "Not Beyond Limits"}
+              {season.isWinner ? "Beyond Limits" : !season.isWinner && season.status === 'PENDING' ? null : "Not Beyond Limits"}
             </TableCell>
             <TableCell textAlign={"center"}>
               <CustomMenu>

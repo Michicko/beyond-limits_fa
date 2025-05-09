@@ -63,7 +63,7 @@ const deleteConfig: Record<
   },
   ArticleCategory: {
     modelName: "ArticleCategory",
-    pathToRevalidate: "/cp/articles",
+    pathToRevalidate: "/cp/article-categories",
   },
   Player: {
     modelName: "Player",

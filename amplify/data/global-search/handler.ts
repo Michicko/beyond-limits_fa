@@ -36,6 +36,8 @@ export const handler: Handler = async (event: any) => {
         }),
       ]);
 
+      console.log('glob', teams, competitions, players, articles, highlights)
+
     return {
       teams: teams.items,
       competitions: competitions.items,

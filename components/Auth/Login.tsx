@@ -59,6 +59,7 @@ const Login = () => {
 
     checkAuth();
 
+    // trigger auth status
     const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
       if (payload.event === "signedIn") {
         setStatus("authenticated");
@@ -70,6 +71,7 @@ const Login = () => {
     };
   }, []);
 
+  // redirect if authenticated
   useEffect(() => {
     if (status === "authenticated") {
       const timeout = setTimeout(() => {
@@ -81,7 +83,8 @@ const Login = () => {
     }
   }, [status, router, searchParams]);
 
-  if (status === "loading" || status === "idle") {
+  // show spinner
+  if (status === "loading" || status === "idle" || status === "authenticated") {
     return (
       <div className={clsx(styles["loading-container"])}>
         <div className={clsx(styles.loading)}></div>

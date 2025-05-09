@@ -560,9 +560,14 @@ export async function fetchHomepageData() {
     const { data: articles } = await cookiesClient.models.Article.list({
       limit: 4,
       authMode: auth ? "userPool" : "iam",
+      filter: {
+        status: {
+          eq: 'PUBLISHED'
+        }
+      },
       selectionSet: [
         "id",
-        "articleCategory.category",
+        "category",
         "content",
         "tags",
         "title",

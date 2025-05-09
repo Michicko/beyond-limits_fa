@@ -18,7 +18,7 @@ export const getArticleCategories = async () => {
   return articleCategoriesGetter({
     modelName: "ArticleCategory",
     limit: 20,
-    selectionSet: ["id", "category", "articles.title"],
+    selectionSet: ["id", "category"],
   });
 };
 

@@ -275,7 +275,6 @@ const schema = a.schema({
   ArticleCategory: a
     .model({
       category: a.string().required(),
-      articles: a.hasMany("Article", "articleCategoryId"),
     })
     .authorization((allow) => [
       allow.guest().to(["read"]),
@@ -288,7 +287,7 @@ const schema = a.schema({
   Article: a
     .model({
       articleCategoryId: a.id(),
-      articleCategory: a.belongsTo("ArticleCategory", "articleCategoryId"),
+      category: a.string().required(),
       title: a.string().required(),
       coverImage: a.string(),
       content: a.json(),

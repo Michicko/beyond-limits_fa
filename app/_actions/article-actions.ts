@@ -29,7 +29,7 @@ export const getLazyLoadedArticles = async () => {
     selectionSet: [
       "id",
       "title",
-      "articleCategory.category",
+      "category",
       "status",
       "createdAt",
       "coverImage",

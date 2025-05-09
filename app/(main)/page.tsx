@@ -23,27 +23,23 @@ export default async function Home() {
     <>
       <Slider />
       <main className="main">
-        <Container as="section" size="lg">
+        {homepageContent && <Container as="section" size="lg">
           <div className={clsx("matchcards")}>
             <Grid col="2fr" gap="md">
               <>
-                {homepageContent && (
-                  <>
-                    {homepageContent.lastMatch && (
-                      <MatchCard
-                        match={homepageContent?.lastMatch}
-                        fixedHeight={true}
-                        theme="light"
-                      />
-                    )}
-                    {homepageContent.upcomingMatch && (
-                      <MatchCard
-                        match={homepageContent.upcomingMatch}
-                        fixedHeight={true}
-                        theme="light"
-                      />
-                    )}
-                  </>
+                {homepageContent.lastMatch && (
+                  <MatchCard
+                    match={homepageContent?.lastMatch}
+                    fixedHeight={true}
+                    theme="light"
+                  />
+                )}
+                {homepageContent.upcomingMatch && (
+                  <MatchCard
+                    match={homepageContent.upcomingMatch}
+                    fixedHeight={true}
+                    theme="light"
+                  />
                 )}
               </>
             </Grid>
@@ -56,8 +52,8 @@ export default async function Home() {
               />
             )}
           </div>
-        </Container>
-        <Container as="section" size="lg">
+        </Container>}
+       {homepageContent && <Container as="section" size="lg">
           <Flex
             align="center"
             justify="between"
@@ -76,8 +72,8 @@ export default async function Home() {
           {homepageContent?.articles && (
             <ArticleList articles={homepageContent.articles} />
           )}
-        </Container>
-        <Container as="section" size="lg">
+        </Container>}
+       {homepageContent && <Container as="section" size="lg">
           <Flex
             align="center"
             justify="between"
@@ -96,8 +92,9 @@ export default async function Home() {
           {homepageContent?.players && (
             <PlayerList players={homepageContent.players} />
           )}
-        </Container>
-        <Container as="section" size="md">
+        </Container>}
+         { homepageContent &&     
+      <Container as="section" size="md">
           <Heading
             level={2}
             type="section"
@@ -109,7 +106,7 @@ export default async function Home() {
           </Heading>
           <Grid col="3" gap="sm">
             <>
-              {homepageContent &&
+              {
                 homepageContent.fixtures &&
                 homepageContent.fixtures.slice(0, 3).map((match, i) => {
                   return (
@@ -131,7 +128,7 @@ export default async function Home() {
               url={appendMonthToLink("/fixtures")}
             />
           </Flex>
-        </Container>
+        </Container>}
         <Container as="section" size="md">
           <Flex justify="center" align="center" my={"iv"}>
             <Text
@@ -150,11 +147,11 @@ export default async function Home() {
             </Text>
           </Flex>
         </Container>
-        <Container as="section" size="md">
-          {homepageContent && homepageContent?.highlights && (
+       {homepageContent && <Container as="section" size="md">
+          {homepageContent?.highlights && (
             <VideoCards videos={homepageContent.highlights} />
           )}
-        </Container>
+        </Container>}
       </main>
     </>
   );
