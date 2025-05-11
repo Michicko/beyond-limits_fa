@@ -1,6 +1,5 @@
 .search-box h2 {
   font-size: var(--base);
-  margin-bottom: var(--xxs);
   color: var(--white);
   margin-bottom: var(--base);
 }

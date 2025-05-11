@@ -72,8 +72,9 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
           <>
             <Heading
               level={1}
-              letterCase="upper"
-              type="secondary"
+              letterCase="capitalize"
+              type="primary"
+              color="white"
               center={true}
             >
               {article?.title}

@@ -558,13 +558,14 @@ export async function fetchHomepageData() {
     );
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
-      limit: 4,
+      limit: 10,
       authMode: auth ? "userPool" : "iam",
       filter: {
         status: {
           eq: 'PUBLISHED'
         }
       },
+      sortDirection: 'ASC',
       selectionSet: [
         "id",
         "category",
@@ -766,7 +767,7 @@ export const deleteCloudinaryImage = async (publicId: string) => {
 
 
 // fetchers
-export async function fetchCompetitions(keyword: string) {
+export async function fetchCompetitions(keyword: string, client: "guest" | "auth") {
   try {
     const result = await cookiesClient.models.CompetitionSeason.list({
       filter: {
@@ -776,6 +777,7 @@ export async function fetchCompetitions(keyword: string) {
         ],
       },
       limit: 12,
+      authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'name', 'logo', 'season']
     });
     return result.data;
@@ -785,7 +787,7 @@ export async function fetchCompetitions(keyword: string) {
   }
 }
 
-export async function fetchPlayers(keyword: string) {
+export async function fetchPlayers(keyword: string, client: "guest" | "auth") {
   try {
     const result = await cookiesClient.models.Player.list({
       filter: {
@@ -795,6 +797,7 @@ export async function fetchPlayers(keyword: string) {
         ],
       },
       limit: 12,
+      authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'firstname', 'lastname', 'ageGroup', 'playerPosition.longName','playerPosition.shortName', "height", 'weight', 'squadNo', 'awayKit', 'homeKit', 'dob', 'dominantFoot']
     });
     return result.data;
@@ -804,7 +807,7 @@ export async function fetchPlayers(keyword: string) {
   }
 }
 
-export async function fetchArticles(keyword: string) {
+export async function fetchArticles(keyword: string, client: "guest" | "auth") {
   try {
     const result = await cookiesClient.models.Article.list({
       filter: {
@@ -814,6 +817,7 @@ export async function fetchArticles(keyword: string) {
         ],
       },
       limit: 12,
+      authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: [
         'id', 
         'title', 
@@ -835,7 +839,7 @@ export async function fetchArticles(keyword: string) {
   }
 }
 
-export async function fetchHighlights(keyword: string) {
+export async function fetchHighlights(keyword: string, client: "guest" | "auth") {
   try {
     const result = await cookiesClient.models.Highlight.list({
       filter: {
@@ -845,6 +849,7 @@ export async function fetchHighlights(keyword: string) {
         ],
       },
       limit: 12,
+      authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags']
     });
     return result.data;
@@ -854,7 +859,7 @@ export async function fetchHighlights(keyword: string) {
   }
 }
 
-export async function globalSearch(keyword: string) {
+export async function globalSearch(keyword: string, client: "guest" | "auth") {
   try {
    
     if(!keyword){
@@ -868,10 +873,10 @@ export async function globalSearch(keyword: string) {
 
     // Assuming each fetch function is fetching from the respective data sources
     const [competitions, players, articles, highlights] = await Promise.all([
-      fetchCompetitions(keywordLower),
-      fetchPlayers(keywordLower),
-      fetchArticles(keywordLower),
-      fetchHighlights(keywordLower),
+      fetchCompetitions(keywordLower, client),
+      fetchPlayers(keywordLower, client),
+      fetchArticles(keywordLower, client),
+      fetchHighlights(keywordLower, client),
     ]);
 
     return  {

@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, useEffect } from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import styles from "./TextEditor.module.css";
 import { Color } from "@tiptap/extension-color";
@@ -37,6 +37,7 @@ function TextEditor({
   readOnly?: boolean;
   editorKey?: number;
 }) {
+  
   const editor = useEditor({
     extensions,
     content: Object.keys(content).length > 0 ? content : ``,
@@ -51,6 +52,10 @@ function TextEditor({
     },
   });
 
+  useEffect(() => {
+    editor?.commands.clearContent();
+  }, [editorKey])
+
   if (!editor) {
     return <div className={clsx(styles["editor-dummy"])}></div>;
   }
@@ -62,10 +67,9 @@ function TextEditor({
   return (
     <div
       className={clsx(styles.editor, readOnly && styles["read-only"])}
-      key={editorKey}
     >
       {!readOnly && <MenuBar editor={editor} />}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} key={editorKey} />
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default async function Home() {
                 )}
               </>
             </Grid>
-            {homepageContent?.nnlStanding && (
+            {homepageContent?.nnlStanding && homepageContent.nnlStanding.length > 0 && (
               <Standing
                 name={"NNL"}
                 showFull={false}
@@ -53,7 +53,8 @@ export default async function Home() {
             )}
           </div>
         </Container>}
-       {homepageContent && <Container as="section" size="lg">
+       {homepageContent?.articles && homepageContent.articles.length > 0 && 
+       <Container as="section" size="lg">
           <Flex
             align="center"
             justify="between"
@@ -69,11 +70,11 @@ export default async function Home() {
               type="section"
             />
           </Flex>
-          {homepageContent?.articles && (
-            <ArticleList articles={homepageContent.articles} />
-          )}
-        </Container>}
-       {homepageContent && <Container as="section" size="lg">
+          <ArticleList articles={homepageContent.articles.slice(0, 4)} />
+        </Container>
+        }
+       {homepageContent?.players && homepageContent.players.length > 0 && 
+       <Container as="section" size="lg">
           <Flex
             align="center"
             justify="between"
@@ -89,11 +90,10 @@ export default async function Home() {
               type="section"
             />
           </Flex>
-          {homepageContent?.players && (
-            <PlayerList players={homepageContent.players} />
-          )}
-        </Container>}
-         { homepageContent &&     
+          <PlayerList players={homepageContent.players} />
+        </Container>
+        }
+    { homepageContent?.fixtures &&homepageContent.fixtures.length > 0 &&     
       <Container as="section" size="md">
           <Heading
             level={2}
@@ -107,7 +107,6 @@ export default async function Home() {
           <Grid col="3" gap="sm">
             <>
               {
-                homepageContent.fixtures &&
                 homepageContent.fixtures.slice(0, 3).map((match, i) => {
                   return (
                     <MatchCard

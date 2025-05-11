@@ -2,12 +2,14 @@ import React from "react";
 import styles from "./Search.module.css";
 import clsx from "clsx";
 import { globalSearch } from "@/app/_actions/actions";
-import SearchError from "@/components/Search/SearchError";
 import PlayerList from "@/components/main/Player/PlayerList";
 import ArticleList from "@/components/Article/ArticleList";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
 import CompetitionList from "@/components/main/Competition/CompetitionList";
 import Text from "@/components/main/Typography/Text";
+import { isAuthenticated } from "@/utils/amplify-utils";
+import EmptyResult from "@/components/Search/emptyResult";
+import SearchError from "@/components/Search/SearchError";
 
 async function search(props: {
   searchParams: Promise<{
@@ -15,13 +17,14 @@ async function search(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-    const {q} = searchParams;
+  const {q} = searchParams;
+  const authenticated = await isAuthenticated();
 
-    const { data: searchResults, status, error } = await globalSearch(q);
-      const competitions = searchResults?.competitions ?? []
-      const players = searchResults?.players ?? []
-      const articles = searchResults?.articles ?? []
-      const highlights = searchResults?.highlights ?? []
+  const { data: searchResults, status, error } = await globalSearch(q, authenticated ? 'auth' : 'guest');
+  const competitions = searchResults?.competitions ?? [];
+  const players = searchResults?.players ?? [];
+  const articles = searchResults?.articles ?? [];
+  const highlights = searchResults?.highlights ?? [];
 
   return (
     <div className={clsx(styles.container)}>
@@ -61,10 +64,8 @@ async function search(props: {
           }
         </div>
         )
-         : status === 200 ? <SearchError keyword={q} /> :
-          <Text color="white" letterCase={"lower"} size="base" weight="regular">
-            {error}
-          </Text>
+         : status === 200 ? <EmptyResult keyword={q} /> :
+          <SearchError error={error} />
         }
     </div>
   );
