@@ -6,9 +6,8 @@ import PlayerList from "@/components/main/Player/PlayerList";
 import ArticleList from "@/components/Article/ArticleList";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
 import CompetitionList from "@/components/main/Competition/CompetitionList";
-import Text from "@/components/main/Typography/Text";
 import { isAuthenticated } from "@/utils/amplify-utils";
-import EmptyResult from "@/components/Search/emptyResult";
+import EmptyResult from "@/components/Search/EmptyResult";
 import SearchError from "@/components/Search/SearchError";
 
 async function search(props: {
