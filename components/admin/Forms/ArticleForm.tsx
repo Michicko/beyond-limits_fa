@@ -24,7 +24,6 @@ import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import UploadImage from "../CustomFileUpload/UploadImage";
 import FormContainer from "./FormContainer";
-import { redirect } from "next/navigation";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -204,17 +203,12 @@ function ArticleForm({
       formData.append("id", article.id);
       formData.append("status", "PUBLISHED");
 
-      const onSuccess = () => {
-        redirect('/cp/articles');
-      }
-
       mutationPromiseToast(
         publishArticle(formData),
         success,
         err,
         loading,
         setIsPublishing,
-        onSuccess
       );
     }
   };
