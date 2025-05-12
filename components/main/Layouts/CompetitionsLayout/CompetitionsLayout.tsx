@@ -8,9 +8,7 @@ import Heading from "../../Typography/Heading";
 import Tab from "../../Tab/Tab";
 import LinkTab from "../../Tab/LinkTab";
 import styles from "../Layout.module.css";
-import { months, seasons } from "@/lib/placeholder-data";
-import SeasonFilter from "../../Filters/SeasonFilter";
-import { appendMonthToLink, getDefaultSeason } from "@/lib/helpers";
+import { appendMonthToLink } from "@/lib/helpers";
 
 function CompetitionsLayout({
   children,
@@ -21,9 +19,6 @@ function CompetitionsLayout({
   competitionId?: string;
   pageTitle?: string;
 }) {
-  const currentSeason = getDefaultSeason(seasons);
-  const date = new Date();
-  const month = date.getUTCMonth();
 
   const tabLinks = competitionId
     ? [
@@ -74,9 +69,6 @@ function CompetitionsLayout({
             >
               {pageTitle}
             </Heading>
-            {/* <Suspense key={currentSeason} fallback={<div>loading...</div>}>
-              <SeasonFilter />
-            </Suspense> */}
           </>
         </LayoutHeader>
       </Header>
