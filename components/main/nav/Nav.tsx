@@ -11,9 +11,11 @@ import NavSearchBtn from "./NavSearchBtn";
 import { usePathname } from "next/navigation";
 import { fetchAuthSession } from "@aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
+import Logout from "@/components/Auth/Logout";
 
 function Nav() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathname = usePathname();
   const isStatePopped = useRef(false);
 
@@ -73,20 +75,22 @@ function Nav() {
     const checkAuthStatus = async () => {
       try {
         const { tokens } = await fetchAuthSession();
-        if (tokens) {
-          setAuthenticated(true);
-        } else {
-          setAuthenticated(false);
-        }
+        const isAuthenticated = !!tokens;
+        setAuthenticated(isAuthenticated);
+        const rawGroups = tokens?.accessToken.payload['cognito:groups'];
+        const groups = Array.isArray(rawGroups) ? rawGroups : [];
+        const isAdmin = groups.includes('Admin') || groups.includes('Writer');
+        setIsAdmin(isAdmin);
       } catch (error) {
         setAuthenticated(false);
+        setIsAdmin(false);
       }
     };
     checkAuthStatus();
   }, []);
 
   useEffect(() => {
-     const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
+    const hubListenerCancel = Hub.listen("auth", ({ payload }) => {
       if (payload.event === "signedIn") {
         setAuthenticated(true);
       }
@@ -114,13 +118,20 @@ function Nav() {
           </div>
           <p className={clsx(styles["nav-text"])}>No Limits</p>
           <div className={clsx(styles.right)}>
-            <NavLink
-              link={
-                authenticated
-                  ? { href: "/cp/dashboard", name: "Dashboard" }
-                  : { href: "/login", name: "Login" }
-              }
-            />
+          
+            {
+              authenticated && isAdmin ? 
+              <NavLink
+                link={{ href: "/cp/dashboard", name: "Dashboard" }}
+              /> 
+              : authenticated ?
+               <Logout isMain={true} />
+              :
+              <NavLink
+                link={{ href: "/login", name: "Login" }}
+              />
+            }
+            
           </div>
         </div>
         <div className={clsx(styles["nav-main"])}>

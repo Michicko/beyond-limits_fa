@@ -49,6 +49,19 @@ function CompetitionForm({
     setCompetitionData({ ...competitionData, [name]: value });
   };
 
+  const resetForm = () => {
+    setCompetitionData({
+      id:  "",
+      logo: "",
+      shortName:  "",
+      longName: "",
+      competitionType: "",
+      trophyImage: "",
+      trophyArticleId: "",
+    });
+    formRef.current?.reset();
+  }
+
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
   const { mutationToast, errorToast } = useToast();
@@ -87,7 +100,7 @@ function CompetitionForm({
         const res = await createCompetition(formData);
         if (res.status === "success" && res.data) {
           mutationToast("competition", res.data.longName, "create");
-          formRef.current?.reset();
+          resetForm();
         }
         if (res.status === "error") {
           errorToast(res.message);

@@ -16,7 +16,7 @@ async function CreateCompetition() {
           <BackButton />
         </HStack>
         {competitionTypes && (
-          <CompetitionForm competitionTypes={competitionTypes} />
+          <CompetitionForm competitionTypes={competitionTypes}  />
         )}
       </Box>
     </>

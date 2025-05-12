@@ -4,26 +4,41 @@ import styles from "./Player.module.css";
 import clsx from "clsx";
 import PlayerInfo from "./PlayerInfo";
 import ImageComp from "@/components/ImageComp/ImageComp";
-import { removeImgBg } from "@/lib/helpers";
+import { getCloudinaryFilename, removeImgBg } from "@/lib/helpers";
+import { CldImage } from 'next-cloudinary';
 
 function PlayerModal({ player }: { player: IPlayer }) {
   return (
     <div className={clsx(styles["player-modal__box"])}>
       <div className={clsx(styles["player-kit"])}>
         {player.homeKit && (
-          <ImageComp
-            image={removeImgBg(player.homeKit)}
-            alt={player.firstname}
-            placeholder={"/images/pl-bg.png"}
-            priority={false}
+          // <ImageComp
+          //   image={removeImgBg(player.homeKit)}
+          //   alt={player.firstname}
+          //   placeholder={"/images/pl-bg.png"}
+          //   priority={false}
+          // />
+          <CldImage
+            fill
+            src={getCloudinaryFilename(player.homeKit) ?? ''}
+            removeBackground
+            sizes="33vw"
+            alt={`${player.firstname} ${player.lastname}`}
           />
         )}
         {player.awayKit && (
-          <ImageComp
-            image={removeImgBg(player.awayKit)}
-            alt={player.firstname}
-            placeholder={"/images/pl-bg.png"}
-            priority={false}
+          // <ImageComp
+          //   image={removeImgBg(player.awayKit)}
+          //   alt={player.firstname}
+          //   placeholder={"/images/pl-bg.png"}
+          //   priority={false}
+          // />
+          <CldImage
+            fill
+            src={getCloudinaryFilename(player.awayKit) ?? ''}
+            removeBackground
+            sizes="33vw"
+            alt={`${player.firstname} ${player.lastname}`}
           />
         )}
       </div>

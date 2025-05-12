@@ -587,7 +587,7 @@ export async function fetchHomepageData() {
           eq: "UNDER_19",
         },
       },
-      limit: 3,
+      limit: 4,
       authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",

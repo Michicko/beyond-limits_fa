@@ -131,7 +131,7 @@ async function Users() {
                                     "email",
                                   ).toLowerCase()}
                                 </TableCell>
-                                <TableCell textTransform={"lowercase"}>
+                                <TableCell textTransform={"capitalize"}>
                                   {formatDate(user.UserCreateDate)}
                                 </TableCell>
                                 <TableCell textTransform={"lowercase"}>

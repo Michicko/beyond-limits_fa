@@ -8,6 +8,7 @@ function CheckBox({
   showLabel,
   size,
   name,
+  disabled
 }: {
   checked: boolean | "indeterminate";
   onCheckedChange: (changes: any) => void;
@@ -15,6 +16,7 @@ function CheckBox({
   showLabel?: boolean;
   size?: "xs" | "sm" | "md" | "lg";
   name?: string;
+  disabled?: boolean
 }) {
   return (
     <HStack alignItems={"center"}>
@@ -25,6 +27,7 @@ function CheckBox({
         variant={"outline"}
         border={"1px solid gray"}
         colorPalette={"gray"}
+        disabled={disabled}
         cursor={"pointer"}
         checked={checked}
         name={name}

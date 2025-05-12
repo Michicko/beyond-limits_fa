@@ -25,7 +25,7 @@ type ITeam = Pick<
   "id" | "logo" | "shortName" | "longName" | "stadium" | "isBeyondLimits"
 >;
 
-function TeamForm({ team }: { team?: ITeam | null }) {
+function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLimitsExists?: boolean }) {
   const [isBeyondLimits, setIsBeyondLimits] = useState<boolean>(
     team?.isBeyondLimits || false
   );
@@ -119,7 +119,7 @@ function TeamForm({ team }: { team?: ITeam | null }) {
             Enter long name e.g Beyond Limits Fa
           </Field.HelperText>
         </Field.Root>
-        <Field.Root required>
+        <Field.Root>
           <FormLabel>stadium</FormLabel>
           <Input
             name={"stadium"}
@@ -174,6 +174,7 @@ function TeamForm({ team }: { team?: ITeam | null }) {
           name="isBeyondLimits"
           size="xs"
           label="Is BeyonLimits Fa"
+          disabled={beyondLimitsExists}
           onCheckedChange={(e) => {
             setIsBeyondLimits(e.checked);
           }}
