@@ -174,7 +174,7 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <SimpleGrid gap={5} columns={{ base: 1, md: 2 }}>
-            <Field.Root required>
+            <Field.Root>
               <FormLabel>Home kit</FormLabel>
               {tempData.homeKit && (
                 <HStack gap={4} position={"relative"}>
@@ -214,7 +214,7 @@ function PlayerForm({
                 />
               )}
             </Field.Root>
-            <Field.Root required>
+            <Field.Root>
               <FormLabel>Away kit</FormLabel>
               {tempData.awayKit && (
                 <HStack gap={4} position={"relative"}>
@@ -296,7 +296,7 @@ function PlayerForm({
               Enter squad number e.g 7
             </Field.HelperText>
           </Field.Root>
-          <Field.Root required>
+          <Field.Root>
             <FormLabel>Weight</FormLabel>
             <Input
               name={"weight"}
@@ -317,7 +317,7 @@ function PlayerForm({
               Enter weight in (kg) e.g 75
             </Field.HelperText>
           </Field.Root>
-          <Field.Root required>
+          <Field.Root>
             <FormLabel>Height</FormLabel>
             <Input
               name={"height"}
@@ -328,6 +328,7 @@ function PlayerForm({
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
+              step={0.1}
               defaultValue={player?.height || ""}
             />
             <Field.HelperText

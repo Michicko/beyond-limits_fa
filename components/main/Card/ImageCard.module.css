@@ -1,0 +1,27 @@
+.visual {
+  position: relative;
+  max-width: 100%;
+  height: auto;
+  column-fill: auto;
+  margin-bottom: var(--sm);
+  border-radius: var(--sm);
+  overflow: hidden;
+}
+
+.visual::before {
+  display: block;
+  padding-top: 100%;
+  content: "";
+}
+
+@media only screen and (min-width: 36rem) {
+  .visual {
+    margin-bottom: var(--md);
+  }
+}
+
+@media only screen and (min-width: 48rem) {
+  .visual {
+    margin-bottom: var(--lg);
+  }
+}

@@ -11,6 +11,7 @@ import LinkTab from "@/components/main/Tab/LinkTab";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Text from "@/components/main/Typography/Text";
 
+
 const links = [
   { name: "Under-19", href: "/players/under_19" },
   { name: "Under-17", href: "/players/under_17" },
@@ -37,7 +38,11 @@ async function Players({ params }: { params: { playersSlug: string } }) {
     "left back",
     "defensive midfielder",
     "central midfielder",
+    "attacking midfielder",
     "wing forward",
+    "winger",
+    "forward",
+    "striker"
   ];
 
   const rows = () => {
@@ -58,7 +63,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
           <Heading
             letterCase="capitalize"
             level={2}
-            mb="sm"
+            mb="md"
             type="section"
           >{`${row.longName}s`}</Heading>
           <PlayerList players={filteredPlayers} />

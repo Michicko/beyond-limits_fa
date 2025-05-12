@@ -17,7 +17,8 @@ function Players() {
   const { data, error, isLoading } = useSWR("players", getPlayersLazyLoaded);
   const ageGroups = ageGroupsData;
   const players = data && data.data;
-  const positions = players && players.map((el) => el.playerPosition.longName);
+  const mappedPositions = players && players.map((el) => el.playerPosition.longName);
+  const positions = Array.from(new Set(mappedPositions)).map((val) => val);
 
   return (
     <>

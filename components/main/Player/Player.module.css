@@ -11,7 +11,7 @@
 }
 
 .player__img-box img {
-  object-fit: cover !important;
+  /* object-fit: cover !important; */
   position: absolute;
   top: 0;
   left: 0;
@@ -155,6 +155,7 @@
   font-weight: 500;
   color: var(--white);
   font-family: var(--font-body);
+  text-transform: capitalize;
 }
 
 .firstname {

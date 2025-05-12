@@ -1,7 +1,11 @@
+'use client';
 import { IPlayer } from "@/lib/definitions";
 import clsx from "clsx";
 import styles from "./Player.module.css";
-import ImageComp from "@/components/ImageComp/ImageComp";
+import { CldImage } from 'next-cloudinary';
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { getCloudinaryFilename } from "@/lib/helpers";
 
 const Player = ({
   player,
@@ -10,15 +14,23 @@ const Player = ({
   player: IPlayer;
   handleOnClick: (playerId: string) => void;
 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, margin: "0px 0px -50px 0px" });
+
   return (
-    <div className={clsx(styles.player)}>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.4, ease: "easeOut" }} 
+      className={clsx(styles.player)}>
       <div className={clsx(styles["player__img-box"])}>
         {player.homeKit && (
-          <ImageComp
-            image={player.homeKit}
+          <CldImage
+            fill
+            src={getCloudinaryFilename(player.homeKit) ?? ''}
+            sizes="33vw"
             alt={player.firstname}
-            placeholder={"/images/pl-bg-light.png"}
-            priority={false}
           />
         )}
       </div>
@@ -59,7 +71,7 @@ const Player = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

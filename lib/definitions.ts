@@ -294,8 +294,8 @@ export enum Dominant_foot {
 }
 
 export enum Age_group {
-  UNDER_19 = "UNDER-19",
-  UNDER_17 = "UNDER-17",
+  UNDER_19 = "UNDER_19",
+  UNDER_17 = "UNDER_17",
 }
 
 export enum Player_status {
