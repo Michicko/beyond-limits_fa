@@ -50,7 +50,7 @@ function Dashboard() {
               Welcome Admin
             </Heading>
             <Text>
-              To Get started, create a season, competitions, teams, competition
+              To Get started, competitions, players, teams, competition
               season, matches, rounds and other resources.
             </Text>
           </Card.Body>

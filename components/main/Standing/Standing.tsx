@@ -22,14 +22,28 @@ function Standing({
   const sortedStandings = standings.sort((a, b) => a.position - b.position);
 
   // get blfc index in standing
-  const blfcIndex = sortedStandings.findIndex((el) => el && el.isBeyondLimits);
+  const blfcIndex = sortedStandings.findIndex((el) => el?.isBeyondLimits);
 
   // get team before blfc and blfc postions
-  const filteredStandings = showFull
-    ? sortedStandings
-    : sortedStandings.slice(blfcIndex > 0 ? blfcIndex - 1 : 0, blfcIndex + 2);
+  let filteredStandings = [];
 
-  const theads = ["pos", "club", "p", "w", "d", "l", "g", "gd", "pts"];
+  if (showFull || blfcIndex === -1) {
+    filteredStandings = sortedStandings;
+  } else {
+    const isFirst = blfcIndex === 0;
+    const isLast = blfcIndex === sortedStandings.length - 1;
+
+    if (isFirst) {
+      filteredStandings = sortedStandings.slice(0, 2);
+    } else if (isLast) {
+      filteredStandings = sortedStandings.slice(blfcIndex - 1);
+    } else {
+      filteredStandings = sortedStandings.slice(blfcIndex, blfcIndex + 2);
+    }
+  }
+
+  const theads = ["pos", "club", "p", "w", "d", "l", "g", "gd", "pts"];    
+   
 
   return (
     <div className={clsx(styles.standing)}>

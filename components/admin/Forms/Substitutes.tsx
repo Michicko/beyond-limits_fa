@@ -11,6 +11,9 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  playerPosition: {
+    shortName: string
+  }
 }
 
 type IMatchI = Pick<
@@ -91,7 +94,7 @@ function Substitutes({
               )}
               {player.homeKit && <Image src={player.homeKit} width={"25px"} />}
               <Text whiteSpace={"nowrap"}>
-                {player.squadNo}. {player.firstname} {player.lastname}
+                {player.playerPosition.shortName} {player.squadNo}. {player.firstname} {player.lastname}
               </Text>
             </Flex>
           );

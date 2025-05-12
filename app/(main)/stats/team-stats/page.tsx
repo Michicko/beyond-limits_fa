@@ -16,7 +16,7 @@ import {
 } from "@/app/_actions/actions";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
-import { getFirstLetter } from "@/lib/helpers";
+import { getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 
 async function TeamStats() {
@@ -194,7 +194,7 @@ async function TeamStats() {
                           <TeamStat
                             competition_logo={cup.logo}
                             competition_name={cup.name}
-                            position={cup.round}
+                            position={getPlayOffRoundName(cup.round.round) ?? ''}
                             key={cup.id + i + (i + 2) + i + 3}
                           />
                         );

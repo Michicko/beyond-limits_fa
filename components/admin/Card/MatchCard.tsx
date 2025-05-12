@@ -46,12 +46,12 @@ interface IMatch {
 
 function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
   return (
-    <Card.Root border={"1px solid"} borderColor={"neutral"} w={"full"}>
+    <Card.Root border={"1px solid"} borderColor={"gray.200"} w={"full"}>
       <Card.Header
         w={"full"}
         h={"50px"}
         borderBottom={"1px solid"}
-        borderColor={"neutral"}
+        borderColor={"gray.200"}
       >
         <HStack
           justify={"space-between"}

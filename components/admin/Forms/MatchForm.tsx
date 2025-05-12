@@ -61,6 +61,9 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  playerPosition: {
+    shortName: string
+  }
 }
 
 type IMatchI = Pick<
@@ -207,7 +210,7 @@ function MatchForm({
       homeForm:  "",
       awayForm: "",
     })
-    setEditorKey(editorKey + 1)
+    setEditorKey((prev) => prev + 4);
   }
 
   const selectedCompetition = match

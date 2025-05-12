@@ -30,7 +30,9 @@ function CompetitionSeasonCard({
   isWinner: boolean | null;
 }) {
   const [winnerOpt, setWinnerOpt] = useState(isWinner || false);
-  const [radioVal, setRadioVal] = useState<string | null>("");
+  const [radioVal, setRadioVal] = useState<string | null>(status === "COMPLETED" && isWinner
+    ? "isBeyondLimits"
+    : status === "COMPLETED" && !isWinner ? "notBeyondLimits" : '');
 
   const handleOnChange = (e: RadioGroupValueChangeDetails) => {
     setRadioVal(e.value);
@@ -73,13 +75,13 @@ function CompetitionSeasonCard({
   return (
     <Card.Root size="md" p={"5"} border={"1px solid"} borderColor={"gray.200"}>
       <Card.Body color="fg.muted">
-        <HStack
+        <Stack
           w={"full"}
           justifyContent={"space-between"}
           flexWrap={{ base: "wrap", lg: "unset" }}
           gap={4}
         >
-          <Stack>
+          <Stack borderBottom={'1px solid'} borderColor={'gray.200'} pb={'3'}>
             <Info name="Competition" value={competitionName} />
             {competitionType && (
               <Info
@@ -90,11 +92,11 @@ function CompetitionSeasonCard({
             <Info name="Season" value={season} />
             {status && <Info name="Status" value={status.toLowerCase()} />}
           </Stack>
-          <Stack alignSelf={"flex-end"}>
+          <Stack alignSelf={"flex-start"}>
             <form onSubmit={handleSetWinner}>
-              <HStack flexWrap={{ base: "wrap", md: "unset" }} gap={2}>
+              <Stack flexWrap={{ base: "wrap", md: "unset" }} gap={2}>
                 <Field.Root>
-                  <FormLabel>Competition Winner</FormLabel>
+                  <FormLabel as="Text">Competition Winner</FormLabel>
                   <RadioGroup.Root
                     value={radioVal}
                     defaultValue={
@@ -104,7 +106,7 @@ function CompetitionSeasonCard({
                     }
                     onValueChange={handleOnChange}
                   >
-                    <HStack gap="2" flexWrap={{ base: "wrap", sm: "unset" }}>
+                    <Stack gap="2" flexWrap={{ base: "wrap", sm: "unset" }}>
                       <RadioGroup.Item
                         key={"isBeyondLimits"}
                         value={"isBeyondLimits"}
@@ -131,7 +133,7 @@ function CompetitionSeasonCard({
                           {"Not BeyondLimits"}
                         </RadioGroup.ItemText>
                       </RadioGroup.Item>
-                    </HStack>
+                    </Stack>
                   </RadioGroup.Root>
                 </Field.Root>
                 <Button
@@ -144,10 +146,10 @@ function CompetitionSeasonCard({
                 >
                   {isUpdating ? "Saving..." : "Save"}
                 </Button>
-              </HStack>
+              </Stack>
             </form>
           </Stack>
-        </HStack>
+        </Stack>
       </Card.Body>
     </Card.Root>
   );

@@ -27,7 +27,7 @@ function Scorers({ ranking }: { ranking: IScorer[] }) {
     fontWeight: "semibold",
   };
   return (
-    <Card.Root border={"1px solid"} borderColor={"neutral"} py={"10px"}>
+    <Card.Root border={"1px solid"} borderColor={"gray.200"} py={"10px"}>
       <Card.Header py={"10px"} px={"10px"}>
         <Heading as={"h3"} css={headingStyles}>
           Top Scorers
@@ -45,7 +45,7 @@ function Scorers({ ranking }: { ranking: IScorer[] }) {
                   px={"10px"}
                   borderBottom={"1px solid"}
                   borderColor={
-                    i === ranking.length - 1 ? "transparent" : "neutral"
+                    i === ranking.length - 1 ? "transparent" : "gray.200"
                   }
                 >
                   <HStack>

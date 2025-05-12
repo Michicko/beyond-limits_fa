@@ -18,7 +18,7 @@ import { IPlayer } from "@/lib/definitions";
 import slugify from "slugify";
 import useToast from "@/hooks/useToast";
 import { createPlayer, updatePlayer } from "@/app/_actions/player-actions";
-import { getButtonStatus } from "@/lib/helpers";
+import { getButtonStatus, removeImgBg } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
 import { getIcon } from "@/lib/icons";
 import FormContainer from "./FormContainer";

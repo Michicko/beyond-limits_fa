@@ -49,17 +49,22 @@ function Standing({
   const tableRowStyles = {
     h: "45px !important",
     minH: "45px !important",
+    borderBottom: "1px solid",
+    borderColor: "gray.200",
   };
 
   return (
-    <Card.Root border={"1px solid"} borderColor={"neutral"} p={"10px"}>
+    <Card.Root border={"1px solid"} borderColor={"gray.200"} p={"10px"}>
       <Card.Header pt={"10px"}>
         <Heading as={"h3"} css={headingStyles}>
           {name} Standing
         </Heading>
       </Card.Header>
-
-      <Table.Root size="sm">
+      <Table.Root size="sm" 
+          border={"1px solid"}
+          borderColor={"gray.200"}
+          borderCollapse={"collapse"}
+        >
         <Table.Header css={tableRowStyles}>
           <Table.Row verticalAlign={"middle"} css={tableRowStyles}>
             {statsHead.map((el, i) => {
@@ -94,9 +99,7 @@ function Standing({
                 key={standing.teamId}
                 h={"40px"}
                 borderBottom={"1px solid"}
-                borderColor={
-                  i === standings.length - 1 ? "transparent" : "neutral"
-                }
+                borderColor={"gray.200"}
                 bg={standing.isBeyondLimits ? "neutral" : "transparent"}
               >
                 <Table.Cell css={tdStyles} pl={"4px"}>

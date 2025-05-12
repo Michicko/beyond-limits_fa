@@ -59,7 +59,7 @@ function PlayOffRoundRow({
     startTransition(async () => {
       const res = await updatePlayOff(round.id, formData);
       if (res.status === "success" && res.data) {
-        mutationToast("PlayOff", `${res.data.round}`, "create");
+        mutationToast("PlayOff", `${res.data.round}`, "update");
       }
       if (res.status === "error") {
         errorToast(res.message);
@@ -108,6 +108,7 @@ function PlayOffRoundRow({
                   {round.match.awayTeam.shortName}
                 </Text>
               </HStack>
+
             </>
           )}
         </HStack>
@@ -118,7 +119,10 @@ function PlayOffRoundRow({
           id={round.round}
           value={result}
           setValue={setResult}
-          disabled={round.result && round.status === "COMPLETED" ? true : false}
+          disabled={
+            (round.result && round.status === "COMPLETED" && true) ||
+            isPending ||
+            competitionStatus === "COMPLETED"}
           fixedWidth={true}
         />
       </Table.Cell>

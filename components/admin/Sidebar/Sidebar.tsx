@@ -11,11 +11,6 @@ const links = [
     link: "/cp/dashboard",
     icon: getIcon("dashboard"),
   },
-  // {
-  //   name: "seasons",
-  //   link: "/cp/seasons",
-  //   icon: getIcon("year"),
-  // },
   {
     name: "competitions",
     link: "/cp/competitions",
@@ -46,11 +41,6 @@ const links = [
     link: "/cp/matches",
     icon: getIcon("ball"),
   },
-  // {
-  //   name: "trophies",
-  //   link: "/cp/trophies",
-  //   icon: getIcon("trophy"),
-  // },
   {
     name: "categories",
     link: "/cp/article-categories",
@@ -66,16 +56,12 @@ const links = [
     link: "/cp/highlights",
     icon: getIcon("video"),
   },
-  // {
-  //   name: "settings",
-  //   link: "/cp/settings",
-  //   icon: getIcon("settings"),
-  // },
 ];
 
 const filteredLinks = links.filter(
   (el) =>
-    el.name === "articles" ||
+    el.name === "categories" ||
+  el.name === "articles" ||
     el.name === "dashboard" ||
     el.name === "highlights"
 );

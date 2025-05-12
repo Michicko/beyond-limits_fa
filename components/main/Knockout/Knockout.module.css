@@ -71,7 +71,7 @@
   width: 1em;
   text-align: center;
   padding: 0.2em 0.1em;
-  margin-top: 1.6rem;
+  margin-top: 1.4rem;
   font-size: var(--sm);
   color: var(--white);
   font-weight: 700;
@@ -105,7 +105,7 @@
 
 @media only screen and (min-width: 25rem) {
   .knockout-match__code {
-    display: block;
+    /* display: block; */
   }
 
   .knockout-match__team--details {
@@ -120,6 +120,25 @@
   }
 
   .knockout-match__code {
+    display: block;
+  }
+
+  .knockout-match__team--details {
+    width: 206px;
+  }
+  
+}
+
+@media only screen and (min-width: 60rem) {
+  .knockout {
+    max-width: 768px;
+  }
+
+  .versus {
+    margin-top: 2rem;
+  }
+
+  .knockout-match__code {
     display: none;
   }
 
@@ -127,6 +146,6 @@
     display: block;
   }
   .knockout-match__team--details {
-    width: 206px;
+    width: 250px;
   }
 }

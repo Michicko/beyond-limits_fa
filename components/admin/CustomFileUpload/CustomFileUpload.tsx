@@ -10,14 +10,12 @@ function CustomFileUpload({
   onUploaded,
   filename,
   type,
-  removeBg,
 }: {
   description: string;
   id?: string;
   onUploaded: (path: string) => void;
   filename: string;
   type?: "drag-drop" | "select";
-  removeBg?: boolean;
 }) {
   const { mutationPromiseToast } = useToast();
   const [isUploading, setIsUploading] = useState(false);

@@ -55,7 +55,7 @@ function MatchStats({
   return (
     <Card.Root
       border={"1px solid"}
-      borderColor={"neutral"}
+      borderColor={"gray.200"}
       w={"full"}
       p={"20px"}
     >
@@ -63,7 +63,7 @@ function MatchStats({
         <Flex
           gap={0}
           w={"full"}
-          bg={"neutral"}
+          bg={"gray.200"}
           borderRadius={"xs"}
           overflow={"hidden"}
           mb={"20px"}

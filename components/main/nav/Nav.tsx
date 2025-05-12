@@ -94,6 +94,9 @@ function Nav() {
       if (payload.event === "signedIn") {
         setAuthenticated(true);
       }
+      if(payload.event === 'signedOut'){
+        setAuthenticated(false);
+      }
     });
 
     return () => {

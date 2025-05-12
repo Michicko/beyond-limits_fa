@@ -15,7 +15,7 @@ function StatCard({
     <Stat.Root
       minW="180px"
       border="1px solid"
-      borderColor={"neutral"}
+      borderColor={"gray.200"}
       p="4"
       rounded="md"
     >

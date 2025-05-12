@@ -14,6 +14,9 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  playerPosition: {
+    shortName: string
+  }
 }
 type IMatchI = Pick<
   Schema["Match"]["type"],

@@ -15,7 +15,7 @@ export default function Logout({isMain}: {isMain?: boolean}) {
       }}
       className={isMain ? clsx(styles.signout) : "px-2 bg-white text-black"}
     >
-      Sign out
+      Logout
     </button>
   );
 }

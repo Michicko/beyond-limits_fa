@@ -15,7 +15,7 @@ async function CreateTeam() {
       selectionSet: ['isBeyondLimits']
     });
   
-    const isBeyondLimits = teams[0].isBeyondLimits ?? null;
+    const isBeyondLimits = teams[0]?.isBeyondLimits ?? null;
 
   return (
     <>

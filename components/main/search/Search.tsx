@@ -1,6 +1,5 @@
 "use client";
-
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import styles from "./Search.module.css";
 import { useRouter } from "next/navigation";
@@ -16,14 +15,36 @@ function Search({
   const closeSearchBar = () => {
     setIsOpened(false);
   };
+
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [keyword, setKeyword] = useState("");
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    if (!keyword) return;
-    router.replace(`/search?q=${keyword}`);
+    const trimmedKeyword = keyword.trim();
+    if (!trimmedKeyword) return;
+    router.replace(`/search?q=${encodeURIComponent(trimmedKeyword)}`);
     setIsOpened(false);
   };
+
+  useEffect(() => {
+    const search = searchRef.current;
+    if(isOpened && search){
+      search.focus();
+      setKeyword('');
+    }
+  }, [isOpened])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpened(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div
       className={clsx(styles["search-container"], {
@@ -37,8 +58,11 @@ function Search({
           className={clsx(styles["search-input"])}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          ref={searchRef}
+          aria-label="Search input"
+          tabIndex={0}
         />
-        <button type="submit" className={clsx(styles["search-btn"])}>
+        <button type="submit" aria-label="Submit search" className={clsx(styles["search-btn"])}>
           search
         </button>
         <button

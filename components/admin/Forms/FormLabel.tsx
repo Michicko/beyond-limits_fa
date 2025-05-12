@@ -14,7 +14,7 @@ function FormLabel({
     textTransform: "capitalize",
   };
   return as === "Text" ? (
-    <Text css={labelStyles} mb={"5"} fontWeight={500}>
+    <Text css={labelStyles} mb={"5"} fontWeight={600}>
       {children}
     </Text>
   ) : (

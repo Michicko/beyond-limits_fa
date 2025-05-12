@@ -5,7 +5,6 @@ import styles from "./Player.module.css";
 import { CldImage } from 'next-cloudinary';
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { getCloudinaryFilename } from "@/lib/helpers";
 
 const Player = ({
   player,
@@ -28,8 +27,8 @@ const Player = ({
         {player.homeKit && (
           <CldImage
             fill
-            src={getCloudinaryFilename(player.homeKit) ?? ''}
-            sizes="33vw"
+            src={player.homeKit}
+            sizes="(max-width: 768px) 100vw, 33vw"
             alt={player.firstname}
           />
         )}
