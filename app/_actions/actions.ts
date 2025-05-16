@@ -478,7 +478,7 @@ export async function fetchDashboardData() {
         const result = round.result?.toLowerCase();
 
         if (result === "win") acc.wins += 1;
-        else if (result === "loss") acc.losses += 1;
+        else if (result === "lose") acc.losses += 1;
         else if (result === "draw") acc.draws += 1;
 
         return acc;

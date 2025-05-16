@@ -13,12 +13,8 @@ import { deleteCloudinaryImage } from "./actions";
 
 type Competition = Schema["Competition"]["type"];
 
-export const getCompetitions = async () => {
-  const competitionsGetter = getEntityFactory<Competition>();
-
-  return competitionsGetter({
-    modelName: "Competition",
-    limit: 20,
+export const getCompetitions = async (nextToken: string | null) => {
+  return cookiesClient.models.Competition.list({
     selectionSet: [
       "id",
       "logo",
@@ -28,7 +24,12 @@ export const getCompetitions = async () => {
       "competitionSeasons.season",
       "trophyImage",
       "trophyArticleId",
+      "createdAt"
     ],
+    nextToken,
+    limit: 25,
+    authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 

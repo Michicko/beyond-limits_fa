@@ -4,21 +4,29 @@ import CustomMenuItem from "@/components/admin/CustomMenu/CustomMenuItem";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
 import Link from "next/link";
-import React, { useState } from "react";
-import { formatDate } from "@/lib/helpers";
+import React from "react";
+import { formatDate, sortByCreatedAt } from "@/lib/helpers";
 import { getLazyLoadedArticles } from "@/app/_actions/article-actions";
 import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import useSWR from "swr";
 import AdminPaginatedTable from "@/components/admin/PaginatedTablePage/AdminPaginatedTable";
 import AdminSearchInput from "@/components/admin/AdminSearch/AdminSearchInput";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import useCursorPaginate from "@/hooks/useCursorPaginate";
 
 function Articles() {
-  const { data, error, isLoading } = useSWR("articles", getLazyLoadedArticles);
+  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+  const { data, error, isLoading } = useSWR(["articles", currentPageIndex], () => getLazyLoadedArticles(currentToken), {
+    keepPreviousData: true
+  });
+
   const articles = data?.data || [];
+  
+  const sortedArticles = sortByCreatedAt([...articles]);
+
   const { search, setSearch, filteredList } = useSearchFilter(
-    articles,
-    "title",
+    sortedArticles,
+    "title"
   );
 
   return (
@@ -29,6 +37,11 @@ function Articles() {
       error={error}
       columns={["Title", "Category", "Status", "Created At", ""]}
       createUrl="/cp/articles/create"
+      nextToken={data?.nextToken} 
+      currentPageIndex={currentPageIndex} 
+      pageTokens={pageTokens} 
+      setCurrentPageIndex={setCurrentPageIndex} 
+      setPageTokens={setPageTokens} 
       topContent={
         <AdminSearchInput
           search={search}

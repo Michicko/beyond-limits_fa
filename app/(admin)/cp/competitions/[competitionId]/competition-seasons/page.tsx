@@ -8,16 +8,22 @@ import EndSeason from "@/components/admin/EndEntityBtn/EndSeason";
 import AdminPaginatedTable from "@/components/admin/PaginatedTablePage/AdminPaginatedTable";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
+import useCursorPaginate from "@/hooks/useCursorPaginate";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import { sortByCreatedAt } from "@/lib/helpers";
 import useSWR from "swr";
 
 function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
+  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+
   const { data, error, isLoading } = useSWR(
-    ["competitionSeasons", params.competitionId],
-    () => getCompetitionSeasonsForCompetition(params.competitionId)
+    ["competitionSeasons", params.competitionId, currentPageIndex],
+    () => getCompetitionSeasonsForCompetition(params.competitionId, currentToken)
   );
+
   const seasons = data?.data ?? [];
-  const { search, setSearch, filteredList } = useSearchFilter(seasons, "name");
+  const sortedSeasons = sortByCreatedAt([...seasons]);
+  const { search, setSearch, filteredList } = useSearchFilter(sortedSeasons, "name");
 
   return (
     <AdminPaginatedTable
@@ -27,6 +33,11 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
       error={error}
       columns={["season", "status", "matches", "winner", ""]}
       createUrl={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
+      nextToken={data?.nextToken} 
+      currentPageIndex={currentPageIndex} 
+      pageTokens={pageTokens} 
+      setCurrentPageIndex={setCurrentPageIndex} 
+      setPageTokens={setPageTokens} 
       topContent={
         <AdminSearchInput search={search} setSearch={setSearch} name="season" />
       }

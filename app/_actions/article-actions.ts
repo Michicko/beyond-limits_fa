@@ -12,8 +12,6 @@ import { revalidatePath } from "next/cache";
 
 type Article = Schema["Article"]["type"];
 
-
-
 export const filterArticle = async (text: string) => {
   return cookiesClient.models.Article.list({
     filter: {
@@ -26,7 +24,7 @@ export const filterArticle = async (text: string) => {
   });
 };
 
-export const getLazyLoadedArticles = async () => {
+export const getLazyLoadedArticles = async (nextToken: string | null) => {
   return cookiesClient.models.Article.list({
     selectionSet: [
       "id",
@@ -36,6 +34,8 @@ export const getLazyLoadedArticles = async () => {
       "createdAt",
       "coverImage",
     ],
+    nextToken,
+    limit: 25,
     authMode: "userPool",
     sortDirection: "DESC",
   });

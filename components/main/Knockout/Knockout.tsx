@@ -4,6 +4,7 @@ import styles from "./Knockout.module.css";
 import Link from "next/link";
 import KnockoutMatchDetails from "./KnockoutMatchDetails";
 import { Nullable } from "@/lib/definitions";
+import { getPlayOffRoundName } from "@/lib/helpers";
 
 interface IMatchTeam {
   id: string;
@@ -35,7 +36,7 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
           return (
             <li className={clsx(styles["knockout-round"])} key={playoff.round}>
               <h3 className={clsx(styles["knockout-round-title"])}>
-                {playoff.round}
+                {getPlayOffRoundName(playoff.round)}
               </h3>
               <Link
                 href={`/matches/${playoff.match?.id}/report`}

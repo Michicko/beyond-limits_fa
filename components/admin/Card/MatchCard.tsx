@@ -79,8 +79,14 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
             </HStack>
           )}
           <HStack gap={"sm"}>
-            <Text color={"text_md"} fontSize={"sm"} textTransform={"uppercase"}>
-              {match.date}
+            <Text
+              textTransform={"uppercase"}
+              fontSize={"sm"}
+              fontWeight={"semibold"}
+              color={"text_md"}
+              title={match.venue}
+            >
+              {match.venue}
             </Text>
             {showMenu && (
               <CustomMenu>
@@ -112,7 +118,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
         >
           {match.status}
         </Text>
-        <MatchDetails time={match.time} venue={match.venue} />
+        <MatchDetails time={match.time} date={match.date} />
         {match.homeTeam && match.awayTeam && (
           <HStack
             justify={"space-between"}

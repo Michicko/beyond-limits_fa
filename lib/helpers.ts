@@ -325,3 +325,9 @@ export function getCloudinaryFilename(url: string): string | null {
   const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)$/);
   return match ? match[1] : null;
 }
+
+export function sortByCreatedAt<T extends { createdAt: string | Date }>(list: T[]): T[] {
+  return [...list].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+}

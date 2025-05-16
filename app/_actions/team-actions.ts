@@ -27,20 +27,21 @@ export const getTeamsLazyLoaded = async () => {
   });
 };
 
-export const getTeams = async () => {
-  const teamsGetter = getEntityFactory<Team>();
-
-  return teamsGetter({
-    modelName: "Team",
-    limit: 150,
+export const getTeams = async (nextToken: string | null) => {
+  return cookiesClient.models.Team.list({
     selectionSet: [
       "id",
       "logo",
-      "longName",
       "shortName",
+      "longName",
       "isBeyondLimits",
       "stadium",
+      "createdAt"
     ],
+    nextToken,
+    limit: 25,
+    authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 

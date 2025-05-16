@@ -4,7 +4,6 @@ import {
   checkUniqueField,
   createEntityFactory,
   deleteEntity,
-  getEntityFactory,
   updateEntityFactory,
 } from "@/lib/factoryFunctions";
 import { formDataToObject } from "@/lib/helpers";
@@ -12,13 +11,17 @@ import { cookiesClient } from "@/utils/amplify-utils";
 
 type ArticleCategory = Schema["ArticleCategory"]["type"];
 
-export const getArticleCategories = async () => {
-  const articleCategoriesGetter = getEntityFactory<ArticleCategory>();
-
-  return articleCategoriesGetter({
-    modelName: "ArticleCategory",
-    limit: 20,
-    selectionSet: ["id", "category"],
+export const getArticleCategories = async (nextToken?: string | null) => {
+  return cookiesClient.models.ArticleCategory.list({
+    selectionSet: [
+      "id",
+      "category",
+      "createdAt"
+    ],
+    nextToken,
+    limit: 25,
+    authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 

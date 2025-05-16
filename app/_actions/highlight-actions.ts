@@ -11,9 +11,13 @@ import { cookiesClient } from "@/utils/amplify-utils";
 
 type Highlight = Schema["Highlight"]["type"];
 
-export const getHighlights = async () => {
+export const getHighlights = async (nextToken?: string | null) => {
   return cookiesClient.models.Highlight.list({
-    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"],
+    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"], 
+    nextToken,
+    limit: 25,
+    authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 

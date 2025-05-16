@@ -8,17 +8,25 @@ import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import AdminPaginatedTable from "@/components/admin/PaginatedTablePage/AdminPaginatedTable";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
+import useCursorPaginate from "@/hooks/useCursorPaginate";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import { sortByCreatedAt } from "@/lib/helpers";
 import { HStack } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import useSWR from "swr";
 
 function Competitions() {
-  const { data, error, isLoading } = useSWR("competitions", getCompetitions);
+  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+
+  const { data, error, isLoading } = useSWR(["competitions", currentPageIndex], () => getCompetitions(currentToken));
+
   const competitions = data?.data ?? [];
+
+  const sortedCompetitions = sortByCreatedAt([...competitions]);
+
   const { search, setSearch, filteredList } = useSearchFilter(
-    competitions,
+    sortedCompetitions,
     "longName"
   );
 
@@ -29,6 +37,11 @@ function Competitions() {
       isLoading={isLoading}
       error={error}
       columns={["competition", "competition type", "seasons", ""]}
+      nextToken={data?.nextToken} 
+      currentPageIndex={currentPageIndex} 
+      pageTokens={pageTokens} 
+      setCurrentPageIndex={setCurrentPageIndex} 
+      setPageTokens={setPageTokens} 
       topContent={
         <AdminSearchInput
           search={search}

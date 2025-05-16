@@ -6,9 +6,11 @@ import {
   Flex,
   Grid,
   GridItem,
+  HStack,
   Image,
   Input,
   Separator,
+  SimpleGrid,
   Text,
 } from "@chakra-ui/react";
 import React from "react";
@@ -63,17 +65,29 @@ function Lineup({
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
   players: IPlayer[];
 }) {
-  const remainingPlayers = players.filter((player) => {
-    if (matchForm.lineup && matchForm.lineup.includes(player.id)) return;
-    return player;
-  });
+
+
+  const positions = ['gk', 'cb', 'rb', 'lb', 'dm', 'cm', 'fw', 'w', 'lw', 'rw', 'st'];
+  
+  const remainingPlayers = players.sort((a, b) => {
+    return positions.indexOf(a.playerPosition.shortName.toLowerCase()) - positions.indexOf(b.playerPosition.shortName.toLowerCase())
+    }).filter((player) => {
+      if (matchForm.lineup && matchForm.lineup.includes(player.id)) return;
+      return player;
+    });
+
+
 
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Lineup</FormLabel>
       <Box>
-        <FormLabel as="Text">Starting Lineup</FormLabel>
-        <Flex flexWrap={"wrap"} gap={"4"} alignItems={"center"}>
+        <HStack justifyContent={'space-between'} alignItems={'center'}>
+          <FormLabel as="Text">Starting Lineup</FormLabel>
+          <FormLabel as="Text">{matchForm?.lineup ?? 0} Selected</FormLabel>
+        </HStack>
+        
+        <SimpleGrid columns={{base: 1, md: 2, lg: 3}} gap={"4"} alignItems={"center"}>
           {players.map((player) => {
             return (
               <Flex
@@ -118,12 +132,12 @@ function Lineup({
                   <Image src={player.homeKit} width={"25px"} />
                 )}
                 <Text whiteSpace={"nowrap"} textTransform={'capitalize'}>
-                  {player.playerPosition.shortName} {player.squadNo}. {player.firstname} {player.lastname}
+                  {player.playerPosition.shortName}. {player.squadNo}. {player.firstname} {player.lastname}
                 </Text>
               </Flex>
             );
           })}
-        </Flex>
+        </SimpleGrid>
       </Box>
       <Separator
         my={"5"}

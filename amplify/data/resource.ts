@@ -296,7 +296,6 @@ const schema = a.schema({
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
     })
-    .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -313,7 +312,6 @@ const schema = a.schema({
       description: a.json(),
       tags: a.string().array(),
     })
-    .secondaryIndexes((index) => [index("title")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),

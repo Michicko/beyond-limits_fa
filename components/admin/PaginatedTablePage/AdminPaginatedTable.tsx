@@ -12,6 +12,11 @@ interface AdminPaginatedTableProps<T> {
   isLoading: boolean;
   error: any;
   list?: T[];
+  nextToken?: string| null; 
+  setPageTokens: React.Dispatch<React.SetStateAction<(string | null)[]>> 
+  setCurrentPageIndex: React.Dispatch<React.SetStateAction<number>> 
+  pageTokens: (string | null)[] 
+  currentPageIndex: number;
 }
 
 function AdminPaginatedTable<T>({
@@ -21,14 +26,14 @@ function AdminPaginatedTable<T>({
   list = [],
   columns,
   renderRow,
-  pageSize = 25,
   createUrl,
   topContent,
+  nextToken, 
+  setPageTokens, 
+  setCurrentPageIndex, 
+  pageTokens, 
+  currentPageIndex,
 }: AdminPaginatedTableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentItems = list.slice(startIndex, endIndex);
 
   return (
     <PaginatedTablePage
@@ -37,17 +42,17 @@ function AdminPaginatedTable<T>({
       pageTitle={resourceName}
       resource={resourceName}
       list={list}
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      startIndex={startIndex}
-      endIndex={endIndex}
-      pageSize={pageSize}
+      nextToken={nextToken} 
+      currentPageIndex={currentPageIndex} 
+      pageTokens={pageTokens} 
+      setCurrentPageIndex={setCurrentPageIndex} 
+      setPageTokens={setPageTokens} 
       headerCols={columns}
       createUrl={createUrl}
       topContent={topContent}
     >
       <>
-        {currentItems.map((item, index) => (
+        {list.map((item, index) => (
           <React.Fragment key={index}>{renderRow(item)}</React.Fragment>
         ))}
       </>

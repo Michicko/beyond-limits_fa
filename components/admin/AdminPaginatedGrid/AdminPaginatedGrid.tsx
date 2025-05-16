@@ -9,19 +9,22 @@ import useSWR from "swr";
 import React, { useState } from "react";
 import useSearchFilter from "@/hooks/useSearchFilter";
 import AdminSearchInput from "../AdminSearch/AdminSearchInput";
+import CursorPagination from "../Pagination/CursorPagination";
+import useCursorPaginate from "@/hooks/useCursorPaginate";
 
 type Props<T extends Record<string, any>> = {
   title: string;
   createButtonText: string;
   createButtonLink: string;
   fetcherKey: string;
-  fetcherFunction: () => Promise<{ data: T[] }>;
+  fetcherFunction: (nextToken: string | null) => Promise<{ data: T[], nextToken?: string | null}>;
   CardComponent: React.ComponentType<{ data: T }>;
   emptyTitle: string;
   emptyMessage: string;
   searchName?: string;
   searchItem?: string;
   showSearch?: boolean;
+  sortFunction?: (a: T, b: T) => number;
 };
 
 function AdminPaginatedGrid<T extends Record<string, any>>({
@@ -36,26 +39,22 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
   searchName,
   searchItem,
   showSearch,
+  sortFunction
 }: Props<T>) {
-  const { data, isLoading, error } = useSWR(fetcherKey, fetcherFunction);
+  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+  const { data, isLoading, error } = useSWR([fetcherKey, currentPageIndex], () => fetcherFunction(currentToken));
 
   const items = data?.data ?? [];
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentItems = items?.slice(startIndex, endIndex);
-  const totalPages = items && Math.ceil(items.length / pageSize);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const sortedItems = React.useMemo(() => {
+    if (!sortFunction) return items;
+    return [...items].sort(sortFunction);
+  }, [items, sortFunction]);
 
   const { search, setSearch, filteredList } =
-    showSearch && searchItem
-      ? useSearchFilter(currentItems, searchItem as keyof T)
-      : { search: "", setSearch: () => {}, filteredList: currentItems };
+  showSearch && searchItem
+    ? useSearchFilter(sortedItems, searchItem as keyof T)
+    : { search: "", setSearch: () => {}, filteredList: sortedItems };
 
   return (
     <>
@@ -118,7 +117,7 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
               mb="100px"
               mt={4}
             >
-              {(showSearch ? filteredList : currentItems)?.map(
+              {(showSearch ? filteredList : items)?.map(
                 (item: T, idx: number) => (
                   <GridItem key={idx}>
                     <CardComponent data={item} />
@@ -128,35 +127,13 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
             </Grid>
           </>
         )}
-
-        {totalPages && totalPages > 1 ? (
-          <HStack justifyContent="center">
-            <HStack
-              display={{ base: "flex", sm: "none" }}
-              justifyContent="center"
-            >
-              <Pagination
-                page={currentPage}
-                pageCount={totalPages}
-                pageSize={pageSize}
-                onPageChange={handlePageChange}
-                type="mobile"
-              />
-            </HStack>
-            <HStack
-              display={{ base: "none", sm: "flex" }}
-              justifyContent="center"
-            >
-              <Pagination
-                page={currentPage}
-                pageCount={totalPages}
-                pageSize={pageSize}
-                onPageChange={handlePageChange}
-                type="web"
-              />
-            </HStack>
-          </HStack>
-        ) : <></>}
+        <CursorPagination
+          nextToken={data?.nextToken} 
+          currentPageIndex={currentPageIndex} 
+          pageTokens={pageTokens} 
+          setCurrentPageIndex={setCurrentPageIndex} 
+          setPageTokens={setPageTokens} 
+        />
       </Box>
     </>
   );

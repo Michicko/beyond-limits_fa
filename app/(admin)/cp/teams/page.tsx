@@ -8,18 +8,22 @@ import DeleteBtn from "@/components/admin/DeleteBtn/DeleteBtn";
 import AdminPaginatedTable from "@/components/admin/PaginatedTablePage/AdminPaginatedTable";
 import TableCell from "@/components/admin/Table/TableCell";
 import TableRows from "@/components/admin/Table/TableRows";
+import useCursorPaginate from "@/hooks/useCursorPaginate";
 import useSearchFilter from "@/hooks/useSearchFilter";
+import { sortByCreatedAt } from "@/lib/helpers";
 import { Box, HStack } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import useSWR from "swr";
 
 function Teams() {
-  const { data, error, isLoading } = useSWR("teams", getTeams);
+  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+  const { data, error, isLoading } = useSWR(["teams", currentPageIndex], () => getTeams(currentToken));
   const teams = data?.data ?? [];
 
+  const sortedTeams = sortByCreatedAt([...teams]);
   const { search, setSearch, filteredList } = useSearchFilter(
-    teams,
+    sortedTeams,
     "longName"
   );
 
@@ -30,6 +34,11 @@ function Teams() {
       isLoading={isLoading}
       error={error}
       columns={["team", "stadium", ""]}
+      nextToken={data?.nextToken} 
+      currentPageIndex={currentPageIndex} 
+      pageTokens={pageTokens} 
+      setCurrentPageIndex={setCurrentPageIndex} 
+      setPageTokens={setPageTokens} 
       topContent={
         <AdminSearchInput search={search} setSearch={setSearch} name="teams" />
       }

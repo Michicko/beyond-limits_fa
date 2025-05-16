@@ -32,7 +32,7 @@ function CompetitionSeasonCard({
   const [winnerOpt, setWinnerOpt] = useState(isWinner || false);
   const [radioVal, setRadioVal] = useState<string | null>(status === "COMPLETED" && isWinner
     ? "isBeyondLimits"
-    : status === "COMPLETED" && !isWinner ? "notBeyondLimits" : '');
+    : status === "COMPLETED" && !isWinner ? "notBeyondLimits" : null);
 
   const handleOnChange = (e: RadioGroupValueChangeDetails) => {
     setRadioVal(e.value);

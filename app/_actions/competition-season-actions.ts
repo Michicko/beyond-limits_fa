@@ -41,13 +41,15 @@ export const getCompetitionSeasonLazyLoaded = async (id: string) => {
 };
 
 export const getCompetitionSeasonsForCompetition = async (
-  competitionId: string
+  competitionId: string,
+  nextToken: string | null
 ) => {
-  const competitionSeasonGetter = getEntityFactory<CompetitionSeason>();
-
-  return competitionSeasonGetter({
-    modelName: "CompetitionSeason",
-    limit: 150,
+   return cookiesClient.models.CompetitionSeason.list({
+    filter: {
+      competitionId: {
+        eq: competitionId
+      }
+    },
     selectionSet: [
       "id",
       "status",
@@ -55,13 +57,15 @@ export const getCompetitionSeasonsForCompetition = async (
       "season",
       "matches.status",
       "isWinner",
+      "cupId",
+      "leagueId",
+      "createdAt"
     ],
-    filter: {
-      competitionId: {
-        eq: competitionId,
-      },
-    },
-  });
+      nextToken,
+      limit: 15,
+      authMode: "userPool",
+      sortDirection: "DESC",
+    });
 };
 
 export const getCompetitionSeasons = async (competitionId: string) => {

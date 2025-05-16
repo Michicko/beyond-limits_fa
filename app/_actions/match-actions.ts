@@ -10,7 +10,7 @@ import { cookiesClient } from "@/utils/amplify-utils";
 
 type Match = Schema["Match"]["type"];
 
-export const getMatches = async () => {
+export const getMatches = async (nextToken?: string | null) => {
   return cookiesClient.models.Match.list({
     selectionSet: [
       "id",
@@ -39,7 +39,12 @@ export const getMatches = async () => {
       "coach.name",
       "coach.role",
       "scorers",
+      "createdAt"
     ],
+    nextToken,
+    limit: 25,
+    authMode: "userPool",
+    sortDirection: "DESC",
   });
 };
 

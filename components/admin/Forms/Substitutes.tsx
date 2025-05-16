@@ -1,6 +1,6 @@
 import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import { IMatch, Nullable } from "@/lib/definitions";
-import { Box, Field, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Field, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
@@ -48,7 +48,11 @@ function Substitutes({
 }) {
   return (
     <Box>
-      <FormLabel as="Text">Substitutes</FormLabel>
+      <HStack justifyContent={'space-between'} alignItems={'center'}>
+        <FormLabel as="Text">Substitutes</FormLabel>
+        <FormLabel as="Text">{matchForm?.substitutes ?? 0} Selected</FormLabel>
+      </HStack>
+      
       <Flex flexWrap={"wrap"} gap={"4"} alignItems={"center"}>
         {players.map((player) => {
           return (
@@ -94,7 +98,7 @@ function Substitutes({
               )}
               {player.homeKit && <Image src={player.homeKit} width={"25px"} />}
               <Text whiteSpace={"nowrap"}>
-                {player.playerPosition.shortName} {player.squadNo}. {player.firstname} {player.lastname}
+                {player.playerPosition.shortName}. {player.squadNo}. {player.firstname} {player.lastname}
               </Text>
             </Flex>
           );

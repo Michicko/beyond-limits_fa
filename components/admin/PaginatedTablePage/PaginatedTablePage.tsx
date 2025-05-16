@@ -3,7 +3,6 @@ import PageTitle from "@/components/admin/Layout/PageTitle";
 import React from "react";
 import { Box, Container, HStack, Skeleton } from "@chakra-ui/react";
 import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
-import Pagination from "@/components/admin/Pagination/Pagination";
 import Table from "@/components/admin/Table/Table";
 import TableHeader from "@/components/admin/Table/TableHeader";
 import TableRows from "@/components/admin/Table/TableRows";
@@ -11,6 +10,7 @@ import TableBody from "@/components/admin/Table/TableBody";
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import CreateButton from "@/components/Buttons/CreateButton";
 import TableSkeleton from "@/components/admin/Skeletons/TableSkeleton/TableSkeleton";
+import CursorPagination from "../Pagination/CursorPagination";
 
 function PaginatedTablePage({
   children,
@@ -20,11 +20,11 @@ function PaginatedTablePage({
   pageTitle,
   headerCols,
   resource,
-  currentPage,
-  setCurrentPage,
-  pageSize,
-  startIndex,
-  endIndex,
+  nextToken, 
+  setPageTokens, 
+  setCurrentPageIndex, 
+  pageTokens, 
+  currentPageIndex,
   createUrl,
   topContent,
 }: {
@@ -35,19 +35,14 @@ function PaginatedTablePage({
   pageTitle: string;
   headerCols: string[];
   resource: string;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-  pageSize: number;
-  startIndex: number;
-  endIndex: number;
+  nextToken?: string| null; 
+  setPageTokens: React.Dispatch<React.SetStateAction<(string | null)[]>> 
+  setCurrentPageIndex: React.Dispatch<React.SetStateAction<number>> 
+  pageTokens: (string | null)[] 
+  currentPageIndex: number;
   createUrl?: string;
   topContent?: React.ReactNode;
 }) {
-  const currentPageListItems = list?.slice(startIndex, endIndex);
-  const totalPages = list && Math.ceil(list.length / pageSize);
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   return (
     <>
@@ -117,36 +112,13 @@ function PaginatedTablePage({
               </>
             </Table>
           )}
-          {totalPages && totalPages > 1 ? (
-            <HStack justifyContent={"center"}>
-              <HStack
-                display={{ base: "flex", sm: "none" }}
-                justifyContent={"center"}
-              >
-                <Pagination
-                  page={currentPage}
-                  pageCount={totalPages}
-                  pageSize={pageSize}
-                  onPageChange={handlePageChange}
-                  type="mobile"
-                />
-              </HStack>
-              <HStack
-                display={{ base: "none", sm: "flex" }}
-                justifyContent={"center"}
-              >
-                <Pagination
-                  page={currentPage}
-                  pageCount={totalPages}
-                  pageSize={pageSize}
-                  onPageChange={handlePageChange}
-                  type="web"
-                />
-              </HStack>
-            </HStack>
-          ) : (
-            <></>
-          )}
+          <CursorPagination 
+            nextToken={nextToken} 
+            currentPageIndex={currentPageIndex} 
+            pageTokens={pageTokens} 
+            setCurrentPageIndex={setCurrentPageIndex} 
+            setPageTokens={setPageTokens} 
+          />
         </Container>
       </Box>
     </>
