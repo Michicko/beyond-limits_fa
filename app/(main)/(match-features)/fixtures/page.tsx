@@ -42,7 +42,11 @@ async function Fixtures(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!fixtures || (fixtures && fixtures.length < 1) ? (
+        {errors ? 
+        <Text color="white" letterCase={"lower"} size="base" weight="regular">
+          {errors[0].message}
+        </Text>:
+        !fixtures || (fixtures && fixtures.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Fixtures available at the moment.
           </Text>

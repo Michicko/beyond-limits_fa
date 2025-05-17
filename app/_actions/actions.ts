@@ -405,7 +405,6 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
         season: {
           contains: `${year}`,
         },
-        // status: { eq: "PENDING" },
       },
       authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
@@ -548,8 +547,6 @@ export async function fetchDashboardData() {
     };
   }
 }
-
-// end season route for competition season
 
 export async function fetchHomepageData() {
   const auth = await isLoggedIn();
@@ -777,7 +774,7 @@ export async function fetchCompetitions(keyword: string, client: "guest" | "auth
           { season: { contains: keyword } },
         ],
       },
-      limit: 50,
+      limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'name', 'logo', 'season']
     });
@@ -797,7 +794,7 @@ export async function fetchPlayers(keyword: string, client: "guest" | "auth") {
           { lastname: { contains: keyword } },
         ],
       },
-      limit: 50,
+      limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'firstname', 'lastname', 'ageGroup', 'playerPosition.longName','playerPosition.shortName', "height", 'weight', 'squadNo', 'awayKit', 'homeKit', 'dob', 'dominantFoot']
     });
@@ -817,7 +814,7 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
           { category: { contains: keyword } },
         ],
       },
-      limit: 50,
+      limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: [
         'id', 
@@ -849,7 +846,7 @@ export async function fetchHighlights(keyword: string, client: "guest" | "auth")
           { videoId: { contains: keyword } },
         ],
       },
-      limit: 50,
+      limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
       selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags']
     });

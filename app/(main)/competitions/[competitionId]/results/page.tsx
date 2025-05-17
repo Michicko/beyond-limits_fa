@@ -3,7 +3,8 @@ import Grid from "@/components/main/Container/Grid";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
-import { getMatches } from "@/lib/helpers";
+import { getMatches, getMatchesByDateRange } from "@/lib/helpers";
+import { months } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
@@ -17,8 +18,10 @@ async function CompetitionResults({
   }>;
 }) {
   const searchParam = await searchParams;
+  const year = new Date().getUTCFullYear();
+  const monthIndex = months.indexOf(searchParam.month.toLowerCase());  
 
-  const { data: competition, errors } =
+  const { data: competition, errors} =
     await cookiesClient.models.CompetitionSeason.get(
       {
         id: params.competitionId,
@@ -34,9 +37,12 @@ async function CompetitionResults({
       }
     );
 
+  const startDate = new Date(year, monthIndex, 1); 
+  const endDate = new Date(year, monthIndex + 1, 1);
+
   let results;
   if (competition) {
-    results = getMatches(competition?.matches, "COMPLETED", searchParam.month);
+    results = getMatchesByDateRange(competition?.matches, "COMPLETED", startDate, endDate);
   }
 
   return (
@@ -48,7 +54,11 @@ async function CompetitionResults({
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!results || (results && results.length < 1) ? (
+        {errors ? 
+        <Text color="white" letterCase={"lower"} size="base" weight="regular">
+          {errors[0].message}
+        </Text>:
+        !results || (results && results.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Results available at the moment.
           </Text>

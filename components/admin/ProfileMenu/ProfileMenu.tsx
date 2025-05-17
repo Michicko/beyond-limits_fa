@@ -38,7 +38,7 @@ function ProfileMenu() {
               <Avatar.Image src={"/images/avatar.webp"} />
             </Avatar.Root>
           </AvatarGroup>
-          <Stack gap={0}>
+          <Stack gap={0} display={{base: 'none', sm: 'block'}}>
             <Heading as={"h3"} fontWeight={"bold"} textTransform={"capitalize"}>
               {username}
             </Heading>

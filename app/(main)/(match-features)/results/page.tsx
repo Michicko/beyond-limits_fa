@@ -1,11 +1,12 @@
 import Calendar from "@/components/main/Calendar/Calendar";
 import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
-import { getMatches } from "@/lib/helpers";
+import { getMatchesByDateRange } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 import Text from "@/components/main/Typography/Text";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
+import { months } from "@/lib/placeholder-data";
 
 async function Results(props: {
   searchParams: Promise<{
@@ -17,6 +18,8 @@ async function Results(props: {
   const searchParams = await props.searchParams;
   const date = new Date();
   const year = date.getFullYear();
+  const monthIndex = months.indexOf(searchParams.month.toLowerCase()); 
+
   const { data: competitionSeasons, errors } =
     await cookiesClient.models.CompetitionSeason.list({
       filter: {
@@ -31,9 +34,12 @@ async function Results(props: {
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 
+    const startDate = new Date(year, monthIndex, 1); 
+    const endDate = new Date(year, monthIndex + 1, 1);
+
   const results =
     competitionSeasons[0] &&
-    getMatches(competitionSeasons[0].matches, "COMPLETED", searchParams.month);
+     getMatchesByDateRange(competitionSeasons[0]?.matches, "COMPLETED", startDate, endDate);
 
   return (
     <CompetitionsLayout pageTitle="Results">
@@ -41,7 +47,13 @@ async function Results(props: {
         <Suspense fallback={null}>
           <Calendar />
         </Suspense>
-        {!results || (results && results.length < 1) ? (
+        {
+          errors ? 
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+          {errors[0].message}
+        </Text>
+        :
+        !results || (results && results.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Results available at the moment.
           </Text>

@@ -178,6 +178,18 @@ export const getMatches = (
   });
 };
 
+export const getMatchesByDateRange = (
+  matches: IMatch[],
+  status: "UPCOMING" | "COMPLETED",
+  startDate: Date,
+  endDate: Date
+) => {
+  return matches.filter((el) => {
+    const date = new Date(el.date);
+    return el.status === status && date >= startDate && date < endDate;
+  });
+};
+
 export function formDataToObject<T = Record<string, any>>(
   formData: FormData
 ): T {

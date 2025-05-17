@@ -39,7 +39,6 @@ export const visuals = [
   "/images/home-header-bg.png",
   "/images/results.jpg",
   "/images/trials.png",
-  "/images/results.jpg",
 ];
 
 export const teams = [
