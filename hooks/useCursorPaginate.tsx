@@ -1,17 +1,17 @@
 'use client';
 import React from 'react'
 
-function useCursorPaginate() {
-  const [pageTokens, setPageTokens] = React.useState<(string | null)[]>([null]);
+function useCursorPaginate(initialToken?: string | null) {
+  const [pageTokens, setPageTokens] = React.useState<(string | null)[]>([initialToken ?? null]);
   const [currentPageIndex, setCurrentPageIndex] = React.useState(0);
-  const currentToken = pageTokens[currentPageIndex] ?? null;
+  const currentToken = pageTokens[currentPageIndex] ?? initialToken;
 
   return {
     setPageTokens,
     currentPageIndex,
     currentToken,
     setCurrentPageIndex,
-    pageTokens
+    pageTokens,
   }
 }
 

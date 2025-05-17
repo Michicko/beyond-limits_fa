@@ -1,6 +1,7 @@
 "use client";
 import { getIcon } from "@/lib/icons";
 import {
+  Box,
   Button,
   Field,
   HStack,
@@ -315,24 +316,28 @@ function ArticleForm({
             id={"match"}
           />
         </Field.Root>
-        {!matchId && (
-          <UploadImage
-            image={tempData.coverImage}
-            onClearImage={() =>
-              setTempData({ ...tempData, coverImage: "" })
-            }
-            imageSize={200}
-            filename={slugify(tempData.title, { lower: true })}
-            id={"coverImage"}
-            onUploaded={(res: any) =>
-              setTempData({
-                ...tempData,
-                coverImage: res.secure_url,
-              })
-            }
-            label={"coverImage"}
-          />
-        )}
+
+        <Box mb={5} w={'full'}>
+          {!matchId && (
+            <UploadImage
+              image={tempData.coverImage}
+              onClearImage={() =>
+                setTempData({ ...tempData, coverImage: "" })
+              }
+              imageSize={200}
+              filename={slugify(tempData.title, { lower: true })}
+              id={"coverImage"}
+              onUploaded={(res: any) =>
+                setTempData({
+                  ...tempData,
+                  coverImage: res.secure_url,
+                })
+              }
+              label={"coverImage"}
+            />
+          )}
+        </Box>
+       
 
         <TextEditor
           editorKey={editorKey}

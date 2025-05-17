@@ -29,7 +29,8 @@
   color: var(--red-500);
 }
 
-.season-filter {
+
+.season {
   font-size: var(--base);
   font-family: var(--font-body);
   outline: transparent;

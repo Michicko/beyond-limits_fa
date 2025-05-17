@@ -5,6 +5,7 @@ import { formDataToObject } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
+import { cookies } from 'next/headers';
 
 type Nullable<T> = T | null;
 
@@ -893,6 +894,83 @@ export async function globalSearch(keyword: string, client: "guest" | "auth") {
     return { 
       error: "Failed to search", 
       status: 500 
+    }
+  }
+}
+
+
+export async function fetchArticlesServer(auth: boolean, category? : string, token?: string | null){
+  const filter = {
+    status: { eq: "PUBLISHED" },
+    ...(category && {
+      category: { 
+        eq: category.toLowerCase(),
+      },
+    }),
+  };
+
+  try {
+      const { data: articles, nextToken } = await cookiesClient.models.Article.list({
+        limit: 15,
+        authMode: auth ? "userPool" : "iam",
+        filter,
+        nextToken: token,
+        sortDirection: "DESC",
+        selectionSet: [
+          "id",
+          "category",
+          "content",
+          "tags",
+          "title",
+          "coverImage",
+          "status",
+          "createdAt",
+          "matchId",
+          "matchHomeTeamLogo",
+          "matchAwayTeamLogo",
+        ],
+      });
+
+      return {
+        status: 'success',
+        data: {
+          articles: articles ?? [],
+          nextToken: nextToken ?? null
+        }
+      }
+  } catch (error) {
+    return {
+      status: 'error',
+      data: null,
+      error: (error as Error).message
+    }
+  }
+}
+
+export async function fetchHighlightsServer(auth: boolean, token?: string | null){
+  try {
+    const { data: highlights, nextToken } = await cookiesClient.models.Highlight.list({
+      limit: 15,
+      authMode: auth ? "userPool" : "iam",
+      nextToken: token,
+      sortDirection: "DESC",
+      selectionSet: [
+        "id", "coverImage", "title", "createdAt"
+      ],
+    });
+
+    return {
+      status: 'success',
+      data: {
+        highlights: highlights ?? [],
+        nextToken: nextToken ?? null
+      }
+    }
+  } catch (error) {
+    return {
+      status: 'error',
+      data: null,
+      error: (error as Error).message
     }
   }
 }

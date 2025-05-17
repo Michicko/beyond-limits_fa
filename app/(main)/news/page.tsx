@@ -1,14 +1,12 @@
-import ArticleList from "@/components/Article/ArticleList";
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
-import Pagination from "@/components/Pagination/Pagination";
-import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 import Text from "@/components/main/Typography/Text";
+import NewsClient from "@/components/main/NewsClient/NewsClient";
 
 const links = [
   { name: "Academy news", href: "/news" },
-  { name: "Beyon limits tv", href: "/beyond-tv" },
+  { name: "Beyond limits tv", href: "/beyond-tv" },
 ];
 
 async function News({
@@ -16,8 +14,9 @@ async function News({
 }: {
   searchParams: { page?: string; category?: string };
 }) {
-  const currentPage = +(searchParams.page ?? 1);
-  const limit = 12;
+  const auth = await isAuthenticated()
+  const limit = 15;
+  const token = '';
 
   const filter = {
     status: { eq: "PUBLISHED" },
@@ -28,10 +27,11 @@ async function News({
     }),
   };
 
-  const { data: articleList, errors } = await cookiesClient.models.Article.list({
-    limit: 150,
+  const { data: articleList, errors, nextToken } = await cookiesClient.models.Article.list({
+    limit,
     authMode: (await isAuthenticated()) ? "userPool" : "iam",
     filter,
+    nextToken: token,
     sortDirection: "DESC",
     selectionSet: [
       "id",
@@ -48,13 +48,7 @@ async function News({
     ],
   });
 
-
-  const { paginatedItems: articles, hasNextPage } = clientPaginate(
-    articleList,
-    currentPage,
-    limit
-  );
-
+  const articles = articleList ?? [];
 
   return (
     <ArticleLayout links={links} theme="theme-1" bg="trans">
@@ -69,19 +63,17 @@ async function News({
             Showing articles for {searchParams.category}
           </Text>
         )}
-        {!articles ? (
+        {!articles || articleList.length < 1 ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No articles available
          </Text>
         ) : (
-          <>
-            <ArticleList articles={articles} />
-            <Pagination
-              currentPage={currentPage}
-              hasNextPage={hasNextPage}
-              basePath="/news"
-            />
-          </>
+        <NewsClient 
+          auth={auth}
+          initialItems={articles}
+          initialNextToken={nextToken}
+          category={searchParams.category}
+        />
         )}
       </div>
     </ArticleLayout>

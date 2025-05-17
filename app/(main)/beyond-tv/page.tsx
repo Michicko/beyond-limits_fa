@@ -1,8 +1,6 @@
 import ArticleLayout from "@/components/main/Layouts/ArticleLayout";
+import HighlightClient from "@/components/main/NewsClient/HighlightClient";
 import Text from "@/components/main/Typography/Text";
-import VideoCards from "@/components/main/VideoCard/VideoCards";
-import Pagination from "@/components/Pagination/Pagination";
-import { clientPaginate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
@@ -11,25 +9,21 @@ const links = [
   { name: "Beyond limits tv", href: "/beyond-tv" },
 ];
 
-async function BeyondTv({
-  searchParams,
-}: {
-  searchParams: { page?: string; category?: string };
-}) {
-  const currentPage = +(searchParams.page ?? 1);
-  const limit = 10;
-  const { data: highlightsData, errors } =
+async function BeyondTv() {
+  const limit = 15;
+  const token = '';
+  const auth = await isAuthenticated();
+
+  const { data: highlightsData, errors, nextToken } =
     await cookiesClient.models.Highlight.list({
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
-      selectionSet: ["id", "coverImage", "title"],
-      limit: 200,
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["id", "coverImage", "title", 'createdAt'],
+      limit,
+      nextToken: token,
+      sortDirection: "DESC",
     });
 
-  const { paginatedItems: highlights, hasNextPage } = clientPaginate(
-    highlightsData,
-    currentPage,
-    limit
-  );
+  const highlights = highlightsData ?? [];
 
   return (
     <ArticleLayout bg="trans" theme="theme-1" links={links}>
@@ -40,14 +34,11 @@ async function BeyondTv({
           </Text>
         )}
         {highlights && (
-          <>
-            <VideoCards videos={highlights} />
-            <Pagination
-              currentPage={currentPage}
-              hasNextPage={hasNextPage}
-              basePath="/beyond-tv"
-            />
-          </>
+          <HighlightClient 
+            auth={auth}
+            initialItems={highlights}
+            initialNextToken={nextToken}
+          />
         )}
       </div>
     </ArticleLayout>
