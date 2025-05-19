@@ -85,7 +85,7 @@ export async function updateLeagueRound(id: string, formData: FormData) {
   } catch (error) {
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 }
@@ -141,7 +141,6 @@ export const updateStandingRow = async (id: string, formData: FormData) => {
     });
 
     if (errors) {
-      console.log(errors);
       return {
         status: "error",
         message: errors[0].message || "An unknown error occurred",
@@ -153,10 +152,9 @@ export const updateStandingRow = async (id: string, formData: FormData) => {
       data,
     };
   } catch (error) {
-    console.log(error);
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 };
@@ -557,10 +555,9 @@ export async function fetchDashboardData() {
       data: dashboardContent,
     };
   } catch (error) {
-    console.log(error);
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 }
@@ -642,10 +639,9 @@ export async function fetchHomepageData() {
       data: homepageContent,
     };
   } catch (error) {
-    console.log(error);
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 }
@@ -732,10 +728,9 @@ export async function addUserToGroup(userId: string, groupName: string) {
       data: res,
     };
   } catch (error) {
-    console.log(error);
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 }
@@ -761,10 +756,9 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
       data: res,
     };
   } catch (error) {
-    console.log(error);
     return {
       status: "error",
-      message: "An unknown error occurred",
+      message: `${(error as Error).message}`,
     };
   }
 }
