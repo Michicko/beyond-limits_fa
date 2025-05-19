@@ -1,11 +1,12 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory } from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { formDataToObject, getExpectedSeasonLabel } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
 import { cookies } from 'next/headers';
+import { months } from "@/lib/placeholder-data";
 
 type Nullable<T> = T | null;
 
@@ -298,7 +299,10 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
       authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
         "id",
+        "logo",
         "name",
+        "seasonStartMonth",
+        "season",
         "cup.playOffs.*",
         "cupId",
         "leagueId",
@@ -312,7 +316,18 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
       ],
     });
 
-  return competitionSeasons;
+
+   // differentiate between current active competition season in a year
+  // 2024/2025(completed) and 2025/2026(pending)
+  const now = new Date();
+  const currentSeasons = competitionSeasons?.filter((season) => {
+    const startMonth = months.indexOf(season.seasonStartMonth);
+    if (typeof startMonth !== 'number') return false;
+  
+    const expectedLabel = getExpectedSeasonLabel(startMonth, now);
+    return season.season === expectedLabel;
+  });
+  return currentSeasons;
 }
 
 export async function getCurrentCompetitionSeasonsMatches(
@@ -384,6 +399,8 @@ async function getPrevNextMatch(client: "guest" | "auth") {
   const upcomingMatch =
     fixtures.find((fixture) => new Date(fixture.date).getTime() > now) || null;
   const lastMatch = results[results.length - 1] || null;
+
+
 
   return {
     upcomingMatch,
@@ -556,7 +573,7 @@ export async function fetchHomepageData() {
     );
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
-      limit: 10,
+      limit: 4,
       authMode: auth ? "userPool" : "iam",
       filter: {
         status: {
@@ -606,7 +623,7 @@ export async function fetchHomepageData() {
 
     const { data: highlights } = await cookiesClient.models.Highlight.list({
       authMode: auth ? "userPool" : "iam",
-      selectionSet: ["id", "coverImage", "title"],
+      selectionSet: ["id", "coverImage", "title", "createdAt"],
       limit: 3,
     });
 
@@ -827,7 +844,8 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
         "tags",
         "category",
         "matchHomeTeamLogo",
-        "matchAwayTeamLogo"
+        "matchAwayTeamLogo",
+        "createdAt"
       ]
     });
     return result.data;
@@ -848,7 +866,7 @@ export async function fetchHighlights(keyword: string, client: "guest" | "auth")
       },
       limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
-      selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags']
+      selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags', 'createdAt']
     });
     return result.data;
   } catch (error) {

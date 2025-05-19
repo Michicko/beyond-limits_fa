@@ -9,6 +9,11 @@ const links = [
   { name: "Beyond limits tv", href: "/beyond-tv" },
 ];
 
+export const metadata = {
+  title: 'Beyond Tv',
+  description: 'Find videos and short match highlights of Beyond Limits Fa. on the official website, Beyondlimitsfa.com.',
+};
+
 async function BeyondTv() {
   const limit = 15;
   const token = '';

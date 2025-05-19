@@ -17,6 +17,12 @@ const links = [
   { name: "Under-17", href: "/players/under_17" },
 ];
 
+export const metadata = {
+  title: 'Beyond Limits Fa. Players Profiles',
+  description: "Read profiles and stats for the Beyond Limits Fa First Team and Reserves.",
+};
+
+
 async function Players({ params }: { params: { playersSlug: string } }) {
   const { data: positions, errors } =
     await cookiesClient.models.PlayerPosition.list({

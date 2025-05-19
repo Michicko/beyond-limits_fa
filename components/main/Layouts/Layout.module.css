@@ -106,6 +106,7 @@
 
 .match-layout {
   margin-top: 6rem;
+  min-height: 35rem;
 }
 
 .match-header__details,
@@ -114,6 +115,7 @@
   align-items: center;
   width: 100%;
   justify-content: center;
+  gap: var(--xs);
 }
 
 .match-layout__header {

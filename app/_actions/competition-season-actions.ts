@@ -42,7 +42,7 @@ export const getCompetitionSeasonLazyLoaded = async (id: string) => {
 
 export const getCompetitionSeasonsForCompetition = async (
   competitionId: string,
-  nextToken: string | null
+  nextToken?: string | null
 ) => {
    return cookiesClient.models.CompetitionSeason.list({
     filter: {

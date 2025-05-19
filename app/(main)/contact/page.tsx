@@ -6,6 +6,11 @@ import React from "react";
 import clsx from "clsx";
 import styles from "./Contact.module.css";
 
+export const metadata = {
+	title: 'Contact Us | Beyond Limits Fa. Phone Numbers & Email Addresses',
+	description: 'Useful club contact information to help with fan queries for ticketing and stadium events, Beyond Limits Fa. Store and general club enquiries',
+};
+
 function Contact() {
 	return (
 		<>

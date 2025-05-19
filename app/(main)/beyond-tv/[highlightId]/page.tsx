@@ -6,9 +6,36 @@ import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { Nullable } from "@/lib/definitions";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
 import Text from "@/components/main/Typography/Text";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { highlightId: string } }): Promise<Metadata>  {
+  const auth = await isAuthenticated()
+  const authMode = auth ? "userPool" : "iam";
+
+ const { data: highlight} =
+  await cookiesClient.models.Highlight.get(
+    { id: params.highlightId },
+    {
+      authMode,
+      selectionSet: ["id", "videoId", "description", "tags", "title", 'coverImage'],
+    }
+  )
+
+  return {
+    title: highlight?.title,
+    description: highlight?.title,
+    keywords: highlight?.tags as string[],
+    openGraph: {
+      title: highlight?.title,
+      description: highlight?.title,
+      images: [{ url: highlight?.coverImage ?? '' }],
+    },
+  };
+}
 
 async function Highlight({ params }: { params: { highlightId: string } }) {
-  const authMode = (await isAuthenticated()) ? "userPool" : "iam";
+  const auth = await isAuthenticated()
+  const authMode = auth ? "userPool" : "iam";
 
   const { data: highlightsData, errors } =
     await cookiesClient.models.Highlight.get(

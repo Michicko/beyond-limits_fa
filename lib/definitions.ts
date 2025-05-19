@@ -369,6 +369,7 @@ export interface ICompetitionSeason {
   logo: string;
   name: string;
   season: string;
+  seasonStartMonth: string;
 }
 
 export interface IGoal {
@@ -423,6 +424,7 @@ export interface IMatch {
     reds: Nullable<string>;
   } | null;
   scorers: any;
+  createdAt: string;
 }
 
 // export interface IMatch {

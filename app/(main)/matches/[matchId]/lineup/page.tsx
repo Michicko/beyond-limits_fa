@@ -38,6 +38,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
           "scorers",
           "review",
           "report",
+          "createdAt"
         ],
       }
     );
@@ -101,7 +102,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                  letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -124,7 +125,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                             color="secondary"
                             size="sm"
                             weight="bold"
-                            letterCase="upper"
+                            letterCase="capitalize"
                           >
                             {`${lineup_obj.position}s`}
                           </Text>
@@ -152,7 +153,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                       color="secondary"
                       size="sm"
                       weight="semibold"
-                      letterCase="upper"
+                      letterCase="capitalize"
                     >
                       coach
                     </Text>
@@ -170,7 +171,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                       color="secondary"
                       size="sm"
                       weight="semibold"
-                      letterCase="upper"
+                      letterCase="capitalize"
                     >
                       Substitutes
                     </Text>
@@ -185,7 +186,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                                   color="white"
                                   size="base"
                                   weight="regular"
-                                  letterCase="normal"
+                                  letterCase="capitalize"
                                   key={el.squadNo + "-" + i}
                                 >
                                   {`${el.squadNo}. ${el.firstname} ${el.lastname}`}

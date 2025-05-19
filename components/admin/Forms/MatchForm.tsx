@@ -385,60 +385,70 @@ function MatchForm({
         w={"full"}
       >
         {data.homeTeam && data.awayTeam && (
-          <Field.Root>
-            <FormLabel>Teams</FormLabel>
+          <Box>
+            <FormLabel as="Text">Teams</FormLabel>
             <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
-              <CustomSelect
-                name="homeTeam"
-                description="Home Team"
-                id="homeTeam"
-                options={teamOptions}
-                selectedValue={data.homeTeam.id}
-                handleOnChange={handleOnChange}
-              />
-              <HStack align={"center"}>
-                <Input
-                  name="goals"
-                  type="number"
-                  css={inputStyles}
-                  placeholder="-"
-                  id="homeGoals"
-                  variant="subtle"
-                  maxW={"5"}
-                  textAlign={"center"}
-                  value={data.homeTeam.goals || ""}
-                  onChange={(e) => {
-                    handleTeam(e.target.name, e.target.value, "homeTeam");
-                  }}
+              <Field.Root required>
+                <CustomSelect
+                  name="homeTeam"
+                  description="Home Team"
+                  id="homeTeam"
+                  options={teamOptions}
+                  selectedValue={data.homeTeam.id}
+                  handleOnChange={handleOnChange}
                 />
+              </Field.Root>
+              <HStack align={"center"}>
+                <Field.Root>
+                  <Input
+                    name="goals"
+                    type="number"
+                    css={inputStyles}
+                    placeholder="-"
+                    id="homeGoals"
+                    variant="subtle"
+                    maxW={"5"}
+                    textAlign={"center"}
+                    value={data.homeTeam.goals || ""}
+                    onChange={(e) => {
+                      handleTeam(e.target.name, e.target.value, "homeTeam");
+                    }}
+                  />
+                </Field.Root>
+               
                 <Text color={"text_md"} textTransform={"uppercase"}>
                   VS
                 </Text>
-                <Input
-                  name="goals"
-                  type="number"
-                  css={inputStyles}
-                  placeholder="-"
-                  id="awayGoals"
-                  variant="subtle"
-                  maxW={"5"}
-                  textAlign={"center"}
-                  value={data.awayTeam.goals || ""}
-                  onChange={(e) => {
-                    handleTeam(e.target.name, e.target.value, "awayTeam");
-                  }}
-                />
+                <Field.Root>
+                  <Input
+                    name="goals"
+                    type="number"
+                    css={inputStyles}
+                    placeholder="-"
+                    id="awayGoals"
+                    variant="subtle"
+                    maxW={"5"}
+                    textAlign={"center"}
+                    value={data.awayTeam.goals || ""}
+                    onChange={(e) => {
+                      handleTeam(e.target.name, e.target.value, "awayTeam");
+                    }}
+                  />
+                </Field.Root>
+                
               </HStack>
-              <CustomSelect
-                name="awayTeam"
-                description="Away Team"
-                id="awayTeam"
-                options={teamOptions}
-                selectedValue={data.awayTeam.id}
-                handleOnChange={handleOnChange}
-              />
+              <Field.Root required>
+                <CustomSelect
+                  name="awayTeam"
+                  description="Away Team"
+                  id="awayTeam"
+                  options={teamOptions}
+                  selectedValue={data.awayTeam.id}
+                  handleOnChange={handleOnChange}
+                />
+              </Field.Root>
             </HStack>
-          </Field.Root>
+          </Box>
         )}
       </Stack>
       <Grid

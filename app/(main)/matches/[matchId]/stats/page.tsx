@@ -7,7 +7,6 @@ import CardHeader from "@/components/main/Card/CardHeader";
 import Heading from "@/components/main/Typography/Heading";
 import CardBody from "@/components/main/Card/CardBody";
 import Logo from "@/components/main/MatchCard/Logo";
-import MatchScoreBoard from "@/components/main/MatchCard/MatchScoreBoard";
 import Text from "@/components/main/Typography/Text";
 import MatchStat from "@/components/main/MatchCard/MatchStat";
 import Flex from "@/components/main/Container/Flex";
@@ -41,6 +40,7 @@ async function Stats({ params }: { params: { matchId: string } }) {
           "review",
           "report",
           "scorers",
+          "createdAt"
         ],
       }
     );
@@ -89,7 +89,7 @@ async function Stats({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >

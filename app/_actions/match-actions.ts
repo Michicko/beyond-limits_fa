@@ -17,6 +17,7 @@ export const getMatches = async (nextToken?: string | null) => {
       "status",
       "competitionSeasonId",
       "competitionSeason.id",
+      "competitionSeason.seasonStartMonth",
       "competitionSeason.logo",
       "competitionSeason.name",
       "competitionSeason.season",

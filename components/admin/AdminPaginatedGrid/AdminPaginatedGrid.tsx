@@ -17,7 +17,7 @@ type Props<T extends Record<string, any>> = {
   createButtonText: string;
   createButtonLink: string;
   fetcherKey: string;
-  fetcherFunction: (nextToken: string | null) => Promise<{ data: T[], nextToken?: string | null}>;
+  fetcherFunction: (nextToken?: string | null) => Promise<{ data: T[], nextToken?: string | null}>;
   CardComponent: React.ComponentType<{ data: T }>;
   emptyTitle: string;
   emptyMessage: string;
@@ -117,7 +117,7 @@ function AdminPaginatedGrid<T extends Record<string, any>>({
               mb="100px"
               mt={4}
             >
-              {(showSearch ? filteredList : items)?.map(
+              {(showSearch ? filteredList : sortedItems)?.map(
                 (item: T, idx: number) => (
                   <GridItem key={idx}>
                     <CardComponent data={item} />

@@ -13,7 +13,7 @@ import { deleteCloudinaryImage } from "./actions";
 
 type Competition = Schema["Competition"]["type"];
 
-export const getCompetitions = async (nextToken: string | null) => {
+export const getCompetitions = async (nextToken?: string | null) => {
   return cookiesClient.models.Competition.list({
     selectionSet: [
       "id",

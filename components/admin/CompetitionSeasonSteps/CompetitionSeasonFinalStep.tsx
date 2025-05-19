@@ -19,6 +19,7 @@ function CompetitionSeasonFinalStep({
   competitionId,
   cupId,
   leagueId,
+  seasonStartMonth
 }: {
   competitionLogo: string;
   competitionType: string | null;
@@ -28,6 +29,7 @@ function CompetitionSeasonFinalStep({
   competitionId: string;
   cupId?: string;
   leagueId?: string;
+  seasonStartMonth: string;
 }) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const { errorToast, mutationToast } = useToast();
@@ -41,6 +43,7 @@ function CompetitionSeasonFinalStep({
     formData.append("status", "PENDING");
     formData.append("name", competitionName);
     formData.append("logo", competitionLogo);
+    formData.append('seasonStartMonth', seasonStartMonth);
 
     if (competitionType) {
       formData.append("type", competitionType);

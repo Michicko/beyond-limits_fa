@@ -6,8 +6,8 @@ import { IMatch } from "@/lib/definitions";
 import React from "react";
 
 function Matches() {
-  const sortByMatchDate = (a: IMatch, b:IMatch) =>
-    new Date(b.date).getTime() - new Date(a.date).getTime();
+  const sortByCreatedAt = (a: IMatch, b: IMatch) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
   return (
     <AdminPaginatedGrid
@@ -19,7 +19,7 @@ function Matches() {
       CardComponent={({ data }) => <MatchCard match={data} showMenu={true} />}
       emptyTitle="No matches"
       emptyMessage="No matches found. Create a match to get started."
-      sortFunction={sortByMatchDate}
+      sortFunction={sortByCreatedAt}
     />
   );
 }

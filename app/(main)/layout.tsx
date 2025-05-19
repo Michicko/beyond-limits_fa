@@ -12,7 +12,7 @@ import { Toaster as ReactToaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: {
     default: "Beyond Limits Fa | Youth Development Program of Remo Stars FC",
-    template: "Beyond Limits Fa | %s",
+    template: "%s | Beyond Limits Fa",
   },
   description:
     "Beyond Limits Fa is the web app for the Youth Development Program of Remo Stars FC",

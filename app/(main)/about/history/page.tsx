@@ -10,6 +10,11 @@ import React from "react";
 import clsx from "clsx";
 import styles from "./History.module.css";
 
+export const metadata = {
+  title: 'Beyond Limits Fa. History',
+  description: 'Beyond Limits F.A. is a professional football club based in Ikenne, Ogun State, Nigeria. It serves as the youth development team of Remo Stars F.C. and competes in the Nigeria National League (NNL), the second tier of professional football in the country.',
+};
+
 function History() {
   return (
     <>
@@ -34,7 +39,7 @@ function History() {
                 <div className={clsx(styles.history__heading)}>
                   <Heading
                     level={3}
-                    letterCase="upper"
+                    letterCase="capitalize"
                     color="secondary"
                     type="section"
                   >
@@ -63,7 +68,7 @@ function History() {
                 <div className={clsx(styles.history__heading)}>
                   <Heading
                     level={3}
-                    letterCase="upper"
+                    letterCase="capitalize"
                     color="secondary"
                     type="section"
                   >
@@ -91,7 +96,7 @@ function History() {
                 <div className={clsx(styles.history__heading)}>
                   <Heading
                     level={3}
-                    letterCase="upper"
+                    letterCase="capitalize"
                     color="secondary"
                     type="section"
                   >
@@ -120,7 +125,7 @@ function History() {
                 <div className={clsx(styles.history__heading)}>
                   <Heading
                     level={3}
-                    letterCase="upper"
+                    letterCase="capitalize"
                     color="secondary"
                     type="section"
                   >

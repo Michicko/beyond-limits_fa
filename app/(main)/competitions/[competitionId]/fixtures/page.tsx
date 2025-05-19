@@ -7,6 +7,11 @@ import { getMatches } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
+export const metadata = {
+  title: 'Fixtures & Results',
+  description: "Find fixtures and results for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
+
 async function CompetitionFixtures({
   params,
   searchParams,
@@ -17,6 +22,7 @@ async function CompetitionFixtures({
   }>;
 }) {
   const searchParam = await searchParams;
+  const auth = await isAuthenticated()
 
   const { data: competition, errors } =
     await cookiesClient.models.CompetitionSeason.get(
@@ -24,7 +30,7 @@ async function CompetitionFixtures({
         id: params.competitionId,
       },
       {
-        authMode: (await isAuthenticated()) ? "userPool" : "iam",
+        authMode: auth ? "userPool" : "iam",
         selectionSet: [
           "id",
           "matches.*",

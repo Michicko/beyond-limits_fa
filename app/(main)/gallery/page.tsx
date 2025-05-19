@@ -4,6 +4,11 @@ import styles from "./Gallery.module.css";
 import clsx from "clsx";
 import ImageCard from "@/components/main/Card/ImageCard";
 
+export const metadata = {
+  title: 'Gallery',
+  description: "Check out our gallery.",
+};
+
 function Gallery() {
 
   return (

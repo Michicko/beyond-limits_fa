@@ -17,7 +17,7 @@ import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { appendMonthToLink } from "@/lib/helpers";
 
 export default async function Home() {
-  const { data: homepageContent, status } = await fetchHomepageData();
+  const { data: homepageContent } = await fetchHomepageData();
 
   return (
     <>

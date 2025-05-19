@@ -11,6 +11,11 @@ import Button from "@/components/main/Button/Button";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getHonorsStats } from "@/lib/helpers";
 
+export const metadata = {
+  title: 'Beyond Limits Fa. Trophy Room | Club Honors, Silverware & Trophies',
+  description: "Read more about Beyond Limits' major silverware triumphs.",
+};
+
 async function Honours() {
   const authMode = (await isAuthenticated()) ? "userPool" : "iam";
   const { data: honors, errors } = await cookiesClient.models.Competition.list({

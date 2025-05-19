@@ -27,7 +27,7 @@ export const getTeamsLazyLoaded = async () => {
   });
 };
 
-export const getTeams = async (nextToken: string | null) => {
+export const getTeams = async (nextToken?: string | null) => {
   return cookiesClient.models.Team.list({
     selectionSet: [
       "id",

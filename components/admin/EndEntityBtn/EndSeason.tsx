@@ -29,18 +29,20 @@ function EndSeason({
   const [isEnding, setIsEnding] = useState(false);
 
   const endSeason = async () => {
-    const formData = new FormData();
-    formData.append("id", id);
-    formData.append("status", "COMPLETED");
-    setIsEnding(true);
+    if(confirm('Are you sure?')){
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("status", "COMPLETED");
+      setIsEnding(true);
 
-    mutationPromiseToast(
-      endCompetitionSeason(id, { cupId, leagueId }),
-      { title: "Season ended", desc: `${season} ended successfully!` },
-      { title: "Failed to end season", desc: `Failed to end ${season}` },
-      { title: "Ending season", desc: `Ending ${season}, please wait...` },
-      setIsEnding
-    );
+      mutationPromiseToast(
+        endCompetitionSeason(id, { cupId, leagueId }),
+        { title: "Season ended", desc: `${season} ended successfully!` },
+        { title: "Failed to end season", desc: `Failed to end ${season}` },
+        { title: "Ending season", desc: `Ending ${season}, please wait...` },
+        setIsEnding
+      );
+    }
   };
 
   return (

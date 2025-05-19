@@ -2,7 +2,7 @@ import { HStack, Text, Box, Separator } from "@chakra-ui/react";
 import React from "react";
 import moment from "moment";
 
-function MatchDetails({ time, date }: { time: string; date: string }) {
+function MatchDetails({ time, venue }: { time: string; venue: string }) {
   return (
     <HStack
       justify={"center"}
@@ -16,12 +16,13 @@ function MatchDetails({ time, date }: { time: string; date: string }) {
         fontSize={"xs"}
         fontWeight={"semibold"}
         color={"primary"}
+        display={'inline'}
       >
         {moment(`${time}`, "HH:mm").format("HH:mm a")}
       </Text>
       <Box as={"span"} h={"15px"} w={"1px"} bg={"gray.300"}></Box>
-      <Text color={"primary"} fontSize={"xs"} textTransform={"capitalize"} width={'137px'} whiteSpace={'nowrap'} overflow={'hidden'} textOverflow={'ellipsis'}>
-        {date}
+      <Text color={"primary"} fontSize={"xs"} fontWeight={'semibold'} textTransform={"capitalize"} width={{base: '90px', sm: 'auto'}} whiteSpace={'nowrap'} overflow={'hidden'} textOverflow={'ellipsis'} display={'inline'} title={venue}>
+        {venue}
       </Text>
     </HStack>
   );

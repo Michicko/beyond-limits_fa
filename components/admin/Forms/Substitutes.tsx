@@ -50,7 +50,7 @@ function Substitutes({
     <Box>
       <HStack justifyContent={'space-between'} alignItems={'center'}>
         <FormLabel as="Text">Substitutes</FormLabel>
-        <FormLabel as="Text">{matchForm?.substitutes ?? 0} Selected</FormLabel>
+        <FormLabel as="Text">{matchForm?.substitutes?.length ?? 0} Selected</FormLabel>
       </HStack>
       
       <Flex flexWrap={"wrap"} gap={"4"} alignItems={"center"}>

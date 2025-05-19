@@ -37,6 +37,12 @@ function StatInput({
         variant={"subtle"}
         color={"text_lg"}
         value={value || ""}
+        min={0}
+        onKeyDown={(e) => {
+          if (e.key === '-' || e.key === 'e') {
+            e.preventDefault();
+          }
+        }}
         onChange={onChange}
       />
     </Field.Root>

@@ -1,21 +1,21 @@
 import React from "react";
 import styles from "./MatchCard.module.css";
+import Link from "next/link";
 
 function MatchInfo({
   status,
-  date,
   time,
+  id
 }: {
   status: string;
-  date: string;
   time: string;
+  id?: string
 }) {
   return (
-    <div className={styles["match-info"]}>
+    <Link className={styles["match-info"]} href={`/matches/${id}/preview`}>
       <p className={styles.status}>{status}</p>
-      <p className={styles.date}>{date}</p>
       <p className={styles.time}>{time}</p>
-    </div>
+    </Link>
   );
 }
 

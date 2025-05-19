@@ -84,7 +84,7 @@ function Lineup({
       <Box>
         <HStack justifyContent={'space-between'} alignItems={'center'}>
           <FormLabel as="Text">Starting Lineup</FormLabel>
-          <FormLabel as="Text">{matchForm?.lineup ?? 0} Selected</FormLabel>
+          <FormLabel as="Text">{matchForm?.lineup?.length ?? 0} Selected</FormLabel>
         </HStack>
         
         <SimpleGrid columns={{base: 1, md: 2, lg: 3}} gap={"4"} alignItems={"center"}>

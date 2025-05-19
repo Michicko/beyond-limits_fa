@@ -12,15 +12,52 @@ import TextEditor from "@/components/TextEditor/TextEditor";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Article from "@/components/Article/Article";
 import { formatDate } from "@/lib/helpers";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { newsId: string } }): Promise<Metadata>  {
+  const auth = await isAuthenticated()
+
+  const { data: article } = await cookiesClient.models.Article.get(
+    {
+      id: params.newsId,
+    },
+    {
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: [
+        "id",
+        "articleCategoryId",
+        "category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+      ],
+    }
+  );
+
+  return {
+    title: article?.title,
+    description: article?.title,
+    keywords: article?.tags as string[],
+    openGraph: {
+      title: article?.title,
+      description: article?.title,
+      images: [{ url: article?.coverImage ?? '' }],
+    },
+  };
+}
 
 async function NewsArticle({ params }: { params: { newsId: string } }) {
   let recommendedArticles;
+  const auth = await isAuthenticated();
   const { data: article, errors } = await cookiesClient.models.Article.get(
     {
       id: params.newsId,
     },
     {
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",
         "articleCategoryId",
@@ -43,7 +80,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         },
         category: {eq: article.category}
       },
-      authMode: "iam",
+      authMode: auth ? "userPool" : "iam",
       limit: 3,
       selectionSet: [
         "id",
@@ -57,8 +94,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         "createdAt",
       ],
     });
-
-    recommendedArticles = articles.filter((el) => el.id !== article.id);
+    recommendedArticles = articles ?? [];
   }
 
   return (

@@ -9,6 +9,11 @@ const links = [
   { name: "Beyond limits tv", href: "/beyond-tv" },
 ];
 
+export const metadata = {
+  title: 'Latest News',
+  description: 'Get latest news and blogs for Beyond Limits Fa.',
+};
+
 async function News({
   searchParams,
 }: {

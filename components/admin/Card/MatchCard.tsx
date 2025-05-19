@@ -9,8 +9,8 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { Nullable } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { deleteMatch } from "@/app/_actions/match-actions";
 import { getFirstLetter } from "@/lib/helpers";
+import moment from "moment";
 
 interface ICompetitionSeason {
   id: string;
@@ -69,7 +69,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
               />
               <Text
                 color={"text_md"}
-                fontWeight={"medium"}
+                fontWeight={"semibold"}
                 fontSize={"sm"}
                 ml={"sm"}
                 textTransform={"uppercase"}
@@ -84,9 +84,9 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
               fontSize={"sm"}
               fontWeight={"semibold"}
               color={"text_md"}
-              title={match.venue}
+              title={moment(match.date).format('LL')}
             >
-              {match.venue}
+              {moment(match.date).format('ll')}
             </Text>
             {showMenu && (
               <CustomMenu>
@@ -118,7 +118,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
         >
           {match.status}
         </Text>
-        <MatchDetails time={match.time} date={match.date} />
+        <MatchDetails time={match.time} venue={match.venue} />
         {match.homeTeam && match.awayTeam && (
           <HStack
             justify={"space-between"}

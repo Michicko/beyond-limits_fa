@@ -9,18 +9,24 @@ import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getFirstLetter } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 
+export const metadata = {
+  title: 'Standing',
+  description: "Find the current standing for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
+
 async function CompetitionStanding({
   params,
 }: {
   params: { competitionId: string };
 }) {
+    const auth = await isAuthenticated()
   const { data: competition, errors } =
     await cookiesClient.models.CompetitionSeason.get(
       {
         id: params.competitionId,
       },
       {
-        authMode: (await isAuthenticated()) ? "userPool" : "iam",
+        authMode: auth ? "userPool" : "iam",
         selectionSet: [
           "id",
           "leagueId",

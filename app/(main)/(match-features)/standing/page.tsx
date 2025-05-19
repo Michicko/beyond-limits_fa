@@ -5,10 +5,18 @@ import Text from "@/components/main/Typography/Text";
 import { isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
+export const metadata = {
+  title: 'Standing',
+  description: "Find the current standing for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
+
+
 async function Standing() {
+  const auth = await isAuthenticated()
   const nnlStanding = await getCurrentNnlStanding(
-    (await isAuthenticated()) ? "auth" : "guest"
+    auth ? "auth" : "guest"
   );
+  
 
   return (
     <CompetitionsLayout pageTitle="Nigerian National League">

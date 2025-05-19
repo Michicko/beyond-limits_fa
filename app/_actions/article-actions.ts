@@ -24,7 +24,7 @@ export const filterArticle = async (text: string) => {
   });
 };
 
-export const getLazyLoadedArticles = async (nextToken: string | null) => {
+export const getLazyLoadedArticles = async (nextToken?: string | null) => {
   return cookiesClient.models.Article.list({
     selectionSet: [
       "id",

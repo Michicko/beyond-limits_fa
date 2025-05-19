@@ -3,10 +3,15 @@ import Grid from "@/components/main/Container/Grid";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
-import { getMatches, getMatchesByDateRange } from "@/lib/helpers";
+import { getMatchesByDateRange } from "@/lib/helpers";
 import { months } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
+
+export const metadata = {
+  title: 'Fixtures & Results',
+  description: "Find fixtures and results for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
 
 async function CompetitionResults({
   params,
@@ -20,6 +25,7 @@ async function CompetitionResults({
   const searchParam = await searchParams;
   const year = new Date().getUTCFullYear();
   const monthIndex = months.indexOf(searchParam.month.toLowerCase());  
+  const auth = await isAuthenticated()
 
   const { data: competition, errors} =
     await cookiesClient.models.CompetitionSeason.get(
@@ -27,7 +33,7 @@ async function CompetitionResults({
         id: params.competitionId,
       },
       {
-        authMode: (await isAuthenticated()) ? "userPool" : "iam",
+        authMode: auth ? "userPool" : "iam",
         selectionSet: [
           "id",
           "matches.*",

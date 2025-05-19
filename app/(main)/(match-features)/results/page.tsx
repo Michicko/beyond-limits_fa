@@ -8,6 +8,12 @@ import Text from "@/components/main/Typography/Text";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { months } from "@/lib/placeholder-data";
 
+
+export const metadata = {
+  title: 'Fixtures & Results',
+  description: "Find fixtures and results for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
+
 async function Results(props: {
   searchParams: Promise<{
     season?: string;
@@ -19,6 +25,7 @@ async function Results(props: {
   const date = new Date();
   const year = date.getFullYear();
   const monthIndex = months.indexOf(searchParams.month.toLowerCase()); 
+    const auth = await isAuthenticated()
 
   const { data: competitionSeasons, errors } =
     await cookiesClient.models.CompetitionSeason.list({
@@ -30,7 +37,7 @@ async function Results(props: {
           eq: "PENDING",
         },
       },
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      authMode: auth ? "userPool" : "iam",
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 

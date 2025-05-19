@@ -16,8 +16,14 @@ import {
 } from "@/app/_actions/actions";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
-import { getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
+import { getExpectedSeasonLabel, getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
+import { months } from "@/lib/placeholder-data";
+
+export const metadata = {
+  title: 'Team Stats',
+  description: "Find out about current positions, rounds, status and forms for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
 
 async function TeamStats() {
   const year = new Date().getUTCFullYear();
@@ -34,6 +40,8 @@ async function TeamStats() {
         "name",
         "type",
         "status",
+        "season",
+        "seasonStartMonth",
         "logo",
         "leagueId",
         "cupId",
@@ -45,12 +53,21 @@ async function TeamStats() {
       ],
     });
 
+  const date = new Date();
+  const currentSeasons = seasons?.filter((season) => {
+    const startMonth = months.indexOf(season.seasonStartMonth);
+    if (typeof startMonth !== 'number') return false;
+  
+    const expectedLabel = getExpectedSeasonLabel(startMonth, date);
+    return season.season === expectedLabel;
+  });
+
   let leagues: any[] = [];
   let cups: any[] = [];
   let rounds: any[] = [];
 
-  if (seasons) {
-    for (let season of seasons) {
+  if (currentSeasons) {
+    for (let season of currentSeasons) {
       if (season.leagueId) {
         leagues = [
           ...leagues,
@@ -134,7 +151,7 @@ async function TeamStats() {
               color={"white"}
               type="primary"
               level={1}
-              letterCase="upper"
+              letterCase="capitalize"
             >
               Team Stats
             </Heading>
@@ -160,7 +177,7 @@ async function TeamStats() {
                   <div className={clsx(styles["team-stats__heading"])}>
                     <Heading
                       level={3}
-                      letterCase="upper"
+                      letterCase="capitalize"
                       color="secondary"
                       type="section"
                     >
@@ -224,7 +241,7 @@ async function TeamStats() {
                   <div className={clsx(styles["team-stats__heading"])}>
                     <Heading
                       level={3}
-                      letterCase="upper"
+                      letterCase="capitalize"
                       color="secondary"
                       type="section"
                     >

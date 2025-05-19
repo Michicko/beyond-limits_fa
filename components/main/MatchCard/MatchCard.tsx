@@ -5,7 +5,6 @@ import MatchTeam from "./MatchTeam";
 import MatchInfo from "./MatchInfo";
 import MatchScoreBoard from "./MatchScoreBoard";
 import {
-  formatDate,
   formatTime,
   getFirstLetter,
   isLessThan24HoursAgo,
@@ -13,6 +12,7 @@ import {
 import clsx from "clsx";
 import { Nullable } from "@/lib/definitions";
 import Link from "next/link";
+import moment from "moment";
 
 interface ICompetitionSeason {
   id?: string;
@@ -75,8 +75,8 @@ function MatchCard({
           </p>
         </div>
         <div className={styles["header-box"]}>
-          <p className={clsx(styles["header-text"], styles.venue)}>
-            {match.venue}
+          <p className={clsx(styles["header-text"], styles.date)}>
+            {moment(match.date).format('ll')}
           </p>
         </div>
       </div>
@@ -87,13 +87,13 @@ function MatchCard({
           logo={match.homeTeam?.logo ?? ""}
           showName={showName}
         />
+
         {match.status === "UPCOMING" &&
-          !match.review &&
           !isLessThan24HoursAgo(match.date) && (
             <MatchInfo
+              id={match.id}
               status={match.status}
               time={formatTime(match.time)}
-              date={formatDate(match.date)}
             />
           )}
 

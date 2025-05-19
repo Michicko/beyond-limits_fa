@@ -2,14 +2,20 @@ import { Button, Field, HStack, Input, Steps, Text } from "@chakra-ui/react";
 import React from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import FormLabel from "../Forms/FormLabel";
+import { months } from "@/lib/placeholder-data";
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 function CompetitionSeasonSelector({
   goToNextStep,
   season,
   setSeason,
+  seasonStartMonth,
+  setSeasonStartMonth
 }: {
   goToNextStep: () => void;
   season: string;
+  seasonStartMonth: string;
+  setSeasonStartMonth: React.Dispatch<React.SetStateAction<string>>;
   setSeason: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
@@ -17,6 +23,24 @@ function CompetitionSeasonSelector({
       <HStack outline={"transparent"} border={"none"}>
         <CompetitionSeasonCard title="Enter Season">
           <Text mb={"2"}>Enter season to get started</Text>
+          <Field.Root required mb={4}>
+            <FormLabel>Select Season Start Month</FormLabel>
+            <CustomSelect
+              name={"month"}
+              description={"Season start month"}
+              selectedValue={seasonStartMonth}
+              options={months.map((month) => {
+                return {
+                  label:month,
+                  value: month,
+                };
+              })}
+              handleOnChange={(e) => {
+                setSeasonStartMonth(e.target.value);
+              }}
+            id={"month"}
+          />
+          </Field.Root>
           <Field.Root required>
             <FormLabel>Season</FormLabel>
             <Input
@@ -44,7 +68,7 @@ function CompetitionSeasonSelector({
               px={"20px"}
               colorPalette={"blue"}
               variant={"outline"}
-              disabled={!season}
+              disabled={!season && !seasonStartMonth}
               onClick={goToNextStep}
             >
               Next

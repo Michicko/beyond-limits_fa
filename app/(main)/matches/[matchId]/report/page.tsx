@@ -39,6 +39,7 @@ async function Report({ params }: { params: { matchId: string } }) {
           "review",
           "report",
           "scorers",
+          "createdAt"
         ],
       }
     );
@@ -92,7 +93,7 @@ async function Report({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -116,7 +117,7 @@ async function Report({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -193,7 +194,7 @@ async function Report({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -208,7 +209,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                     color="secondary"
                     size="sm"
                     weight="semibold"
-                    letterCase="upper"
+                     letterCase="capitalize"
                     mb={"sm"}
                   >
                     {mvp?.firstname} {mvp?.lastname}
@@ -234,7 +235,7 @@ async function Report({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -249,7 +250,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                     <Text
                       color="secondary"
                       size="sm"
-                      letterCase={"upper"}
+                        letterCase="capitalize"
                       weight="semibold"
                     >
                       Competition
@@ -258,7 +259,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                       <Text
                         color="white"
                         size="base"
-                        letterCase={"upper"}
+                          letterCase="capitalize"
                         weight="semibold"
                       >
                         {match.competitionSeason.name}

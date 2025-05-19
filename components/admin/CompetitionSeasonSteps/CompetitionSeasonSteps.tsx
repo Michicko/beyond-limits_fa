@@ -21,6 +21,7 @@ function CompetitionSeasonSteps({
   competitionName: string;
   teams: Pick<Schema["Team"]["type"], "id" | "logo" | "longName">[];
 }) {
+  const [seasonStartMonth, setSeasonStartMonth] = useState('');
   const [season, setSeason] = useState("");
   const [cupId, setCupId] = useState("");
   const [leagueId, setLeagueId] = useState("");
@@ -103,6 +104,8 @@ function CompetitionSeasonSteps({
             goToNextStep={goToNextStep}
             season={season}
             setSeason={setSeason}
+            seasonStartMonth={seasonStartMonth}
+            setSeasonStartMonth={setSeasonStartMonth}
           />
           {competitionType === "CUP" && (
             <CupContent
@@ -155,6 +158,7 @@ function CompetitionSeasonSteps({
             season={season}
             goToNextStep={goToNextStep}
             competitionId={competitionId}
+            seasonStartMonth={seasonStartMonth}
           />
           <CompetitionSeasonComplete competitionId={competitionId} />
         </Stack>

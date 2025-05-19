@@ -80,6 +80,28 @@ const deleteConfig: Record<
   Match: {
     modelName: "Match",
     pathToRevalidate: "/cp/matches",
+    checkBeforeDelete: async(id: string) => {
+      const leagueRounds = await cookiesClient.models.LeagueRound.list({
+        filter: {
+          matchId: { eq: id },
+        },
+      });
+      const playOffRounds = await cookiesClient.models.PlayOff.list({
+        filter: {
+          matchId: { eq: id },
+        },
+      });
+
+      const hasLeagueRounds = leagueRounds.data?.length > 0;
+      const hasPlayOffRounds = playOffRounds.data?.length > 0;
+
+      return {
+        canDelete: !hasLeagueRounds || !hasPlayOffRounds,
+        reason: hasLeagueRounds || hasPlayOffRounds
+          ? "Please delete all related league or playoff rounds first."
+          : undefined,
+      };
+    }
   },
   Competition: {
     modelName: "Competition",

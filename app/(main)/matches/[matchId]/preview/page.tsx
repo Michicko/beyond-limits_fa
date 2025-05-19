@@ -39,7 +39,8 @@ async function Review({ params }: { params: { matchId: string } }) {
           "review",
           "report",
           "homeForm",
-          "awayForm"
+          "awayForm",
+          "createdAt"
         ],
       }
     );
@@ -93,7 +94,7 @@ async function Review({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -117,7 +118,7 @@ async function Review({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -138,7 +139,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                       color="white"
                       size="base"
                       weight="semibold"
-                      letterCase="upper"
+                       letterCase="capitalize"
                     >
                       {match.homeTeam?.shortName}
                     </Text>
@@ -167,7 +168,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                       color="white"
                       size="base"
                       weight="regular"
-                      letterCase="upper"
+                       letterCase="capitalize"
                     >
                       {match.awayTeam?.shortName}
                     </Text>
@@ -196,7 +197,7 @@ async function Review({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -209,7 +210,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                 <Text
                   color="secondary"
                   size="sm"
-                  letterCase={"upper"}
+                  letterCase="capitalize"
                   weight="semibold"
                   mb={"sm"}
                 >
@@ -228,7 +229,7 @@ async function Review({ params }: { params: { matchId: string } }) {
               <div className={clsx(styles.preview__heading)}>
                 <Heading
                   level={3}
-                  letterCase="upper"
+                   letterCase="capitalize"
                   color="secondary"
                   type="section"
                 >
@@ -244,7 +245,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                       <Text
                         color="secondary"
                         size="sm"
-                        letterCase={"upper"}
+                        letterCase="capitalize"
                         weight="semibold"
                       >
                         Competition
@@ -252,7 +253,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                       <Text
                         color="white"
                         size="base"
-                        letterCase={"upper"}
+                        letterCase="capitalize"
                         weight="semibold"
                       >
                         {match.competitionSeason.name}
@@ -263,7 +264,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                     <Text
                       color="secondary"
                       size="sm"
-                      letterCase={"upper"}
+                      letterCase="capitalize"
                       weight="semibold"
                     >
                       Location
@@ -271,7 +272,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                     <Text
                       color="white"
                       size="base"
-                      letterCase={"upper"}
+                      letterCase="capitalize"
                       weight="semibold"
                     >
                       {match.venue}

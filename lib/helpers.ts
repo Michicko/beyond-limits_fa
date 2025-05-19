@@ -1,5 +1,5 @@
 import moment from "moment";
-import { IMatch, Nullable } from "./definitions";
+import {IMatch, Nullable } from "./definitions";
 import { months } from "./placeholder-data";
 
 interface IPlayer {
@@ -175,7 +175,7 @@ export const getMatches = (
     } else {
       return el.status === status;
     }
-  });
+  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());;
 };
 
 export const getMatchesByDateRange = (
@@ -276,13 +276,16 @@ export const removeImgBg = (src: string) => {
 };
 
 export const isLessThan24HoursAgo = (dateString: string) => {
-  const inputDate = new Date(dateString);
+   const [year, month, day] = dateString.split('-').map(Number);
+
+  // Add a time buffer (e.g. 12:00 noon) to reduce false negatives
+  const inputDate = new Date(year, month - 1, day, 12, 0, 0); 
   const now = new Date();
 
   const diffInMs = now.getTime() - inputDate.getTime();
   const hoursInMs = 24 * 60 * 60 * 1000;
 
-  return diffInMs < hoursInMs;
+  return diffInMs >= 0 && diffInMs < hoursInMs;
 };
 
 export const getHonorsStats = (honors: Honor[]) => {
@@ -291,7 +294,7 @@ export const getHonorsStats = (honors: Honor[]) => {
       honor.competitionSeasons.forEach((seasonObj) => {
         if (seasonObj.isWinner) {
           acc.numbersWon += 1;
-          acc.seasonsWon.push(seasonObj.season.split('/')[0]);
+          acc.seasonsWon.push(seasonObj.season.split('/')[1]);
         }
       });
       return acc;
@@ -333,7 +336,7 @@ export const getCloudinaryPublicId = (url: string): string | null => {
   }
 };
 
-export function getCloudinaryFilename(url: string): string | null {
+export const getCloudinaryFilename = (url: string): string | null => {
   const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)$/);
   return match ? match[1] : null;
 }
@@ -342,4 +345,15 @@ export function sortByCreatedAt<T extends { createdAt: string | Date }>(list: T[
   return [...list].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
+}
+
+export const getExpectedSeasonLabel = (seasonStartMonth: number, date: Date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  if (month >= seasonStartMonth) {
+    return `${year}/${year + 1}`;
+  } else {
+    return `${year - 1}/${year}`;
+  }
 }

@@ -7,6 +7,11 @@ import { getMatches } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 
+export const metadata = {
+  title: 'Fixtures & Results',
+  description: "Find fixtures and results for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+};
+
 async function Fixtures(props: {
   searchParams: Promise<{
     season?: string;
@@ -17,6 +22,7 @@ async function Fixtures(props: {
   const date = new Date();
   const year = date.getFullYear();
   const searchParams = await props.searchParams;
+  const auth = await isAuthenticated()
 
   const { data: competitionSeasons, errors } =
     await cookiesClient.models.CompetitionSeason.list({
@@ -28,7 +34,7 @@ async function Fixtures(props: {
           eq: "PENDING",
         },
       },
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      authMode: auth ? "userPool" : "iam",
       selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
     });
 

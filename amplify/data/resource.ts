@@ -55,6 +55,7 @@ const schema = a.schema({
     ]),
   CompetitionSeason: a
     .model({
+      seasonStartMonth: a.string().required(),
       season: a.string().required(),
       name: a.string().required(),
       type: a.string().required(),
