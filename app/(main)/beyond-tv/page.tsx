@@ -38,7 +38,12 @@ async function BeyondTv() {
             {`Something went wrong, ${errors[0].message}`}
           </Text>
         )}
-        {highlights && (
+        {!highlights || highlights.length < 1 && (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            No Highlights available at the moment.
+          </Text>
+        )}
+        {highlights && highlights.length > 0 && (
           <HighlightClient 
             auth={auth}
             initialItems={highlights}

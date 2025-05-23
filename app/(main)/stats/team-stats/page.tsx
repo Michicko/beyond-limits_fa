@@ -151,7 +151,7 @@ async function TeamStats() {
               color={"white"}
               type="primary"
               level={1}
-              letterCase="capitalize"
+              letterCase="upper"
             >
               Team Stats
             </Heading>

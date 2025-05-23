@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import {
+  Box,
   Field,
   HStack,
   IconButton,
@@ -26,6 +27,7 @@ import {
 import { Nullable } from "@/lib/definitions";
 import FormContainer from "./FormContainer";
 import useToast from "@/hooks/useToast";
+import UploadImage from "../CustomFileUpload/UploadImage";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -147,43 +149,25 @@ function HighlightForm({
             />
             <Field.HelperText>Enter Youtube Id e.g: k-SvlnHFA6c</Field.HelperText>
           </Field.Root>
-          <Field.Root>
-            <FormLabel>Cover image</FormLabel>
-            {tempData.coverImage && (
-              <HStack gap={4} position={"relative"}>
-                <Image
-                  src={tempData.coverImage}
-                  width="75"
-                  height="75"
-                  alt={"cover image"}
-                />
-                <IconButton
-                  size={"2xs"}
-                  title="delete"
-                  colorPalette={"red"}
-                  onClick={() => setTempData({ ...tempData, coverImage: "" })}
-                  position={"absolute"}
-                  top={"10px"}
-                  right={"10px"}
-                >
-                  {getIcon("close")}
-                </IconButton>
-              </HStack>
-            )}
-            {!tempData.coverImage && tempData.title && (
-              <CustomFileUpload
-                description="cover image"
-                type="drag-drop"
-                onUploaded={(res: any) => {
-                  setTempData({ ...tempData, coverImage: res.secure_url });
-                }}
-                id="highlight-cover-image"
-                filename={slugify(`${tempData.title}`, {
-                  lower: true,
-                })}
-              />
-            )}
-          </Field.Root>
+
+          <Box mb={5} w={'full'}>
+            <UploadImage
+              image={tempData.coverImage}
+              onClearImage={() =>
+                setTempData({ ...tempData, coverImage: "" })
+              }
+              imageSize={200}
+              filename={slugify(`${tempData.title}`, {
+                lower: true,
+              })}
+              id={"highlight-cover-image"}
+              onUploaded={(res: any) => {
+                setTempData({ ...tempData, coverImage: res.secure_url });
+              }}
+              label={"Cover Image"}
+            />
+          </Box>
+
           <Field.Root required mb={"5"} border={"transparent"}>
             <FormLabel>Description</FormLabel>
             <TextEditor

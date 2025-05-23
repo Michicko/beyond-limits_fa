@@ -338,7 +338,6 @@ function ArticleForm({
           )}
         </Box>
        
-
         <TextEditor
           editorKey={editorKey}
           content={tempData.content}

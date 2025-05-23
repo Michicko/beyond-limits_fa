@@ -1,6 +1,3 @@
-import { appendMonthToLink } from "@/lib/helpers";
-import { getIcon } from "@/lib/icons";
-
 const MenuLinks = [
   {
     innerLinks: ["/"],
@@ -26,7 +23,7 @@ const MenuLinks = [
       },
     ],
     description:
-      "At Beyond Limits Football Academy, we believe in more than just developing exceptional football talent; we strive to shape responsible, empowered individuals who contribute positively to society. As the juniors of the esteemed Remo Stars in the Nigerian Professional Football League, we take pride in our commitment to community development.",
+      "Welcome to the official website of Beyond Limits Football Academy. Stay up to date with the latest news, match highlights, player features, and exclusive behind-the-scenes content.",
   },
   {
     innerLinks: ["/news", "/beyond-tv"],
@@ -61,7 +58,7 @@ const MenuLinks = [
       },
     ],
     description:
-      "Get the latest news about the club, academy and other interesting articles. Also check out our highlights and blah blah blah.",
+      "Catch up on the latest updates from the academy, including match recaps, player achievements, and club announcements.",
   },
   {
     innerLinks: [`/competitions`],
@@ -90,7 +87,7 @@ const MenuLinks = [
       },
     ],
     description:
-      "Get the latest about the competitions and check out our latest vicrories.",
+      "Explore our fixtures, results, and league standings across all the competitions we participate in.",
   },
   {
     innerLinks: ["/players/under-19", "/players/under-17"],
@@ -125,7 +122,7 @@ const MenuLinks = [
       },
     ],
     description:
-      "Find out more about our squad, our under 19 and under 17 players.",
+      "Meet the next generation of football talent. Explore detailed profiles of our U17 and U19 players—future stars shaping the game with skill, discipline, and ambition.",
   },
   {
     innerLinks: [`/stats/team-stats`, "/stats/player-stats"],
@@ -159,7 +156,7 @@ const MenuLinks = [
         image: "/images/playerstats.jpg",
       },
     ],
-    description: "Check out our team stats and stats about our players.",
+    description: "Dive into in-depth team and player statistics, powered by our performance partners: Eyeball, Spiideo, and Wyscout.",
   },
   {
     innerLinks: ["/about/history", "/about/honours"],
@@ -194,7 +191,7 @@ const MenuLinks = [
       },
     ],
     description:
-      "Find out more about our club and check out our trophy collections in our honors page.",
+      "Learn about the journey of Beyond Limits Football Academy—from our founding story to the honours we've earned over the years.",
   },
 ];
 
