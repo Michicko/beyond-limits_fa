@@ -8,6 +8,8 @@ import Footer from "@/components/main/Footer/footer";
 import NextTopLoader from "nextjs-toploader";
 import Auth from "@/components/Auth/Auth";
 import { Toaster as ReactToaster } from "react-hot-toast";
+import Script from "next/script";
+import Analytics from "@/components/main/Analytics/Analytics";
 
 export const metadata: Metadata = {
   title: {
@@ -67,7 +69,27 @@ export default function RootLayout({
       lang="en"
       className={`${formula_condensed.variable} ${roboto.variable}`}
     >
+       <head>
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-40D6SPQ2G7"
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-40D6SPQ2G7');
+            `,
+          }}
+        />
+      </head>
       <body className={clsx(styles.layout)}>
+        <Analytics />
         <ReactToaster />
         <NextTopLoader color="#ffd700" height={4} />
         <Auth>
