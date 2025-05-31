@@ -38,9 +38,9 @@ export const createHighlight = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Highlight", {
-            title: input.title.toLowerCase(),
-          })
+          await checkUniqueField("Highlight",
+            'title', input.title.toLowerCase(),
+          )
         ).length > 0
       ) {
         return {
@@ -77,9 +77,8 @@ export const updateHighlight = async (
       if (input.title !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("Highlight", {
-              title: input.title.toLowerCase(),
-            })
+            await checkUniqueField("Highlight",
+            'title', input.title.toLowerCase())
           ).length > 0
         ) {
           return {

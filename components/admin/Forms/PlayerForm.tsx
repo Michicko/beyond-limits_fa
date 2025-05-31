@@ -307,6 +307,7 @@ function PlayerForm({
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
+              step={0.1}
               defaultValue={player?.weight || ""}
             />
             <Field.HelperText
@@ -314,7 +315,7 @@ function PlayerForm({
               fontWeight={"normal"}
               color={"text_md"}
             >
-              Enter weight in (kg) e.g 75
+              Enter weight in (kg) e.g 75 or 56.8
             </Field.HelperText>
           </Field.Root>
           <Field.Root>
@@ -336,7 +337,7 @@ function PlayerForm({
               fontWeight={"normal"}
               color={"text_md"}
             >
-              Enter height in (cm) e.g 156
+              Enter height in (cm) e.g 156 or 176.8
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>

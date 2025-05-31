@@ -72,6 +72,22 @@ const deleteConfig: Record<
   PlayerPosition: {
     modelName: "PlayerPosition",
     pathToRevalidate: "/cp/positions",
+    checkBeforeDelete: async (id: string) => {
+      const players = await cookiesClient.models.Player.list({
+        filter: {
+          playerPositionId: { eq: id },
+        },
+      });
+
+      const hasPlayers = players.data.length > 0;
+
+      return {
+        canDelete: !hasPlayers,
+        reason: hasPlayers
+          ? "Please delete all related Players first."
+          : undefined,
+      };
+    },
   },
   Team: {
     modelName: "Team",

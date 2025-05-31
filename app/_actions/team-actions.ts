@@ -79,11 +79,8 @@ export const createTeam = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Team", {
-            longName: input.longName.toLowerCase(),
-            shortName: input.shortName.toLowerCase(),
-            isBeyondLimits: input.isBeyondLimits,
-          })
+          await checkUniqueField("Team",
+            'longName', input.longName.toLowerCase())
         ).length > 0
       ) {
         return {
@@ -120,11 +117,8 @@ export const updateTeam = async (
       if (input.longName !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("Team", {
-              longName: input.longName.toLowerCase(),
-              shortName: input.shortName.toLowerCase(),
-              isBeyondLimits: input.isBeyondLimits,
-            })
+            await checkUniqueField("Team",
+            'longName', input.longName.toLowerCase())
           ).length > 0
         ) {
           return {
@@ -144,13 +138,5 @@ export async function deleteTeam(id: string) {
     id,
     modelName: "Team",
     pathToRevalidate: "/cp/teams",
-    // postDelete: async () => {
-    //   try {
-    //     const publicId =  getCloudinaryPublicId(image)
-    //      await deleteCloudinaryImage(publicId);
-    //   } catch (error) {
-    //     console.error("Error deleting images:", error);
-    //   }
-    // },
   });
 }

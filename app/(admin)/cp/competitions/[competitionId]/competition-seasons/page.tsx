@@ -27,7 +27,7 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
 
   return (
     <AdminPaginatedTable
-      resourceName="season"
+      resourceName="seasons"
       list={filteredList}
       isLoading={isLoading}
       error={error}

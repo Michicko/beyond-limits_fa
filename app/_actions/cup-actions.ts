@@ -17,9 +17,9 @@ export const createCup = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Cup", {
-            competitionNameSeason: input.competitionNameSeason.toLowerCase(),
-          })
+          await checkUniqueField("Cup",
+            'competitionNameSeason', input.competitionNameSeason.toLowerCase(),
+          )
         ).length > 0
       ) {
         return {

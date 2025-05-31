@@ -39,10 +39,9 @@ export const createPosition = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("PlayerPosition", {
-            longName: input.longName.toLowerCase(),
-            shortName: input.shortName.toLowerCase(),
-          })
+          await checkUniqueField("PlayerPosition",
+            'longName', input.longName.toLowerCase()
+          )
         ).length > 0
       ) {
         return {
@@ -78,10 +77,8 @@ export const updatePosition = async (
       if (input.shortName !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("PlayerPosition", {
-              longName: input.longName.toLowerCase(),
-              shortName: input.shortName.toLowerCase(),
-            })
+            await checkUniqueField("PlayerPosition",
+            'longName', input.longName.toLowerCase())
           ).length > 0
         ) {
           return {

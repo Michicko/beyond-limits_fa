@@ -37,17 +37,16 @@ type Primitive = string | number | boolean;
 
 export const checkUniqueField = async (
   modelName: keyof typeof cookiesClient.models,
-  fields: Record<string, Primitive>
+  field: string,
+  value: string,
 ) => {
   const model = cookiesClient.models[modelName] as any;
 
-  const filter = Object.entries(fields).reduce((acc, [key, value]) => {
-    acc[key] = { contains: String(value) };
-    return acc;
-  }, {} as Record<string, { contains: string }>);
+  const filter = {
+    [field]: { eq: value }
+  };
 
   const { data: existing } = await model.list({ filter });
-
   return existing;
 };
 

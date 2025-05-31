@@ -117,10 +117,8 @@ export const createCompetitionSeason = async (formData: FormData) => {
     validate: async (base) => {
       if (
         (
-          await checkUniqueField("CompetitionSeason", {
-            name: base.name.toLowerCase(),
-            season: base.season,
-          })
+          await checkUniqueField("CompetitionSeason",
+            'season', base.season.toLowerCase())
         ).length > 0
       ) {
         return {

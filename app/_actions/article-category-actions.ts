@@ -50,9 +50,9 @@ export const createArticleCategory = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("ArticleCategory", {
-            category: input.category.toLowerCase(),
-          })
+          await checkUniqueField("ArticleCategory", 
+            'category', input.category.toLowerCase()
+          )
         ).length > 0
       ) {
         return {
@@ -88,9 +88,8 @@ export const updateArticleCategory = async (
       if (input.category !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("ArticleCategory", {
-              category: input.category.toLowerCase(),
-            })
+            await checkUniqueField("ArticleCategory", 
+            'category', input.category.toLowerCase())
           ).length > 0
         ) {
           return {

@@ -50,9 +50,9 @@ export const createCompetition = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Competition", {
-            longName: base.longName.toLowerCase(),
-          })
+          await checkUniqueField("Competition", 
+            'longName', base.longName.toLowerCase()
+          )
         ).length > 0
       ) {
         return {
@@ -89,9 +89,7 @@ export const updateCompetition = async (
       if (input.longName !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("Competition", {
-              longName: base.longName.toLowerCase(),
-            })
+            await checkUniqueField("Competition", 'longName', base.longName.toLowerCase())
           ).length > 0
         ) {
           return {
