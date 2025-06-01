@@ -800,16 +800,16 @@ export const deleteCloudinaryImage = async (publicId: string) => {
 // fetchers
 export async function fetchCompetitions(keyword: string, client: "guest" | "auth") {
   try {
-    const result = await cookiesClient.models.CompetitionSeason.list({
+    const result = await cookiesClient.models.Competition.list({
       filter: {
         or: [
-          { name: { contains: keyword } },
-          { season: { contains: keyword } },
+          { longName: { contains: keyword } },
+          { shortName: { contains: keyword } },
         ],
       },
       limit: 15,
       authMode: client === "guest" ? 'iam' : 'userPool',
-      selectionSet: ['id', 'name', 'logo', 'season']
+      selectionSet: ['id', 'logo', 'shortName', 'longName']
     });
     return result.data;
   } catch (error) {
