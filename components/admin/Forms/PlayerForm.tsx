@@ -22,6 +22,7 @@ import { getButtonStatus, removeImgBg } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
 import { getIcon } from "@/lib/icons";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 function PlayerForm({
   player,
@@ -127,7 +128,7 @@ function PlayerForm({
       <form onSubmit={handleSubmit} ref={formRef}>
         <Stack gap="4">
           <Field.Root required>
-            <FormLabel>Position</FormLabel>
+            <FormLabel>Position <RequiredLabel /></FormLabel>
             <CustomSelect
               options={positionOptions}
               name="playerPositionId"
@@ -137,7 +138,7 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>firstname</FormLabel>
+            <FormLabel>firstname <RequiredLabel /></FormLabel>
             <Input
               name={"firstname"}
               type={"text"}
@@ -152,7 +153,7 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>lastname</FormLabel>
+            <FormLabel>lastname <RequiredLabel /></FormLabel>
             <Input
               name={"lastname"}
               type={"text"}
@@ -256,7 +257,7 @@ function PlayerForm({
             </Field.Root>
           </SimpleGrid>
           <Field.Root required>
-            <FormLabel>Dob</FormLabel>
+            <FormLabel>Dob <RequiredLabel /></FormLabel>
             <Input
               name={"dob"}
               type={"date"}
@@ -275,7 +276,7 @@ function PlayerForm({
               Enter Date of birth
             </Field.HelperText>
           </Field.Root>
-          <Field.Root required>
+          <Field.Root>
             <FormLabel>squad number</FormLabel>
             <Input
               name={"squadNo"}
@@ -341,7 +342,7 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Age Group</FormLabel>
+            <FormLabel>Age Group <RequiredLabel /></FormLabel>
             <CustomSelect
               options={ageGroups.map((el) => {
                 return {
@@ -356,7 +357,7 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Player status</FormLabel>
+            <FormLabel>Player status <RequiredLabel /></FormLabel>
             <CustomSelect
               options={statuses.map((el) => {
                 return {
@@ -371,7 +372,7 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Dominant Foot</FormLabel>
+            <FormLabel>Dominant Foot <RequiredLabel /></FormLabel>
             <CustomSelect
               options={dominantFoots.map((el) => {
                 return {

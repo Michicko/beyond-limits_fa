@@ -60,8 +60,11 @@ function PlayoffRound({
           alignItems={"center"}
           flexWrap={"wrap"}
         >
+          
           <Heading fontWeight={"700"}>Rounds</Heading>
-          {!matches ? (
+          {!matches || 
+          matches.length < 1 ||
+          competitionStatus === "COMPLETED" ? (
             <Text>
               No matches available, please add a match to create round
             </Text>

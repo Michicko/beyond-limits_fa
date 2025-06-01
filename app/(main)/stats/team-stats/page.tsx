@@ -16,9 +16,8 @@ import {
 } from "@/app/_actions/actions";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
-import { getExpectedSeasonLabel, getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
+import { filterGroupedSeasonsByCurrent, getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
-import { months } from "@/lib/placeholder-data";
 
 export const metadata = {
   title: 'Team Stats',
@@ -52,15 +51,7 @@ async function TeamStats() {
         "league.leagueRounds.*",
       ],
     });
-
-  const date = new Date();
-  const currentSeasons = seasons?.filter((season) => {
-    const startMonth = months.indexOf(season.seasonStartMonth);
-    if (typeof startMonth !== 'number') return false;
-  
-    const expectedLabel = getExpectedSeasonLabel(startMonth, date);
-    return season.season === expectedLabel;
-  });
+  const currentSeasons = seasons && filterGroupedSeasonsByCurrent(seasons);
 
   let leagues: any[] = [];
   let cups: any[] = [];

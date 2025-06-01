@@ -33,6 +33,14 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
     <div className={clsx(styles.knockout)}>
       <ul>
         {playOffs.map((playoff) => {
+          let homeTeamWinner;
+          let awayTeamWinner;
+
+          if(playoff?.match?.homeTeam?.goals && playoff?.match?.awayTeam?.goals){
+            homeTeamWinner = playoff?.match?.homeTeam?.goals > playoff?.match?.awayTeam?.goals
+            awayTeamWinner = playoff.match.awayTeam.goals > playoff.match.homeTeam.goals
+          }
+
           return (
             <li className={clsx(styles["knockout-round"])} key={playoff.round}>
               <h3 className={clsx(styles["knockout-round-title"])}>
@@ -43,17 +51,13 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                 className={clsx(styles["knockout-match"])}
               >
                 {playoff.match?.homeTeam &&
-                  playoff.match?.homeTeam.goals &&
-                  playoff.match?.awayTeam?.goals && (
+                  (
                     <KnockoutMatchDetails
                       long_name={playoff.match?.homeTeam.longName}
                       short_name={playoff.match?.homeTeam.shortName}
                       logo={playoff.match?.homeTeam.logo}
                       goals={playoff.match?.homeTeam.goals || ""}
-                      match_winner={
-                        playoff.match?.homeTeam.goals >
-                        playoff.match?.awayTeam.goals
-                      }
+                      match_winner={ homeTeamWinner}
                       // win_by_penalties={
                       //   playoff.match?.home.penalties &&
                       //   playoff.match?.away.penalties
@@ -63,20 +67,15 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                       // }
                     />
                   )}
-                <div className={clsx(styles.versus)}>:</div>
-                {playoff.match?.awayTeam &&
-                  playoff.match.homeTeam &&
-                  playoff.match.awayTeam.goals &&
-                  playoff.match.homeTeam.goals && (
+                {playoff.match?.homeTeam && playoff.match.awayTeam && 
+                <div className={clsx(styles.versus)}>:</div>}
+                {playoff.match?.awayTeam &&(
                     <KnockoutMatchDetails
                       long_name={playoff.match.awayTeam.longName}
                       short_name={playoff.match.awayTeam.shortName}
                       logo={playoff.match.awayTeam.logo}
-                      goals={playoff.match.awayTeam.goals}
-                      match_winner={
-                        playoff.match.awayTeam.goals >
-                        playoff.match.homeTeam.goals
-                      }
+                      goals={playoff.match.awayTeam.goals || ''}
+                      match_winner={awayTeamWinner}
                       // win_by_penalties={
                       //   match.home.penalties && match.away.penalties
                       //     ? match.away.penalties > match.home.penalties

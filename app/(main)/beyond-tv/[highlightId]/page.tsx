@@ -7,6 +7,7 @@ import { Nullable } from "@/lib/definitions";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
 import Text from "@/components/main/Typography/Text";
 import { Metadata } from 'next';
+import { capitalize } from "@/lib/helpers";
 
 export async function generateMetadata({ params }: { params: { highlightId: string } }): Promise<Metadata>  {
   const auth = await isAuthenticated()
@@ -17,16 +18,16 @@ export async function generateMetadata({ params }: { params: { highlightId: stri
     { id: params.highlightId },
     {
       authMode,
-      selectionSet: ["id", "videoId", "description", "tags", "title", 'coverImage'],
+      selectionSet: ["id", "description", "tags", "title", 'coverImage'],
     }
   )
 
   return {
-    title: highlight?.title,
+    title: highlight?.title && capitalize(highlight?.title),
     description: highlight?.title,
     keywords: highlight?.tags as string[],
     openGraph: {
-      title: highlight?.title,
+      title: highlight?.title && capitalize(highlight?.title),
       description: highlight?.title,
       images: [{ url: highlight?.coverImage ?? '' }],
     },

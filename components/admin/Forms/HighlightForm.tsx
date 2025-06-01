@@ -28,6 +28,7 @@ import { Nullable } from "@/lib/definitions";
 import FormContainer from "./FormContainer";
 import useToast from "@/hooks/useToast";
 import UploadImage from "../CustomFileUpload/UploadImage";
+import RequiredLabel from "./RequiredLabel";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -127,6 +128,7 @@ function HighlightForm({
       <form ref={formRef} onSubmit={handleSubmit}>
         <Stack gap="2">
           <Field.Root required mb={"5"}>
+            <FormLabel>Title <RequiredLabel /></FormLabel>
             <Input
               name="title"
               placeholder="Title"
@@ -138,6 +140,7 @@ function HighlightForm({
             />
           </Field.Root>
           <Field.Root required mb={"5"}>
+          <FormLabel>Youtube Video ID <RequiredLabel /></FormLabel>
             <Input
               name="videoId"
               placeholder="Youtube video Id"
@@ -169,7 +172,7 @@ function HighlightForm({
           </Box>
 
           <Field.Root required mb={"5"} border={"transparent"}>
-            <FormLabel>Description</FormLabel>
+            <FormLabel>Description <RequiredLabel /></FormLabel>
             <TextEditor
               content={tempData.description}
               handleOnUpdate={handleHighlightDescription}

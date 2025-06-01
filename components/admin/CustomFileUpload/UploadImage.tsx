@@ -3,6 +3,7 @@ import React from "react";
 import FormLabel from "../Forms/FormLabel";
 import CustomFileUpload from "./CustomFileUpload";
 import { getIcon } from "@/lib/icons";
+import RequiredLabel from "../Forms/RequiredLabel";
 
 function UploadImage({
   image,
@@ -23,7 +24,7 @@ function UploadImage({
 }) {
   return (
     <Field.Root required>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel>{label} <RequiredLabel /></FormLabel>
       {image && (
         <HStack gap={4} position={"relative"}>
           <Image src={image} width={imageSize} height={imageSize} alt={label} />

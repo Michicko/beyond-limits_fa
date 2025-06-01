@@ -1,35 +1,35 @@
 'use client';
 import clsx from 'clsx';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import React, { memo, useState } from 'react'
 import styles from './Filters.module.css';
 
-function Seasons({seasons}: {seasons: string[]}) {
+function Seasons({seasons, currentSeason}: {seasons: string[]; currentSeason?: string}) {
+  const mappedSeasons: string[] = seasons ? Array.from(new Set(seasons)) : [];
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const year = new Date().getUTCFullYear();
-  const containedSeasons = seasons.filter((el) => el.includes(year.toString()));
-  const [selected, setSelected] = useState(containedSeasons[containedSeasons.length - 1] || '');
+  const [selected, setSelected] = useState(() => {
+    const urlSeason = searchParams.get('season');
+    return urlSeason || currentSeason || '';
+  });
 
   const onChange = (e: {target: {value: string}}) => {
     const {value} = e.target;
+    setSelected(value);
     const params = new URLSearchParams(searchParams);
     params.set('season', value);
-    setSelected(value);
     replace(`${pathname}?${params.toString()}`);
   }
-
 
   return (
     <select name="season" id="season" 
       className={clsx(styles.season)} 
-      defaultValue={selected}
+      value={selected}
       onChange={onChange} 
       >
       {
-        seasons.map((season) => {
+        mappedSeasons.map((season) => {
           return (
           <option value={season} key={season}>
             {season}
@@ -41,4 +41,4 @@ function Seasons({seasons}: {seasons: string[]}) {
   )
 }
 
-export default Seasons
+export default memo(Seasons)

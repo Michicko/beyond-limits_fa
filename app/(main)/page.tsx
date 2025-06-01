@@ -34,9 +34,9 @@ export default async function Home() {
                     theme="light"
                   />
                 )}
-                {homepageContent.upcomingMatch && (
+                { homepageContent?.fixtures && homepageContent.fixtures.length && homepageContent.fixtures.slice(0, 1) && (
                   <MatchCard
-                    match={homepageContent.upcomingMatch}
+                    match={homepageContent.fixtures[0]}
                     fixedHeight={true}
                     theme="light"
                   />
@@ -93,7 +93,7 @@ export default async function Home() {
           <PlayerList players={homepageContent.players} />
         </Container>
         }
-    { homepageContent?.fixtures &&homepageContent.fixtures.length > 0 &&     
+    { homepageContent?.fixtures && homepageContent.fixtures.length > 0 &&     
       <Container as="section" size="md">
           <Heading
             level={2}
@@ -107,7 +107,7 @@ export default async function Home() {
           <Grid col="3" gap="sm">
             <>
               {
-                homepageContent.fixtures.slice(0, 3).map((match, i) => {
+                homepageContent.fixtures.slice(1, 4).map((match, i) => {
                   return (
                     <MatchCard
                       match={match}

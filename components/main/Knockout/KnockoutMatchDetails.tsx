@@ -14,8 +14,8 @@ function KnockoutMatchDetails({
   long_name: string;
   short_name: string;
   logo: string;
-  goals: string;
-  match_winner: boolean;
+  goals?: string;
+  match_winner?: boolean;
   // win_by_penalties?: boolean;
 }) {
   return (
@@ -29,7 +29,7 @@ function KnockoutMatchDetails({
         //   : styles["knockout-match__team--loser"]
         match_winner
           ? styles["knockout-match__team--winner"]
-          : !goals && +goals !== 0
+          : !goals || +goals !== 0
           ? styles["knockout-match__team--null"]
           : styles["knockout-match__team--loser"]
       )}
@@ -53,7 +53,7 @@ function KnockoutMatchDetails({
       </div>
       <div className={clsx(styles["knockout-match__score"])}>
         <span className={clsx(styles["knockout-match__number"])}>
-          {goals || +goals === 0 ? goals : "-"}
+          {goals && +goals === 0 ? goals : "-"}
         </span>
       </div>
     </div>

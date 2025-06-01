@@ -40,10 +40,10 @@ function TeamStat({
   return (
     <li className={clsx(styles["competition"])}>
       <div>
-        <Text color="secondary" size="md" weight="semibold" letterCase="normal">
+        <Text color="secondary" size="md" weight="semibold" letterCase="capitalize">
           {typeof position === "number" ? getPosition(position) : position}
         </Text>
-        <Text color="white" size="md" weight="semibold" letterCase="upper">
+        <Text color="white" size="md" weight="semibold" letterCase="capitalize">
           {competition_name}
         </Text>
       </div>

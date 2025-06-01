@@ -60,7 +60,7 @@ export const createArticle = async (formData: FormData) => {
   return await articleCreator({
     modelName: "Article",
     input: base,
-    selectionSet: ["id", "title", "content", "coverImage"],
+    selectionSet: ["id", "title", "content", "description", "coverImage"],
     pathToRevalidate: "/cp/articles",
     preprocess: (input) => ({
       ...input,
@@ -93,7 +93,7 @@ export const updateArticle = async (
     modelName: "Article",
     id,
     input: base,
-    selectionSet: ["id", "title", "content", "coverImage"],
+    selectionSet: ["id", "title", "content","description", "coverImage"],
     pathToRevalidate: "/cp/articles",
     preprocess: (input) => ({
       ...input,
@@ -121,7 +121,7 @@ export async function publishArticle(formData: FormData) {
   const body = formDataToObject<Article>(formData);
 
   const { data, errors } = await cookiesClient.models.Article.update(body, {
-    selectionSet: ["id", "title", "content", "coverImage"],
+    selectionSet: ["id", "title", "content", "description", "coverImage"],
   });
 
   if (errors) {

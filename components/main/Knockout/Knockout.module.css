@@ -44,6 +44,7 @@
   padding-bottom: var(--xxs);
   border-bottom: 1px dashed var(--yellow-300);
   letter-spacing: 1px;
+  text-transform: capitalize;
 }
 
 .knockout-match__code.knockout-match__long {

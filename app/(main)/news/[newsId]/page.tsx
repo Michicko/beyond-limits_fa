@@ -11,7 +11,7 @@ import ArticleCategory from "@/components/Article/ArticleCategory";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Article from "@/components/Article/Article";
-import { formatDate } from "@/lib/helpers";
+import { capitalize, formatDate } from "@/lib/helpers";
 import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: { newsId: string } }): Promise<Metadata>  {
@@ -25,25 +25,22 @@ export async function generateMetadata({ params }: { params: { newsId: string } 
       authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",
-        "articleCategoryId",
-        "category",
         "content",
         "tags",
         "title",
         "coverImage",
-        "status",
-        "createdAt",
+        "description"
       ],
     }
   );
 
   return {
-    title: article?.title,
-    description: article?.title,
+    title: article?.title && capitalize(article?.title),
+    description: article?.description,
     keywords: article?.tags as string[],
     openGraph: {
-      title: article?.title,
-      description: article?.title,
+      title: article?.title && capitalize(article?.title),
+      description: article?.description || '',
       images: [{ url: article?.coverImage ?? '' }],
     },
   };

@@ -11,6 +11,7 @@ import {
   updateArticleCategory,
 } from "@/app/_actions/article-category-actions";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 type IArticleCategory = Pick<
   Schema["ArticleCategory"]["type"],
@@ -65,7 +66,7 @@ function ArticleCategoryForm({
      <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
-          <FormLabel>Category</FormLabel>
+          <FormLabel>Category <RequiredLabel /></FormLabel>
           <Input
             name={"category"}
             type={"text"}

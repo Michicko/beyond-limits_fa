@@ -1,12 +1,10 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory } from "@/lib/factoryFunctions";
-import { formDataToObject, getExpectedSeasonLabel } from "@/lib/helpers";
+import { filterGroupedSeasonsByCurrent, formDataToObject, getExpectedSeasonLabel } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
-import { cookies } from 'next/headers';
-import { months } from "@/lib/placeholder-data";
 
 type Nullable<T> = T | null;
 
@@ -18,7 +16,6 @@ interface ICompetitionSeason {
   id: string;
   logo: string;
   name: string;
-  // season: string;
 }
 
 interface IMatch {
@@ -285,6 +282,7 @@ export async function isLoggedIn() {
   return tokens && tokens.accessToken && tokens.idToken;
 }
 
+
 async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   const { data: competitionSeasons } =
@@ -313,19 +311,9 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.competitionSeason.logo",
       ],
     });
-
-
-   // differentiate between current active competition season in a year
-  // 2024/2025(completed) and 2025/2026(pending)
-  const now = new Date();
-  const currentSeasons = competitionSeasons?.filter((season) => {
-    const startMonth = months.indexOf(season.seasonStartMonth);
-    if (typeof startMonth !== 'number') return false;
   
-    const expectedLabel = getExpectedSeasonLabel(startMonth, now);
-    return season.season === expectedLabel;
-  });
-  return currentSeasons;
+  // Group competitionSeasons by name
+  return filterGroupedSeasonsByCurrent(competitionSeasons)
 }
 
 export async function getCurrentCompetitionSeasonsMatches(
@@ -398,8 +386,6 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     fixtures.find((fixture) => new Date(fixture.date).getTime() > now) || null;
   const lastMatch = results[results.length - 1] || null;
 
-
-
   return {
     upcomingMatch,
     lastMatch,
@@ -442,7 +428,6 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
 }
 
 export async function fetchDashboardData() {
-  const year = new Date().getFullYear();
   try {
     const competitionSeasons = await getCurrentCompetitionSeasons("auth");
 
@@ -469,6 +454,7 @@ export async function fetchDashboardData() {
     let allRounds: any[] = [];
     // initialize matches
     let matches: any[] = [];
+
     for (const season of competitionSeasons) {
       // playoff rounds for competition season
       if (season.cupId) {
@@ -564,10 +550,47 @@ export async function fetchDashboardData() {
 
 export async function fetchHomepageData() {
   const auth = await isLoggedIn();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const startOfMonth = new Date(year, month, 1).toISOString().split('T')[0];
+  const startOfNextMonth = new Date(year, month + 1, 1).toISOString().split('T')[0];
+
   try {
-    const { upcomingMatch, lastMatch, fixtures } = await getPrevNextMatch(
+    const {lastMatch } = await getPrevNextMatch(
       auth ? "auth" : "guest"
     );
+
+    const { data: fixtures } = await cookiesClient.models.Match.list({
+      limit: 5,
+      authMode: auth ? "userPool" : "iam",
+      filter: {
+        status: {
+          eq: 'UPCOMING'
+        },
+        date: {
+          ge: startOfMonth,  
+          lt: startOfNextMonth
+        }
+      },
+      selectionSet: [
+         "id",
+          "status",
+          "competitionSeason.logo",
+          "competitionSeason.name",
+          "date",
+          "time",
+          "homeTeam.*",
+          "awayTeam.*",
+          "createdAt",
+          "review",
+      ],
+    });
+
+    const sortedFixtures = Array.isArray(fixtures)
+  ? fixtures.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  : [];
+
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
       limit: 4,
@@ -625,12 +648,11 @@ export async function fetchHomepageData() {
     });
 
     const homepageContent = {
-      upcomingMatch,
       lastMatch,
       nnlStanding,
       articles,
       players,
-      fixtures,
+      fixtures: sortedFixtures,
       highlights,
     };
 

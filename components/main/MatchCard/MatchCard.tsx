@@ -26,7 +26,6 @@ interface IMatch {
   competitionSeason?: ICompetitionSeason;
   date: string;
   time: string;
-  venue: string;
   status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
   result?: "WIN" | "DRAW" | "LOSE" | null;
   homeTeam: {
@@ -43,7 +42,6 @@ interface IMatch {
     longName: string;
     goals: Nullable<string>;
   } | null;
-  scorers: any;
   review: string | number | boolean | object | any[] | null;
 }
 

@@ -50,6 +50,20 @@ export const checkUniqueField = async (
   return existing;
 };
 
+export const checkUniqueFields = async (
+  modelName: keyof typeof cookiesClient.models,
+  fields: Record<string, string>
+) => {
+  const model = cookiesClient.models[modelName] as any;
+
+  const filter = Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => [key, { eq: value }])
+  );
+
+  const { data: existing } = await model.list({ filter });
+  return existing;
+};
+
 export function getOneEntityFactory<TOutput>() {
   return async ({
     modelName,

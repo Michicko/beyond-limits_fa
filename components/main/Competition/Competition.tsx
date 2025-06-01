@@ -7,8 +7,7 @@ import { getFirstLetter } from '@/lib/helpers';
 
 interface ICompetition {
   logo: string;
-  season?: string;
-  name: string;
+  longName: string;
   id: string;
 }
 
@@ -21,17 +20,17 @@ function Competition({competition}: {competition: ICompetition}) {
   >
     <div className={clsx(styles["competition__logo-box"])}>
       <ImageComp
-        alt={competition.name}
+        alt={competition.longName}
         image={competition.logo}
         placeholder={competition.logo}
         priority={false}
       />
     </div>
     <p className={clsx(styles.competition__name, styles.short)}>
-      {getFirstLetter(competition.name)}
+      {getFirstLetter(competition.longName)}
     </p>
     <p className={clsx(styles.competition__name, styles.long)}>
-      {competition.name}
+      {competition.longName}
     </p>
     <div className={clsx(styles["competition-icon__box"])}>
       <p>View</p>

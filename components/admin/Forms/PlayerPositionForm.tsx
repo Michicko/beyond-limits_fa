@@ -23,6 +23,7 @@ import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
 import { Schema } from "@/amplify/data/resource";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 type Nullable<T> = T | null;
 type IAttributes = string[] | Nullable<string>[];
@@ -94,7 +95,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
         <Stack gap={5} mb={10}>
           <Skeleton asChild loading={false}>
             <Field.Root required>
-              <FormLabel>Short name</FormLabel>
+              <FormLabel>Short name <RequiredLabel /></FormLabel>
               <Input
                 name={"shortName"}
                 type={"text"}
@@ -109,7 +110,7 @@ function PlayerPositionForm({ position }: { position: IPosition | null }) {
             </Field.Root>
           </Skeleton>
           <Field.Root required>
-            <FormLabel>Long name</FormLabel>
+            <FormLabel>Long name <RequiredLabel /></FormLabel>
             <Input
               name={"longName"}
               type={"text"}

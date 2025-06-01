@@ -26,6 +26,7 @@ type Honor = {
   competitionSeasons: {
     isWinner: Nullable<boolean>
     season: string;
+    status: "PENDING" | "COMPLETED" | null
   }[];
 };
 
@@ -292,7 +293,12 @@ export const getHonorsStats = (honors: Honor[]) => {
   return honors.reduce(
     (acc, honor) => {
       honor.competitionSeasons.forEach((seasonObj) => {
-        if (seasonObj.isWinner) {
+        if (
+          seasonObj.isWinner &&
+          seasonObj.status === "COMPLETED" &&
+          seasonObj.season &&
+          seasonObj.season.trim() !== ''
+        ) {
           acc.numbersWon += 1;
           acc.seasonsWon.push(seasonObj.season.split('/')[1]);
         }
@@ -305,6 +311,7 @@ export const getHonorsStats = (honors: Honor[]) => {
     }
   );
 };
+
 
 export const appendMonthToLink = (link: string) => {
   const date = new Date();
@@ -356,4 +363,63 @@ export const getExpectedSeasonLabel = (seasonStartMonth: number, date: Date = ne
   } else {
     return `${year - 1}/${year}`;
   }
+}
+
+export const findCurrentSeason = (
+  competitionSeasons: any[],
+  referenceDate: Date = new Date(),
+  selectedSeasonLabel?: string, 
+) => {
+  if (!competitionSeasons) return undefined;
+
+  if (selectedSeasonLabel) {
+    return competitionSeasons.find(
+      (season) => season.season === selectedSeasonLabel
+    );
+  }
+
+   // If only one season is available, return it regardless of its date
+   if (competitionSeasons.length === 1) {
+    return competitionSeasons[0];
+  }
+
+  return competitionSeasons?.find((season) => {
+    const startMonthIndex = months.indexOf(season.seasonStartMonth); // assumes seasonStartMonth is a string
+    if (startMonthIndex === -1) return false;
+
+    const expectedLabel = getExpectedSeasonLabel(startMonthIndex, referenceDate);
+    return season.season === expectedLabel;
+  });
+};
+
+
+export function filterGroupedSeasonsByCurrent(competitionSeasons: any[]): any[] {
+  if (!competitionSeasons || competitionSeasons.length === 0) return [];
+
+  const groupedByName: Record<string, any[]> = {};
+
+  for (const season of competitionSeasons) {
+    if (!groupedByName[season.name]) {
+      groupedByName[season.name] = [];
+    }
+    groupedByName[season.name].push(season);
+  }
+
+  const filteredSeasons = Object.values(groupedByName).flatMap((group) => {
+    if (group.length === 1) return group;
+
+    const current = findCurrentSeason(group);
+    return current ? [current] : []; // fallback could return group if needed
+  });
+
+  return filteredSeasons;
+}
+
+
+export function capitalize(str: string) {
+  if (!str) return '';
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }

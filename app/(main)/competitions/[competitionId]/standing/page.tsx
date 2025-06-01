@@ -6,26 +6,60 @@ import clsx from "clsx";
 import styles from "../../Competitions.module.css";
 import Knockout from "@/components/main/Knockout/Knockout";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
-import { getFirstLetter } from "@/lib/helpers";
+import { findCurrentSeason, getFirstLetter, capitalize } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 
-export const metadata = {
-  title: 'Standing',
-  description: "Find the current standing for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
-};
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: { competitionId: string };
+  searchParams?: { season?: string };
+}) {
+  const auth = await isAuthenticated();
+  const { data: competitionSeasons } = await cookiesClient.models.CompetitionSeason.list({
+    filter: {
+      competitionId: {
+        eq: params.competitionId,
+      },
+    },
+    authMode: auth ? "userPool" : "iam",
+    selectionSet: ['name', "season", "seasonStartMonth"],
+  });
+
+  const currentSeason = competitionSeasons &&
+    findCurrentSeason(competitionSeasons, new Date(), searchParams?.season);
+
+  const seasonLabel = currentSeason?.season ?? "Season";
+  const title = `${capitalize(currentSeason?.name)} ${seasonLabel}`;
+  const description = `Find the current standing for Beyond Limits FA. First team in the ${seasonLabel} on the official website, Beyondlimitsfa.com.`;
+
+  return {
+    title,
+    description,
+  };
+}
+
 
 async function CompetitionStanding({
   params,
+  searchParams,
 }: {
   params: { competitionId: string };
+  searchParams: Promise<{
+    season: string;
+  }>;
 }) {
     const auth = await isAuthenticated()
-  const { data: competition, errors } =
-    await cookiesClient.models.CompetitionSeason.get(
+    const searchParam = await searchParams;
+  const { data: competitionSeasons, errors } =
+    await cookiesClient.models.CompetitionSeason.list(
       {
-        id: params.competitionId,
-      },
-      {
+        filter: {
+          competitionId: {
+            eq: params.competitionId,
+          }
+        },
         authMode: auth ? "userPool" : "iam",
         selectionSet: [
           "id",
@@ -37,20 +71,23 @@ async function CompetitionStanding({
           "league.standings.*",
           "cup.playOffs.*",
           "matches.*",
+          "season",
+          "seasonStartMonth",
         ],
-      }
+      },
     );
 
+  const currentSeason = competitionSeasons && findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
   let standing;
   let playoffs;
-  let leagueStatus;
 
-  if (competition && competition.cupId) {
-    playoffs = competition.cup.playOffs;
+  if (currentSeason && currentSeason.cupId) {
+    playoffs = currentSeason.cup.playOffs;
+   
     playoffs = playoffs
-      .map((el) => {
-        const match = competition.matches.find(
-          (match) => el.matchId === match.id
+      .map((el: any) => {
+        const match = currentSeason.matches.find(
+          (match: any) => el.matchId === match.id
         );
         if (!match) return;
         return {
@@ -62,45 +99,47 @@ async function CompetitionStanding({
           },
         };
       })
-      .filter((el) => el !== undefined);
+      .filter((el: any) => el !== undefined);
   }
 
-  if (competition && competition.leagueId) {
-    standing = competition.league.standings;
+  if (currentSeason && currentSeason.leagueId) {
+    standing = currentSeason.league.standings;
   }
 
   return (
     <CompetitionsLayout
-      pageTitle={competition?.name}
+      pageTitle={currentSeason?.name}
       competitionId={params.competitionId}
+      seasons={competitionSeasons.map((el) => el.season) ?? []}
+      currentSeason={currentSeason?.season}
     >
       <div className={clsx(styles["competition-box"])}>
-        {!competition && (
+        {!currentSeason && (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Competition Season available at the moment.
           </Text>
         )}
-        {competition &&
-          competition.type === "MIXED" &&
+        {currentSeason &&
+          currentSeason.type === "MIXED" &&
           playoffs &&
           standing && (
             <>
               <MixedCup
-                name={getFirstLetter(competition.name)}
-                league_status={competition.league.status || ""}
+                name={getFirstLetter(currentSeason.name)}
+                league_status={currentSeason.league.status || ""}
                 playoffs={playoffs}
                 league_standing={standing}
               />
             </>
           )}
-        {competition && competition.type === "CUP" && playoffs && (
+        {currentSeason && currentSeason.type === "CUP" && playoffs && (
           <Knockout playOffs={playoffs} />
         )}
-        {competition && competition.type === "LEAGUE" && (
+        {currentSeason && currentSeason.type === "LEAGUE" && (
           <>
             {standing && standing.length > 0 && (
               <Standing
-                name={getFirstLetter(competition.name)}
+                name={getFirstLetter(currentSeason.name)}
                 standings={standing}
                 showFull={true}
                 showLongName={true}

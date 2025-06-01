@@ -7,6 +7,8 @@
 .header-box img {
   height: var(--xl);
   width: var(--xl);
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .header-box svg {
@@ -18,6 +20,7 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 
 .header-box p {
   font-size: var(--sm);
@@ -417,6 +420,12 @@
   .team-form p {
     font-size: var(--md);
   }
+
+  .header-box img {
+    height: 1.7rem;
+    width: 1.7rem;
+  }
+  
 
   .logo.xl,
   .logo.xxl {

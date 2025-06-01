@@ -25,6 +25,7 @@ import { getButtonStatus } from "@/lib/helpers";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import UploadImage from "../CustomFileUpload/UploadImage";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 type IArticle = Pick<
   Schema["Article"]["type"],
@@ -32,6 +33,7 @@ type IArticle = Pick<
   | "title"
   | "coverImage"
   | "content"
+  | "description"
   | "status"
   | "category"
   | "articleCategoryId"
@@ -72,6 +74,7 @@ function ArticleForm({
     title: article?.title || "",
     coverImage: article?.coverImage || "",
     category: article?.category || '',
+    description: article?.description || '',
     content: article
       ? JSON.parse(article.content as string)
       : ({} as JSONContent),
@@ -91,6 +94,7 @@ function ArticleForm({
       title: "",
       coverImage: "",
       category: '',
+      description: '',
       content: {} as JSONContent, // force cast to ensure shape
       status: "UNPUBLISHED",
       articleCategoryId: "",
@@ -268,6 +272,7 @@ function ArticleForm({
         </HStack>
 
         <Field.Root required mb={"5"}>
+        <FormLabel>Title <RequiredLabel /></FormLabel>
           <Input
             placeholder="Title"
             p={"0 10px"}
@@ -278,7 +283,7 @@ function ArticleForm({
           />
         </Field.Root>
         <Field.Root required mb={"5"}>
-          <FormLabel>Category</FormLabel>
+          <FormLabel>Category <RequiredLabel /></FormLabel>
           <CustomSelect
             options={articleCategories.map((el) => {
               return {
@@ -293,6 +298,17 @@ function ArticleForm({
               setTempData({ ...tempData, articleCategoryId: e.target.value })
             }
           />
+        </Field.Root>
+        <Field.Root required mb={"5"}>
+          <FormLabel>Description <RequiredLabel /></FormLabel>
+            <Input
+              placeholder="Description"
+              p={"0 10px"}
+              value={tempData.description}
+              onChange={(e) =>
+                setTempData({ ...tempData, description: e.target.value })
+              }
+            />
         </Field.Root>
         <Field.Root mb={5}>
           <Field.Label>Match</Field.Label>

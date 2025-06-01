@@ -290,6 +290,7 @@ const schema = a.schema({
       category: a.string().required(),
       title: a.string().required(),
       coverImage: a.string(),
+      description: a.string(),
       content: a.json(),
       matchId: a.string(),
       matchHomeTeamLogo: a.string(),

@@ -3,6 +3,7 @@ import { Schema } from "@/amplify/data/resource";
 import { Nullable } from "@/lib/definitions";
 import {
   checkUniqueField,
+  checkUniqueFields,
   createEntityFactory,
   getEntityFactory,
   getOneEntityFactory,
@@ -117,8 +118,10 @@ export const createCompetitionSeason = async (formData: FormData) => {
     validate: async (base) => {
       if (
         (
-          await checkUniqueField("CompetitionSeason",
-            'season', base.season.toLowerCase())
+          await checkUniqueFields("CompetitionSeason", {
+            season: base.season,
+            name: base.name.toLowerCase()
+          })
         ).length > 0
       ) {
         return {

@@ -26,18 +26,9 @@ async function Honours() {
       'trophyImage', 
       'trophyArticleId', 
       "competitionSeasons.isWinner", 
+      "competitionSeasons.status",
       "competitionSeasons.season"]
   });
-
-
-  let stats: {
-    numbersWon: number;
-    seasonsWon: string[];
-  };
-
-  if (honors) {
-    stats = getHonorsStats(honors);
-  }
 
   return (
     <>
@@ -73,6 +64,7 @@ async function Honours() {
             <div className={clsx(styles["honors"])}>
               {honors &&
                 honors.map((honor) => {
+                  const stats = getHonorsStats([honor]); 
                   return (
                     <div key={honor.longName} className={clsx(styles.honor)}>
                       <div className={clsx(styles["honor-img__box"])}>

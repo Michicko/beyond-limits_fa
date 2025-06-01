@@ -19,6 +19,7 @@ import useToast from "@/hooks/useToast";
 import { createTeam, updateTeam } from "@/app/_actions/team-actions";
 import { getIcon } from "@/lib/icons";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 type ITeam = Pick<
   Schema["Team"]["type"],
@@ -77,7 +78,7 @@ function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLim
      <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
-          <FormLabel>short name</FormLabel>
+          <FormLabel>short name <RequiredLabel /></FormLabel>
           <Input
             name={"shortName"}
             type={"text"}
@@ -99,7 +100,7 @@ function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLim
           </Field.HelperText>
         </Field.Root>
         <Field.Root required>
-          <FormLabel>long name</FormLabel>
+          <FormLabel>long name <RequiredLabel /></FormLabel>
           <Input
             name={"longName"}
             type={"text"}
@@ -141,7 +142,7 @@ function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLim
           </Field.HelperText>
         </Field.Root>
         <Field.Root required>
-          <FormLabel>Team Logo</FormLabel>
+          <FormLabel>Team Logo <RequiredLabel /></FormLabel>
           {logo && (
             <HStack gap={4} position={"relative"}>
               <Image src={logo} width="75" height="75" alt={shortName} />

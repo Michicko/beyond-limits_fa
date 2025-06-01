@@ -3,9 +3,9 @@ import Flex from "@/components/main/Container/Flex";
 import Calendar from "@/components/main/Calendar/Calendar";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
-import { getMatches } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
+import { months } from "@/lib/placeholder-data";
 
 export const metadata = {
   title: 'Fixtures & Results',
@@ -14,34 +14,46 @@ export const metadata = {
 
 async function Fixtures(props: {
   searchParams: Promise<{
-    season?: string;
     month: string;
-    page?: string;
   }>;
 }) {
   const date = new Date();
   const year = date.getFullYear();
   const searchParams = await props.searchParams;
+  const monthParam = months.indexOf(searchParams.month);
+  const startOfMonth = new Date(year, monthParam, 1).toISOString().split('T')[0];
+  const startOfNextMonth = new Date(year, monthParam + 1, 1).toISOString().split('T')[0];
   const auth = await isAuthenticated()
 
-  const { data: competitionSeasons, errors } =
-    await cookiesClient.models.CompetitionSeason.list({
-      filter: {
-        season: {
-          contains: `${year}`,
+    const { data: fixtures, errors } = await cookiesClient.models.Match.list({
+        authMode: auth ? "userPool" : "iam",
+        filter: {
+          status: {
+            eq: 'UPCOMING'
+          },
+          date: {
+            ge: startOfMonth,  
+            lt: startOfNextMonth
+          }
         },
-        status: {
-          eq: "PENDING",
-        },
-      },
-      authMode: auth ? "userPool" : "iam",
-      selectionSet: ["id", "matches.*", "matches.competitionSeason.*"],
-    });
+        selectionSet: [
+           "id",
+            "status",
+            "competitionSeason.logo",
+            "competitionSeason.name",
+            "date",
+            "time",
+            "homeTeam.*",
+            "awayTeam.*",
+            "createdAt",
+            "review",
+        ],
+      });
 
-  const fixtures =
-    competitionSeasons[0] &&
-    getMatches(competitionSeasons[0].matches, "UPCOMING", searchParams.month);
-
+      const sortedFixtures = Array.isArray(fixtures)
+      ? fixtures.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      : [];
+    
   return (
     <CompetitionsLayout pageTitle="Fixtures">
       <>
@@ -64,7 +76,7 @@ async function Fixtures(props: {
             gap="sm"
             my="lg"
           >
-            {fixtures.map((match) => {
+            {sortedFixtures.map((match) => {
               return (
                 <MatchCard
                   match={match}

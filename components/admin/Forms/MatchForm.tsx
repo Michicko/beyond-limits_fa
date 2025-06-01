@@ -33,6 +33,7 @@ import useToast from "@/hooks/useToast";
 import { Schema } from "@/amplify/data/resource";
 import MatchTeamForm from "./MatchTeamForm";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 interface ICompetitionSeason {
   id: string;
@@ -386,7 +387,7 @@ function MatchForm({
       >
         {data.homeTeam && data.awayTeam && (
           <Box>
-            <FormLabel as="Text">Teams</FormLabel>
+            <FormLabel as="Text">Teams <RequiredLabel /></FormLabel>
             <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
               <Field.Root required>
                 <CustomSelect
@@ -457,8 +458,8 @@ function MatchForm({
         css={stackStyles}
       >
         <GridItem>
-          <Field.Root>
-            <FormLabel>Match Day</FormLabel>
+          <Field.Root required>
+            <FormLabel>Match Day <RequiredLabel /></FormLabel>
             <Input
               name="date"
               p={"0 10px"}
@@ -472,8 +473,8 @@ function MatchForm({
           </Field.Root>
         </GridItem>
         <GridItem>
-          <Field.Root>
-            <FormLabel>Match Time</FormLabel>
+          <Field.Root required>
+            <FormLabel>Match Time <RequiredLabel /></FormLabel>
             <Input
               name="time"
               p={"0 10px"}
@@ -487,8 +488,8 @@ function MatchForm({
           </Field.Root>
         </GridItem>
         <GridItem>
-          <Field.Root>
-            <FormLabel>Venue</FormLabel>
+          <Field.Root required>
+            <FormLabel>Venue <RequiredLabel /></FormLabel>
             <Input
               name="venue"
               p={"0 10px"}
@@ -502,8 +503,8 @@ function MatchForm({
           </Field.Root>
         </GridItem>
         <GridItem>
-          <Field.Root>
-            <FormLabel>Competition</FormLabel>
+          <Field.Root required>
+            <FormLabel>Competition <RequiredLabel /></FormLabel>
             {competitions && (
               <CustomSelect
                 name="competition"
@@ -542,8 +543,8 @@ function MatchForm({
           </Field.Root>
         </GridItem>
         <GridItem>
-          <Field.Root>
-            <FormLabel>Competition Season</FormLabel>
+          <Field.Root required>
+            <FormLabel>Competition Season <RequiredLabel /></FormLabel>
             {competition && competitionSeasonOptions && (
               <CustomSelect
                 name="competitionSeasonId"

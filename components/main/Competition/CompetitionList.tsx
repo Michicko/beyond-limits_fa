@@ -5,8 +5,7 @@ import styles from './Competition.module.css';
 
 interface ICompetition {
   logo: string;
-  season?: string;
-  name: string;
+  longName: string;
   id: string;
 }
 

@@ -9,15 +9,20 @@ import Tab from "../../Tab/Tab";
 import LinkTab from "../../Tab/LinkTab";
 import styles from "../Layout.module.css";
 import { appendMonthToLink } from "@/lib/helpers";
+import Seasons from "../../Filters/Seasons";
 
 function CompetitionsLayout({
   children,
   pageTitle,
   competitionId,
+  seasons = [],
+  currentSeason
 }: {
   children: React.ReactElement;
   competitionId?: string;
   pageTitle?: string;
+  seasons?: string[];
+  currentSeason?: string;
 }) {
 
   const tabLinks = competitionId
@@ -69,6 +74,10 @@ function CompetitionsLayout({
             >
               {pageTitle}
             </Heading>
+            {seasons && seasons.length > 0 && 
+            <Suspense fallback={null}>
+              <Seasons seasons={seasons} currentSeason={currentSeason} />
+            </Suspense>}
           </>
         </LayoutHeader>
       </Header>

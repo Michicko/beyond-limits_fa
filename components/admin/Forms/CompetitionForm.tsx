@@ -1,5 +1,5 @@
 "use client";
-import { Field, Input, Stack } from "@chakra-ui/react";
+import { Box, Field, Input, Stack } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import FormLabel from "./FormLabel";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
@@ -15,6 +15,7 @@ import { getButtonStatus, objectToFormData } from "@/lib/helpers";
 import UploadImage from "../CustomFileUpload/UploadImage";
 import SelectedArticle from "@/components/ArticleFilterModal/SelectedArticle";
 import FormContainer from "./FormContainer";
+import RequiredLabel from "./RequiredLabel";
 
 type ICompetition = Pick<
   Schema["Competition"]["type"],
@@ -114,7 +115,7 @@ function CompetitionForm({
      <form onSubmit={handleSubmit} ref={formRef}>
       <Stack gap="4">
         <Field.Root required>
-          <FormLabel>Competition Type</FormLabel>
+          <FormLabel>Competition Type <RequiredLabel /></FormLabel>
           <CustomSelect
             options={competitionTypes.map((el) => {
               return {
@@ -130,7 +131,7 @@ function CompetitionForm({
           />
         </Field.Root>
         <Field.Root required>
-          <FormLabel>short name</FormLabel>
+          <FormLabel>short name <RequiredLabel /></FormLabel>
           <Input
             name={"shortName"}
             type={"text"}
@@ -152,7 +153,7 @@ function CompetitionForm({
           </Field.HelperText>
         </Field.Root>
         <Field.Root required>
-          <FormLabel>long name</FormLabel>
+          <FormLabel>long name <RequiredLabel /></FormLabel>
           <Input
             name={"longName"}
             type={"text"}

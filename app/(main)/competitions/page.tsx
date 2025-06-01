@@ -17,23 +17,30 @@ async function Competitions() {
   const auth = await isAuthenticated()
 
   const { data: competitions, errors } =
-    await cookiesClient.models.CompetitionSeason.list({
-      filter: {
-        season: {
-          contains: `${year}`,
-        },
-      },
+    await cookiesClient.models.Competition.list({
       authMode: auth ? "userPool" : "iam",
-      selectionSet: ["id", "logo", "name", "season", "seasonStartMonth"],
+      selectionSet: ["id", "logo", "longName"],
     });
 
-  const currentSeasons = competitions?.filter((season) => {
-    const startMonth = months.indexOf(season.seasonStartMonth);
-    if (typeof startMonth !== 'number') return false;
+    // const { data: competitions, errors } =
+    // await cookiesClient.models.Competition.list({
+    //   authMode: auth ? "userPool" : "iam",
+    //   selectionSet: ["id", "logo", "name", "season", "seasonStartMonth"],
+    // });
+
+  // const currentYearCompetitions = competitions?.filter((el) => el.season.includes(`${year}`));
+
+  // const currentSeasons = currentYearCompetitions?.filter((season) => {
+  //   const startMonth = months.indexOf(season.seasonStartMonth);
+  //   if (typeof startMonth !== 'number') return false;
   
-    const expectedLabel = getExpectedSeasonLabel(startMonth, date);
-    return season.season === expectedLabel;
-  });
+  //   const expectedLabel = getExpectedSeasonLabel(startMonth, date);
+  //   return season.season === expectedLabel;
+  // });
+
+  // const seasons: string[] = competitions
+  // ? Array.from(new Set(competitions.map((el) => el.season)))
+  // : [];
 
   return (
     <CompetitionsLayout pageTitle="Competitions">
@@ -44,7 +51,7 @@ async function Competitions() {
           {errors[0].message}
         </Text>)
       }
-       {currentSeasons && <CompetitionList competitions={currentSeasons} />}
+       {competitions && <CompetitionList competitions={competitions} />}
       </>
     </CompetitionsLayout>
   );
