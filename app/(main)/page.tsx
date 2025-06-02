@@ -23,91 +23,94 @@ export default async function Home() {
     <>
       <Slider />
       <main className="main">
-        {homepageContent && <Container as="section" size="lg">
-          <div className={clsx("matchcards")}>
-            <Grid col="2fr" gap="md">
-              <>
-                {homepageContent.lastMatch && (
-                  <MatchCard
-                    match={homepageContent?.lastMatch}
-                    fixedHeight={true}
-                    theme="light"
+        {homepageContent && (
+          <Container as="section" size="lg">
+            <div className={clsx("matchcards")}>
+              <Grid col="2fr" gap="md">
+                <>
+                  {homepageContent.lastMatch && (
+                    <MatchCard
+                      match={homepageContent?.lastMatch}
+                      fixedHeight={true}
+                      theme="light"
+                    />
+                  )}
+                  {homepageContent?.fixtures &&
+                    homepageContent.fixtures.length > 0 && (
+                      <MatchCard
+                        match={homepageContent.fixtures[0]}
+                        fixedHeight={true}
+                        theme="light"
+                      />
+                    )}
+                </>
+              </Grid>
+              {homepageContent?.nnlStanding &&
+                homepageContent.nnlStanding.length > 0 && (
+                  <Standing
+                    name={"NNL"}
+                    showFull={false}
+                    standings={homepageContent.nnlStanding}
+                    showLongName={false}
                   />
                 )}
-                { homepageContent?.fixtures && homepageContent.fixtures.length && homepageContent.fixtures.slice(0, 1) && (
-                  <MatchCard
-                    match={homepageContent.fixtures[0]}
-                    fixedHeight={true}
-                    theme="light"
-                  />
-                )}
-              </>
-            </Grid>
-            {homepageContent?.nnlStanding && homepageContent.nnlStanding.length > 0 && (
-              <Standing
-                name={"NNL"}
-                showFull={false}
-                standings={homepageContent.nnlStanding}
-                showLongName={false}
+            </div>
+          </Container>
+        )}
+        {homepageContent?.articles && homepageContent.articles.length > 0 && (
+          <Container as="section" size="lg">
+            <Flex
+              align="center"
+              justify="between"
+              wrap={true}
+              gap="xxs"
+              mb={"sm"}
+            >
+              <Heading level={2} type="section" letterCase="upper">
+                Latest News
+              </Heading>
+              <CustomLink
+                link={{ name: "View more news", href: "/news?page=1" }}
+                type="section"
               />
-            )}
-          </div>
-        </Container>}
-       {homepageContent?.articles && homepageContent.articles.length > 0 && 
-       <Container as="section" size="lg">
-          <Flex
-            align="center"
-            justify="between"
-            wrap={true}
-            gap="xxs"
-            mb={"sm"}
-          >
-            <Heading level={2} type="section" letterCase="upper">
-              Latest News
-            </Heading>
-            <CustomLink
-              link={{ name: "View more news", href: "/news?page=1" }}
+            </Flex>
+            <ArticleList articles={homepageContent.articles.slice(0, 4)} />
+          </Container>
+        )}
+        {homepageContent?.players && homepageContent.players.length > 0 && (
+          <Container as="section" size="lg">
+            <Flex
+              align="center"
+              justify="between"
+              wrap={true}
+              gap="xxs"
+              mb={"sm"}
+            >
+              <Heading level={2} type="section" letterCase="upper">
+                Our Players
+              </Heading>
+              <CustomLink
+                link={{ name: "View More Players", href: "/players/under_19" }}
+                type="section"
+              />
+            </Flex>
+            <PlayerList players={homepageContent.players} />
+          </Container>
+        )}
+        {homepageContent?.fixtures && homepageContent.fixtures.length > 0 && (
+          <Container as="section" size="md">
+            <Heading
+              level={2}
               type="section"
-            />
-          </Flex>
-          <ArticleList articles={homepageContent.articles.slice(0, 4)} />
-        </Container>
-        }
-       {homepageContent?.players && homepageContent.players.length > 0 && 
-       <Container as="section" size="lg">
-          <Flex
-            align="center"
-            justify="between"
-            wrap={true}
-            gap="xxs"
-            mb={"sm"}
-          >
-            <Heading level={2} type="section" letterCase="upper">
-              Our Players
+              letterCase="upper"
+              mb="xxl"
+              align={"center"}
+            >
+              Upcoming matches
             </Heading>
-            <CustomLink
-              link={{ name: "View More Players", href: "/players/under_19" }}
-              type="section"
-            />
-          </Flex>
-          <PlayerList players={homepageContent.players} />
-        </Container>
-        }
-    { homepageContent?.fixtures && homepageContent.fixtures.length > 0 &&     
-      <Container as="section" size="md">
-          <Heading
-            level={2}
-            type="section"
-            letterCase="upper"
-            mb="xxl"
-            align={"center"}
-          >
-            Upcoming matches
-          </Heading>
-          <Grid col="3" gap="sm">
-            <>
-              {
-                homepageContent.fixtures.slice(1, 4).map((match, i) => {
+            <Grid col="3" gap="sm">
+              <>
+                {homepageContent.fixtures.slice(1, 4).map((match, i) => {
                   return (
                     <MatchCard
                       match={match}
@@ -116,18 +119,19 @@ export default async function Home() {
                     />
                   );
                 })}
-            </>
-          </Grid>
-          <Flex justify="center" align="center" my={"iv"}>
-            <Button
-              type="secondary"
-              isLink={true}
-              size={"md"}
-              text={"View more matches"}
-              url={appendMonthToLink("/fixtures")}
-            />
-          </Flex>
-        </Container>}
+              </>
+            </Grid>
+            <Flex justify="center" align="center" my={"iv"}>
+              <Button
+                type="secondary"
+                isLink={true}
+                size={"md"}
+                text={"View more matches"}
+                url={appendMonthToLink("/fixtures")}
+              />
+            </Flex>
+          </Container>
+        )}
         <Container as="section" size="md">
           <Flex justify="center" align="center" my={"iv"}>
             <Text
@@ -146,11 +150,13 @@ export default async function Home() {
             </Text>
           </Flex>
         </Container>
-       {homepageContent && <Container as="section" size="md">
-          {homepageContent?.highlights && (
-            <VideoCards videos={homepageContent.highlights} />
-          )}
-        </Container>}
+        {homepageContent && (
+          <Container as="section" size="md">
+            {homepageContent?.highlights && (
+              <VideoCards videos={homepageContent.highlights} />
+            )}
+          </Container>
+        )}
       </main>
     </>
   );

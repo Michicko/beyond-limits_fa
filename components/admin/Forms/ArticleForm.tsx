@@ -1,13 +1,6 @@
 "use client";
 import { getIcon } from "@/lib/icons";
-import {
-  Box,
-  Button,
-  Field,
-  HStack,
-  Input,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Field, HStack, Input, Text } from "@chakra-ui/react";
 import React, { useRef, useState, useTransition } from "react";
 import { JSONContent } from "@tiptap/react";
 import TextEditor from "@/components/TextEditor/TextEditor";
@@ -73,8 +66,8 @@ function ArticleForm({
   const [tempData, setTempData] = useState({
     title: article?.title || "",
     coverImage: article?.coverImage || "",
-    category: article?.category || '',
-    description: article?.description || '',
+    category: article?.category || "",
+    description: article?.description || "",
     content: article
       ? JSON.parse(article.content as string)
       : ({} as JSONContent),
@@ -82,7 +75,9 @@ function ArticleForm({
     articleCategoryId: article?.articleCategoryId || "",
   });
 
-  const articleCategory = articleCategories.find((el) => el.id === tempData.articleCategoryId);
+  const articleCategory = articleCategories.find(
+    (el) => el.id === tempData.articleCategoryId
+  );
 
   const handleArticleContent = (json: JSONContent) => {
     setTempData({ ...tempData, content: json });
@@ -93,8 +88,8 @@ function ArticleForm({
     setTempData({
       title: "",
       coverImage: "",
-      category: '',
-      description: '',
+      category: "",
+      description: "",
       content: {} as JSONContent, // force cast to ensure shape
       status: "UNPUBLISHED",
       articleCategoryId: "",
@@ -118,12 +113,12 @@ function ArticleForm({
     formData.delete("content");
     formData.delete("matchId");
     formData.append("content", JSON.stringify(tempData.content));
-    formData.delete('category');
+    formData.delete("category");
 
-    if(articleCategory){
-      formData.append('category', articleCategory.category.toLowerCase());
+    if (articleCategory) {
+      formData.append("category", articleCategory.category.toLowerCase());
     }
-    
+
     if (matchId && match && match.homeTeam && match.awayTeam) {
       formData.append("matchId", matchId);
       formData.append("matchHomeTeamLogo", match.homeTeam.logo);
@@ -181,7 +176,7 @@ function ArticleForm({
           success,
           err,
           loading,
-          setIsTrashing,
+          setIsTrashing
         );
       }
     }
@@ -213,7 +208,7 @@ function ArticleForm({
         success,
         err,
         loading,
-        setIsPublishing,
+        setIsPublishing
       );
     }
   };
@@ -252,7 +247,7 @@ function ArticleForm({
               await publishArticleFn();
             }}
           >
-            Publish
+            {article?.status === "PUBLISHED" ? "Published" : "Publish"}
           </Button>
           <Button
             size={"sm"}
@@ -272,7 +267,9 @@ function ArticleForm({
         </HStack>
 
         <Field.Root required mb={"5"}>
-        <FormLabel>Title <RequiredLabel /></FormLabel>
+          <FormLabel>
+            Title <RequiredLabel />
+          </FormLabel>
           <Input
             placeholder="Title"
             p={"0 10px"}
@@ -283,7 +280,9 @@ function ArticleForm({
           />
         </Field.Root>
         <Field.Root required mb={"5"}>
-          <FormLabel>Category <RequiredLabel /></FormLabel>
+          <FormLabel>
+            Category <RequiredLabel />
+          </FormLabel>
           <CustomSelect
             options={articleCategories.map((el) => {
               return {
@@ -300,15 +299,17 @@ function ArticleForm({
           />
         </Field.Root>
         <Field.Root required mb={"5"}>
-          <FormLabel>Description <RequiredLabel /></FormLabel>
-            <Input
-              placeholder="Description"
-              p={"0 10px"}
-              value={tempData.description}
-              onChange={(e) =>
-                setTempData({ ...tempData, description: e.target.value })
-              }
-            />
+          <FormLabel>
+            Description <RequiredLabel />
+          </FormLabel>
+          <Input
+            placeholder="Description"
+            p={"0 10px"}
+            value={tempData.description}
+            onChange={(e) =>
+              setTempData({ ...tempData, description: e.target.value })
+            }
+          />
         </Field.Root>
         <Field.Root mb={5}>
           <Field.Label>Match</Field.Label>
@@ -333,13 +334,11 @@ function ArticleForm({
           />
         </Field.Root>
 
-        <Box mb={5} w={'full'}>
+        <Box mb={5} w={"full"}>
           {!matchId && (
             <UploadImage
               image={tempData.coverImage}
-              onClearImage={() =>
-                setTempData({ ...tempData, coverImage: "" })
-              }
+              onClearImage={() => setTempData({ ...tempData, coverImage: "" })}
               imageSize={200}
               filename={slugify(tempData.title, { lower: true })}
               id={"coverImage"}
@@ -353,7 +352,7 @@ function ArticleForm({
             />
           )}
         </Box>
-       
+
         <TextEditor
           editorKey={editorKey}
           content={tempData.content}
