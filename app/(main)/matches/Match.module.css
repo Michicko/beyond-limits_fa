@@ -5,6 +5,11 @@
   color: var(--white);
 }
 
+.error-box {
+  padding-top: 2.5rem;
+  min-height: 20rem;
+}
+
 .preview > * {
   align-self: flex-start;
 }

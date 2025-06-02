@@ -59,7 +59,7 @@ function MatchLayout({
             />
           )}
           <div className={clsx(styles["match-header__details"])}>
-            <MatchDate date={match.date} size="md" />
+            <MatchDate date={match.date} time={match.time} size="md" />
             {match.homeTeam && match.awayTeam && (
               <MatchScores
                 status={match.status ? match.status : ""}

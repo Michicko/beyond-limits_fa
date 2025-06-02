@@ -78,7 +78,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         category: {eq: article.category}
       },
       authMode: auth ? "userPool" : "iam",
-      limit: 3,
+      limit: 4,
       selectionSet: [
         "id",
         "articleCategoryId",
@@ -97,7 +97,7 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
   return (
     <>
       <Header
-        bg={"/images/under-19-bg.png"}
+        bg={article?.coverImage ?? "/images/under-19-bg.png"}
         alt="ongoing campaign"
         overlay={true}
       >

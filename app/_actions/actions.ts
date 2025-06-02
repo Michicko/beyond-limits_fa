@@ -1,7 +1,11 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory } from "@/lib/factoryFunctions";
-import { filterGroupedSeasonsByCurrent, formDataToObject, getExpectedSeasonLabel } from "@/lib/helpers";
+import {
+  filterGroupedSeasonsByCurrent,
+  formDataToObject,
+  getExpectedSeasonLabel,
+} from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
@@ -282,7 +286,6 @@ export async function isLoggedIn() {
   return tokens && tokens.accessToken && tokens.idToken;
 }
 
-
 async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
   const year = new Date().getFullYear();
   const { data: competitionSeasons } =
@@ -304,16 +307,28 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "leagueId",
         "league.leagueRounds.*",
         "status",
-        "matches.*",
+        "matches.id",
+        "matches.date",
+        "matches.time",
+        "matches.venue",
+        "matches.status",
+        "matches.homeTeam.id",
+        "matches.homeTeam.logo",
+        "matches.homeTeam.shortName",
+        "matches.homeTeam.longName",
+        "matches.awayTeam.id",
+        "matches.awayTeam.logo",
+        "matches.awayTeam.shortName",
+        "matches.awayTeam.longName",
         "matches.competitionSeason.id",
         "matches.competitionSeason.season",
         "matches.competitionSeason.name",
         "matches.competitionSeason.logo",
       ],
     });
-  
+
   // Group competitionSeasons by name
-  return filterGroupedSeasonsByCurrent(competitionSeasons)
+  return filterGroupedSeasonsByCurrent(competitionSeasons);
 }
 
 export async function getCurrentCompetitionSeasonsMatches(
@@ -374,7 +389,6 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     }
   );
 
-  const now = new Date().getTime();
   results.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -382,14 +396,12 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  const upcomingMatch =
-    fixtures.find((fixture) => new Date(fixture.date).getTime() > now) || null;
+  const upcomingMatch = fixtures[0] || null;
   const lastMatch = results[results.length - 1] || null;
 
   return {
     upcomingMatch,
     lastMatch,
-    fixtures,
   };
 }
 
@@ -488,7 +500,6 @@ export async function fetchDashboardData() {
     );
 
     const nnlStanding = await getCurrentNnlStanding("auth");
-
     const { upcomingMatch, lastMatch } = await getPrevNextMatch("auth");
 
     const upcomingCompetitionSeasonRounds = upcomingMatch
@@ -553,43 +564,45 @@ export async function fetchHomepageData() {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-  const startOfMonth = new Date(year, month, 1).toISOString().split('T')[0];
-  const startOfNextMonth = new Date(year, month + 1, 1).toISOString().split('T')[0];
+  const startOfMonth = new Date(year, month, 1).toISOString().split("T")[0];
+  const startOfNextMonth = new Date(year, month + 1, 1)
+    .toISOString()
+    .split("T")[0];
 
   try {
-    const {lastMatch } = await getPrevNextMatch(
-      auth ? "auth" : "guest"
-    );
+    const { lastMatch } = await getPrevNextMatch(auth ? "auth" : "guest");
 
     const { data: fixtures } = await cookiesClient.models.Match.list({
       limit: 5,
       authMode: auth ? "userPool" : "iam",
       filter: {
         status: {
-          eq: 'UPCOMING'
+          eq: "UPCOMING",
         },
         date: {
-          ge: startOfMonth,  
-          lt: startOfNextMonth
-        }
+          ge: startOfMonth,
+          lt: startOfNextMonth,
+        },
       },
       selectionSet: [
-         "id",
-          "status",
-          "competitionSeason.logo",
-          "competitionSeason.name",
-          "date",
-          "time",
-          "homeTeam.*",
-          "awayTeam.*",
-          "createdAt",
-          "review",
+        "id",
+        "status",
+        "competitionSeason.logo",
+        "competitionSeason.name",
+        "date",
+        "time",
+        "homeTeam.*",
+        "awayTeam.*",
+        "createdAt",
+        "review",
       ],
     });
 
     const sortedFixtures = Array.isArray(fixtures)
-  ? fixtures.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  : [];
+      ? fixtures.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+      : [];
 
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
@@ -597,10 +610,10 @@ export async function fetchHomepageData() {
       authMode: auth ? "userPool" : "iam",
       filter: {
         status: {
-          eq: 'PUBLISHED'
-        }
+          eq: "PUBLISHED",
+        },
       },
-      sortDirection: 'ASC',
+      sortDirection: "ASC",
       selectionSet: [
         "id",
         "category",
@@ -796,9 +809,11 @@ export const deleteCloudinaryImage = async (publicId: string) => {
   return await cloudinary.uploader.destroy(publicId, { invalidate: true });
 };
 
-
 // fetchers
-export async function fetchCompetitions(keyword: string, client: "guest" | "auth") {
+export async function fetchCompetitions(
+  keyword: string,
+  client: "guest" | "auth"
+) {
   try {
     const result = await cookiesClient.models.Competition.list({
       filter: {
@@ -808,8 +823,8 @@ export async function fetchCompetitions(keyword: string, client: "guest" | "auth
         ],
       },
       limit: 15,
-      authMode: client === "guest" ? 'iam' : 'userPool',
-      selectionSet: ['id', 'logo', 'shortName', 'longName']
+      authMode: client === "guest" ? "iam" : "userPool",
+      selectionSet: ["id", "logo", "shortName", "longName"],
     });
     return result.data;
   } catch (error) {
@@ -828,8 +843,22 @@ export async function fetchPlayers(keyword: string, client: "guest" | "auth") {
         ],
       },
       limit: 15,
-      authMode: client === "guest" ? 'iam' : 'userPool',
-      selectionSet: ['id', 'firstname', 'lastname', 'ageGroup', 'playerPosition.longName','playerPosition.shortName', "height", 'weight', 'squadNo', 'awayKit', 'homeKit', 'dob', 'dominantFoot']
+      authMode: client === "guest" ? "iam" : "userPool",
+      selectionSet: [
+        "id",
+        "firstname",
+        "lastname",
+        "ageGroup",
+        "playerPosition.longName",
+        "playerPosition.shortName",
+        "height",
+        "weight",
+        "squadNo",
+        "awayKit",
+        "homeKit",
+        "dob",
+        "dominantFoot",
+      ],
     });
     return result.data;
   } catch (error) {
@@ -848,21 +877,21 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
         ],
       },
       limit: 15,
-      authMode: client === "guest" ? 'iam' : 'userPool',
+      authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
-        'id', 
-        'title', 
-        'category', 
+        "id",
+        "title",
+        "category",
         "createdAt",
         "articleCategoryId",
-       "coverImage",
+        "coverImage",
         "matchId",
         "tags",
         "category",
         "matchHomeTeamLogo",
         "matchAwayTeamLogo",
-        "createdAt"
-      ]
+        "createdAt",
+      ],
     });
     return result.data;
   } catch (error) {
@@ -871,7 +900,10 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
   }
 }
 
-export async function fetchHighlights(keyword: string, client: "guest" | "auth") {
+export async function fetchHighlights(
+  keyword: string,
+  client: "guest" | "auth"
+) {
   try {
     const result = await cookiesClient.models.Highlight.list({
       filter: {
@@ -881,8 +913,15 @@ export async function fetchHighlights(keyword: string, client: "guest" | "auth")
         ],
       },
       limit: 15,
-      authMode: client === "guest" ? 'iam' : 'userPool',
-      selectionSet: ['id', 'title', 'videoId', 'coverImage', 'tags', 'createdAt']
+      authMode: client === "guest" ? "iam" : "userPool",
+      selectionSet: [
+        "id",
+        "title",
+        "videoId",
+        "coverImage",
+        "tags",
+        "createdAt",
+      ],
     });
     return result.data;
   } catch (error) {
@@ -893,12 +932,11 @@ export async function fetchHighlights(keyword: string, client: "guest" | "auth")
 
 export async function globalSearch(keyword: string, client: "guest" | "auth") {
   try {
-   
-    if(!keyword){
+    if (!keyword) {
       return {
         error: "Keyword is required",
-        status: 400
-      }
+        status: 400,
+      };
     }
 
     const keywordLower = keyword.toLowerCase();
@@ -911,37 +949,41 @@ export async function globalSearch(keyword: string, client: "guest" | "auth") {
       fetchHighlights(keywordLower, client),
     ]);
 
-    return  {
+    return {
       status: 200,
       data: {
         competitions,
         players,
         articles,
         highlights,
-      }
-    }
+      },
+    };
   } catch (error) {
     console.error("Error in global search:", error);
-    return { 
-      error: "Failed to search", 
-      status: 500 
-    }
+    return {
+      error: "Failed to search",
+      status: 500,
+    };
   }
 }
 
-
-export async function fetchArticlesServer(auth: boolean, category? : string, token?: string | null){
+export async function fetchArticlesServer(
+  auth: boolean,
+  category?: string,
+  token?: string | null
+) {
   const filter = {
     status: { eq: "PUBLISHED" },
     ...(category && {
-      category: { 
+      category: {
         eq: category.toLowerCase(),
       },
     }),
   };
 
   try {
-      const { data: articles, nextToken } = await cookiesClient.models.Article.list({
+    const { data: articles, nextToken } =
+      await cookiesClient.models.Article.list({
         limit: 15,
         authMode: auth ? "userPool" : "iam",
         filter,
@@ -962,46 +1004,48 @@ export async function fetchArticlesServer(auth: boolean, category? : string, tok
         ],
       });
 
-      return {
-        status: 'success',
-        data: {
-          articles: articles ?? [],
-          nextToken: nextToken ?? null
-        }
-      }
+    return {
+      status: "success",
+      data: {
+        articles: articles ?? [],
+        nextToken: nextToken ?? null,
+      },
+    };
   } catch (error) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      error: (error as Error).message
-    }
+      error: (error as Error).message,
+    };
   }
 }
 
-export async function fetchHighlightsServer(auth: boolean, token?: string | null){
+export async function fetchHighlightsServer(
+  auth: boolean,
+  token?: string | null
+) {
   try {
-    const { data: highlights, nextToken } = await cookiesClient.models.Highlight.list({
-      limit: 15,
-      authMode: auth ? "userPool" : "iam",
-      nextToken: token,
-      sortDirection: "DESC",
-      selectionSet: [
-        "id", "coverImage", "title", "createdAt"
-      ],
-    });
+    const { data: highlights, nextToken } =
+      await cookiesClient.models.Highlight.list({
+        limit: 15,
+        authMode: auth ? "userPool" : "iam",
+        nextToken: token,
+        sortDirection: "DESC",
+        selectionSet: ["id", "coverImage", "title", "createdAt"],
+      });
 
     return {
-      status: 'success',
+      status: "success",
       data: {
         highlights: highlights ?? [],
-        nextToken: nextToken ?? null
-      }
-    }
+        nextToken: nextToken ?? null,
+      },
+    };
   } catch (error) {
     return {
-      status: 'error',
+      status: "error",
       data: null,
-      error: (error as Error).message
-    }
+      error: (error as Error).message,
+    };
   }
 }

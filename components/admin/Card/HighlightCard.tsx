@@ -52,7 +52,7 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
       </Card.Body>
       <Card.Footer p={"4"}>
         <Stack>
-          <HStack>
+          <HStack alignItems={"flex-start"} gap={"2"}>
             <Icon color={"text_lg"} size={"md"}>
               {getIcon("video")}
             </Icon>
@@ -65,7 +65,7 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
               {highlight.title}
             </Heading>
           </HStack>
-          <HStack>
+          <HStack alignItems={"flex-start"} gap={"2"}>
             <Icon color={"text_lg"} size={"md"}>
               {getIcon("link")}
             </Icon>
@@ -80,7 +80,7 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
             </Link>
           </HStack>
           {highlight.tags && highlight.tags.length > 0 && (
-            <HStack>
+            <HStack alignItems={"flex-start"} gap={"2"}>
               <Icon color={"text_lg"} size={"md"}>
                 {getIcon("tag")}
               </Icon>

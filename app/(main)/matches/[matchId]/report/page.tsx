@@ -39,7 +39,7 @@ async function Report({ params }: { params: { matchId: string } }) {
           "review",
           "report",
           "scorers",
-          "createdAt"
+          "createdAt",
         ],
       }
     );
@@ -63,234 +63,238 @@ async function Report({ params }: { params: { matchId: string } }) {
   if (!match)
     return (
       <MatchLayout>
-        <Heading level={2} type="secondary" letterCase="capitalize" mb={"sm"}>
-          No Match
-        </Heading>
-        <Text
-          color="white"
-          size="base"
-          weight="regular"
-          letterCase="lower"
-          mb={"sm"}
-        >
-          No match available.
-        </Text>
+        <div className={clsx(styles["error-box"])}>
+          <Heading level={2} type="secondary" letterCase="capitalize" mb={"sm"}>
+            No Match
+          </Heading>
+          <Text
+            color="white"
+            size="base"
+            weight="regular"
+            letterCase="lower"
+            mb={"sm"}
+          >
+            {matchErrors ? matchErrors[0].message : "Something went wrong!"}
+          </Text>
+        </div>
       </MatchLayout>
     );
 
   return (
     <MatchLayout match={match} currentLink={`/matches/${match.id}/report`}>
-      {
-        matchErrors ?   
+      {matchErrors ? (
         <Text color="white" letterCase={"lower"} size="base" weight="regular">
-            {matchErrors[0].message}
+          {matchErrors[0].message}
         </Text>
-         :
-      <div className={clsx(styles.preview)}>
-        <Card theme={"trans"}>
-          <>
-            <CardHeader theme={"dark"} border={true} as="div">
-              <div className={clsx(styles.preview__heading)}>
-                <Heading
-                  level={3}
-                   letterCase="capitalize"
-                  color="secondary"
-                  type="section"
-                >
-                  Match Context
-                </Heading>
-              </div>
-            </CardHeader>
-            <CardBody as="div" theme={"light"}>
-              <Suspense fallback={null}>
-                <TextEditor
-                  content={JSON.parse(match.report as string)}
-                  readOnly={true}
-                />
-              </Suspense>
-            </CardBody>
-          </>
-        </Card>
-        <Card theme={"trans"}>
-          <>
-            <CardHeader theme={"dark"} border={true} as="div">
-              <div className={clsx(styles.preview__heading)}>
-                <Heading
-                  level={3}
-                   letterCase="capitalize"
-                  color="secondary"
-                  type="section"
-                >
-                  Goal Scorers
-                </Heading>
-              </div>
-            </CardHeader>
-            <CardBody as="div" theme={"light"}>
-              <div className={clsx(styles.preview__body, styles["py-b"])}>
-                {match.scorers &&
-                JSON.parse(match.scorers as string).length > 0 ? (
-                  <ul className={clsx(styles["team-form__list"])}>
-                    {JSON.parse(match.scorers as string).map(
-                      (scorer: IMatchScorer, i: number) => {
-                        if (!scorer.isOpponent) {
+      ) : (
+        <div className={clsx(styles.preview)}>
+          <Card theme={"trans"}>
+            <>
+              <CardHeader theme={"dark"} border={true} as="div">
+                <div className={clsx(styles.preview__heading)}>
+                  <Heading
+                    level={3}
+                    letterCase="capitalize"
+                    color="secondary"
+                    type="section"
+                  >
+                    Match Context
+                  </Heading>
+                </div>
+              </CardHeader>
+              <CardBody as="div" theme={"light"}>
+                <Suspense fallback={null}>
+                  <TextEditor
+                    content={JSON.parse(match.report as string)}
+                    readOnly={true}
+                  />
+                </Suspense>
+              </CardBody>
+            </>
+          </Card>
+          <Card theme={"trans"}>
+            <>
+              <CardHeader theme={"dark"} border={true} as="div">
+                <div className={clsx(styles.preview__heading)}>
+                  <Heading
+                    level={3}
+                    letterCase="capitalize"
+                    color="secondary"
+                    type="section"
+                  >
+                    Goal Scorers
+                  </Heading>
+                </div>
+              </CardHeader>
+              <CardBody as="div" theme={"light"}>
+                <div className={clsx(styles.preview__body, styles["py-b"])}>
+                  {match.scorers &&
+                  JSON.parse(match.scorers as string).length > 0 ? (
+                    <ul className={clsx(styles["team-form__list"])}>
+                      {JSON.parse(match.scorers as string).map(
+                        (scorer: IMatchScorer, i: number) => {
+                          if (!scorer.isOpponent) {
+                            return (
+                              <li
+                                className={clsx(styles["preview-item"])}
+                                key={scorer.name + "-" + i}
+                              >
+                                <Text
+                                  color="white"
+                                  size="base"
+                                  weight="regular"
+                                  letterCase="capitalize"
+                                >
+                                  {scorer.name}
+                                </Text>
+                                <MatchScoreTime
+                                  time={scorer.time}
+                                  theme="light"
+                                />
+                              </li>
+                            );
+                          }
                           return (
                             <li
-                              className={clsx(styles["preview-item"])}
+                              className={clsx(
+                                styles["preview-item"],
+                                styles.col
+                              )}
                               key={scorer.name + "-" + i}
                             >
                               <Text
-                                color="white"
-                                size="base"
-                                weight="regular"
-                                letterCase="capitalize"
+                                color="secondary"
+                                size="sm"
+                                weight="semibold"
+                                letterCase="normal"
                               >
-                                {scorer.name}
+                                Opponent
                               </Text>
-                              <MatchScoreTime
-                                time={scorer.time}
-                                theme="light"
-                              />
+                              <div className={clsx(styles["match-score-tile"])}>
+                                <Text
+                                  color="white"
+                                  size="sm"
+                                  weight="regular"
+                                  letterCase="capitalize"
+                                >
+                                  {scorer.name}
+                                </Text>
+                              </div>
                             </li>
                           );
                         }
-                        return (
-                          <li
-                            className={clsx(styles["preview-item"], styles.col)}
-                            key={scorer.name + "-" + i}
-                          >
-                            <Text
-                              color="secondary"
-                              size="sm"
-                              weight="semibold"
-                              letterCase="normal"
-                            >
-                              Opponent
-                            </Text>
-                            <div className={clsx(styles["match-score-tile"])}>
-                              <Text
-                                color="white"
-                                size="sm"
-                                weight="regular"
-                                 letterCase="capitalize"
-                              >
-                                {scorer.name}
-                              </Text>
-                            </div>
-                          </li>
-                        );
-                      }
-                    )}
-                  </ul>
-                ) : (
-                  <></>
-                )}
-              </div>
-            </CardBody>
-          </>
-        </Card>
-        <Card theme={"trans"}>
-          <>
-            <CardHeader theme={"dark"} border={true} as="div">
-              <div className={clsx(styles.preview__heading)}>
-                <Heading
-                  level={3}
-                   letterCase="capitalize"
-                  color="secondary"
-                  type="section"
-                >
-                  Mvp
-                </Heading>
-              </div>
-            </CardHeader>
-            <CardBody as="div" theme={"light"}>
-              {match.aboutMvp ? (
-                <div className={clsx(styles.preview__body, styles.p)}>
-                  <Text
-                    color="secondary"
-                    size="sm"
-                    weight="semibold"
-                     letterCase="capitalize"
-                    mb={"sm"}
-                  >
-                    {mvp?.firstname} {mvp?.lastname}
-                  </Text>
-                  <Text
-                    color="white"
-                    size="base"
-                    weight="regular"
-                    letterCase="normal"
-                  >
-                    {match.aboutMvp}
-                  </Text>
+                      )}
+                    </ul>
+                  ) : (
+                    <></>
+                  )}
                 </div>
-              ) : (
-                <></>
-              )}
-            </CardBody>
-          </>
-        </Card>
-        <Card theme={"trans"}>
-          <>
-            <CardHeader theme={"dark"} border={true} as="div">
-              <div className={clsx(styles.preview__heading)}>
-                <Heading
-                  level={3}
-                   letterCase="capitalize"
-                  color="secondary"
-                  type="section"
-                >
-                  Brief
-                </Heading>
-              </div>
-            </CardHeader>
-            <CardBody as="div" theme={"light"}>
-              <div className={clsx(styles.preview__body, styles["py-b"])}>
-                <ul className={clsx(styles["preview-list"])}>
-                  <li className={clsx(styles["preview-item"], styles.col)}>
+              </CardBody>
+            </>
+          </Card>
+          <Card theme={"trans"}>
+            <>
+              <CardHeader theme={"dark"} border={true} as="div">
+                <div className={clsx(styles.preview__heading)}>
+                  <Heading
+                    level={3}
+                    letterCase="capitalize"
+                    color="secondary"
+                    type="section"
+                  >
+                    Mvp
+                  </Heading>
+                </div>
+              </CardHeader>
+              <CardBody as="div" theme={"light"}>
+                {match.aboutMvp ? (
+                  <div className={clsx(styles.preview__body, styles.p)}>
                     <Text
                       color="secondary"
                       size="sm"
-                        letterCase="capitalize"
                       weight="semibold"
+                      letterCase="capitalize"
+                      mb={"sm"}
                     >
-                      Competition
-                    </Text>
-                    {match.competitionSeason && (
-                      <Text
-                        color="white"
-                        size="base"
-                          letterCase="capitalize"
-                        weight="semibold"
-                      >
-                        {match.competitionSeason.name}
-                      </Text>
-                    )}
-                  </li>
-                  <li className={clsx(styles["preview-item"], styles.col)}>
-                    <Text
-                      color="secondary"
-                      size="sm"
-                      letterCase={"upper"}
-                      weight="semibold"
-                    >
-                      Location
+                      {mvp?.firstname} {mvp?.lastname}
                     </Text>
                     <Text
                       color="white"
                       size="base"
-                      letterCase={"upper"}
-                      weight="semibold"
+                      weight="regular"
+                      letterCase="normal"
                     >
-                      {match.venue}
+                      {match.aboutMvp}
                     </Text>
-                  </li>
-                </ul>
-              </div>
-            </CardBody>
-          </>
-        </Card>
-      </div>
-}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </CardBody>
+            </>
+          </Card>
+          <Card theme={"trans"}>
+            <>
+              <CardHeader theme={"dark"} border={true} as="div">
+                <div className={clsx(styles.preview__heading)}>
+                  <Heading
+                    level={3}
+                    letterCase="capitalize"
+                    color="secondary"
+                    type="section"
+                  >
+                    Brief
+                  </Heading>
+                </div>
+              </CardHeader>
+              <CardBody as="div" theme={"light"}>
+                <div className={clsx(styles.preview__body, styles["py-b"])}>
+                  <ul className={clsx(styles["preview-list"])}>
+                    <li className={clsx(styles["preview-item"], styles.col)}>
+                      <Text
+                        color="secondary"
+                        size="sm"
+                        letterCase="capitalize"
+                        weight="semibold"
+                      >
+                        Competition
+                      </Text>
+                      {match.competitionSeason && (
+                        <Text
+                          color="white"
+                          size="base"
+                          letterCase="capitalize"
+                          weight="semibold"
+                        >
+                          {match.competitionSeason.name}
+                        </Text>
+                      )}
+                    </li>
+                    <li className={clsx(styles["preview-item"], styles.col)}>
+                      <Text
+                        color="secondary"
+                        size="sm"
+                        letterCase={"upper"}
+                        weight="semibold"
+                      >
+                        Location
+                      </Text>
+                      <Text
+                        color="white"
+                        size="base"
+                        letterCase={"upper"}
+                        weight="semibold"
+                      >
+                        {match.venue}
+                      </Text>
+                    </li>
+                  </ul>
+                </div>
+              </CardBody>
+            </>
+          </Card>
+        </div>
+      )}
     </MatchLayout>
   );
 }

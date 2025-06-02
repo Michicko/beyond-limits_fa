@@ -75,22 +75,40 @@ export const getButtonStatus = (
 };
 
 export const formatDate = (date: string) => {
-  const dateStr = moment(date);
+  const dateStr = moment(date); // or moment(date) if already local
+
   if (
     moment().diff(dateStr, "days") > 7 ||
     moment().diff(dateStr, "days") < -7
   ) {
-    return dateStr.format("MMM D, YYYY");
+    return dateStr.local().format("MMM D, YYYY"); // display as local
   }
-  return dateStr.startOf("minutes").fromNow();
+
+  return dateStr.local().startOf("minutes").fromNow(); // display relative time
 };
 
 export const formatTime = (time: string) => {
-  const [hour, minute] = time.split(":").map(Number);
-  const suffix = hour >= 12 ? "PM" : "AM";
-  const hour12 = hour % 12 || 12; // Convert 0 to 12 for midnight
-  return `${hour12}:${minute.toString().padStart(2, "0")} ${suffix}`;
+  return moment(time, "HH:mm").format("h:mm A");
 };
+
+export const formatDateTime = (date: string, time: string) => {
+  // Combine date and time into full ISO-like datetime string
+  // Example: date = "2025-06-02", time = "16:30"
+  const combined = `${date}T${time}`;
+
+  const dateTime = moment(combined);
+
+  if (
+    moment().diff(dateTime, "days") > 7 ||
+    moment().diff(dateTime, "days") < -7
+  ) {
+    return dateTime.format("MMM D, YYYY");
+  }
+
+  return dateTime.startOf("minutes").fromNow();
+};
+
+
 
 export const playOffsLabels = [
   { value: "QUALIFIERS", label: "qualifiers" },

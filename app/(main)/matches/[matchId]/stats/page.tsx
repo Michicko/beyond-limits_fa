@@ -40,7 +40,7 @@ async function Stats({ params }: { params: { matchId: string } }) {
           "review",
           "report",
           "scorers",
-          "createdAt"
+          "createdAt",
         ],
       }
     );
@@ -50,18 +50,20 @@ async function Stats({ params }: { params: { matchId: string } }) {
   if (!match)
     return (
       <MatchLayout>
-        <Heading level={2} type="secondary" letterCase="capitalize" mb={"sm"}>
-          No Match
-        </Heading>
-        <Text
-          color="white"
-          size="base"
-          weight="regular"
-          letterCase="lower"
-          mb={"sm"}
-        >
-          No match available.
-        </Text>
+        <div className={clsx(styles["error-box"])}>
+          <Heading level={2} type="secondary" letterCase="capitalize" mb={"sm"}>
+            No Match
+          </Heading>
+          <Text
+            color="white"
+            size="base"
+            weight="regular"
+            letterCase="lower"
+            mb={"sm"}
+          >
+            {matchErrors ? matchErrors[0].message : "Something went wrong!"}
+          </Text>
+        </div>
       </MatchLayout>
     );
 
@@ -82,99 +84,107 @@ async function Stats({ params }: { params: { matchId: string } }) {
 
   return (
     <MatchLayout match={match} currentLink={`/matches/${match.id}/stats`}>
-      <div className={clsx(styles.stats)}>
-        <Card theme={"trans"}>
-          <>
-            <CardHeader theme={"dark"} border={true} as="div">
-              <div className={clsx(styles.preview__heading)}>
-                <Heading
-                  level={3}
-                   letterCase="capitalize"
-                  color="secondary"
-                  type="section"
-                >
-                  General
-                </Heading>
-              </div>
-            </CardHeader>
-            <CardBody as="div" theme={"light"}>
-              <div className={clsx(styles.preview__body, styles.p)}>
-                <ul>
-                  <li className={clsx(styles["preview-item"])}>
-                    {match.homeTeam && match.awayTeam && match.status && (
-                      <>
-                        <Logo
-                          logo={match.homeTeam.logo}
-                          name={match.homeTeam.longName}
-                          size="md"
-                        />
-                        <Flex
-                          direction="col"
-                          gap="xxs"
-                          align="center"
-                          justify="center"
-                        >
-                          {match.status &&
-                            match.homeTeam.goals &&
-                            match.awayTeam.goals && (
-                              <MatchScores
-                                status={match.status}
-                                home_score={match.homeTeam.goals}
-                                away_score={match.awayTeam.goals}
-                                time={match.time}
-                                size="md"
-                              />
-                            )}
-                          <Text
-                            color="white"
-                            size="xs"
-                            weight="bold"
-                            letterCase="capitalize"
-                            center={true}
+      {matchErrors ? (
+        <div className={clsx(styles["error-box"])}>
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {matchErrors[0].message}
+          </Text>
+        </div>
+      ) : (
+        <div className={clsx(styles.stats)}>
+          <Card theme={"trans"}>
+            <>
+              <CardHeader theme={"dark"} border={true} as="div">
+                <div className={clsx(styles.preview__heading)}>
+                  <Heading
+                    level={3}
+                    letterCase="capitalize"
+                    color="secondary"
+                    type="section"
+                  >
+                    General
+                  </Heading>
+                </div>
+              </CardHeader>
+              <CardBody as="div" theme={"light"}>
+                <div className={clsx(styles.preview__body, styles.p)}>
+                  <ul>
+                    <li className={clsx(styles["preview-item"])}>
+                      {match.homeTeam && match.awayTeam && match.status && (
+                        <>
+                          <Logo
+                            logo={match.homeTeam.logo}
+                            name={match.homeTeam.longName}
+                            size="md"
+                          />
+                          <Flex
+                            direction="col"
+                            gap="xxs"
+                            align="center"
+                            justify="center"
                           >
-                            {match.status.toLowerCase()}
-                          </Text>
-                        </Flex>
-                        <Logo
-                          logo={match.awayTeam?.logo}
-                          name={match.awayTeam?.longName}
-                          size="md"
-                        />
-                      </>
-                    )}
-                  </li>
-                  <>
-                    {hstats &&
-                      hstats.map(([key, val], i) => {
-                        return (
-                          <li
-                            className={clsx(
-                              styles["preview-item"],
-                              styles["no-border"]
-                            )}
-                            key={(i + 2) * (i * 10)}
-                          >
-                            {val && match.awayTeam && (
-                              <MatchStat
-                                stat={key}
-                                home={val}
-                                away={
-                                  match.awayTeam[
-                                    key as keyof typeof match.awayTeam
-                                  ] ?? 0
-                                }
-                              />
-                            )}
-                          </li>
-                        );
-                      })}
-                  </>
-                </ul>
-              </div>
-            </CardBody>
-          </>
-        </Card>
-      </div>
+                            {match.status &&
+                              match.homeTeam.goals &&
+                              match.awayTeam.goals && (
+                                <MatchScores
+                                  status={match.status}
+                                  home_score={match.homeTeam.goals}
+                                  away_score={match.awayTeam.goals}
+                                  time={match.time}
+                                  size="md"
+                                />
+                              )}
+                            <Text
+                              color="white"
+                              size="xs"
+                              weight="bold"
+                              letterCase="capitalize"
+                              center={true}
+                            >
+                              {match.status.toLowerCase()}
+                            </Text>
+                          </Flex>
+                          <Logo
+                            logo={match.awayTeam?.logo}
+                            name={match.awayTeam?.longName}
+                            size="md"
+                          />
+                        </>
+                      )}
+                    </li>
+                    <>
+                      {hstats &&
+                        hstats.map(([key, val], i) => {
+                          return (
+                            <li
+                              className={clsx(
+                                styles["preview-item"],
+                                styles["no-border"]
+                              )}
+                              key={(i + 2) * (i * 10)}
+                            >
+                              {val && match.awayTeam && (
+                                <MatchStat
+                                  stat={key}
+                                  home={val}
+                                  away={
+                                    match.awayTeam[
+                                      key as keyof typeof match.awayTeam
+                                    ] ?? 0
+                                  }
+                                />
+                              )}
+                            </li>
+                          );
+                        })}
+                    </>
+                  </ul>
+                </div>
+              </CardBody>
+            </>
+          </Card>
+        </div>
+      )}
     </MatchLayout>
   );
 }

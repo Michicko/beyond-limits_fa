@@ -276,8 +276,8 @@ function PlayerForm({
               Enter Date of birth
             </Field.HelperText>
           </Field.Root>
-          <Field.Root>
-            <FormLabel>squad number</FormLabel>
+          <Field.Root required>
+            <FormLabel>squad number <RequiredLabel /></FormLabel>
             <Input
               name={"squadNo"}
               type={"number"}
@@ -297,8 +297,8 @@ function PlayerForm({
               Enter squad number e.g 7
             </Field.HelperText>
           </Field.Root>
-          <Field.Root>
-            <FormLabel>Weight</FormLabel>
+          <Field.Root required>
+            <FormLabel>Weight <RequiredLabel /></FormLabel>
             <Input
               name={"weight"}
               type={"number"}
@@ -319,8 +319,8 @@ function PlayerForm({
               Enter weight in (kg) e.g 75 or 56.8
             </Field.HelperText>
           </Field.Root>
-          <Field.Root>
-            <FormLabel>Height</FormLabel>
+          <Field.Root required>
+            <FormLabel>Height <RequiredLabel /></FormLabel>
             <Input
               name={"height"}
               type={"number"}

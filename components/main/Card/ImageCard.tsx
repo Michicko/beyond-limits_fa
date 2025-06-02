@@ -1,21 +1,23 @@
-'use client';
-import React, { useRef } from 'react'
+"use client";
+import React, { useRef } from "react";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import { motion, useInView } from "framer-motion";
-import clsx from 'clsx';
-import styles from './ImageCard.module.css';
+import clsx from "clsx";
+import styles from "./ImageCard.module.css";
 
-function ImageCard({visual}: {visual: string}) {
+function ImageCard({ visual }: { visual: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "0px 0px -50px 0px" });
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}  
-      className={clsx(styles.visual)} key={visual}>
+      initial={{ opacity: 0.4, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0.4, y: 20 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className={clsx(styles.visual)}
+      key={visual}
+    >
       <ImageComp
         image={visual}
         alt=""
@@ -24,7 +26,7 @@ function ImageCard({visual}: {visual: string}) {
         key={visual}
       />
     </motion.div>
-  )
+  );
 }
 
-export default ImageCard
+export default ImageCard;

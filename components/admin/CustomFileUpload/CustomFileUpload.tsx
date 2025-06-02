@@ -19,51 +19,69 @@ function CustomFileUpload({
 }) {
   const { mutationPromiseToast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
+  const success = {
+    title: "image Uploaded",
+    desc: `${filename} uploaded successfully!`,
+  };
+  const err = {
+    title: "Error uploading image",
+    desc: `Failed to upload image`,
+  };
+  const loading = {
+    title: "uploading image",
+    desc: `uploading ${filename}, please wait...`,
+  };
 
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     const target = e.target as HTMLInputElement;
     if (!target.files) return;
+
     const formData = new FormData();
     formData.append("file", target.files[0]);
-    formData.append("name", slugify(filename, { lower: true }));
-    formData.append("upload_preset", "beyondlimits");
-    formData.append("folder", "beyondlimitsfa");
-    formData.append("public_id", slugify(filename, { lower: true }));
-    const url = `https://api.cloudinary.com/v1_1/dnjqdzkhu/upload`;
 
-    const success = {
-      title: "image Uploaded",
-      desc: `${filename} uploaded successfully!`,
-    };
-    const err = {
-      title: "Error uploading image",
-      desc: `Failed to upload image`,
-    };
-    const loading = {
-      title: "uploading image",
-      desc: `uploading ${filename}, please wait...`,
-    };
-
-    const promise = fetch(url, {
-      method: "POST",
-      body: formData,
-    }).then(async (res) => {
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error?.message || "Upload failed");
-      }
-      return data;
+    // sign upload
+    const result = await fetch('/api/image-upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        public_id: slugify(filename, { lower: true }),
+      }),
     });
 
-    mutationPromiseToast(
-      promise,
-      success,
-      err,
-      loading,
-      setIsUploading,
-      onUploaded
-    );
+    const res = await result.json();
+    
+    // upload file
+    if(res){
+      formData.append("api_key", res.API_KEY);
+      formData.append("timestamp", res.timestamp);
+      formData.append("signature", res.signature);
+      formData.append("folder", "beyondlimitsfa");
+      formData.append("public_id", slugify(filename, { lower: true }));
+      const url = `https://api.cloudinary.com/v1_1/${res.CLOUD_NAME}/auto/upload`;
+
+      const promise = fetch(url, {
+        method: "POST",
+        body: formData,
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error?.message || "Upload failed");
+        }
+        return data;
+      });
+
+      mutationPromiseToast(
+        promise,
+        success,
+        err,
+        loading,
+        setIsUploading,
+        onUploaded
+      );
+    }
   };
 
   return (
