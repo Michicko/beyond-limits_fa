@@ -62,9 +62,10 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  ageGroup: string | null;
   playerPosition: {
-    shortName: string
-  }
+    shortName: string;
+  };
 }
 
 type IMatchI = Pick<
@@ -187,37 +188,37 @@ function MatchForm({
     awayForm: match?.awayForm || "",
   });
 
-  const resetForm = ()=> {
+  const resetForm = () => {
     setData({
       id: "",
       competitionSeasonId: "",
-      date:"",
+      date: "",
       time: "",
       venue: "",
-      status:"UPCOMING",
-      result:  null,
+      status: "UPCOMING",
+      result: null,
       keyPlayerId: "",
-      aboutKeyPlayer:  "",
+      aboutKeyPlayer: "",
       mvpId: "",
-      aboutMvp:  "",
-      review: ({} as JSONContent),
-      report:({} as JSONContent),
+      aboutMvp: "",
+      review: {} as JSONContent,
+      report: {} as JSONContent,
       lineup: [],
       substitutes: [],
       coach: { name: "", role: null },
       homeTeam: getTeamStats("homeTeam"),
       awayTeam: getTeamStats("awayTeam"),
       scorers: [],
-      homeForm:  "",
+      homeForm: "",
       awayForm: "",
-    })
+    });
     setEditorKey((prev) => prev + 4);
-  }
+  };
 
   const selectedCompetition = match
     ? competitions.find((el) => {
         const competitionSeason = el.competitionSeasons.find(
-          (comp) => comp.id === match.competitionSeasonId,
+          (comp) => comp.id === match.competitionSeasonId
         );
         if (competitionSeason) return el;
       })
@@ -226,7 +227,7 @@ function MatchForm({
   const [result, setResult] = useState((match && match.result) || "");
 
   const [competition, setCompetition] = useState<ICompetition | null>(
-    selectedCompetition || null,
+    selectedCompetition || null
   );
 
   const competitionOptions = competitions.map((el) => {
@@ -248,7 +249,7 @@ function MatchForm({
   const handleTeam = (
     name: string,
     value: string,
-    teamOption: "homeTeam" | "awayTeam",
+    teamOption: "homeTeam" | "awayTeam"
   ) => {
     const currentTeamData = data[teamOption];
 
@@ -342,7 +343,7 @@ function MatchForm({
           mutationToast(
             "Match",
             res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
-            "update",
+            "update"
           );
         }
         if (res.status === "error") {
@@ -358,7 +359,7 @@ function MatchForm({
           mutationToast(
             "Match",
             res.data.homeTeam?.longName + " vs " + res.data.awayTeam?.longName,
-            "create",
+            "create"
           );
           formRef.current?.reset();
           resetForm();
@@ -371,266 +372,279 @@ function MatchForm({
   };
 
   return (
-   <FormContainer>
-     <form onSubmit={handleSubmit} ref={formRef}>
-      <HStack justifyContent={"flex-end"} mb={4}>
-        <FormBtn disabled={isPending}>
-          {getButtonStatus(match, "Match", isPending)}
-        </FormBtn>
-      </HStack>
-      <Stack
-        flexDirection={{ base: "column" }}
-        alignItems={"center"}
-        css={stackStyles}
-        mb={"5"}
-        w={"full"}
-      >
-        {data.homeTeam && data.awayTeam && (
-          <Box>
-            <FormLabel as="Text">Teams <RequiredLabel /></FormLabel>
-            <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
-              <Field.Root required>
-                <CustomSelect
-                  name="homeTeam"
-                  description="Home Team"
-                  id="homeTeam"
-                  options={teamOptions}
-                  selectedValue={data.homeTeam.id}
-                  handleOnChange={handleOnChange}
-                />
-              </Field.Root>
-              <HStack align={"center"}>
-                <Field.Root>
-                  <Input
-                    name="goals"
-                    type="number"
-                    css={inputStyles}
-                    placeholder="-"
-                    id="homeGoals"
-                    variant="subtle"
-                    maxW={"5"}
-                    textAlign={"center"}
-                    value={data.homeTeam.goals || ""}
-                    onChange={(e) => {
-                      handleTeam(e.target.name, e.target.value, "homeTeam");
-                    }}
+    <FormContainer>
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <HStack justifyContent={"flex-end"} mb={4}>
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(match, "Match", isPending)}
+          </FormBtn>
+        </HStack>
+        <Stack
+          flexDirection={{ base: "column" }}
+          alignItems={"center"}
+          css={stackStyles}
+          mb={"5"}
+          w={"full"}
+        >
+          {data.homeTeam && data.awayTeam && (
+            <Box>
+              <FormLabel as="Text">
+                Teams <RequiredLabel />
+              </FormLabel>
+              <HStack w={"full"} flexDirection={{ base: "column", md: "row" }}>
+                <Field.Root required>
+                  <CustomSelect
+                    name="homeTeam"
+                    description="Home Team"
+                    id="homeTeam"
+                    options={teamOptions}
+                    selectedValue={data.homeTeam.id}
+                    handleOnChange={handleOnChange}
                   />
                 </Field.Root>
-               
-                <Text color={"text_md"} textTransform={"uppercase"}>
-                  VS
-                </Text>
-                <Field.Root>
-                  <Input
-                    name="goals"
-                    type="number"
-                    css={inputStyles}
-                    placeholder="-"
-                    id="awayGoals"
-                    variant="subtle"
-                    maxW={"5"}
-                    textAlign={"center"}
-                    value={data.awayTeam.goals || ""}
-                    onChange={(e) => {
-                      handleTeam(e.target.name, e.target.value, "awayTeam");
-                    }}
-                  />
-                </Field.Root>
-                
-              </HStack>
-              <Field.Root required>
-                <CustomSelect
-                  name="awayTeam"
-                  description="Away Team"
-                  id="awayTeam"
-                  options={teamOptions}
-                  selectedValue={data.awayTeam.id}
-                  handleOnChange={handleOnChange}
-                />
-              </Field.Root>
-            </HStack>
-          </Box>
-        )}
-      </Stack>
-      <Grid
-        gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-        gap={"4"}
-        css={stackStyles}
-      >
-        <GridItem>
-          <Field.Root required>
-            <FormLabel>Match Day <RequiredLabel /></FormLabel>
-            <Input
-              name="date"
-              p={"0 10px"}
-              placeholder="Select Date"
-              type="date"
-              variant={"outline"}
-              color={"text_lg"}
-              value={data.date}
-              onChange={handleOnChange}
-            />
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <Field.Root required>
-            <FormLabel>Match Time <RequiredLabel /></FormLabel>
-            <Input
-              name="time"
-              p={"0 10px"}
-              placeholder="Select Time"
-              type="time"
-              variant={"outline"}
-              color={"text_lg"}
-              value={data.time}
-              onChange={handleOnChange}
-            />
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <Field.Root required>
-            <FormLabel>Venue <RequiredLabel /></FormLabel>
-            <Input
-              name="venue"
-              p={"0 10px"}
-              placeholder="Enter venue"
-              type="text"
-              variant={"outline"}
-              color={"text_lg"}
-              value={data.venue}
-              onChange={handleOnChange}
-            />
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <Field.Root required>
-            <FormLabel>Competition <RequiredLabel /></FormLabel>
-            {competitions && (
-              <CustomSelect
-                name="competition"
-                description="competition"
-                options={competitionOptions}
-                selectedValue={competition ? competition.id : ""}
-                handleOnChange={(e: {
-                  target: { name: string; value: string };
-                }) => {
-                  const { value } = e.target;
-                  const competition = competitions.find(
-                    (el) => el.id === value,
-                  );
-                  if (!competition) return;
-                  setCompetition(competition);
-                }}
-              />
-            )}
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <Field.Root>
-            <FormLabel>Status</FormLabel>
-            <CustomSelect
-              name="status"
-              description="status"
-              options={statuses.map((el) => {
-                return {
-                  label: el,
-                  value: el,
-                };
-              })}
-              selectedValue={data.status || ""}
-              handleOnChange={handleOnChange}
-            />
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <Field.Root required>
-            <FormLabel>Competition Season <RequiredLabel /></FormLabel>
-            {competition && competitionSeasonOptions && (
-              <CustomSelect
-                name="competitionSeasonId"
-                description="season"
-                options={competitionSeasonOptions}
-                selectedValue={data.competitionSeasonId as string}
-                handleOnChange={handleOnChange}
-              />
-            )}
-          </Field.Root>
-        </GridItem>
-        <GridItem>
-          <MatchTeamForm
-            value={data.homeForm ?? ""}
-            team="home"
-            handleOnChange={handleOnChange}
-            name="homeForm"
-          />
-        </GridItem>
-        <GridItem>
-          <MatchTeamForm
-            value={data.awayForm ?? ""}
-            team="away"
-            handleOnChange={handleOnChange}
-            name="awayForm"
-          />
-        </GridItem>
-      </Grid>
-      <Box my={"5"}>
-        <CustomTabs defaultValue={tabs[0]}>
-          <>
-            <CustomTabList>
-              <>
-                {tabs.map((el) => {
-                  return (
-                    <CustomTabTrigger
-                      label={el}
-                      value={el}
-                      key={el}
-                      disabled={resultTabs.includes(el) && method !== "UPDATE"}
+                <HStack align={"center"}>
+                  <Field.Root>
+                    <Input
+                      name="goals"
+                      type="number"
+                      css={inputStyles}
+                      placeholder="-"
+                      id="homeGoals"
+                      variant="subtle"
+                      maxW={"5"}
+                      textAlign={"center"}
+                      value={data.homeTeam.goals || ""}
+                      onChange={(e) => {
+                        handleTeam(e.target.name, e.target.value, "homeTeam");
+                      }}
                     />
-                  );
+                  </Field.Root>
+
+                  <Text color={"text_md"} textTransform={"uppercase"}>
+                    VS
+                  </Text>
+                  <Field.Root>
+                    <Input
+                      name="goals"
+                      type="number"
+                      css={inputStyles}
+                      placeholder="-"
+                      id="awayGoals"
+                      variant="subtle"
+                      maxW={"5"}
+                      textAlign={"center"}
+                      value={data.awayTeam.goals || ""}
+                      onChange={(e) => {
+                        handleTeam(e.target.name, e.target.value, "awayTeam");
+                      }}
+                    />
+                  </Field.Root>
+                </HStack>
+                <Field.Root required>
+                  <CustomSelect
+                    name="awayTeam"
+                    description="Away Team"
+                    id="awayTeam"
+                    options={teamOptions}
+                    selectedValue={data.awayTeam.id}
+                    handleOnChange={handleOnChange}
+                  />
+                </Field.Root>
+              </HStack>
+            </Box>
+          )}
+        </Stack>
+        <Grid
+          gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={"4"}
+          css={stackStyles}
+        >
+          <GridItem>
+            <Field.Root required>
+              <FormLabel>
+                Match Day <RequiredLabel />
+              </FormLabel>
+              <Input
+                name="date"
+                p={"0 10px"}
+                placeholder="Select Date"
+                type="date"
+                variant={"outline"}
+                color={"text_lg"}
+                value={data.date}
+                onChange={handleOnChange}
+              />
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <Field.Root required>
+              <FormLabel>
+                Match Time <RequiredLabel />
+              </FormLabel>
+              <Input
+                name="time"
+                p={"0 10px"}
+                placeholder="Select Time"
+                type="time"
+                variant={"outline"}
+                color={"text_lg"}
+                value={data.time}
+                onChange={handleOnChange}
+              />
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <Field.Root required>
+              <FormLabel>
+                Venue <RequiredLabel />
+              </FormLabel>
+              <Input
+                name="venue"
+                p={"0 10px"}
+                placeholder="Enter venue"
+                type="text"
+                variant={"outline"}
+                color={"text_lg"}
+                value={data.venue}
+                onChange={handleOnChange}
+              />
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <Field.Root required>
+              <FormLabel>
+                Competition <RequiredLabel />
+              </FormLabel>
+              {competitions && (
+                <CustomSelect
+                  name="competition"
+                  description="competition"
+                  options={competitionOptions}
+                  selectedValue={competition ? competition.id : ""}
+                  handleOnChange={(e: {
+                    target: { name: string; value: string };
+                  }) => {
+                    const { value } = e.target;
+                    const competition = competitions.find(
+                      (el) => el.id === value
+                    );
+                    if (!competition) return;
+                    setCompetition(competition);
+                  }}
+                />
+              )}
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <Field.Root>
+              <FormLabel>Status</FormLabel>
+              <CustomSelect
+                name="status"
+                description="status"
+                options={statuses.map((el) => {
+                  return {
+                    label: el,
+                    value: el,
+                  };
                 })}
-              </>
-            </CustomTabList>
-            <CustomTabContent value={"preview"}>
-              <MatchPreview
-                matchForm={data}
-                setMatchForm={setData}
-                stackStyles={stackStyles}
+                selectedValue={data.status || ""}
                 handleOnChange={handleOnChange}
-                players={players}
               />
-            </CustomTabContent>
-            <CustomTabContent value={"report"}>
-              <MatchReport
-                matchForm={data}
-                setMatchForm={setData}
-                stackStyles={stackStyles}
-                handleOnChange={handleOnChange}
-                players={players}
-                result={result}
-                setResult={setResult}
-              />
-            </CustomTabContent>
-            <CustomTabContent value={"lineup"}>
-              <Lineup
-                stackStyles={stackStyles}
-                matchForm={data}
-                setMatchForm={setData}
-                handleOnChange={handleOnChange}
-                players={players}
-              />
-            </CustomTabContent>
-            <CustomTabContent value={"stats"}>
-              <MatchStats
-                stackStyles={stackStyles}
-                matchForm={data}
-                setMatchForm={setData}
-              />
-            </CustomTabContent>
-          </>
-        </CustomTabs>
-      </Box>
-    </form>
-   </FormContainer>
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <Field.Root required>
+              <FormLabel>
+                Competition Season <RequiredLabel />
+              </FormLabel>
+              {competition && competitionSeasonOptions && (
+                <CustomSelect
+                  name="competitionSeasonId"
+                  description="season"
+                  options={competitionSeasonOptions}
+                  selectedValue={data.competitionSeasonId as string}
+                  handleOnChange={handleOnChange}
+                />
+              )}
+            </Field.Root>
+          </GridItem>
+          <GridItem>
+            <MatchTeamForm
+              value={data.homeForm ?? ""}
+              team="home"
+              handleOnChange={handleOnChange}
+              name="homeForm"
+            />
+          </GridItem>
+          <GridItem>
+            <MatchTeamForm
+              value={data.awayForm ?? ""}
+              team="away"
+              handleOnChange={handleOnChange}
+              name="awayForm"
+            />
+          </GridItem>
+        </Grid>
+        <Box my={"5"}>
+          <CustomTabs defaultValue={tabs[0]}>
+            <>
+              <CustomTabList>
+                <>
+                  {tabs.map((el) => {
+                    return (
+                      <CustomTabTrigger
+                        label={el}
+                        value={el}
+                        key={el}
+                        disabled={
+                          resultTabs.includes(el) && method !== "UPDATE"
+                        }
+                      />
+                    );
+                  })}
+                </>
+              </CustomTabList>
+              <CustomTabContent value={"preview"}>
+                <MatchPreview
+                  matchForm={data}
+                  setMatchForm={setData}
+                  stackStyles={stackStyles}
+                  handleOnChange={handleOnChange}
+                  players={players}
+                />
+              </CustomTabContent>
+              <CustomTabContent value={"report"}>
+                <MatchReport
+                  matchForm={data}
+                  setMatchForm={setData}
+                  stackStyles={stackStyles}
+                  handleOnChange={handleOnChange}
+                  players={players}
+                  result={result}
+                  setResult={setResult}
+                />
+              </CustomTabContent>
+              <CustomTabContent value={"lineup"}>
+                <Lineup
+                  stackStyles={stackStyles}
+                  matchForm={data}
+                  setMatchForm={setData}
+                  handleOnChange={handleOnChange}
+                  players={players}
+                />
+              </CustomTabContent>
+              <CustomTabContent value={"stats"}>
+                <MatchStats
+                  stackStyles={stackStyles}
+                  matchForm={data}
+                  setMatchForm={setData}
+                />
+              </CustomTabContent>
+            </>
+          </CustomTabs>
+        </Box>
+      </form>
+    </FormContainer>
   );
 }
 

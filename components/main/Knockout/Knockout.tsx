@@ -36,9 +36,14 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
           let homeTeamWinner;
           let awayTeamWinner;
 
-          if(playoff?.match?.homeTeam?.goals && playoff?.match?.awayTeam?.goals){
-            homeTeamWinner = playoff?.match?.homeTeam?.goals > playoff?.match?.awayTeam?.goals
-            awayTeamWinner = playoff.match.awayTeam.goals > playoff.match.homeTeam.goals
+          if (
+            playoff?.match?.homeTeam?.goals &&
+            playoff?.match?.awayTeam?.goals
+          ) {
+            homeTeamWinner =
+              playoff?.match?.homeTeam?.goals > playoff?.match?.awayTeam?.goals;
+            awayTeamWinner =
+              playoff.match.awayTeam.goals > playoff.match.homeTeam.goals;
           }
 
           return (
@@ -50,39 +55,39 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                 href={`/matches/${playoff.match?.id}/report`}
                 className={clsx(styles["knockout-match"])}
               >
-                {playoff.match?.homeTeam &&
-                  (
-                    <KnockoutMatchDetails
-                      long_name={playoff.match?.homeTeam.longName}
-                      short_name={playoff.match?.homeTeam.shortName}
-                      logo={playoff.match?.homeTeam.logo}
-                      goals={playoff.match?.homeTeam.goals || ""}
-                      match_winner={ homeTeamWinner}
-                      // win_by_penalties={
-                      //   playoff.match?.home.penalties &&
-                      //   playoff.match?.away.penalties
-                      //     ? playoff.match?.home.penalties >
-                      //       playoff.match?.away.penalties
-                      //     : false
-                      // }
-                    />
-                  )}
-                {playoff.match?.homeTeam && playoff.match.awayTeam && 
-                <div className={clsx(styles.versus)}>:</div>}
-                {playoff.match?.awayTeam &&(
-                    <KnockoutMatchDetails
-                      long_name={playoff.match.awayTeam.longName}
-                      short_name={playoff.match.awayTeam.shortName}
-                      logo={playoff.match.awayTeam.logo}
-                      goals={playoff.match.awayTeam.goals || ''}
-                      match_winner={awayTeamWinner}
-                      // win_by_penalties={
-                      //   match.home.penalties && match.away.penalties
-                      //     ? match.away.penalties > match.home.penalties
-                      //     : false
-                      // }
-                    />
-                  )}
+                {playoff.match?.homeTeam && (
+                  <KnockoutMatchDetails
+                    long_name={playoff.match?.homeTeam.longName}
+                    short_name={playoff.match?.homeTeam.shortName}
+                    logo={playoff.match?.homeTeam.logo}
+                    goals={playoff.match?.homeTeam.goals || ""}
+                    match_winner={homeTeamWinner}
+                    // win_by_penalties={
+                    //   playoff.match?.home.penalties &&
+                    //   playoff.match?.away.penalties
+                    //     ? playoff.match?.home.penalties >
+                    //       playoff.match?.away.penalties
+                    //     : false
+                    // }
+                  />
+                )}
+                {playoff.match?.homeTeam && playoff.match.awayTeam && (
+                  <div className={clsx(styles.versus)}>:</div>
+                )}
+                {playoff.match?.awayTeam && (
+                  <KnockoutMatchDetails
+                    long_name={playoff.match.awayTeam.longName}
+                    short_name={playoff.match.awayTeam.shortName}
+                    logo={playoff.match.awayTeam.logo}
+                    goals={playoff.match?.awayTeam.goals || ""}
+                    match_winner={awayTeamWinner}
+                    // win_by_penalties={
+                    //   match.home.penalties && match.away.penalties
+                    //     ? match.away.penalties > match.home.penalties
+                    //     : false
+                    // }
+                  />
+                )}
               </Link>
             </li>
           );

@@ -18,6 +18,7 @@ function KnockoutMatchDetails({
   match_winner?: boolean;
   // win_by_penalties?: boolean;
 }) {
+  console.log(goals);
   return (
     <div
       className={clsx(
@@ -53,7 +54,7 @@ function KnockoutMatchDetails({
       </div>
       <div className={clsx(styles["knockout-match__score"])}>
         <span className={clsx(styles["knockout-match__number"])}>
-          {goals && +goals === 0 ? goals : "-"}
+          {goals ? goals : goals && +goals === 0 ? goals : "-"}
         </span>
       </div>
     </div>

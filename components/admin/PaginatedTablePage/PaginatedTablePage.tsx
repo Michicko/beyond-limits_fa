@@ -20,10 +20,10 @@ function PaginatedTablePage({
   pageTitle,
   headerCols,
   resource,
-  nextToken, 
-  setPageTokens, 
-  setCurrentPageIndex, 
-  pageTokens, 
+  nextToken,
+  setPageTokens,
+  setCurrentPageIndex,
+  pageTokens,
   currentPageIndex,
   createUrl,
   topContent,
@@ -35,15 +35,14 @@ function PaginatedTablePage({
   pageTitle: string;
   headerCols: string[];
   resource: string;
-  nextToken?: string| null; 
-  setPageTokens: React.Dispatch<React.SetStateAction<(string | null)[]>> 
-  setCurrentPageIndex: React.Dispatch<React.SetStateAction<number>> 
-  pageTokens: (string | null)[] 
+  nextToken?: string | null;
+  setPageTokens: React.Dispatch<React.SetStateAction<(string | null)[]>>;
+  setCurrentPageIndex: React.Dispatch<React.SetStateAction<number>>;
+  pageTokens: (string | null)[];
   currentPageIndex: number;
   createUrl?: string;
   topContent?: React.ReactNode;
 }) {
-
   return (
     <>
       <PageTitle pageTitle={pageTitle} />
@@ -57,7 +56,7 @@ function PaginatedTablePage({
             >
               <CreateButton
                 link={createUrl ?? `/cp/${resource.toLowerCase()}s/create`}
-                text={`Create ${resource}`}
+                text={`Create ${resource.slice(0, resource.length - 1)}`}
               />
             </Skeleton>
           </HStack>
@@ -112,12 +111,12 @@ function PaginatedTablePage({
               </>
             </Table>
           )}
-          <CursorPagination 
-            nextToken={nextToken} 
-            currentPageIndex={currentPageIndex} 
-            pageTokens={pageTokens} 
-            setCurrentPageIndex={setCurrentPageIndex} 
-            setPageTokens={setPageTokens} 
+          <CursorPagination
+            nextToken={nextToken}
+            currentPageIndex={currentPageIndex}
+            pageTokens={pageTokens}
+            setCurrentPageIndex={setCurrentPageIndex}
+            setPageTokens={setPageTokens}
           />
         </Container>
       </Box>

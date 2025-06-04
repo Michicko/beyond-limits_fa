@@ -1,5 +1,5 @@
 "use client";
-import { IDBLeague, IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
+import { IDBStandings, IDTeam, Nullable } from "@/lib/definitions";
 import {
   Card,
   Heading,
@@ -15,20 +15,24 @@ import {
 import React, { useState } from "react";
 import CustomSeparator from "../CustomSeparator";
 import LeagueStandingRow from "./LeagueStandingRow";
-import { createStandingRow, endLeague } from "@/app/_actions/actions";
+import { createStandingRow } from "@/app/_actions/actions";
 import { objectToFormData, sortArray } from "@/lib/helpers";
 import toast from "react-hot-toast";
 import useToast from "@/hooks/useToast";
 
 function LeagueStanding({
   teams,
-  league,
+  selectedTeams,
+  leagueId,
+  leagueStatus,
   serverStanding,
   competitionStatus,
   type,
 }: {
   teams: IDTeam[];
-  league: IDBLeague;
+  selectedTeams: Nullable<string>[];
+  leagueId: string;
+  leagueStatus?: "PENDING" | "COMPLETED" | null;
   serverStanding: IDBStandings[];
   type: "MIXED" | "CUP" | "LEAGUE";
   competitionStatus: "PENDING" | "COMPLETED" | null;
@@ -46,14 +50,14 @@ function LeagueStanding({
 
   const generateStanding = async () => {
     setError("");
-    if (!league.teams || league.teams.length < 1) {
+    if (!selectedTeams || selectedTeams.length < 1) {
       toast("No teams available, please add teams to generate standing");
       return;
     }
 
     setIsGenerating(true);
 
-    const leagueTeams = league.teams
+    const leagueTeams = selectedTeams
       .map((teamId) => {
         const currTeam = teams.find((team) => team.id === teamId);
         return currTeam;
@@ -62,7 +66,7 @@ function LeagueStanding({
       .sort((a, b) => a.longName.localeCompare(b.longName));
 
     const standing = leagueTeams.map((team, index) => ({
-      leagueId: league.id,
+      leagueId: leagueId,
       teamId: team.id,
       name: team.longName,
       logo: team.logo,
@@ -128,7 +132,7 @@ function LeagueStanding({
 
     return (
       <LeagueStandingRow
-        leagueId={league.id}
+        leagueId={leagueId}
         team={team}
         standing={standing}
         key={(standing.teamId as string) + standing.position}
@@ -141,16 +145,30 @@ function LeagueStanding({
 
   const { mutationPromiseToast } = useToast();
   const [isEnding, setIsEnding] = useState(false);
+  const success = { title: "League ended", desc: `League ended successfully!` };
+  const isError = {
+    title: "Failed to end league",
+    desc: `Failed to end league`,
+  };
+  const loading = {
+    title: "Ending league",
+    desc: `Ending league, please wait...`,
+  };
 
   const endLeagueFn = async () => {
     setIsEnding(true);
-    mutationPromiseToast(
-      endLeague(league.id),
-      { title: "League ended", desc: `League ended successfully!` },
-      { title: "Failed to end league", desc: `Failed to end league` },
-      { title: "Ending league", desc: `Ending league, please wait...` },
-      setIsEnding
-    );
+    const promise = fetch("/api/end-league", {
+      method: "POST",
+      body: JSON.stringify({ id: leagueId }),
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error?.message || "Failed to End Season");
+      }
+      return data;
+    });
+
+    mutationPromiseToast(promise, success, isError, loading, setIsEnding);
   };
 
   return (
@@ -177,12 +195,10 @@ function LeagueStanding({
                   colorPalette={"cyan"}
                   disabled={
                     competitionStatus === "COMPLETED" ||
-                    league.status === "COMPLETED" ||
+                    leagueStatus === "COMPLETED" ||
                     isEnding
                   }
-                  onClick={async () => {
-                    await endLeagueFn();
-                  }}
+                  onClick={async () => await endLeagueFn()}
                 >
                   {isEnding ? "Ending Main Round..." : "End Main Round"}
                 </Button>

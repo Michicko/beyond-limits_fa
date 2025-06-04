@@ -29,10 +29,7 @@ function EndSeason({
   const [isEnding, setIsEnding] = useState(false);
 
   const endSeason = async () => {
-    if(confirm('Are you sure?')){
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("status", "COMPLETED");
+    if (confirm("Are you sure?")) {
       setIsEnding(true);
 
       mutationPromiseToast(

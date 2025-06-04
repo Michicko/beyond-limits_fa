@@ -74,7 +74,7 @@ function Positions() {
                         fontSize={"md"}
                         fontWeight={"500"}
                       >
-                        {position.longName}
+                        {position.longName?.toLowerCase()}
                       </Text>
                       <CustomMenu>
                         <>

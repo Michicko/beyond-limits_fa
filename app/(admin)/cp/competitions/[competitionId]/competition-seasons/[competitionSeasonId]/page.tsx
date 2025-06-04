@@ -33,11 +33,10 @@ function CompetitionSeason({
 
   const matches = competitionSeason && competitionSeason.matches;
 
-  const {
-    data: teamsData,
-    error: teamsError,
-    isLoading: isTeamsLoading,
-  } = useSWR(["lazy-teams", params.competitionSeasonId], getTeamsLazyLoaded);
+  const { data: teamsData, isLoading: isTeamsLoading } = useSWR(
+    ["lazy-teams", params.competitionSeasonId],
+    getTeamsLazyLoaded
+  );
 
   const teams = teamsData && teamsData.data;
 
@@ -87,7 +86,10 @@ function CompetitionSeason({
                       teams={teams}
                       leagueRounds={league.leagueRounds}
                       matches={matches}
-                      league={league}
+                      leagueStatus={league.status}
+                      leagueId={league.id}
+                      selectedTeams={league.teams}
+                      standings={league.standings}
                       competitionStatus={competitionSeason.status}
                       type={competitionSeason.type}
                     />
@@ -120,7 +122,10 @@ function CompetitionSeason({
                           teams={teams}
                           leagueRounds={league.leagueRounds}
                           matches={matches}
-                          league={league}
+                          leagueStatus={league.status}
+                          leagueId={league.id}
+                          selectedTeams={league.teams}
+                          standings={league.standings}
                           competitionStatus={competitionSeason.status}
                           type={competitionSeason.type}
                         />

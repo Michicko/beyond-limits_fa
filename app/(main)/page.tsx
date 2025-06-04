@@ -94,7 +94,7 @@ export default async function Home() {
                 type="section"
               />
             </Flex>
-            <PlayerList players={homepageContent.players} />
+            <PlayerList players={homepageContent.players.slice(0, 3)} />
           </Container>
         )}
         {homepageContent?.fixtures && homepageContent.fixtures.length > 0 && (
@@ -153,7 +153,7 @@ export default async function Home() {
         {homepageContent && (
           <Container as="section" size="md">
             {homepageContent?.highlights && (
-              <VideoCards videos={homepageContent.highlights} />
+              <VideoCards videos={homepageContent.highlights.slice(0, 3)} />
             )}
           </Container>
         )}

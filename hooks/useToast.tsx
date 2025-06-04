@@ -79,7 +79,7 @@ function useToast() {
         return {
           title: `${success.title}`,
           description: `${success.desc}`,
-          duration: 6000,
+          duration: 4000,
         };
       },
       error: (err) => {
@@ -92,7 +92,7 @@ function useToast() {
       loading: {
         title: `${loading.title}...`,
         description: "Please wait",
-        duration: 6000,
+        duration: 4000,
       },
     });
   };

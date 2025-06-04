@@ -11,17 +11,16 @@ import LinkTab from "@/components/main/Tab/LinkTab";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Text from "@/components/main/Typography/Text";
 
-
 const links = [
   { name: "Under-19", href: "/players/under_19" },
   { name: "Under-17", href: "/players/under_17" },
 ];
 
 export const metadata = {
-  title: 'Beyond Limits Fa. Players Profiles',
-  description: "Read profiles and stats for the Beyond Limits Fa First Team and Reserves.",
+  title: "Beyond Limits Fa. Players Profiles",
+  description:
+    "Read profiles and stats for the Beyond Limits Fa First Team and Reserves.",
 };
-
 
 async function Players({ params }: { params: { playersSlug: string } }) {
   const { data: positions, errors } =
@@ -39,16 +38,19 @@ async function Players({ params }: { params: { playersSlug: string } }) {
 
   const order = [
     "goal keeper",
+    "defender",
     "central back",
     "right back",
     "left back",
+    "midfielder",
     "defensive midfielder",
     "central midfielder",
     "attacking midfielder",
+    "attacker",
     "wing forward",
     "winger",
     "forward",
-    "striker"
+    "striker",
   ];
 
   const rows = () => {
@@ -64,7 +66,9 @@ async function Players({ params }: { params: { playersSlug: string } }) {
         (player) => player.ageGroup === params.playersSlug.toUpperCase()
       );
 
-      return filteredPlayers.length < 1 ? <></> : (
+      return filteredPlayers.length < 1 ? (
+        <></>
+      ) : (
         <div key={row.longName}>
           <Heading
             letterCase="capitalize"

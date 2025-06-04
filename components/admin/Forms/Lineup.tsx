@@ -1,4 +1,3 @@
-import CheckBox from "@/components/admin/CheckBox/CheckBox";
 import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
 import {
   Box,
@@ -18,6 +17,7 @@ import Substitutes from "./Substitutes";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
+import PlayersLineup from "../PlayersLineup/PlayersLineup";
 
 interface IPlayer {
   id: string;
@@ -25,9 +25,10 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  ageGroup: string | null;
   playerPosition: {
-    shortName: string
-  }
+    shortName: string;
+  };
 }
 
 type IMatchI = Pick<
@@ -65,79 +66,82 @@ function Lineup({
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
   players: IPlayer[];
 }) {
+  const positions = [
+    "gk",
+    "cb",
+    "rb",
+    "lb",
+    "dm",
+    "cm",
+    "fw",
+    "w",
+    "lw",
+    "rw",
+    "st",
+  ];
 
-
-  const positions = ['gk', 'cb', 'rb', 'lb', 'dm', 'cm', 'fw', 'w', 'lw', 'rw', 'st'];
-  
-  const remainingPlayers = players.sort((a, b) => {
-    return positions.indexOf(a.playerPosition.shortName.toLowerCase()) - positions.indexOf(b.playerPosition.shortName.toLowerCase())
-    }).filter((player) => {
+  const remainingPlayers = players
+    .sort((a, b) => {
+      return (
+        positions.indexOf(a.playerPosition.shortName.toLowerCase()) -
+        positions.indexOf(b.playerPosition.shortName.toLowerCase())
+      );
+    })
+    .filter((player) => {
       if (matchForm.lineup && matchForm.lineup.includes(player.id)) return;
       return player;
     });
 
+  const mainPlayers = players.filter(
+    (el) => !matchForm.substitutes?.includes(el.id)
+  );
 
+  const onCheckedChange = (
+    playerId: string,
+    selectedPlayers: Nullable<string>[] | null,
+    field: "lineup" | "substitutes"
+  ) => {
+    const tempList = selectedPlayers ? [...selectedPlayers] : [];
+    let updatedList = tempList;
+
+    const isAlreadySelected = updatedList.includes(playerId);
+    updatedList = isAlreadySelected
+      ? updatedList.filter((el) => el !== playerId)
+      : [...updatedList, playerId];
+
+    setMatchForm({
+      ...matchForm,
+      [field]: updatedList,
+    });
+  };
 
   return (
     <Box css={stackStyles} my={"5"}>
       <FormLabel as="Text">Lineup</FormLabel>
-      <Box>
-        <HStack justifyContent={'space-between'} alignItems={'center'}>
+      {/* lineup */}
+      <Box minW={"35px"}>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
           <FormLabel as="Text">Starting Lineup</FormLabel>
-          <FormLabel as="Text">{matchForm?.lineup?.length ?? 0} Selected</FormLabel>
+          <FormLabel as="Text">
+            {matchForm?.lineup?.length ?? 0} Selected
+          </FormLabel>
         </HStack>
-        
-        <SimpleGrid columns={{base: 1, md: 2, lg: 3}} gap={"4"} alignItems={"center"}>
-          {players.map((player) => {
-            return (
-              <Flex
-                key={player.id}
-                alignItems={"center"}
-                gap={"2"}
-                bg={"card_bg"}
-                p={"2"}
-                maxH={'40px'}
-                borderRadius={"xs"}
-              >
-                {matchForm.lineup && (
-                  <Field.Root>
-                    <CheckBox
-                      name={player.id}
-                      checked={matchForm.lineup.includes(player.id)}
-                      size="xs"
-                      label={player.firstname}
-                      onCheckedChange={() => {
-                        const tempLineup = matchForm.lineup
-                          ? [...matchForm.lineup]
-                          : [];
-                        let lineup = tempLineup;
-                        const currPlayer = lineup.find(
-                          (el) => el === player.id
-                        );
-                        if (currPlayer) {
-                          lineup = lineup.filter((el) => el !== currPlayer);
-                        } else {
-                          lineup = [...lineup, player.id];
-                        }
-                        setMatchForm({
-                          ...matchForm,
-                          lineup,
-                        });
-                      }}
-                      showLabel={false}
-                    />
-                  </Field.Root>
-                )}
-                {player.homeKit && (
-                  <Image src={player.homeKit} width={"25px"} />
-                )}
-                <Text whiteSpace={"nowrap"} textTransform={'capitalize'}>
-                  {player.playerPosition.shortName}. {player.squadNo}. {player.firstname} {player.lastname}
-                </Text>
-              </Flex>
-            );
-          })}
-        </SimpleGrid>
+        <Box w={"full"}>
+          <PlayersLineup
+            ageGroup="UNDER_19"
+            players={mainPlayers}
+            selectedPlayers={matchForm.lineup}
+            field={"lineup"}
+            onCheckedChange={onCheckedChange}
+          />
+          <PlayersLineup
+            ageGroup="UNDER_17"
+            players={mainPlayers}
+            selectedPlayers={matchForm.lineup}
+            onCheckedChange={onCheckedChange}
+            field={"lineup"}
+          />
+        </Box>
       </Box>
       <Separator
         my={"5"}
@@ -146,11 +150,31 @@ function Lineup({
         colorPalette={"gray"}
         bg={"gray"}
       />
-      <Substitutes
-        matchForm={matchForm}
-        setMatchForm={setMatchForm}
-        players={remainingPlayers}
-      />
+      {/* subs */}
+      <Box>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
+          <FormLabel as="Text">Substitutes</FormLabel>
+          <FormLabel as="Text">
+            {matchForm?.substitutes?.length ?? 0} Selected
+          </FormLabel>
+        </HStack>
+        <Box w={"full"}>
+          <PlayersLineup
+            ageGroup="UNDER_19"
+            players={remainingPlayers}
+            selectedPlayers={matchForm.substitutes}
+            onCheckedChange={onCheckedChange}
+            field={"substitutes"}
+          />
+          <PlayersLineup
+            ageGroup="UNDER_17"
+            players={remainingPlayers}
+            selectedPlayers={matchForm.substitutes}
+            onCheckedChange={onCheckedChange}
+            field={"substitutes"}
+          />
+        </Box>
+      </Box>
       <Separator
         my={"5"}
         height={"1px"}

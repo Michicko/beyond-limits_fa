@@ -1,11 +1,7 @@
 "use server";
 import { Schema } from "@/amplify/data/resource";
 import { createEntityFactory } from "@/lib/factoryFunctions";
-import {
-  filterGroupedSeasonsByCurrent,
-  formDataToObject,
-  getExpectedSeasonLabel,
-} from "@/lib/helpers";
+import { filterGroupedSeasonsByCurrent, formDataToObject } from "@/lib/helpers";
 import { cookiesClient, getRole } from "@/utils/amplify-utils";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";
@@ -20,6 +16,7 @@ interface ICompetitionSeason {
   id: string;
   logo: string;
   name: string;
+  season?: string;
 }
 
 interface IMatch {
@@ -316,11 +313,17 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.homeTeam.logo",
         "matches.homeTeam.shortName",
         "matches.homeTeam.longName",
+        "matches.homeTeam.goals",
         "matches.awayTeam.id",
         "matches.awayTeam.logo",
         "matches.awayTeam.shortName",
         "matches.awayTeam.longName",
+        "matches.awayTeam.goals",
+        "matches.scorers",
+        "matches.review",
         "matches.competitionSeason.id",
+        "matches.result",
+        "matches.competitionSeasonId",
         "matches.competitionSeason.season",
         "matches.competitionSeason.name",
         "matches.competitionSeason.logo",
@@ -340,6 +343,7 @@ export async function getCurrentCompetitionSeasonsMatches(
   for (const season of competitionSeasons) {
     matches = [...matches, ...season.matches];
   }
+
   return matches;
 }
 
@@ -396,12 +400,78 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  const upcomingMatch = fixtures[0] || null;
+  const upcomingMatch = (fixtures && fixtures[0]) || null;
   const lastMatch = results[results.length - 1] || null;
 
   return {
     upcomingMatch,
     lastMatch,
+    fixtures,
+  };
+}
+
+export async function getCurrentSeasonMatches(
+  client: "guest" | "auth",
+  month: number
+) {
+  const matches = await getCurrentCompetitionSeasonsMatches(client);
+
+  const { results, fixtures } = matches.reduce(
+    (acc, match) => {
+      if (match.status === "COMPLETED") {
+        acc.results.push(match);
+      } else {
+        acc.fixtures.push(match);
+      }
+      return acc;
+    },
+    { results: [], fixtures: [] } as {
+      results: typeof matches;
+      fixtures: typeof matches;
+    }
+  );
+
+  // Filter both results and fixtures by month
+  const filterByMonth = (list: typeof matches) =>
+    list.filter((match) => {
+      const matchDate = new Date(match.date);
+      return matchDate.getMonth() === month; // JS months are 0-based
+    });
+
+  const filteredResults = filterByMonth(results);
+  const filteredFixtures = filterByMonth(fixtures);
+
+  // Sort by date ascending
+  filteredResults.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  filteredFixtures.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  return {
+    fixtures: filteredFixtures,
+    results: filteredResults,
+  };
+}
+
+export async function getSeasonMatches(
+  client: "guest" | "auth",
+  month: number,
+  season: string
+) {
+  const { fixtures, results } = await getCurrentSeasonMatches(client, month);
+
+  const filteredFixtures: IMatch[] | [] = fixtures.filter(
+    (el) => el.competitionSeason?.season === season
+  );
+  const filteredResults: IMatch[] | [] = results.filter(
+    (el) => el.competitionSeason?.season === season
+  );
+
+  return {
+    fixtures: filteredFixtures,
+    results: filteredResults,
   };
 }
 
@@ -504,7 +574,7 @@ export async function fetchDashboardData() {
 
     const upcomingCompetitionSeasonRounds = upcomingMatch
       ? matches.filter(
-          (el) => el.competitionSeasonId === upcomingMatch.competitionSeasonId
+          (el) => el.competitionSeasonId == upcomingMatch.competitionSeasonId
         )
       : [];
 
@@ -561,48 +631,11 @@ export async function fetchDashboardData() {
 
 export async function fetchHomepageData() {
   const auth = await isLoggedIn();
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const startOfMonth = new Date(year, month, 1).toISOString().split("T")[0];
-  const startOfNextMonth = new Date(year, month + 1, 1)
-    .toISOString()
-    .split("T")[0];
 
   try {
-    const { lastMatch } = await getPrevNextMatch(auth ? "auth" : "guest");
-
-    const { data: fixtures } = await cookiesClient.models.Match.list({
-      limit: 5,
-      authMode: auth ? "userPool" : "iam",
-      filter: {
-        status: {
-          eq: "UPCOMING",
-        },
-        date: {
-          ge: startOfMonth,
-          lt: startOfNextMonth,
-        },
-      },
-      selectionSet: [
-        "id",
-        "status",
-        "competitionSeason.logo",
-        "competitionSeason.name",
-        "date",
-        "time",
-        "homeTeam.*",
-        "awayTeam.*",
-        "createdAt",
-        "review",
-      ],
-    });
-
-    const sortedFixtures = Array.isArray(fixtures)
-      ? fixtures.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        )
-      : [];
+    const { lastMatch, upcomingMatch, fixtures } = await getPrevNextMatch(
+      auth ? "auth" : "guest"
+    );
 
     const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
     const { data: articles } = await cookiesClient.models.Article.list({
@@ -635,7 +668,7 @@ export async function fetchHomepageData() {
           eq: "UNDER_19",
         },
       },
-      limit: 4,
+      limit: 3,
       authMode: auth ? "userPool" : "iam",
       selectionSet: [
         "id",
@@ -665,7 +698,7 @@ export async function fetchHomepageData() {
       nnlStanding,
       articles,
       players,
-      fixtures: sortedFixtures,
+      fixtures: fixtures.slice(0, 4),
       highlights,
     };
 

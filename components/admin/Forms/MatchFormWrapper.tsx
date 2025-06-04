@@ -38,20 +38,21 @@ async function MatchFormWrapper({
       selectionSet: ["id", "longName", "competitionSeasons.*"],
     });
 
-  const { data: teams } =
-    await cookiesClient.models.Team.list({
-      selectionSet: ["id", "longName", "shortName", "logo"],
-    });
+  const { data: teams } = await cookiesClient.models.Team.list({
+    selectionSet: ["id", "longName", "shortName", "logo"],
+  });
 
-  const { data: players } =
-    await cookiesClient.models.Player.list({
-      filter: {
-        ageGroup: {
-          eq: 'UNDER_19'
-        }
-      },
-      selectionSet: ["id", "firstname", "lastname", "homeKit", "squadNo", "playerPosition.shortName"],
-    });
+  const { data: players } = await cookiesClient.models.Player.list({
+    selectionSet: [
+      "id",
+      "firstname",
+      "lastname",
+      "homeKit",
+      "squadNo",
+      "playerPosition.shortName",
+      "ageGroup",
+    ],
+  });
   const statuses = cookiesClient.enums.MatchStatus.values();
 
   return errors ? (

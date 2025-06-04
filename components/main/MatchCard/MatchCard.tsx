@@ -74,7 +74,7 @@ function MatchCard({
         </div>
         <div className={styles["header-box"]}>
           <p className={clsx(styles["header-text"], styles.date)}>
-            {moment(match.date).format('ll')}
+            {moment(match.date).format("ll")}
           </p>
         </div>
       </div>
@@ -86,14 +86,13 @@ function MatchCard({
           showName={showName}
         />
 
-        {match.status === "UPCOMING" &&
-          !isLessThan24HoursAgo(match.date) && (
-            <MatchInfo
-              id={match.id}
-              status={match.status}
-              time={formatTime(match.time)}
-            />
-          )}
+        {match.status === "UPCOMING" && !isLessThan24HoursAgo(match.date) && (
+          <MatchInfo
+            id={match.id}
+            status={match.status}
+            time={formatTime(match.time)}
+          />
+        )}
 
         {match.status === "UPCOMING" &&
           match.review &&

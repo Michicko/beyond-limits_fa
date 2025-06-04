@@ -1,5 +1,5 @@
 import moment from "moment";
-import {IMatch, Nullable } from "./definitions";
+import { IMatch, Nullable } from "./definitions";
 import { months } from "./placeholder-data";
 
 interface IPlayer {
@@ -24,9 +24,9 @@ type Honor = {
   longName: string;
   trophyArticleId: string | null;
   competitionSeasons: {
-    isWinner: Nullable<boolean>
+    isWinner: Nullable<boolean>;
     season: string;
-    status: "PENDING" | "COMPLETED" | null
+    status: "PENDING" | "COMPLETED" | null;
   }[];
 };
 
@@ -108,8 +108,6 @@ export const formatDateTime = (date: string, time: string) => {
   return dateTime.startOf("minutes").fromNow();
 };
 
-
-
 export const playOffsLabels = [
   { value: "QUALIFIERS", label: "qualifiers" },
   { value: "FINALS_128", label: "1/128-finals" },
@@ -186,15 +184,17 @@ export const getMatches = (
   status: "UPCOMING" | "COMPLETED",
   param?: string
 ) => {
-  return matches.filter((el) => {
-    const date = new Date(el.date);
-    const month = date.getUTCMonth();
-    if (param) {
-      return el.status === status && months.indexOf(param) === month;
-    } else {
-      return el.status === status;
-    }
-  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());;
+  return matches
+    .filter((el) => {
+      const date = new Date(el.date);
+      const month = date.getUTCMonth();
+      if (param) {
+        return el.status === status && months.indexOf(param) === month;
+      } else {
+        return el.status === status;
+      }
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
 export const getMatchesByDateRange = (
@@ -295,10 +295,10 @@ export const removeImgBg = (src: string) => {
 };
 
 export const isLessThan24HoursAgo = (dateString: string) => {
-   const [year, month, day] = dateString.split('-').map(Number);
+  const [year, month, day] = dateString.split("-").map(Number);
 
   // Add a time buffer (e.g. 12:00 noon) to reduce false negatives
-  const inputDate = new Date(year, month - 1, day, 12, 0, 0); 
+  const inputDate = new Date(year, month - 1, day, 12, 0, 0);
   const now = new Date();
 
   const diffInMs = now.getTime() - inputDate.getTime();
@@ -315,10 +315,10 @@ export const getHonorsStats = (honors: Honor[]) => {
           seasonObj.isWinner &&
           seasonObj.status === "COMPLETED" &&
           seasonObj.season &&
-          seasonObj.season.trim() !== ''
+          seasonObj.season.trim() !== ""
         ) {
           acc.numbersWon += 1;
-          acc.seasonsWon.push(seasonObj.season.split('/')[1]);
+          acc.seasonsWon.push(seasonObj.season.split("/")[1]);
         }
       });
       return acc;
@@ -329,7 +329,6 @@ export const getHonorsStats = (honors: Honor[]) => {
     }
   );
 };
-
 
 export const appendMonthToLink = (link: string) => {
   const date = new Date();
@@ -364,15 +363,20 @@ export const getCloudinaryPublicId = (url: string): string | null => {
 export const getCloudinaryFilename = (url: string): string | null => {
   const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)$/);
   return match ? match[1] : null;
-}
+};
 
-export function sortByCreatedAt<T extends { createdAt: string | Date }>(list: T[]): T[] {
+export function sortByCreatedAt<T extends { createdAt: string | Date }>(
+  list: T[]
+): T[] {
   return [...list].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 }
 
-export const getExpectedSeasonLabel = (seasonStartMonth: number, date: Date = new Date()): string => {
+export const getExpectedSeasonLabel = (
+  seasonStartMonth: number,
+  date: Date = new Date()
+): string => {
   const year = date.getFullYear();
   const month = date.getMonth();
 
@@ -381,12 +385,12 @@ export const getExpectedSeasonLabel = (seasonStartMonth: number, date: Date = ne
   } else {
     return `${year - 1}/${year}`;
   }
-}
+};
 
 export const findCurrentSeason = (
   competitionSeasons: any[],
   referenceDate: Date = new Date(),
-  selectedSeasonLabel?: string, 
+  selectedSeasonLabel?: string
 ) => {
   if (!competitionSeasons) return undefined;
 
@@ -396,8 +400,8 @@ export const findCurrentSeason = (
     );
   }
 
-   // If only one season is available, return it regardless of its date
-   if (competitionSeasons.length === 1) {
+  // If only one season is available, return it regardless of its date
+  if (competitionSeasons.length === 1) {
     return competitionSeasons[0];
   }
 
@@ -405,13 +409,17 @@ export const findCurrentSeason = (
     const startMonthIndex = months.indexOf(season.seasonStartMonth); // assumes seasonStartMonth is a string
     if (startMonthIndex === -1) return false;
 
-    const expectedLabel = getExpectedSeasonLabel(startMonthIndex, referenceDate);
+    const expectedLabel = getExpectedSeasonLabel(
+      startMonthIndex,
+      referenceDate
+    );
     return season.season === expectedLabel;
   });
 };
 
-
-export function filterGroupedSeasonsByCurrent(competitionSeasons: any[]): any[] {
+export function filterGroupedSeasonsByCurrent(
+  competitionSeasons: any[]
+): any[] {
   if (!competitionSeasons || competitionSeasons.length === 0) return [];
 
   const groupedByName: Record<string, any[]> = {};
@@ -433,11 +441,10 @@ export function filterGroupedSeasonsByCurrent(competitionSeasons: any[]): any[] 
   return filteredSeasons;
 }
 
-
 export function capitalize(str: string) {
-  if (!str) return '';
+  if (!str) return "";
   return str
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
