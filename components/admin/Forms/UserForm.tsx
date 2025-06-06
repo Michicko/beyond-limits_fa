@@ -7,11 +7,13 @@ import RequiredLabel from "./RequiredLabel";
 import FormBtn from "./FormBtn";
 import { formDataToObject, getButtonStatus } from "@/lib/helpers";
 import useToast from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 
 function UserForm() {
   const formRef = useRef<HTMLFormElement | null>(null);
   const { mutationPromiseToast } = useToast();
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const success = {
     title: "user created",
@@ -24,6 +26,10 @@ function UserForm() {
   const loading = {
     title: "creating user",
     desc: `creating user, please wait...`,
+  };
+
+  const onSuccess = () => {
+    router.refresh();
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,7 +49,14 @@ function UserForm() {
       return data;
     });
 
-    mutationPromiseToast(promise, success, err, loading, setIsPending);
+    mutationPromiseToast(
+      promise,
+      success,
+      err,
+      loading,
+      setIsPending,
+      onSuccess
+    );
   };
 
   return (

@@ -19,7 +19,6 @@ export const handler: Handler = async (event) => {
     const response = await client.send(command);
     return response;
   } catch (error) {
-    console.error("Error removing user from group:", error);
     throw new Error("Failed to remove user from group");
   }
 };

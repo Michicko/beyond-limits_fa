@@ -13,7 +13,7 @@ type Highlight = Schema["Highlight"]["type"];
 
 export const getHighlights = async (nextToken?: string | null) => {
   return cookiesClient.models.Highlight.list({
-    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"], 
+    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"],
     nextToken,
     limit: 25,
     authMode: "userPool",
@@ -38,8 +38,10 @@ export const createHighlight = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Highlight",
-            'title', input.title.toLowerCase(),
+          await checkUniqueField(
+            "Highlight",
+            "title",
+            input.title.toLowerCase()
           )
         ).length > 0
       ) {
@@ -57,7 +59,7 @@ export const createHighlight = async (formData: FormData) => {
 export const updateHighlight = async (
   id: string,
   formData: FormData,
-  currentUniqueValue: string,
+  currentUniqueValue: string
 ) => {
   const base = formDataToObject<Highlight>(formData);
   const highlightUpdater = updateEntityFactory<Highlight, Highlight>();
@@ -77,8 +79,11 @@ export const updateHighlight = async (
       if (input.title !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("Highlight",
-            'title', input.title.toLowerCase())
+            await checkUniqueField(
+              "Highlight",
+              "title",
+              input.title.toLowerCase()
+            )
           ).length > 0
         ) {
           return {
@@ -99,15 +104,5 @@ export async function deleteHighlight(id: string) {
     id,
     modelName: "Highlight",
     pathToRevalidate: "/cp/highlights",
-    // postDelete: async () => {
-    //   try {
-    //     const publicId = getCloudinaryPublicId(image);
-    //     if (publicId) {
-    //       await deleteCloudinaryImage(publicId);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error deleting images:", error);
-    //   }
-    // },
   });
 }

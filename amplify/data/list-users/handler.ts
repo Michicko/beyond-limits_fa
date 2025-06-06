@@ -16,7 +16,6 @@ export const handler: Handler = async () => {
     const response = await client.send(command);
     return response;
   } catch (error) {
-    console.error("Error listing users:", error);
     throw new Error("Failed to list users");
   }
 };

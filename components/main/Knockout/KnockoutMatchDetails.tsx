@@ -18,7 +18,6 @@ function KnockoutMatchDetails({
   match_winner?: boolean;
   // win_by_penalties?: boolean;
 }) {
-  console.log(goals);
   return (
     <div
       className={clsx(

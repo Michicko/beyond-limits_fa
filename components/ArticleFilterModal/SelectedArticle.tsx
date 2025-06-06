@@ -32,7 +32,6 @@ function SelectedArticle({
         setArticle({ id: articleId, title: response.title });
       }
     } catch (error) {
-      console.error("Failed to fetch article:", error);
       toast.error("Failed to fetch article: " + error, { duration: 6000 });
     }
   }, []);

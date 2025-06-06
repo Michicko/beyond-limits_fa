@@ -19,7 +19,6 @@ export const handler: Handler = async (event) => {
     const response = await client.send(command);
     return response;
   } catch (error) {
-    console.error("Error adding user to group:", error);
     throw new Error("Failed to add user to group");
   }
 };

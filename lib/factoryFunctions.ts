@@ -38,12 +38,12 @@ type Primitive = string | number | boolean;
 export const checkUniqueField = async (
   modelName: keyof typeof cookiesClient.models,
   field: string,
-  value: string,
+  value: string
 ) => {
   const model = cookiesClient.models[modelName] as any;
 
   const filter = {
-    [field]: { eq: value }
+    [field]: { eq: value },
   };
 
   const { data: existing } = await model.list({ filter });
@@ -100,7 +100,6 @@ export function getOneEntityFactory<TOutput>() {
         data: data ?? [],
       };
     } catch (error) {
-      console.error(error);
       return {
         status: "error",
         message: (error as Error).message || "An unknown error occurred",
@@ -150,7 +149,6 @@ export function getEntityFactory<TOutput>() {
         data: data ?? [],
       };
     } catch (error) {
-      console.error(error);
       return {
         status: "error",
         message: (error as Error).message || "An unknown error occurred",
@@ -278,7 +276,6 @@ export function updateEntityFactory<TInput, TOutput>() {
         data,
       };
     } catch (error) {
-      console.error(error);
       return {
         status: "error",
         message: (error as Error).message || "An unknown error occurred",

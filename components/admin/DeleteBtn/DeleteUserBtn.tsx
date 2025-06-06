@@ -4,11 +4,13 @@ import useToast from "@/hooks/useToast";
 import { getIcon } from "@/lib/icons";
 import { IconButton } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function DeleteUserBtn({ userId }: { userId: string }) {
   const { mutationPromiseToast } = useToast();
   const [isPending, setIsPending] = useState(false);
   const { authenticatedUserId } = usePageContext();
+  const router = useRouter();
 
   const success = {
     title: "user deleted",
@@ -21,6 +23,10 @@ function DeleteUserBtn({ userId }: { userId: string }) {
   const loading = {
     title: "deleting user",
     desc: `deleting user, please wait...`,
+  };
+
+  const onSuccess = () => {
+    router.refresh();
   };
 
   const handleSubmit = () => {
@@ -37,7 +43,14 @@ function DeleteUserBtn({ userId }: { userId: string }) {
         return data;
       });
 
-      mutationPromiseToast(promise, success, err, loading, setIsPending);
+      mutationPromiseToast(
+        promise,
+        success,
+        err,
+        loading,
+        setIsPending,
+        onSuccess
+      );
     }
   };
 

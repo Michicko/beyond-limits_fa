@@ -633,7 +633,7 @@ export async function fetchHomepageData() {
   const auth = await isLoggedIn();
 
   try {
-    const { lastMatch, upcomingMatch, fixtures } = await getPrevNextMatch(
+    const { lastMatch, fixtures } = await getPrevNextMatch(
       auth ? "auth" : "guest"
     );
 
@@ -663,11 +663,6 @@ export async function fetchHomepageData() {
     });
 
     const { data: players } = await cookiesClient.models.Player.list({
-      filter: {
-        ageGroup: {
-          eq: "UNDER_19",
-        },
-      },
       limit: 3,
       authMode: auth ? "userPool" : "iam",
       selectionSet: [
@@ -805,7 +800,6 @@ export async function fetchCompetitions(
     });
     return result.data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
     throw new Error("Failed to fetch teams");
   }
 }
@@ -839,7 +833,6 @@ export async function fetchPlayers(keyword: string, client: "guest" | "auth") {
     });
     return result.data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
     throw new Error("Failed to fetch teams");
   }
 }
@@ -875,7 +868,6 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
     });
     return result.data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
     throw new Error("Failed to fetch teams");
   }
 }
@@ -905,7 +897,6 @@ export async function fetchHighlights(
     });
     return result.data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
     throw new Error("Failed to fetch teams");
   }
 }
@@ -939,7 +930,6 @@ export async function globalSearch(keyword: string, client: "guest" | "auth") {
       },
     };
   } catch (error) {
-    console.error("Error in global search:", error);
     return {
       error: "Failed to search",
       status: 500,

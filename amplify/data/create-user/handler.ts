@@ -26,7 +26,6 @@ export const handler: Handler = async (event) => {
     const response = await client.send(command);
     return response;
   } catch (error) {
-    console.error("Lambda error:", error);
     throw new Error(error instanceof Error ? error.message : String(error));
   }
 };

@@ -18,7 +18,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
-    console.error("API error in /api/end-league", error);
     return NextResponse.json(
       { error: (error as Error).message || "Something went wrong" },
       { status: 500 }

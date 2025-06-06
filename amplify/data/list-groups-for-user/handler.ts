@@ -18,7 +18,6 @@ export const handler: Handler = async (event) => {
     const response = await client.send(command);
     return response;
   } catch (error) {
-    console.error("Error fetching user groups:", error);
     throw new Error("Failed to fetch user groups");
   }
 };
