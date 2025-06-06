@@ -10,7 +10,6 @@ import {
 } from "@/lib/factoryFunctions";
 import { formDataToObject, getCloudinaryPublicId } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { deleteCloudinaryImage } from "./actions";
 
 type Team = Schema["Team"]["type"];
 
@@ -36,7 +35,7 @@ export const getTeams = async (nextToken?: string | null) => {
       "longName",
       "isBeyondLimits",
       "stadium",
-      "createdAt"
+      "createdAt",
     ],
     nextToken,
     limit: 25,
@@ -79,8 +78,11 @@ export const createTeam = async (formData: FormData) => {
     validate: async (input) => {
       if (
         (
-          await checkUniqueField("Team",
-            'longName', input.longName.toLowerCase())
+          await checkUniqueField(
+            "Team",
+            "longName",
+            input.longName.toLowerCase()
+          )
         ).length > 0
       ) {
         return {
@@ -117,8 +119,11 @@ export const updateTeam = async (
       if (input.longName !== currentUniqueValue) {
         if (
           (
-            await checkUniqueField("Team",
-            'longName', input.longName.toLowerCase())
+            await checkUniqueField(
+              "Team",
+              "longName",
+              input.longName.toLowerCase()
+            )
           ).length > 0
         ) {
           return {

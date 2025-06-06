@@ -7,9 +7,10 @@ import TableColumnHeader from "@/components/admin/Table/TableColumnHeader";
 import TableHeader from "@/components/admin/Table/TableHeader";
 import TableRows from "@/components/admin/Table/TableRows";
 import UserRoleSelect from "@/components/admin/UserRoleSelect/UserRoleSelect";
+import CreateButton from "@/components/Buttons/CreateButton";
 import { formatDate } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Badge, Box, Container, HStack } from "@chakra-ui/react";
+import { Badge, Box, Container, HStack, Stack } from "@chakra-ui/react";
 import React from "react";
 
 interface IAttribute {
@@ -51,7 +52,7 @@ async function Users() {
             {
               userId: user.Username,
             },
-            { authMode: "userPool" },
+            { authMode: "userPool" }
           )
         ).data;
 
@@ -63,7 +64,7 @@ async function Users() {
           ...user,
           groups, // Add the groups array here
         };
-      }),
+      })
     );
   }
 
@@ -85,7 +86,10 @@ async function Users() {
               message={"No user available, create some to get started."}
             />
           ) : (
-            <HStack>
+            <Stack>
+              <HStack justify={"flex-end"} mb={"20px"} gap="2">
+                <CreateButton link="/cp/users/create" text="Create User" />
+              </HStack>
               <>
                 <Table>
                   <>
@@ -122,13 +126,13 @@ async function Users() {
                                 <TableCell pl={"10px"}>
                                   {findAttribute(
                                     user.Attributes,
-                                    "preferred_username",
+                                    "preferred_username"
                                   )}
                                 </TableCell>
                                 <TableCell textTransform={"lowercase"}>
                                   {findAttribute(
                                     user.Attributes,
-                                    "email",
+                                    "email"
                                   ).toLowerCase()}
                                 </TableCell>
                                 <TableCell textTransform={"capitalize"}>
@@ -169,7 +173,7 @@ async function Users() {
                   </>
                 </Table>
               </>
-            </HStack>
+            </Stack>
           )}
         </Container>
       </Box>

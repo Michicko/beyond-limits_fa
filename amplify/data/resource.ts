@@ -3,6 +3,7 @@ import { addUserToGroup } from "./add-user-to-group/resource";
 import { listUsers } from "./list-users/resource";
 import { removeUserFromGroup } from "./remove-user-from-group/resource";
 import { listGroupsForUser } from "./list-groups-for-user/resource";
+import { createUser } from "./create-user/resource";
 
 const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
@@ -355,6 +356,18 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.group("Admin")])
     .handler(a.handler.function(listGroupsForUser))
+    .returns(a.json()),
+
+  createUser: a
+    .mutation()
+    .arguments({
+      username: a.string().required(),
+      name: a.string().required(),
+      email: a.string().required(),
+      password: a.string().required(),
+    })
+    .authorization((allow) => [allow.group("Admin")])
+    .handler(a.handler.function(createUser))
     .returns(a.json()),
 });
 

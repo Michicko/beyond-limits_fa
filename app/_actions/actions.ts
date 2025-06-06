@@ -775,62 +775,6 @@ export async function fetchStanding(leagueId: string) {
   return standing;
 }
 
-export async function addUserToGroup(userId: string, groupName: string) {
-  try {
-    const { data, errors } = await cookiesClient.mutations.addUserToGroup({
-      userId,
-      groupName,
-    });
-
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
-    const res = JSON.parse(data as string);
-    revalidatePath("/cp/users");
-
-    return {
-      status: "success",
-      data: res,
-    };
-  } catch (error) {
-    return {
-      status: "error",
-      message: `${(error as Error).message}`,
-    };
-  }
-}
-
-export async function removeUserFromGroup(userId: string, groupName: string) {
-  try {
-    const { data, errors } = await cookiesClient.mutations.removeUserFromGroup({
-      userId,
-      groupName,
-    });
-
-    if (errors) {
-      return {
-        status: "error",
-        message: errors[0].message || "An unknown error occurred",
-      };
-    }
-    const res = JSON.parse(data as string);
-    revalidatePath("/cp/users");
-
-    return {
-      status: "success",
-      data: res,
-    };
-  } catch (error) {
-    return {
-      status: "error",
-      message: `${(error as Error).message}`,
-    };
-  }
-}
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -906,7 +850,10 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
       filter: {
         or: [
           { title: { contains: keyword } },
-          { category: { contains: keyword } },
+          {
+            category: { contains: keyword },
+            description: { contains: keyword },
+          },
         ],
       },
       limit: 15,

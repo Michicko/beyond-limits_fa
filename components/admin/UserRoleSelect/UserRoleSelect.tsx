@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { Box, Button, HStack } from "@chakra-ui/react";
-import useToast from "@/hooks/useToast";
-import { addUserToGroup, removeUserFromGroup } from "@/app/_actions/actions";
+import {
+  addUserToGroup,
+  removeUserFromGroup,
+} from "@/app/_actions/user-actions";
 import { toast } from "react-hot-toast";
 import { usePageContext } from "@/contexts/pageContext";
 

@@ -3,6 +3,7 @@ import { addUserToGroup } from "../data/add-user-to-group/resource";
 import { listUsers } from "../data/list-users/resource";
 import { removeUserFromGroup } from "../data/remove-user-from-group/resource";
 import { listGroupsForUser } from "../data/list-groups-for-user/resource";
+import { createUser } from "../data/create-user/resource";
 
 export const auth = defineAuth({
   loginWith: {
@@ -22,5 +23,6 @@ export const auth = defineAuth({
     allow.resource(listUsers).to(["listUsers"]),
     allow.resource(removeUserFromGroup).to(["removeUserFromGroup"]),
     allow.resource(listGroupsForUser).to(["listGroupsForUser"]),
+    allow.resource(createUser).to(["createUser"]),
   ],
 });
