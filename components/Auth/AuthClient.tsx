@@ -3,7 +3,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import React from "react";
 
 function AuthClient() {
-  return <Authenticator />;
+  return <Authenticator hideSignUp={true} />;
 }
 
 export default AuthClient;

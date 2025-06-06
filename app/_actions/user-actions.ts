@@ -47,12 +47,14 @@ export async function removeUserFromGroup(userId: string, groupName: string) {
       groupName,
     });
 
-    if (errors) {
+    if (errors && errors.length > 0) {
+      const message = errors.map((err) => err.message).join(", ");
       return {
         status: "error",
-        message: errors[0].message || "An unknown error occurred",
+        message: message || "An unknown error occurred",
       };
     }
+
     const res = JSON.parse(data as string);
     revalidatePath("/cp/users");
 
@@ -75,12 +77,42 @@ export async function addUserToGroup(userId: string, groupName: string) {
       groupName,
     });
 
-    if (errors) {
+    if (errors && errors.length > 0) {
+      const message = errors.map((err) => err.message).join(", ");
       return {
         status: "error",
-        message: errors[0].message || "An unknown error occurred",
+        message: message || "An unknown error occurred",
       };
     }
+    const res = JSON.parse(data as string);
+    revalidatePath("/cp/users");
+
+    return {
+      status: "success",
+      data: res,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: `${(error as Error).message}`,
+    };
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    const { data, errors } = await cookiesClient.mutations.deleteUser({
+      userId,
+    });
+
+    if (errors && errors.length > 0) {
+      const message = errors.map((err) => err.message).join(", ");
+      return {
+        status: "error",
+        message: message || "An unknown error occurred",
+      };
+    }
+
     const res = JSON.parse(data as string);
     revalidatePath("/cp/users");
 

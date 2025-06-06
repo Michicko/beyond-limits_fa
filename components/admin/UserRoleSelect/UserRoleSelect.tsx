@@ -73,14 +73,6 @@ function UserRoleSelect({ role, userId }: { role: string; userId: string }) {
   return (
     <form onSubmit={handleSubmit}>
       <HStack>
-        <Box
-          as={"span"}
-          h={"6px"}
-          w={"6px"}
-          borderRadius={"50%"}
-          bg={authenticatedUserId === userId ? "green.500" : "white"}
-          flexShrink={0}
-        ></Box>
         <CustomSelect
           selectedValue={userRole}
           name={"groupName"}

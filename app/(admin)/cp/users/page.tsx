@@ -1,4 +1,6 @@
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
+import CurrentlySignedInUser from "@/components/admin/CurrentlySignedInUser/CurrentlySignedInUser";
+import DeleteUserBtn from "@/components/admin/DeleteBtn/DeleteUserBtn";
 import PageTitle from "@/components/admin/Layout/PageTitle";
 import Table from "@/components/admin/Table/Table";
 import TableBody from "@/components/admin/Table/TableBody";
@@ -10,7 +12,7 @@ import UserRoleSelect from "@/components/admin/UserRoleSelect/UserRoleSelect";
 import CreateButton from "@/components/Buttons/CreateButton";
 import { formatDate } from "@/lib/helpers";
 import { cookiesClient } from "@/utils/amplify-utils";
-import { Badge, Box, Container, HStack, Stack } from "@chakra-ui/react";
+import { Badge, Box, Container, HStack, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface IAttribute {
@@ -102,6 +104,7 @@ async function Users() {
                             "date registered",
                             "status",
                             "role",
+                            "",
                           ].map((head, i) => {
                             return (
                               <TableColumnHeader
@@ -124,10 +127,17 @@ async function Users() {
                             <TableRows key={user.Username} h={"65px"}>
                               <>
                                 <TableCell pl={"10px"}>
-                                  {findAttribute(
-                                    user.Attributes,
-                                    "preferred_username"
-                                  )}
+                                  <HStack>
+                                    <CurrentlySignedInUser
+                                      userId={user.Username}
+                                    />
+                                    <Text as={"span"}>
+                                      {findAttribute(
+                                        user.Attributes,
+                                        "preferred_username"
+                                      )}
+                                    </Text>
+                                  </HStack>
                                 </TableCell>
                                 <TableCell textTransform={"lowercase"}>
                                   {findAttribute(
@@ -163,6 +173,9 @@ async function Users() {
                                     }
                                     userId={user.Username}
                                   />
+                                </TableCell>
+                                <TableCell>
+                                  <DeleteUserBtn userId={user.Username} />
                                 </TableCell>
                               </>
                             </TableRows>

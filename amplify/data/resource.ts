@@ -4,6 +4,7 @@ import { listUsers } from "./list-users/resource";
 import { removeUserFromGroup } from "./remove-user-from-group/resource";
 import { listGroupsForUser } from "./list-groups-for-user/resource";
 import { createUser } from "./create-user/resource";
+import { deleteUser } from "./delete-user/resource";
 
 const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
@@ -368,6 +369,15 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.group("Admin")])
     .handler(a.handler.function(createUser))
+    .returns(a.json()),
+
+  deleteUser: a
+    .mutation()
+    .arguments({
+      userId: a.string().required(),
+    })
+    .authorization((allow) => [allow.group("Admin")])
+    .handler(a.handler.function(deleteUser))
     .returns(a.json()),
 });
 
