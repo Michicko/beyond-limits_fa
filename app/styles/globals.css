@@ -204,7 +204,7 @@ body {
 }
 
 .main > *:not(:last-child) {
-  margin-bottom: var(--iv);
+  margin-bottom: var(--v);
 }
 
 .matchcards {

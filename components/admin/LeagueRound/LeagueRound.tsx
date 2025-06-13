@@ -126,15 +126,17 @@ function LeagueRound({
             </Table.Header>
             <Table.Body>
               <>
-                {dbRounds.map((round) => {
-                  return (
-                    <LeagueRoundRow
-                      round={round}
-                      key={round.id}
-                      competitionStatus={competitionStatus}
-                    />
-                  );
-                })}
+                {dbRounds
+                  .sort((a, b) => +b.round - +a.round)
+                  .map((round) => {
+                    return (
+                      <LeagueRoundRow
+                        round={round}
+                        key={round.id}
+                        competitionStatus={competitionStatus}
+                      />
+                    );
+                  })}
               </>
             </Table.Body>
           </Table.Root>

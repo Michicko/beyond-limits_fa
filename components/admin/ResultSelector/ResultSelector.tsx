@@ -11,7 +11,7 @@ function ResultSelector({
   id: string;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
-  disabled: boolean;
+  disabled?: boolean;
   fixedWidth?: boolean;
 }) {
   return (
@@ -24,7 +24,7 @@ function ResultSelector({
           value: el,
         };
       })}
-      disabled={disabled}
+      disabled={!!disabled}
       handleOnChange={(value: string, id: string) => setValue(value)}
       fixedWidth={fixedWidth}
     />

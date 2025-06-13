@@ -7,6 +7,10 @@ import styles from "./Error.module.css";
 function ErrorBoundary({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
     console.error("Error from component:", error);
+
+    if ("digest" in error) {
+      console.error("Error digest:", (error as any).digest);
+    }
   }, [error]);
 
   return (

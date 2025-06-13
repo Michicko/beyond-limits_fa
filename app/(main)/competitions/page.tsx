@@ -3,18 +3,19 @@ import React from "react";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import CompetitionList from "@/components/main/Competition/CompetitionList";
 import Text from "@/components/main/Typography/Text";
-import { months } from "@/lib/placeholder-data";
-import { getExpectedSeasonLabel } from "@/lib/helpers";
 
 export const metadata = {
-  title: 'Competitions',
-  description: 'Find competitions for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.',
+  title: "Competitions",
+  description:
+    "Find competitions for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
 };
 
 async function Competitions() {
   const date = new Date();
   const year = date.getUTCFullYear();
-  const auth = await isAuthenticated()
+  const auth = await isAuthenticated();
+
+  console.log(auth);
 
   const { data: competitions, errors } =
     await cookiesClient.models.Competition.list({
@@ -23,15 +24,14 @@ async function Competitions() {
     });
 
   return (
-    <CompetitionsLayout pageTitle="Competitions">
+    <CompetitionsLayout pageTitle="Competitions" hideTabs={true}>
       <>
-      {
-        errors && (
-        <Text color="white" letterCase={"lower"} size="base" weight="regular">
-          {errors[0].message}
-        </Text>)
-      }
-       {competitions && <CompetitionList competitions={competitions} />}
+        {errors && (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {errors[0].message}
+          </Text>
+        )}
+        {competitions && <CompetitionList competitions={competitions} />}
       </>
     </CompetitionsLayout>
   );

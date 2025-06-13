@@ -93,6 +93,8 @@ type IMatchI = Pick<
   | "awayForm"
 >;
 
+// if competition is league type, make available teams teams selected in the competition season
+
 function MatchForm({
   match,
   competitions,

@@ -239,10 +239,12 @@ export function clientPaginate<T>(
 
 const positions = [
   "goalkeeper",
+  "defender",
   "fullback",
   "left back",
   "right back",
   "central back",
+  "midfielder",
   "defensive midfielder",
   "central midfielder",
   "attacking midfielder",

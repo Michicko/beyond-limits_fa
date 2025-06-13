@@ -102,6 +102,8 @@
   border-radius: var(--base);
   max-width: 860px;
   margin: 0 auto;
+  margin-top: var(--iv);
+  margin-bottom: var(--iv);
 }
 
 .match-layout {

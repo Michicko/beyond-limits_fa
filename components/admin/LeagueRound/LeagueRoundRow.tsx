@@ -82,7 +82,7 @@ function LeagueRoundRow({
           id={round.round}
           value={result}
           setValue={setResult}
-          disabled={round.result && round.status === "COMPLETED" ? true : false}
+          // disabled={round.result && round.status === "COMPLETED" ? true : false}
           fixedWidth={true}
         />
       </Table.Cell>
@@ -91,11 +91,11 @@ function LeagueRoundRow({
           variant={"solid"}
           colorPalette={"green"}
           px={"10px"}
-          disabled={
-            (round.result && round.status === "COMPLETED" && true) ||
-            isPending ||
-            competitionStatus === "COMPLETED"
-          }
+          // disabled={
+          //   (round.result && round.status === "COMPLETED" && true) ||
+          //   isPending ||
+          //   competitionStatus === "COMPLETED"
+          // }
           onClick={async () => {
             await updateRound(round.id);
           }}

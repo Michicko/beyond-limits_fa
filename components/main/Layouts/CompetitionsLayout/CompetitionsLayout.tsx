@@ -16,15 +16,16 @@ function CompetitionsLayout({
   pageTitle,
   competitionId,
   seasons = [],
-  currentSeason
+  currentSeason,
+  hideTabs,
 }: {
   children: React.ReactElement;
   competitionId?: string;
   pageTitle?: string;
   seasons?: string[];
   currentSeason?: string;
+  hideTabs?: boolean;
 }) {
-
   const tabLinks = competitionId
     ? [
         {
@@ -74,28 +75,31 @@ function CompetitionsLayout({
             >
               {pageTitle}
             </Heading>
-            {seasons && seasons.length > 0 && 
-            <Suspense fallback={null}>
-              <Seasons seasons={seasons} currentSeason={currentSeason} />
-            </Suspense>}
+            {seasons && seasons.length > 0 && (
+              <Suspense fallback={null}>
+                <Seasons seasons={seasons} currentSeason={currentSeason} />
+              </Suspense>
+            )}
           </>
         </LayoutHeader>
       </Header>
       <LayoutMain>
         <>
-          <div className={clsx(styles["layout-tab"])}>
-            <Suspense key={pageTitle} fallback={null}>
-              <Tab bg="white" theme="theme-2">
-                <>
-                  {tabLinks.map((link) => {
-                    return (
-                      <LinkTab link={link} theme="theme-2" key={link.name} />
-                    );
-                  })}
-                </>
-              </Tab>
-            </Suspense>
-          </div>
+          {!hideTabs && (
+            <div className={clsx(styles["layout-tab"])}>
+              <Suspense key={pageTitle} fallback={null}>
+                <Tab bg="white" theme="theme-2">
+                  <>
+                    {tabLinks.map((link) => {
+                      return (
+                        <LinkTab link={link} theme="theme-2" key={link.name} />
+                      );
+                    })}
+                  </>
+                </Tab>
+              </Suspense>
+            </div>
+          )}
           <LayoutContainer>{children}</LayoutContainer>
         </>
       </LayoutMain>
