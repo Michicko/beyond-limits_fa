@@ -61,7 +61,7 @@ const links = [
 const filteredLinks = links.filter(
   (el) =>
     el.name === "categories" ||
-  el.name === "articles" ||
+    el.name === "articles" ||
     el.name === "dashboard" ||
     el.name === "highlights"
 );

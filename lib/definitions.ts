@@ -238,6 +238,7 @@ export interface IMixedCup {
 export interface IStandingRow {
   leagueId?: Nullable<string>;
   teamId?: Nullable<string>;
+  shortName?: string;
   name: string;
   logo: string;
   isBeyondLimits: boolean;

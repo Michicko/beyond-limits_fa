@@ -17,17 +17,19 @@ export async function generateMetadata({
   searchParams?: { season?: string };
 }) {
   const auth = await isAuthenticated();
-  const { data: competitionSeasons } = await cookiesClient.models.CompetitionSeason.list({
-    filter: {
-      competitionId: {
-        eq: params.competitionId,
+  const { data: competitionSeasons } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
+        },
       },
-    },
-    authMode: auth ? "userPool" : "iam",
-    selectionSet: ['name', "season", "seasonStartMonth"],
-  });
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["name", "season", "seasonStartMonth"],
+    });
 
-  const currentSeason = competitionSeasons &&
+  const currentSeason =
+    competitionSeasons &&
     findCurrentSeason(competitionSeasons, new Date(), searchParams?.season);
 
   const seasonLabel = currentSeason?.season ?? "Season";
@@ -40,7 +42,6 @@ export async function generateMetadata({
   };
 }
 
-
 async function CompetitionStanding({
   params,
   searchParams,
@@ -50,40 +51,40 @@ async function CompetitionStanding({
     season: string;
   }>;
 }) {
-    const auth = await isAuthenticated()
-    const searchParam = await searchParams;
+  const auth = await isAuthenticated();
+  const searchParam = await searchParams;
   const { data: competitionSeasons, errors } =
-    await cookiesClient.models.CompetitionSeason.list(
-      {
-        filter: {
-          competitionId: {
-            eq: params.competitionId,
-          }
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
         },
-        authMode: auth ? "userPool" : "iam",
-        selectionSet: [
-          "id",
-          "leagueId",
-          "cupId",
-          "name",
-          "type",
-          "league.status",
-          "league.standings.*",
-          "cup.playOffs.*",
-          "matches.*",
-          "season",
-          "seasonStartMonth",
-        ],
       },
-    );
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: [
+        "id",
+        "leagueId",
+        "cupId",
+        "name",
+        "type",
+        "league.status",
+        "league.standings.*",
+        "cup.playOffs.*",
+        "matches.*",
+        "season",
+        "seasonStartMonth",
+      ],
+    });
 
-  const currentSeason = competitionSeasons && findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
+  const currentSeason =
+    competitionSeasons &&
+    findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
   let standing;
   let playoffs;
 
   if (currentSeason && currentSeason.cupId) {
     playoffs = currentSeason.cup.playOffs;
-   
+
     playoffs = playoffs
       .map((el: any) => {
         const match = currentSeason.matches.find(
@@ -116,7 +117,7 @@ async function CompetitionStanding({
       <div className={clsx(styles["competition-box"])}>
         {!currentSeason && (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
-            No Competition Season available at the moment.
+            No Season available at the moment.
           </Text>
         )}
         {currentSeason &&

@@ -197,6 +197,32 @@ export const getMatches = (
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
+export const getFixturesResults = (
+  matches: IMatch[],
+  statuses: ("UPCOMING" | "COMPLETED")[] = ["UPCOMING", "COMPLETED"],
+  monthParam?: string
+) => {
+  return matches
+    .filter((el) => {
+      const date = new Date(el.date);
+      const matchStatus = statuses.includes(
+        el.status as "UPCOMING" | "COMPLETED"
+      );
+      const matchMonth = monthParam
+        ? months.indexOf(monthParam) === date.getUTCMonth()
+        : true;
+      return matchStatus && matchMonth;
+    })
+    .sort((a, b) => {
+      // Sort UPCOMING before COMPLETED
+      if (a.status !== b.status) {
+        return a.status === "UPCOMING" ? -1 : 1;
+      }
+      // If same status, sort by date
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+};
+
 export const getMatchesByDateRange = (
   matches: IMatch[],
   status: "UPCOMING" | "COMPLETED",

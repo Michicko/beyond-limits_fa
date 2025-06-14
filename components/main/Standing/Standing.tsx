@@ -42,8 +42,7 @@ function Standing({
     }
   }
 
-  const theads = ["pos", "club", "p", "w", "d", "l", "g", "gd", "pts"];    
-   
+  const theads = ["pos", "club", "p", "w", "d", "l", "g", "gd", "pts"];
 
   return (
     <div className={clsx(styles.standing)}>
@@ -91,11 +90,11 @@ function Standing({
               </>
             </CardBody>
           </table>
-          {/* {!showFull && (
+          {!showFull && (
             <Link href="/standing" className={clsx(styles["standing-btn"])}>
               view full table
             </Link>
-          )} */}
+          )}
         </div>
       </Card>
     </div>

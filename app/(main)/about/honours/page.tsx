@@ -12,22 +12,26 @@ import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getHonorsStats } from "@/lib/helpers";
 
 export const metadata = {
-  title: 'Beyond Limits Fa. Trophy Room | Club Honors, Silverware & Trophies',
+  title: "Beyond Limits Fa. Trophy Room | Club Honors, Silverware & Trophies",
   description: "Read more about Beyond Limits' major silverware triumphs.",
 };
 
 async function Honours() {
-  const authMode = (await isAuthenticated()) ? "userPool" : "iam";
+  const auth = await isAuthenticated();
+
   const { data: honors, errors } = await cookiesClient.models.Competition.list({
-    authMode,
+    authMode: auth ? "userPool" : "iam",
     selectionSet: [
-      'id', 
+      "id",
       "longName",
-      'trophyImage', 
-      'trophyArticleId', 
-      "competitionSeasons.isWinner", 
+      "trophyImage",
+      "trophyArticleId",
+      "trophiesWon",
+      "yearsWon",
+      "competitionSeasons.isWinner",
       "competitionSeasons.status",
-      "competitionSeasons.season"]
+      "competitionSeasons.season",
+    ],
   });
 
   return (
@@ -64,7 +68,7 @@ async function Honours() {
             <div className={clsx(styles["honors"])}>
               {honors &&
                 honors.map((honor) => {
-                  const stats = getHonorsStats([honor]); 
+                  const stats = getHonorsStats([honor]);
                   return (
                     <div key={honor.longName} className={clsx(styles.honor)}>
                       <div className={clsx(styles["honor-img__box"])}>
@@ -77,7 +81,7 @@ async function Honours() {
                           />
                         </div>
                         <h3 className={clsx(styles["honors-won"])}>
-                          {stats.numbersWon}
+                          {stats.numbersWon + (honor.trophiesWon || 0)}
                         </h3>
                       </div>
                       {stats && (
@@ -86,7 +90,12 @@ async function Honours() {
                             {honor.longName}
                           </h3>
                           <ul className={clsx(styles["honors-years"])}>
-                            {stats.seasonsWon.map((season, i) => {
+                            {Array.from(
+                              new Set([
+                                ...(honor.yearsWon?.trim().split(",") || []),
+                                ...stats.seasonsWon,
+                              ])
+                            ).map((season, i) => {
                               return (
                                 <li
                                   className={clsx(styles["honor-year"])}
@@ -101,7 +110,11 @@ async function Honours() {
                           <Button
                             isLink={true}
                             text={"Learn more"}
-                            url={!honor.trophyArticleId ? '#' : `/news/${honor.trophyArticleId}`}
+                            url={
+                              !honor.trophyArticleId
+                                ? "#"
+                                : `/news/${honor.trophyArticleId}`
+                            }
                             type="secondary"
                             size="lg"
                           />

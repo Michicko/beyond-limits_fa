@@ -4,11 +4,7 @@ import Image from "next/image";
 import MatchTeam from "./MatchTeam";
 import MatchInfo from "./MatchInfo";
 import MatchScoreBoard from "./MatchScoreBoard";
-import {
-  formatTime,
-  getFirstLetter,
-  isLessThan24HoursAgo,
-} from "@/lib/helpers";
+import { formatTime, isLessThan24HoursAgo } from "@/lib/helpers";
 import clsx from "clsx";
 import { Nullable } from "@/lib/definitions";
 import Link from "next/link";
@@ -18,6 +14,7 @@ interface ICompetitionSeason {
   id?: string;
   logo: string;
   name: string;
+  shortName?: string;
 }
 
 interface IMatch {
@@ -69,7 +66,7 @@ function MatchCard({
             alt={match.competitionSeason?.name ?? ""}
           />
           <p className={clsx(styles["header-text"])}>
-            {getFirstLetter(match.competitionSeason?.name ?? "").toUpperCase()}
+            {(match.competitionSeason?.shortName ?? "").toUpperCase()}
           </p>
         </div>
         <div className={styles["header-box"]}>

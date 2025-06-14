@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
     const segments = url.pathname.split("/");
     const competitionId = segments[2];
 
-    url.pathname = `/competitions/${competitionId}/fixtures`;
+    url.pathname = `/competitions/${competitionId}/results&fixtures`;
     url.searchParams.set("month", `${month}`);
 
     return NextResponse.redirect(url);

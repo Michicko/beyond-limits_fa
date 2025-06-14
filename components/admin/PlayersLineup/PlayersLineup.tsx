@@ -2,7 +2,6 @@ import { Box, Field, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import CheckBox from "../CheckBox/CheckBox";
 import { Nullable } from "@/lib/definitions";
-import { Schema } from "@/amplify/data/resource";
 
 interface IPlayer {
   id: string;
@@ -11,32 +10,11 @@ interface IPlayer {
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
   ageGroup: string | null;
+  status: string | null;
   playerPosition: {
     shortName: string;
   };
 }
-
-type IMatchI = Pick<
-  Schema["Match"]["type"],
-  | "id"
-  | "aboutKeyPlayer"
-  | "aboutMvp"
-  | "awayTeam"
-  | "homeTeam"
-  | "coach"
-  | "date"
-  | "lineup"
-  | "keyPlayerId"
-  | "mvpId"
-  | "report"
-  | "review"
-  | "venue"
-  | "scorers"
-  | "substitutes"
-  | "time"
-  | "status"
-  | "competitionSeasonId"
->;
 
 const groupPlayersByGroup = (ageGroup: string, players: IPlayer[]) => {
   return players.filter((el) => el.ageGroup === ageGroup);
@@ -103,7 +81,12 @@ function PlayersLineup({
                 >
                   {player.playerPosition.shortName}. {player.squadNo}
                 </Box>
-                . {player.firstname} {player.lastname}
+                . {player.firstname} {player.lastname}{" "}
+                {player.status === "INACTIVE" && (
+                  <Box as={"span"} color="red">
+                    (inactive)
+                  </Box>
+                )}
               </Text>
             </Flex>
           );

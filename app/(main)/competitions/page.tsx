@@ -11,11 +11,7 @@ export const metadata = {
 };
 
 async function Competitions() {
-  const date = new Date();
-  const year = date.getUTCFullYear();
   const auth = await isAuthenticated();
-
-  console.log(auth);
 
   const { data: competitions, errors } =
     await cookiesClient.models.Competition.list({

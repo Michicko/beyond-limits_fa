@@ -14,16 +14,26 @@ import { sortByCreatedAt } from "@/lib/helpers";
 import useSWR from "swr";
 
 function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
-  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
+  const {
+    currentPageIndex,
+    currentToken,
+    setCurrentPageIndex,
+    setPageTokens,
+    pageTokens,
+  } = useCursorPaginate();
 
   const { data, error, isLoading } = useSWR(
     ["competitionSeasons", params.competitionId, currentPageIndex],
-    () => getCompetitionSeasonsForCompetition(params.competitionId, currentToken)
+    () =>
+      getCompetitionSeasonsForCompetition(params.competitionId, currentToken)
   );
 
   const seasons = data?.data ?? [];
   const sortedSeasons = sortByCreatedAt([...seasons]);
-  const { search, setSearch, filteredList } = useSearchFilter(sortedSeasons, "name");
+  const { search, setSearch, filteredList } = useSearchFilter(
+    sortedSeasons,
+    "name"
+  );
 
   return (
     <AdminPaginatedTable
@@ -33,11 +43,11 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
       error={error}
       columns={["season", "status", "matches", "winner", ""]}
       createUrl={`/cp/competitions/${params.competitionId}/competition-seasons/create`}
-      nextToken={data?.nextToken} 
-      currentPageIndex={currentPageIndex} 
-      pageTokens={pageTokens} 
-      setCurrentPageIndex={setCurrentPageIndex} 
-      setPageTokens={setPageTokens} 
+      nextToken={data?.nextToken}
+      currentPageIndex={currentPageIndex}
+      pageTokens={pageTokens}
+      setCurrentPageIndex={setCurrentPageIndex}
+      setPageTokens={setPageTokens}
       topContent={
         <AdminSearchInput search={search} setSearch={setSearch} name="season" />
       }
@@ -50,7 +60,11 @@ function CompetitionSeasons({ params }: { params: { competitionId: string } }) {
             <TableCell>{season.status}</TableCell>
             <TableCell>{season.matches.length}</TableCell>
             <TableCell>
-              {season.isWinner ? "Beyond Limits" : !season.isWinner && season.status === 'PENDING' ? null : "Not Beyond Limits"}
+              {season.isWinner
+                ? "Beyond Limits"
+                : !season.isWinner && season.status === "PENDING"
+                ? null
+                : "Not Beyond Limits"}
             </TableCell>
             <TableCell textAlign={"center"}>
               <CustomMenu>

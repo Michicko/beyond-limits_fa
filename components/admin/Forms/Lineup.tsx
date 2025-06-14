@@ -13,7 +13,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import Substitutes from "./Substitutes";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
@@ -25,6 +24,7 @@ interface IPlayer {
   lastname: string;
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
+  status: string | null;
   ageGroup: string | null;
   playerPosition: {
     shortName: string;

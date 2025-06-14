@@ -68,6 +68,7 @@ function LeagueStanding({
     const standing = leagueTeams.map((team, index) => ({
       leagueId: leagueId,
       teamId: team.id,
+      shortName: team.shortName,
       name: team.longName,
       logo: team.logo,
       isBeyondLimits: team.isBeyondLimits,

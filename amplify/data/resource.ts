@@ -14,7 +14,7 @@ const schema = a.schema({
   GoalType: a.enum(["NORMAL", "OWNGOAL", "PENALTY"]),
   CompetitionType: a.enum(["LEAGUE", "CUP", "MIXED"]),
   DominantFoot: a.enum(["RIGHT", "LEFT"]),
-  PlayerStatus: a.enum(["ACTIVE", "LOAN", "INJURED"]),
+  PlayerStatus: a.enum(["ACTIVE", "LOAN", "INJURED", "INACTIVE"]),
   PlayOffRound: a.enum([
     "FINALS_128",
     "FINALS_64",
@@ -45,6 +45,10 @@ const schema = a.schema({
       logo: a.string().required(),
       shortName: a.string().required(),
       longName: a.string().required(),
+      // old trophies
+      trophiesWon: a.integer().default(0),
+      // years old trophies won
+      yearsWon: a.string(),
       competitionType: a.ref("CompetitionType"),
       competitionSeasons: a.hasMany("CompetitionSeason", "competitionId"),
       trophyImage: a.string().required(),
@@ -59,6 +63,7 @@ const schema = a.schema({
     .model({
       seasonStartMonth: a.string().required(),
       season: a.string().required(),
+      shortName: a.string().required(),
       name: a.string().required(),
       type: a.string().required(),
       logo: a.string().required(),
@@ -128,6 +133,7 @@ const schema = a.schema({
       leagueId: a.id(),
       league: a.belongsTo("League", "leagueId"),
       teamId: a.id(),
+      shortName: a.string().required(),
       name: a.string().required(),
       logo: a.string().required(),
       isBeyondLimits: a.boolean().required(),

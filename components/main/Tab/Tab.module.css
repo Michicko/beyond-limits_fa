@@ -12,6 +12,7 @@
   padding: var(--xxs) var(--sm);
   border-radius: var(--xs);
   margin-bottom: 0.5rem;
+  white-space: nowrap;
 }
 
 .tab.white {

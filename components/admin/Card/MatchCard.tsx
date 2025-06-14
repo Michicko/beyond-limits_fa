@@ -9,13 +9,13 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { Nullable } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
-import { getFirstLetter } from "@/lib/helpers";
 import moment from "moment";
 
 interface ICompetitionSeason {
   id: string;
   logo: string;
   name: string;
+  shortName?: string;
 }
 
 interface IMatch {
@@ -74,7 +74,7 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
                 ml={"sm"}
                 textTransform={"uppercase"}
               >
-                {getFirstLetter(match.competitionSeason.name)}
+                {match.competitionSeason.shortName}
               </Text>
             </HStack>
           )}
@@ -84,9 +84,9 @@ function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
               fontSize={"sm"}
               fontWeight={"semibold"}
               color={"text_md"}
-              title={moment(match.date).format('LL')}
+              title={moment(match.date).format("LL")}
             >
-              {moment(match.date).format('ll')}
+              {moment(match.date).format("ll")}
             </Text>
             {showMenu && (
               <CustomMenu>

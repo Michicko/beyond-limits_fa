@@ -26,6 +26,8 @@ type ICompetition = Pick<
   | "competitionType"
   | "trophyArticleId"
   | "trophyImage"
+  | "trophiesWon"
+  | "yearsWon"
 >;
 
 function CompetitionForm({
@@ -43,6 +45,8 @@ function CompetitionForm({
     competitionType: competition?.competitionType || "",
     trophyImage: competition?.trophyImage || "",
     trophyArticleId: competition?.trophyArticleId || "",
+    trophiesWon: competition?.trophiesWon || "",
+    yearsWon: competition?.yearsWon || "",
   });
 
   const onChange = (e: { target: { name: string; value: string } }) => {
@@ -52,16 +56,18 @@ function CompetitionForm({
 
   const resetForm = () => {
     setCompetitionData({
-      id:  "",
+      id: "",
       logo: "",
-      shortName:  "",
+      shortName: "",
       longName: "",
       competitionType: "",
       trophyImage: "",
       trophyArticleId: "",
+      trophiesWon: "",
+      yearsWon: "",
     });
     formRef.current?.reset();
-  }
+  };
 
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -111,123 +117,173 @@ function CompetitionForm({
   };
 
   return (
-   <FormContainer>
-     <form onSubmit={handleSubmit} ref={formRef}>
-      <Stack gap="4">
-        <Field.Root required>
-          <FormLabel>Competition Type <RequiredLabel /></FormLabel>
-          <CustomSelect
-            options={competitionTypes.map((el) => {
-              return {
-                label: el,
-                value: el,
-              };
-            })}
-            name="competitionType"
-            description="competition Type"
-            selectedValue={competitionData.competitionType}
-            handleOnChange={onChange}
-            fixedWidth={true}
-          />
-        </Field.Root>
-        <Field.Root required>
-          <FormLabel>short name <RequiredLabel /></FormLabel>
-          <Input
-            name={"shortName"}
-            type={"text"}
-            placeholder="Enter Short name"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            value={competitionData.shortName}
-            onChange={onChange}
-          />
-          <Field.HelperText
-            fontSize={"sm"}
-            fontWeight={"normal"}
-            color={"text_md"}
-          >
-            Enter short e.g nnl
-          </Field.HelperText>
-        </Field.Root>
-        <Field.Root required>
-          <FormLabel>long name <RequiredLabel /></FormLabel>
-          <Input
-            name={"longName"}
-            type={"text"}
-            placeholder="Enter long name"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            value={competitionData.longName}
-            onChange={onChange}
-          />
-          <Field.HelperText
-            fontSize={"sm"}
-            fontWeight={"normal"}
-            color={"text_md"}
-          >
-            Enter long e.g nigerian national league
-          </Field.HelperText>
-        </Field.Root>
-        {(competitionData.trophyImage ||
-          competitionData.logo ||
-          competitionData.longName) && (
-          <>
-            <UploadImage
-              image={competitionData.logo}
-              onClearImage={() =>
-                setCompetitionData({ ...competitionData, logo: "" })
-              }
-              imageSize={70}
-              filename={slugify(competitionData.longName, { lower: true })}
-              id={"logo"}
-              onUploaded={(res: any) =>
-                setCompetitionData({
-                  ...competitionData,
-                  logo: res.secure_url,
-                })
-              }
-              label={"Logo"}
-            />
-            <UploadImage
-              image={competitionData.trophyImage}
-              onClearImage={() =>
-                setCompetitionData({ ...competitionData, trophyImage: "" })
-              }
-              imageSize={250}
-              filename={slugify(`${competitionData.longName} trophy`, {
-                lower: true,
+    <FormContainer>
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <Stack gap="4">
+          <Field.Root required>
+            <FormLabel>
+              Competition Type <RequiredLabel />
+            </FormLabel>
+            <CustomSelect
+              options={competitionTypes.map((el) => {
+                return {
+                  label: el,
+                  value: el,
+                };
               })}
-              id={"trophy-image"}
-              onUploaded={(res: any) =>
-                setCompetitionData({
-                  ...competitionData,
-                  trophyImage: res.secure_url,
-                })
-              }
-              label={"Trophy Image"}
+              name="competitionType"
+              description="competition Type"
+              selectedValue={competitionData.competitionType}
+              handleOnChange={onChange}
+              fixedWidth={true}
             />
-          </>
-        )}
-        <SelectedArticle
-          articleId={competitionData.trophyArticleId}
-          label={"Trophy Article"}
-          title={article?.title ?? ""}
-          openArticleModal={openArticleModal}
-          setOpenArticleModal={setOpenArticleModal}
-          setArticle={setArticle}
-        />
-        <FormBtn disabled={isPending}>
-          {getButtonStatus(competition, "Competition", isPending)}
-        </FormBtn>
-      </Stack>
-    </form>
-   </FormContainer>
+          </Field.Root>
+          <Field.Root required>
+            <FormLabel>
+              short name <RequiredLabel />
+            </FormLabel>
+            <Input
+              name={"shortName"}
+              type={"text"}
+              placeholder="Enter Short name"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              value={competitionData.shortName}
+              onChange={onChange}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter short e.g nnl
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root required>
+            <FormLabel>
+              long name <RequiredLabel />
+            </FormLabel>
+            <Input
+              name={"longName"}
+              type={"text"}
+              placeholder="Enter long name"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              value={competitionData.longName}
+              onChange={onChange}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter long e.g nigerian national league
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root>
+            <FormLabel>Trophies Won</FormLabel>
+            <Input
+              name={"trophiesWon"}
+              type={"number"}
+              placeholder="Enter Trophies Won"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              value={competitionData.trophiesWon}
+              onChange={onChange}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter number of trophies won e.g 2
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root>
+            <FormLabel>Years Won</FormLabel>
+            <Input
+              name={"yearsWon"}
+              type={"text"}
+              placeholder="Enter Years Won"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              value={competitionData.yearsWon}
+              onChange={onChange}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter years won e.g 2001, 2003
+            </Field.HelperText>
+          </Field.Root>
+          {(competitionData.trophyImage ||
+            competitionData.logo ||
+            competitionData.longName) && (
+            <>
+              <UploadImage
+                image={competitionData.logo}
+                onClearImage={() =>
+                  setCompetitionData({ ...competitionData, logo: "" })
+                }
+                imageSize={70}
+                filename={slugify(competitionData.longName, { lower: true })}
+                id={"logo"}
+                onUploaded={(res: any) =>
+                  setCompetitionData({
+                    ...competitionData,
+                    logo: res.secure_url,
+                  })
+                }
+                label={"Logo"}
+              />
+              <UploadImage
+                image={competitionData.trophyImage}
+                onClearImage={() =>
+                  setCompetitionData({ ...competitionData, trophyImage: "" })
+                }
+                imageSize={250}
+                filename={slugify(`${competitionData.longName} trophy`, {
+                  lower: true,
+                })}
+                id={"trophy-image"}
+                onUploaded={(res: any) =>
+                  setCompetitionData({
+                    ...competitionData,
+                    trophyImage: res.secure_url,
+                  })
+                }
+                label={"Trophy Image"}
+              />
+            </>
+          )}
+          <SelectedArticle
+            articleId={competitionData.trophyArticleId}
+            label={"Trophy Article"}
+            title={article?.title ?? ""}
+            openArticleModal={openArticleModal}
+            setOpenArticleModal={setOpenArticleModal}
+            setArticle={setArticle}
+          />
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(competition, "Competition", isPending)}
+          </FormBtn>
+        </Stack>
+      </form>
+    </FormContainer>
   );
 }
 

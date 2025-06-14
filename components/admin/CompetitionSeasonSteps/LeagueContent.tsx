@@ -24,7 +24,10 @@ function LeagueContent({
   index: number;
   season: string;
   competitionName: string;
-  teams: Pick<Schema["Team"]["type"], "id" | "logo" | "longName">[];
+  teams: Pick<
+    Schema["Team"]["type"],
+    "id" | "logo" | "shortName" | "longName"
+  >[];
   selectedTeams: string[];
   setSelectedTeams: React.Dispatch<React.SetStateAction<string[]>>;
   goToNextStep: () => void;

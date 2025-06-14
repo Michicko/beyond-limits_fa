@@ -28,28 +28,37 @@ function CompetitionsLayout({
 }) {
   const tabLinks = competitionId
     ? [
+        // {
+        //   name: "Results",
+        //   href: appendMonthToLink(`/competitions/${competitionId}/results`),
+        // },
+        // {
+        //   name: "Fixtures",
+        //   href: appendMonthToLink(`/competitions/${competitionId}/fixtures`),
+        // },
         {
-          name: "Results",
-          href: appendMonthToLink(`/competitions/${competitionId}/results`),
+          name: "Results & Fixtures",
+          href: appendMonthToLink(
+            `/competitions/${competitionId}/results&fixtures`
+          ),
         },
-        {
-          name: "Fixtures",
-          href: appendMonthToLink(`/competitions/${competitionId}/fixtures`),
-        },
-
         {
           name: "Standing",
           href: `/competitions/${competitionId}/standing`,
         },
       ]
     : [
+        // {
+        //   name: "fixtures",
+        //   href: appendMonthToLink("/fixtures"),
+        // },
+        // {
+        //   name: "results",
+        //   href: appendMonthToLink("/results"),
+        // },
         {
-          name: "fixtures",
-          href: appendMonthToLink("/fixtures"),
-        },
-        {
-          name: "results",
-          href: appendMonthToLink("/results"),
+          name: "Results & Fixtures",
+          href: appendMonthToLink("/results&fixtures"),
         },
         {
           name: "standing",

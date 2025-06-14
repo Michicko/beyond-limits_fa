@@ -16,13 +16,19 @@ async function CreateCompetitionSeason({
         id: params.competitionId,
       },
       {
-        selectionSet: ["id", "longName", "competitionType", "logo"],
+        selectionSet: [
+          "id",
+          "shortName",
+          "longName",
+          "competitionType",
+          "logo",
+        ],
       }
     );
 
   const { data: teams, errors: teamsErrors } =
     await cookiesClient.models.Team.list({
-      selectionSet: ["id", "logo", "longName"],
+      selectionSet: ["id", "logo", "shortName", "longName"],
     });
 
   return (
@@ -55,6 +61,7 @@ async function CreateCompetitionSeason({
           <CompetitionSeasonSteps
             competitionLogo={competition.logo}
             competitionType={competition.competitionType}
+            competitionShortName={competition.shortName}
             competitionName={competition.longName}
             teams={teams}
             competitionId={params.competitionId}

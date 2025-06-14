@@ -325,6 +325,7 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.result",
         "matches.competitionSeasonId",
         "matches.competitionSeason.season",
+        "matches.competitionSeason.shortName",
         "matches.competitionSeason.name",
         "matches.competitionSeason.logo",
       ],
@@ -492,6 +493,7 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
       authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
         "id",
+        "shortName",
         "name",
         "status",
         "logo",
@@ -663,6 +665,11 @@ export async function fetchHomepageData() {
     });
 
     const { data: players } = await cookiesClient.models.Player.list({
+      filter: {
+        status: {
+          ne: "INACTIVE",
+        },
+      },
       limit: 3,
       authMode: auth ? "userPool" : "iam",
       selectionSet: [

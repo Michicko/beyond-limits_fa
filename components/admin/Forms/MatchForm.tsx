@@ -63,6 +63,7 @@ interface IPlayer {
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
   ageGroup: string | null;
+  status: string | null;
   playerPosition: {
     shortName: string;
   };

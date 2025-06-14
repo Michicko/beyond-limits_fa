@@ -12,16 +12,21 @@ function CompetitionSeasonSteps({
   competitionLogo,
   competitionId,
   competitionType,
+  competitionShortName,
   competitionName,
   teams,
 }: {
   competitionLogo: string;
   competitionId: string;
   competitionType: "CUP" | "LEAGUE" | "MIXED" | null;
+  competitionShortName: string;
   competitionName: string;
-  teams: Pick<Schema["Team"]["type"], "id" | "logo" | "longName">[];
+  teams: Pick<
+    Schema["Team"]["type"],
+    "id" | "logo" | "shortName" | "longName"
+  >[];
 }) {
-  const [seasonStartMonth, setSeasonStartMonth] = useState('');
+  const [seasonStartMonth, setSeasonStartMonth] = useState("");
   const [season, setSeason] = useState("");
   const [cupId, setCupId] = useState("");
   const [leagueId, setLeagueId] = useState("");
@@ -153,6 +158,7 @@ function CompetitionSeasonSteps({
             cupId={cupId}
             leagueId={leagueId}
             competitionLogo={competitionLogo}
+            competitionShortName={competitionShortName}
             competitionName={competitionName}
             competitionType={competitionType}
             season={season}

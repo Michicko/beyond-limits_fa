@@ -63,7 +63,9 @@ async function Players({ params }: { params: { playersSlug: string } }) {
 
     return sortedPositions.map((row) => {
       const filteredPlayers = row.players.filter(
-        (player) => player.ageGroup === params.playersSlug.toUpperCase()
+        (player) =>
+          player.ageGroup === params.playersSlug.toUpperCase() &&
+          player.status !== "INACTIVE"
       );
 
       return filteredPlayers.length < 1 ? (

@@ -14,16 +14,18 @@ function CompetitionSeasonFinalStep({
   competitionLogo,
   competitionType,
   season,
+  competitionShortName,
   competitionName,
   goToNextStep,
   competitionId,
   cupId,
   leagueId,
-  seasonStartMonth
+  seasonStartMonth,
 }: {
   competitionLogo: string;
   competitionType: string | null;
   season: string;
+  competitionShortName: string;
   competitionName: string;
   goToNextStep: () => void;
   competitionId: string;
@@ -41,9 +43,10 @@ function CompetitionSeasonFinalStep({
     formData.append("season", season);
     formData.append("competitionId", competitionId);
     formData.append("status", "PENDING");
+    formData.append("shortName", competitionShortName);
     formData.append("name", competitionName);
     formData.append("logo", competitionLogo);
-    formData.append('seasonStartMonth', seasonStartMonth);
+    formData.append("seasonStartMonth", seasonStartMonth);
 
     if (competitionType) {
       formData.append("type", competitionType);

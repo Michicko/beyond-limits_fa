@@ -49,6 +49,7 @@ async function MatchFormWrapper({
       "lastname",
       "homeKit",
       "squadNo",
+      "status",
       "playerPosition.shortName",
       "ageGroup",
     ],

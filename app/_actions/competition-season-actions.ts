@@ -45,11 +45,11 @@ export const getCompetitionSeasonsForCompetition = async (
   competitionId: string,
   nextToken?: string | null
 ) => {
-   return cookiesClient.models.CompetitionSeason.list({
+  return cookiesClient.models.CompetitionSeason.list({
     filter: {
       competitionId: {
-        eq: competitionId
-      }
+        eq: competitionId,
+      },
     },
     selectionSet: [
       "id",
@@ -60,13 +60,13 @@ export const getCompetitionSeasonsForCompetition = async (
       "isWinner",
       "cupId",
       "leagueId",
-      "createdAt"
+      "createdAt",
     ],
-      nextToken,
-      limit: 15,
-      authMode: "userPool",
-      sortDirection: "DESC",
-    });
+    nextToken,
+    limit: 15,
+    authMode: "userPool",
+    sortDirection: "DESC",
+  });
 };
 
 export const getCompetitionSeasons = async (competitionId: string) => {
@@ -120,7 +120,7 @@ export const createCompetitionSeason = async (formData: FormData) => {
         (
           await checkUniqueFields("CompetitionSeason", {
             season: base.season,
-            name: base.name.toLowerCase()
+            name: base.name.toLowerCase(),
           })
         ).length > 0
       ) {

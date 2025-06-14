@@ -16,12 +16,17 @@ import {
 } from "@/app/_actions/actions";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { IStandingRow } from "@/lib/definitions";
-import { filterGroupedSeasonsByCurrent, getFirstLetter, getPlayOffRoundName } from "@/lib/helpers";
+import {
+  filterGroupedSeasonsByCurrent,
+  getFirstLetter,
+  getPlayOffRoundName,
+} from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 
 export const metadata = {
-  title: 'Team Stats',
-  description: "Find out about current positions, rounds, status and forms for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+  title: "Team Stats",
+  description:
+    "Find out about current positions, rounds, status and forms for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
 };
 
 async function TeamStats() {
@@ -115,14 +120,9 @@ async function TeamStats() {
       };
     });
 
-  const forms =
-    rounds &&
-    rounds
-      .map((el) => {
-        if (el.status !== "COMPLETED") return;
-        return getFirstLetter(el.result);
-      })
-      .filter((el) => el !== undefined);
+  const forms = (rounds || [])
+    .filter((el) => el?.status === "COMPLETED" && el.result)
+    .map((el) => getFirstLetter(el.result));
 
   const matches = await getCurrentCompetitionSeasonsMatches(
     (await isAuthenticated()) ? "auth" : "guest"
@@ -202,7 +202,9 @@ async function TeamStats() {
                           <TeamStat
                             competition_logo={cup.logo}
                             competition_name={cup.name}
-                            position={getPlayOffRoundName(cup.round.round) ?? ''}
+                            position={
+                              getPlayOffRoundName(cup.round.round) ?? ""
+                            }
                             key={cup.id + i + (i + 2) + i + 3}
                           />
                         );

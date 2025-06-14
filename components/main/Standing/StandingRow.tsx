@@ -4,7 +4,6 @@ import styles from "./Standing.module.css";
 import clsx from "clsx";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import Text from "../Typography/Text";
-import { getFirstLetter } from "@/lib/helpers";
 
 function StandingRow({
   row,
@@ -25,7 +24,7 @@ function StandingRow({
           {row.logo && <ImageComp image={row.logo} alt={`${row.name} logo`} />}
         </div>
         <Text color="white" letterCase="upper" size="base" weight="semibold">
-          {getFirstLetter(row.name)}
+          {row.shortName}
         </Text>
         {showLongName && (
           <Text
