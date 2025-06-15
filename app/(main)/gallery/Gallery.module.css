@@ -1,3 +1,8 @@
+.main-container {
+  margin-top: 8rem;
+  padding-top: 2rem;
+}
+
 .gallery {
   margin-top: 8rem;
   padding: var(--xxl) 0;

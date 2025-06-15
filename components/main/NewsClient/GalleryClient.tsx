@@ -1,28 +1,29 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import VideoCards from "../VideoCard/VideoCards";
-import PaginationCursor from "@/components/Pagination/PaginationCursor";
-import NewsSkeleton from "./NewsSkeleton";
 import clsx from "clsx";
 import styles from "./NewsClient.module.css";
 import useCursorPaginate from "@/hooks/useCursorPaginate";
 import useSWR from "swr";
-import { fetchHighlightsServer } from "@/app/_actions/actions";
+import NewsSkeleton from "./NewsSkeleton";
+import ImageCard from "../Card/ImageCard";
+import PaginationCursor from "@/components/Pagination/PaginationCursor";
+import { fetchVisualsServer } from "@/app/_actions/actions";
+import { Nullable } from "@/lib/definitions";
 
-type IHighlight = {
+type IVisual = {
   id: string;
-  title: string;
-  coverImage: string;
+  url: string;
+  alt: Nullable<string>;
   createdAt: string;
 };
 
 type Props = {
-  initialItems: IHighlight[];
+  initialItems: IVisual[];
   initialNextToken?: string | null;
   auth: boolean;
 };
 
-function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
+function GalleryClient({ auth, initialItems, initialNextToken }: Props) {
   const [items, setItems] = useState(initialItems);
   const [nextToken, setNextToken] = useState(initialNextToken);
   const {
@@ -34,8 +35,8 @@ function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
   } = useCursorPaginate(initialNextToken);
 
   const { data, isValidating } = useSWR(
-    currentPageIndex === 0 ? null : ["highlights", currentPageIndex],
-    () => fetchHighlightsServer(auth, currentToken),
+    currentPageIndex === 0 ? null : ["visuals", currentPageIndex],
+    () => fetchVisualsServer(auth, currentToken),
     {
       revalidateOnFocus: false,
       onSuccess: (res) => {
@@ -46,7 +47,7 @@ function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
             return;
           }
 
-          setItems(res.data.highlights);
+          setItems(res.data.visuals);
           setNextToken(res.data.nextToken);
         }
       },
@@ -62,9 +63,9 @@ function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
 
   return (
     <>
-      <div className={clsx(styles["news-client"])}>
+      <div className={clsx(styles["gallery-client"])}>
         {isValidating ? (
-          <div className={clsx(styles.skeletons, styles.highlights)}>
+          <div className={clsx(styles.skeletons, styles.gallery)}>
             <NewsSkeleton loading={isValidating} />
             <NewsSkeleton loading={isValidating} />
             <NewsSkeleton loading={isValidating} />
@@ -73,7 +74,11 @@ function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
             <NewsSkeleton loading={isValidating} />
           </div>
         ) : (
-          <VideoCards videos={items} />
+          <>
+            {items.map((visual) => {
+              return <ImageCard visual={visual.url} key={visual.id} />;
+            })}
+          </>
         )}
       </div>
       <PaginationCursor
@@ -87,4 +92,4 @@ function HighlightClient({ auth, initialItems, initialNextToken }: Props) {
   );
 }
 
-export default HighlightClient;
+export default GalleryClient;

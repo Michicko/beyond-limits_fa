@@ -66,6 +66,7 @@ async function CompetitionStanding({
         "leagueId",
         "cupId",
         "name",
+        "shortName",
         "type",
         "league.status",
         "league.standings.*",
@@ -126,7 +127,7 @@ async function CompetitionStanding({
           standing && (
             <>
               <MixedCup
-                name={getFirstLetter(currentSeason.name)}
+                name={currentSeason.shortName}
                 league_status={currentSeason.league.status || ""}
                 playoffs={playoffs}
                 league_standing={standing}
@@ -140,7 +141,7 @@ async function CompetitionStanding({
           <>
             {standing && standing.length > 0 && (
               <Standing
-                name={getFirstLetter(currentSeason.name)}
+                name={currentSeason.shortName}
                 standings={standing}
                 showFull={true}
                 showLongName={true}

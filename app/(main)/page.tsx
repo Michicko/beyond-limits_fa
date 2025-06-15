@@ -15,13 +15,20 @@ import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { appendMonthToLink } from "@/lib/helpers";
+import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 
 export default async function Home() {
   const { data: homepageContent } = await fetchHomepageData();
+  const auth = await isAuthenticated();
+  const data = await cookiesClient.models.Banner.list({
+    authMode: auth ? "userPool" : "iam",
+    selectionSet: ["url"],
+  });
+  const images = data?.data ? data.data.map((el) => el.url) : [];
 
   return (
     <>
-      <Slider />
+      <Slider images={images} />
       <main className="main">
         {homepageContent && (
           <Container as="section" size="lg">

@@ -13,6 +13,8 @@ function UploadImage({
   id,
   onUploaded,
   label,
+  type,
+  desc,
 }: {
   image: string;
   imageSize: number;
@@ -21,10 +23,14 @@ function UploadImage({
   onUploaded: (res: any) => void;
   onClearImage: () => void;
   label: string;
+  type?: "drag-drop" | "select";
+  desc?: string;
 }) {
   return (
     <Field.Root required>
-      <FormLabel>{label} <RequiredLabel /></FormLabel>
+      <FormLabel>
+        {label} <RequiredLabel />
+      </FormLabel>
       {image && (
         <HStack gap={4} position={"relative"}>
           <Image src={image} width={imageSize} height={imageSize} alt={label} />
@@ -43,10 +49,11 @@ function UploadImage({
       )}
       {!image && filename && (
         <CustomFileUpload
-          description={label}
+          description={desc || label}
           onUploaded={onUploaded}
           id={id}
           filename={filename}
+          type={type}
         />
       )}
     </Field.Root>

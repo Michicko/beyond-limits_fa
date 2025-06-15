@@ -41,6 +41,8 @@ export type DeleteModule =
   | "Match"
   | "Player"
   | "Highlight"
+  | "Banner"
+  | "Visual"
   | "CompetitionSeason"
   | "PlayerPosition"
   | "ArticleCategory";
@@ -69,6 +71,14 @@ const deleteConfig: Record<
     modelName: "Player",
     pathToRevalidate: "/cp/players",
   },
+  Banner: {
+    modelName: "Banner",
+    pathToRevalidate: "/cp/banners",
+  },
+  Visual: {
+    modelName: "Visual",
+    pathToRevalidate: "/cp/visuals",
+  },
   PlayerPosition: {
     modelName: "PlayerPosition",
     pathToRevalidate: "/cp/positions",
@@ -96,7 +106,7 @@ const deleteConfig: Record<
   Match: {
     modelName: "Match",
     pathToRevalidate: "/cp/matches",
-    checkBeforeDelete: async(id: string) => {
+    checkBeforeDelete: async (id: string) => {
       const leagueRounds = await cookiesClient.models.LeagueRound.list({
         filter: {
           matchId: { eq: id },
@@ -113,11 +123,12 @@ const deleteConfig: Record<
 
       return {
         canDelete: !hasLeagueRounds || !hasPlayOffRounds,
-        reason: hasLeagueRounds || hasPlayOffRounds
-          ? "Please delete all related league or playoff rounds first."
-          : undefined,
+        reason:
+          hasLeagueRounds || hasPlayOffRounds
+            ? "Please delete all related league or playoff rounds first."
+            : undefined,
       };
-    }
+    },
   },
   Competition: {
     modelName: "Competition",

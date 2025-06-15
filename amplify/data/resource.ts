@@ -330,6 +330,27 @@ const schema = a.schema({
         .to(["create", "read", "delete", "update"]),
     ]),
 
+  Banner: a
+    .model({
+      url: a.string().required(),
+    })
+    .authorization((allow) => [
+      allow.guest().to(["read"]),
+      allow.authenticated().to(["read"]),
+      allow.groups(["Admin"]).to(["create", "read", "delete", "update"]),
+    ]),
+
+  Visual: a
+    .model({
+      url: a.string().required(),
+      alt: a.string(),
+    })
+    .authorization((allow) => [
+      allow.guest().to(["read"]),
+      allow.authenticated().to(["read"]),
+      allow.groups(["Admin"]).to(["create", "read", "delete", "update"]),
+    ]),
+
   addUserToGroup: a
     .mutation()
     .arguments({

@@ -10,8 +10,8 @@ const links = [
 ];
 
 export const metadata = {
-  title: 'Latest News',
-  description: 'Get latest news and blogs for Beyond Limits Fa.',
+  title: "Latest News",
+  description: "Get latest news and blogs for Beyond Limits Fa.",
 };
 
 async function News({
@@ -19,20 +19,24 @@ async function News({
 }: {
   searchParams: { page?: string; category?: string };
 }) {
-  const auth = await isAuthenticated()
+  const auth = await isAuthenticated();
   const limit = 15;
-  const token = '';
+  const token = "";
 
   const filter = {
     status: { eq: "PUBLISHED" },
     ...(searchParams.category && {
-      category: { 
+      category: {
         eq: searchParams.category.toLowerCase(),
       },
     }),
   };
 
-  const { data: articleList, errors, nextToken } = await cookiesClient.models.Article.list({
+  const {
+    data: articleList,
+    errors,
+    nextToken,
+  } = await cookiesClient.models.Article.list({
     limit,
     authMode: (await isAuthenticated()) ? "userPool" : "iam",
     filter,
@@ -64,21 +68,27 @@ async function News({
           </Text>
         )}
         {searchParams.category && (
-          <Text color="white" letterCase={"lower"} size="md" weight="regular" cssStyles={{marginBottom: '2rem', fontSize: '1.4rem'}}>
+          <Text
+            color="white"
+            letterCase={"lower"}
+            size="md"
+            weight="regular"
+            cssStyles={{ marginBottom: "2rem", fontSize: "1.4rem" }}
+          >
             Showing articles for {searchParams.category}
           </Text>
         )}
         {!articles || articleList.length < 1 ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No articles available
-         </Text>
+          </Text>
         ) : (
-        <NewsClient 
-          auth={auth}
-          initialItems={articles}
-          initialNextToken={nextToken}
-          category={searchParams.category}
-        />
+          <NewsClient
+            auth={auth}
+            initialItems={articles}
+            initialNextToken={nextToken}
+            category={searchParams.category}
+          />
         )}
       </div>
     </ArticleLayout>

@@ -1026,3 +1026,31 @@ export async function fetchHighlightsServer(
     };
   }
 }
+
+export async function fetchVisualsServer(auth: boolean, token?: string | null) {
+  try {
+    const { data: visuals, nextToken } = await cookiesClient.models.Visual.list(
+      {
+        limit: 15,
+        authMode: auth ? "userPool" : "iam",
+        nextToken: token,
+        sortDirection: "DESC",
+        selectionSet: ["id", "url", "alt", "createdAt"],
+      }
+    );
+
+    return {
+      status: "success",
+      data: {
+        visuals: visuals ?? [],
+        nextToken: nextToken ?? null,
+      },
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      data: null,
+      error: (error as Error).message,
+    };
+  }
+}

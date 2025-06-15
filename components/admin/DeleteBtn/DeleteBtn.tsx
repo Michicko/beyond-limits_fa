@@ -1,7 +1,8 @@
 "use client";
 import useToast from "@/hooks/useToast";
 import { Nullable } from "@/lib/definitions";
-import { Button, Menu } from "@chakra-ui/react";
+import { getIcon } from "@/lib/icons";
+import { Button, IconButton, Menu } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 type DeleteBtnProps = {
@@ -15,10 +16,12 @@ type DeleteBtnProps = {
     | "Player"
     | "PlayerPosition"
     | "ArticleCategory"
+    | "Banner"
+    | "Visual"
     | "Highlight"
     | "CompetitionSeason";
   images?: Nullable<string>[];
-  type?: "menu" | "btn";
+  type?: "menu" | "btn" | "iconBtn";
 };
 
 function DeleteBtn({ id, name, type, images, module }: DeleteBtnProps) {
@@ -81,7 +84,23 @@ function DeleteBtn({ id, name, type, images, module }: DeleteBtnProps) {
     }
   };
 
-  return type === "btn" ? (
+  return type === "iconBtn" ? (
+    <>
+      <IconButton
+        size={"sm"}
+        color={"red"}
+        position={"absolute"}
+        top={"2"}
+        right={"2"}
+        zIndex={"100"}
+        variant={"plain"}
+        disabled={isPending}
+        onClick={handleDelete}
+      >
+        {getIcon("trash")}
+      </IconButton>
+    </>
+  ) : type === "btn" ? (
     <Button
       css={styles}
       px={"20px"}

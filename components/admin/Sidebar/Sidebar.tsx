@@ -56,6 +56,16 @@ const links = [
     link: "/cp/highlights",
     icon: getIcon("video"),
   },
+  {
+    name: "home banners",
+    link: "/cp/banners",
+    icon: getIcon("image"),
+  },
+  {
+    name: "gallery",
+    link: "/cp/visuals",
+    icon: getIcon("image"),
+  },
 ];
 
 const filteredLinks = links.filter(

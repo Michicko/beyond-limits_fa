@@ -5,22 +5,17 @@ import SliderBtns from "./SliderBtns";
 import HeaderLanding from "../Header/HeaderLanding";
 import Text from "../Typography/Text";
 import Heading from "../Typography/Heading";
-import { landing_visuals } from "@/lib/placeholder-data";
 import clsx from "clsx";
 import styles from "./Slider.module.css";
 
-function Slider() {
+function Slider({ images }: { images: string[] }) {
   const [current, setCurrent] = useState(0);
-  const currentBg = landing_visuals[current];
+  const currentBg = images[current];
 
   return (
     <Header bg={currentBg} alt="Beyond the limits team celebrating">
       <>
-        <SliderBtns
-          slides={landing_visuals}
-          current={current}
-          setCurrent={setCurrent}
-        />
+        <SliderBtns slides={images} current={current} setCurrent={setCurrent} />
         <div className={clsx(styles["header-overlay"])}></div>
         <HeaderLanding>
           <Text
