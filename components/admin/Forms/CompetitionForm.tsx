@@ -197,6 +197,8 @@ function CompetitionForm({
               fontSize={"sm"}
               fontWeight={"medium"}
               mb={"5px"}
+              min="0"
+              step="1"
               value={competitionData.trophiesWon}
               onChange={onChange}
             />

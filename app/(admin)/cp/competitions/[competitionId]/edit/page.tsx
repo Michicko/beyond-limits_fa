@@ -26,6 +26,8 @@ async function EditCompetition({
           "competitionType",
           "trophyImage",
           "trophyArticleId",
+          "trophiesWon",
+          "yearsWon",
         ],
       }
     );
