@@ -35,6 +35,14 @@ type UpdateEntityOptions<TInput, TOutput> = {
 
 type Primitive = string | number | boolean;
 
+const validatePath = (pathToRevalidate: string) => {
+  if (pathToRevalidate.includes("[")) {
+    revalidatePath(pathToRevalidate, "page");
+  } else {
+    revalidatePath(pathToRevalidate);
+  }
+};
+
 export const checkUniqueField = async (
   modelName: keyof typeof cookiesClient.models,
   field: string,
@@ -199,11 +207,7 @@ export function createEntityFactory<TInput, TOutput>() {
       }
 
       if (pathToRevalidate) {
-        if (pathToRevalidate.includes("[")) {
-          revalidatePath(pathToRevalidate, "page");
-        } else {
-          revalidatePath(pathToRevalidate);
-        }
+        validatePath(pathToRevalidate);
       }
 
       return {
@@ -264,11 +268,7 @@ export function updateEntityFactory<TInput, TOutput>() {
       }
 
       if (pathToRevalidate) {
-        if (pathToRevalidate.includes("[")) {
-          revalidatePath(pathToRevalidate, "page");
-        } else {
-          revalidatePath(pathToRevalidate);
-        }
+        validatePath(pathToRevalidate);
       }
 
       return {
@@ -312,7 +312,7 @@ export async function deleteEntity<T>({
 
     // Revalidate path if provided
     if (pathToRevalidate) {
-      revalidatePath(pathToRevalidate);
+      validatePath(pathToRevalidate);
     }
 
     return {
