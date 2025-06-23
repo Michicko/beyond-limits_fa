@@ -72,12 +72,9 @@ async function Players({ params }: { params: { playersSlug: string } }) {
         <></>
       ) : (
         <div key={row.longName}>
-          <Heading
-            letterCase="capitalize"
-            level={2}
-            mb="md"
-            type="section"
-          >{`${row.longName}s`}</Heading>
+          <Heading letterCase="upper" level={2} mb="md" type="section">
+            {`${row.longName}s`.toUpperCase()}
+          </Heading>
           <PlayerList players={filteredPlayers} />
         </div>
       );

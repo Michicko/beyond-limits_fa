@@ -27,12 +27,7 @@ function StandingRow({
           {row.shortName}
         </Text>
         {showLongName && (
-          <Text
-            color="white"
-            letterCase="capitalize"
-            size="base"
-            weight="semibold"
-          >
+          <Text color="white" letterCase="upper" size="base" weight="semibold">
             {row.name}
           </Text>
         )}

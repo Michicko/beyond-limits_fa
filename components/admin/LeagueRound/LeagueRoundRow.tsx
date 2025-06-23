@@ -5,6 +5,7 @@ import { Nullable } from "@/lib/definitions";
 import { updateLeagueRound } from "@/app/_actions/actions";
 import useToast from "@/hooks/useToast";
 import { getButtonStatus } from "@/lib/helpers";
+import DeleteBtn from "../DeleteBtn/DeleteBtn";
 
 interface ILeagueRoundStanding {
   position: number;
@@ -82,7 +83,6 @@ function LeagueRoundRow({
           id={round.round}
           value={result}
           setValue={setResult}
-          // disabled={round.result && round.status === "COMPLETED" ? true : false}
           fixedWidth={true}
         />
       </Table.Cell>
@@ -91,17 +91,20 @@ function LeagueRoundRow({
           variant={"solid"}
           colorPalette={"green"}
           px={"10px"}
-          // disabled={
-          //   (round.result && round.status === "COMPLETED" && true) ||
-          //   isPending ||
-          //   competitionStatus === "COMPLETED"
-          // }
           onClick={async () => {
             await updateRound(round.id);
           }}
         >
           {getButtonStatus(round, "Round", isPending)}
         </Button>
+      </Table.Cell>
+      <Table.Cell css={tC}>
+        <DeleteBtn
+          id={round.id}
+          type="iconBtn"
+          module="LeagueRound"
+          name="League Round"
+        />
       </Table.Cell>
     </Table.Row>
   );

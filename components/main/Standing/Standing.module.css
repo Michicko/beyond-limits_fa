@@ -66,6 +66,8 @@ tr.shade {
   position: relative;
   height: 1.5rem;
   width: 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .standing td.with-child > *:nth-child(1) {
@@ -95,6 +97,10 @@ tr.shade {
   margin-left: var(--xs);
   margin-top: var(--xxs);
   text-transform: uppercase;
+}
+
+.standing-title.link {
+  text-decoration: underline;
 }
 
 .standing td.with-child > *:nth-child(3) {

@@ -19,6 +19,7 @@ type DeleteBtnProps = {
     | "Banner"
     | "Visual"
     | "Highlight"
+    | "LeagueRound"
     | "CompetitionSeason";
   images?: Nullable<string>[];
   type?: "menu" | "btn" | "iconBtn";

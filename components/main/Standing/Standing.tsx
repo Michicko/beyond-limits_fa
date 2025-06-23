@@ -47,7 +47,16 @@ function Standing({
   return (
     <div className={clsx(styles.standing)}>
       <Card theme="light">
-        <p className={clsx(styles["standing-title"])}>{name} Standing</p>
+        {!showFull ? (
+          <Link
+            href="/standing"
+            className={clsx(styles["standing-title"], styles["link"])}
+          >
+            {name} Standing
+          </Link>
+        ) : (
+          <p className={clsx(styles["standing-title"])}>{name} Standing</p>
+        )}
         <div className={clsx(styles["standing-box"])}>
           <table className={clsx(styles.showFull)}>
             <CardHeader as="thead" theme="trans" border={true}>
@@ -90,11 +99,11 @@ function Standing({
               </>
             </CardBody>
           </table>
-          {!showFull && (
+          {/* {!showFull && (
             <Link href="/standing" className={clsx(styles["standing-btn"])}>
               view full table
             </Link>
-          )}
+          )} */}
         </div>
       </Card>
     </div>

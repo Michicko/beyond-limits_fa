@@ -41,6 +41,7 @@ export type DeleteModule =
   | "Match"
   | "Player"
   | "Highlight"
+  | "LeagueRound"
   | "Banner"
   | "Visual"
   | "CompetitionSeason"
@@ -78,6 +79,11 @@ const deleteConfig: Record<
   Visual: {
     modelName: "Visual",
     pathToRevalidate: "/cp/visuals",
+  },
+  LeagueRound: {
+    modelName: "LeagueRound",
+    pathToRevalidate:
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]",
   },
   PlayerPosition: {
     modelName: "PlayerPosition",

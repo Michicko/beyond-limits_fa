@@ -30,6 +30,8 @@ export const metadata = {
 };
 
 async function TeamStats() {
+  const isAuth = await isAuthenticated();
+
   const year = new Date().getUTCFullYear();
   const { data: seasons, errors } =
     await cookiesClient.models.CompetitionSeason.list({
@@ -38,7 +40,7 @@ async function TeamStats() {
           contains: `${year}`,
         },
       },
-      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      authMode: isAuth ? "userPool" : "iam",
       selectionSet: [
         "id",
         "name",
@@ -104,6 +106,7 @@ async function TeamStats() {
         name: row.name,
         logo: row.logo,
         standing: beyondStanding,
+        leagueStatus: row.league.status,
       };
     });
 
@@ -113,6 +116,7 @@ async function TeamStats() {
       const lastRound =
         row.cup.playOffs && row.cup.playOffs[row.cup.playOffs.length - 1];
       return {
+        id: row.cup.id,
         name: row.name,
         type: row.type,
         logo: row.logo,
@@ -120,13 +124,16 @@ async function TeamStats() {
       };
     });
 
-  const forms = (rounds || [])
-    .filter((el) => el?.status === "COMPLETED" && el.result)
-    .map((el) => getFirstLetter(el.result));
+  const forms = Array.isArray(rounds)
+    ? rounds
+        .filter((el) => el?.status === "COMPLETED" && el?.result)
+        .map((el) => getFirstLetter(el.result))
+    : [];
 
   const matches = await getCurrentCompetitionSeasonsMatches(
-    (await isAuthenticated()) ? "auth" : "guest"
+    isAuth ? "auth" : "guest"
   );
+
   const roundsCounts = await getCounts(matches);
 
   return (
@@ -182,14 +189,14 @@ async function TeamStats() {
                       {leagues.map((league, i) => {
                         if (
                           league.type === "MIXED" &&
-                          league.status === "COMPLETED"
+                          league.leagueStatus === "COMPLETED"
                         )
-                          return;
+                          return null;
                         return (
                           <TeamStat
                             competition_logo={league.logo}
                             competition_name={league.name}
-                            position={league.standing.position}
+                            position={league.standing?.position ?? ""}
                             key={league.name + i + (i + 3) + i + 2}
                           />
                         );
@@ -197,13 +204,13 @@ async function TeamStats() {
                     </ul>
                     <ul className={clsx(styles["competition-list"])}>
                       {cups.map((cup, i) => {
-                        if (!cup.round) return;
+                        if (!cup.round) return null;
                         return (
                           <TeamStat
                             competition_logo={cup.logo}
                             competition_name={cup.name}
                             position={
-                              getPlayOffRoundName(cup.round.round) ?? ""
+                              getPlayOffRoundName(cup.round?.round) ?? ""
                             }
                             key={cup.id + i + (i + 2) + i + 3}
                           />

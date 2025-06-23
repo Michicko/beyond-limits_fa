@@ -79,6 +79,8 @@
   position: relative;
   height: 3.5rem;
   width: 3.5rem;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .match__teams {
@@ -145,6 +147,10 @@
   align-items: center;
   border-radius: var(--xxs);
   padding: var(--xs) var(--sm);
+
+  /* default bg for article category */
+  background: var(--red-500);
+  color: var(--red-100);
 }
 
 .article__category.match-report {
@@ -156,7 +162,8 @@
   color: var(--gray-100);
 }
 
-.article__category.club-news {
+.article__category.club-news,
+.article__category.latest-news {
   background: var(--red-500);
   color: var(--red-100);
 }

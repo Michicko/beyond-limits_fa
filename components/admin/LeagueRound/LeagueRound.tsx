@@ -122,6 +122,7 @@ function LeagueRound({
                 </Table.ColumnHeader>
                 <Table.ColumnHeader css={cH}>Result</Table.ColumnHeader>
                 <Table.ColumnHeader css={cH}></Table.ColumnHeader>
+                <Table.ColumnHeader css={cH}></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
