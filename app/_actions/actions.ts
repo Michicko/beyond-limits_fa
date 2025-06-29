@@ -408,6 +408,7 @@ async function getPrevNextMatch(client: "guest" | "auth") {
     upcomingMatch,
     lastMatch,
     fixtures,
+    matches,
   };
 }
 
@@ -635,7 +636,7 @@ export async function fetchHomepageData() {
   const auth = await isLoggedIn();
 
   try {
-    const { lastMatch, fixtures } = await getPrevNextMatch(
+    const { lastMatch, fixtures, matches } = await getPrevNextMatch(
       auth ? "auth" : "guest"
     );
 
@@ -702,6 +703,7 @@ export async function fetchHomepageData() {
       players,
       fixtures: fixtures.slice(0, 4),
       highlights,
+      matches,
     };
 
     return {

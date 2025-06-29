@@ -1,5 +1,6 @@
 import Calendar from "@/components/main/Calendar/Calendar";
 import Grid from "@/components/main/Container/Grid";
+import Seasons from "@/components/main/Filters/Seasons";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
@@ -48,6 +49,7 @@ async function resultsFixtures({
   searchParams: Promise<{
     month: string;
     season: string;
+    year: string;
   }>;
 }) {
   const searchParam = await searchParams;
@@ -80,9 +82,12 @@ async function resultsFixtures({
     matches = getFixturesResults(
       currentSeason.matches,
       ["UPCOMING", "COMPLETED"],
-      searchParam.month
+      searchParam.month,
+      +searchParam.year
     );
   }
+
+  const years = currentSeason?.season.trim().split("/") ?? [];
 
   return (
     <CompetitionsLayout
@@ -93,7 +98,7 @@ async function resultsFixtures({
     >
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar years={years} />
         </Suspense>
         {errors ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">

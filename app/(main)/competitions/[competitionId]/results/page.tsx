@@ -3,7 +3,11 @@ import Grid from "@/components/main/Container/Grid";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
-import { capitalize, findCurrentSeason, getMatchesByDateRange } from "@/lib/helpers";
+import {
+  capitalize,
+  findCurrentSeason,
+  getMatchesByDateRange,
+} from "@/lib/helpers";
 import { months } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
@@ -16,17 +20,22 @@ export async function generateMetadata({
   searchParams?: { season?: string };
 }) {
   const auth = await isAuthenticated();
-  const { data: competitionSeasons } = await cookiesClient.models.CompetitionSeason.list({
-    filter: {
-      competitionId: {
-        eq: params.competitionId,
+  const { data: competitionSeasons } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
+        },
       },
-    },
-    authMode: auth ? "userPool" : "iam",
-    selectionSet: ['name', "season", "seasonStartMonth"],
-  });
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["name", "season", "seasonStartMonth"],
+    });
 
-  const currentSeason = competitionSeasons &&
+  const date = new Date();
+  const currentYear = date.getUTCFullYear();
+
+  const currentSeason =
+    competitionSeasons &&
     findCurrentSeason(competitionSeasons, new Date(), searchParams?.season);
 
   const seasonLabel = currentSeason?.season ?? "Season";
@@ -51,38 +60,45 @@ async function CompetitionResults({
 }) {
   const searchParam = await searchParams;
   const year = new Date().getUTCFullYear();
-  const monthIndex = months.indexOf(searchParam.month.toLowerCase());  
-  const auth = await isAuthenticated()
+  const monthIndex = months.indexOf(searchParam.month.toLowerCase());
+  const auth = await isAuthenticated();
 
-  const { data: competitionSeasons, errors} =
-    await cookiesClient.models.CompetitionSeason.list(
-      {
-        filter: {
-          competitionId: {
-            eq: params.competitionId,
-          }
+  const { data: competitionSeasons, errors } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
         },
-        authMode: auth ? "userPool" : "iam",
-        selectionSet: [
-          "id",
-          "matches.*",
-          "season",
-          "seasonStartMonth",
-          "name",
-          "matches.competitionSeason.*",
-        ],
       },
-    );
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: [
+        "id",
+        "matches.*",
+        "season",
+        "seasonStartMonth",
+        "name",
+        "matches.competitionSeason.*",
+      ],
+    });
 
-  const startDate = new Date(year, monthIndex, 1); 
+  const startDate = new Date(year, monthIndex, 1);
   const endDate = new Date(year, monthIndex + 1, 1);
 
   let results;
-  const currentSeason = competitionSeasons && findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
-  
+  const currentSeason =
+    competitionSeasons &&
+    findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
+
   if (currentSeason) {
-    results = getMatchesByDateRange(currentSeason?.matches, "COMPLETED", startDate, endDate);
+    results = getMatchesByDateRange(
+      currentSeason?.matches,
+      "COMPLETED",
+      startDate,
+      endDate
+    );
   }
+
+  const years = currentSeason?.season.trim().split("/") ?? [];
 
   return (
     <CompetitionsLayout
@@ -93,13 +109,13 @@ async function CompetitionResults({
     >
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar years={years} />
         </Suspense>
-        {errors ? 
-        <Text color="white" letterCase={"lower"} size="base" weight="regular">
-          {errors[0].message}
-        </Text>:
-        !results || (results && results.length < 1) ? (
+        {errors ? (
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {errors[0].message}
+          </Text>
+        ) : !results || (results && results.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Results available at the moment.
           </Text>

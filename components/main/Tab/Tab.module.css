@@ -3,16 +3,17 @@
   overflow-x: auto;
   position: relative;
   display: flex;
+  min-width: 0;
 }
 
 .tab-list {
-  display: inline-flex;
+  display: flex;
+  min-width: min-content;
   align-items: center;
   gap: var(--md);
   padding: var(--xxs) var(--sm);
   border-radius: var(--xs);
   margin-bottom: 0.5rem;
-  white-space: nowrap;
 }
 
 .tab.white {

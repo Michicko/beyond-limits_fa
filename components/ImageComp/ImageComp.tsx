@@ -23,7 +23,10 @@ const ImageComp = ({
       loading={priority ? "eager" : "lazy"}
       loader={() => imageLoader({ src: image, width: 100, quality: 75 })}
       placeholder={"blur"}
-      blurDataURL={placeholder || image}
+      blurDataURL={
+        placeholder ||
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVR4nGNkNIj+z0AEYCJG0ahC6iXRAgDiABzSRUMv57sAAAAASUVORK5CYII="
+      }
       style={{ objectFit: "cover", objectPosition: "center" }}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
     />

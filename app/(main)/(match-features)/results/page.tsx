@@ -22,6 +22,8 @@ async function Results(props: {
   const searchParams = await props.searchParams;
   const monthParam = months.indexOf(searchParams.month);
   const auth = await isAuthenticated();
+  const date = new Date();
+  const currentYear = date.getUTCFullYear();
 
   const { results } = await getCurrentSeasonMatches(
     auth ? "auth" : "guest",
@@ -32,7 +34,14 @@ async function Results(props: {
     <CompetitionsLayout pageTitle="Results">
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar
+            years={[
+              currentYear - 2,
+              currentYear - 1,
+              currentYear,
+              currentYear + 1,
+            ]}
+          />
         </Suspense>
         {!results || (results && results.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">

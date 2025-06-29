@@ -1,17 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
 import FilterBtns from "../Filters/FilterBtns";
 import { months } from "@/lib/placeholder-data";
+import Dropdown from "../Filters/Dropdown";
 
-function Calendar({ slice }: { slice?: number }) {
+function Calendar({
+  slice,
+  years,
+  currentYear,
+  noUrl,
+  setCurrentYear,
+  currentIndex,
+  setCurrentIndex,
+}: {
+  slice?: number;
+  years: number[];
+  currentYear?: number;
+  noUrl?: boolean;
+  currentIndex?: number;
+  setCurrentYear?: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const date = new Date();
+  const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
 
   return (
-    <FilterBtns
-      initial={month}
-      list={slice ? months.slice(slice) : months}
-      name="month"
-    />
+    <>
+      <Dropdown
+        years={years}
+        currentYear={currentYear ?? year}
+        noUrl={noUrl}
+        setCurrentYear={setCurrentYear}
+      />
+      <FilterBtns
+        list={months}
+        name="month"
+        currentIndex={currentIndex ?? month}
+        noUrl={noUrl}
+        setCurrentIndex={setCurrentIndex}
+      />
+    </>
   );
 }
 

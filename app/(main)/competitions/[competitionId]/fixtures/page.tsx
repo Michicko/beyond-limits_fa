@@ -15,17 +15,19 @@ export async function generateMetadata({
   searchParams?: { season?: string };
 }) {
   const auth = await isAuthenticated();
-  const { data: competitionSeasons } = await cookiesClient.models.CompetitionSeason.list({
-    filter: {
-      competitionId: {
-        eq: params.competitionId,
+  const { data: competitionSeasons } =
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
+        },
       },
-    },
-    authMode: auth ? "userPool" : "iam",
-    selectionSet: ['name', "season", "seasonStartMonth"],
-  });
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["name", "season", "seasonStartMonth"],
+    });
 
-  const currentSeason = competitionSeasons &&
+  const currentSeason =
+    competitionSeasons &&
     findCurrentSeason(competitionSeasons, new Date(), searchParams?.season);
 
   const seasonLabel = currentSeason?.season ?? "Season";
@@ -50,33 +52,41 @@ async function CompetitionFixtures({
 }) {
   const searchParam = await searchParams;
   const auth = await isAuthenticated();
+  const date = new Date();
+  const currentYear = date.getUTCFullYear();
 
   const { data: competitionSeasons, errors } =
-    await cookiesClient.models.CompetitionSeason.list(
-      {
-        filter: {
-          competitionId: {
-            eq: params.competitionId,
-          }
+    await cookiesClient.models.CompetitionSeason.list({
+      filter: {
+        competitionId: {
+          eq: params.competitionId,
         },
-        authMode: auth ? "userPool" : "iam",
-        selectionSet: [
-          "id",
-          "season",
-          "seasonStartMonth",
-          "matches.*",
-          "name",
-          "matches.competitionSeason.*",
-        ],
       },
-    );
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: [
+        "id",
+        "season",
+        "seasonStartMonth",
+        "matches.*",
+        "name",
+        "matches.competitionSeason.*",
+      ],
+    });
 
   let fixtures;
-  const currentSeason = competitionSeasons && findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
+  const currentSeason =
+    competitionSeasons &&
+    findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
 
   if (currentSeason) {
-    fixtures = getMatches(currentSeason?.matches, "UPCOMING", searchParam.month);
+    fixtures = getMatches(
+      currentSeason?.matches,
+      "UPCOMING",
+      searchParam.month
+    );
   }
+
+  const years = currentSeason?.season.trim().split("/") ?? [];
 
   return (
     <CompetitionsLayout
@@ -87,13 +97,13 @@ async function CompetitionFixtures({
     >
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar years={years} />
         </Suspense>
-        {errors ? 
+        {errors ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
-          {errors[0].message}
-        </Text>:
-        !fixtures || (fixtures && fixtures.length < 1) ? (
+            {errors[0].message}
+          </Text>
+        ) : !fixtures || (fixtures && fixtures.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
             No Fixtures available at the moment.
           </Text>

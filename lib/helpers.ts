@@ -200,7 +200,8 @@ export const getMatches = (
 export const getFixturesResults = (
   matches: IMatch[],
   statuses: ("UPCOMING" | "COMPLETED")[] = ["UPCOMING", "COMPLETED"],
-  monthParam?: string
+  monthParam?: string,
+  yearParam?: number
 ) => {
   return matches
     .filter((el) => {
@@ -211,7 +212,8 @@ export const getFixturesResults = (
       const matchMonth = monthParam
         ? months.indexOf(monthParam) === date.getUTCMonth()
         : true;
-      return matchStatus && matchMonth;
+      const matchYear = yearParam ? date.getUTCFullYear() === yearParam : true;
+      return matchStatus && matchMonth && matchYear;
     })
     .sort((a, b) => {
       // Sort UPCOMING before COMPLETED
@@ -361,7 +363,8 @@ export const getHonorsStats = (honors: Honor[]) => {
 export const appendMonthToLink = (link: string) => {
   const date = new Date();
   const month = date.getMonth();
-  return `${link}?month=${months[month]}`;
+  const year = date.getUTCFullYear();
+  return `${link}?month=${months[month]}&year=${year}`;
 };
 
 export const getCloudinaryPublicId = (url: string): string | null => {

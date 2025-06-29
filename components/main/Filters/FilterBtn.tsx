@@ -9,12 +9,14 @@ function FilterBtn({
   index,
   currentIndex,
   setCurrentIndex,
+  noUrl,
 }: {
   filterName: string;
   filterValue: string;
   index: number;
-  currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  currentIndex?: number;
+  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>;
+  noUrl?: boolean;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -22,37 +24,50 @@ function FilterBtn({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const selectFilterValue = () => {
-    const params = new URLSearchParams(searchParams);
-    if (filterValue) {
-      params.set(filterName, filterValue.toLowerCase());
-    } else {
-      params.delete(filterName);
-    }
+    if (!noUrl) {
+      const params = new URLSearchParams(searchParams);
+      if (filterValue) {
+        params.set(filterName, filterValue.toLowerCase());
+      } else {
+        params.delete(filterName);
+      }
 
-    replace(`${pathname}?${params.toString()}`);
-    setCurrentIndex(index);
+      replace(`${pathname}?${params.toString()}`);
+    } else if (setCurrentIndex) {
+      setCurrentIndex(index);
+    }
   };
 
   const current = React.useMemo(
-    () => searchParams.get(filterName),
+    () => (noUrl ? null : searchParams.get(filterName)),
     [searchParams, filterName]
   );
 
-  // Scroll current filter button into view
   useEffect(() => {
-    if (current === filterValue && buttonRef.current) {
-      buttonRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      });
-    }
-  }, [current, filterValue]);
+    const isSelected = noUrl ? currentIndex === index : current === filterValue;
+
+    if (!isSelected || !buttonRef.current) return;
+
+    const el = buttonRef.current;
+
+    const scrollContainer = el.closest(`.${styles["filter__btns-container"]}`);
+    if (!scrollContainer) return;
+
+    const scrollOffset =
+      el.offsetLeft - scrollContainer.clientWidth / 2 + el.offsetWidth / 2;
+
+    scrollContainer.scrollTo({
+      left: scrollOffset,
+      behavior: "smooth",
+    });
+  }, [current, currentIndex, index, filterValue, noUrl]);
+
+  const isSelected = noUrl ? currentIndex === index : current === filterValue;
 
   return (
     <button
       className={clsx(styles.filter__btn, {
-        [styles.current]: current === filterValue,
+        [styles.current]: isSelected,
       })}
       onClick={selectFilterValue}
       ref={buttonRef}

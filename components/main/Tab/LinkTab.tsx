@@ -21,10 +21,24 @@ const LinkTab = ({
 
   useEffect(() => {
     if (isCurrent && tabRef.current) {
-      tabRef.current.scrollIntoView({
+      const el = tabRef.current;
+
+      // Scrollable container
+      const scrollContainer = el.closest(`.${styles["tab__container"]}`);
+      if (!scrollContainer) return;
+
+      // Only scroll if there's actually overflow
+      const isOverflowing =
+        scrollContainer.scrollWidth > scrollContainer.clientWidth;
+
+      if (!isOverflowing) return;
+
+      const scrollOffset =
+        el.offsetLeft - scrollContainer.clientWidth / 2 + el.offsetWidth / 2;
+
+      scrollContainer.scrollTo({
+        left: scrollOffset,
         behavior: "smooth",
-        block: "nearest",
-        inline: "center",
       });
     }
   }, [isCurrent]);

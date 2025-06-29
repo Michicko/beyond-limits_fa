@@ -73,7 +73,7 @@
 }
 
 .team-stats__streaks > *:nth-child(1) p {
-  color: var(--primary-dark);
+  color: var(--green-300);
 }
 
 .team-stats__streaks > *:nth-child(2) p {

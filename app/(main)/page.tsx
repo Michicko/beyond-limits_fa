@@ -7,7 +7,6 @@ import Slider from "@/components/main/Slider/Slider";
 import Standing from "@/components/main/Standing/Standing";
 import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
-import Text from "@/components/main/Typography/Text";
 import VideoCards from "@/components/main/VideoCard/VideoCards";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
@@ -16,6 +15,7 @@ import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { appendMonthToLink } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
+import AllCompetitionMatches from "@/components/main/AllCompetitionMatches/AllCompetitionMatches";
 
 export default async function Home() {
   const { data: homepageContent } = await fetchHomepageData();
@@ -139,24 +139,11 @@ export default async function Home() {
             </Flex>
           </Container>
         )}
-        <Container as="section" size="md">
-          <Flex justify="center" align="center" my={"iv"}>
-            <Text
-              color="white"
-              size="base"
-              letterCase="normal"
-              weight="regular"
-              type="interlude"
-            >
-              At Beyond Limits Football Academy, we believe in more than just
-              developing exceptional football talent; we strive to shape
-              responsible, empowered individuals who contribute positively to
-              society. As the juniors of the esteemed Remo Stars in the Nigerian
-              Professional Football League, we take pride in our commitment to
-              community development.
-            </Text>
-          </Flex>
-        </Container>
+        {homepageContent?.matches && (
+          <Container as="section" size="md">
+            <AllCompetitionMatches matches={homepageContent?.matches} />
+          </Container>
+        )}
         {homepageContent && (
           <Container as="section" size="md">
             {homepageContent?.highlights && (

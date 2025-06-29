@@ -98,12 +98,13 @@ function LeagueRoundRow({
           {getButtonStatus(round, "Round", isPending)}
         </Button>
       </Table.Cell>
-      <Table.Cell css={tC} position={"relative"}>
+      <Table.Cell css={tC} position={"relative"} minW={"45px"}>
         <DeleteBtn
           id={round.id}
           type="iconBtn"
           module="LeagueRound"
           name={`Round ${round.round}`}
+          position={"relative"}
         />
       </Table.Cell>
     </Table.Row>

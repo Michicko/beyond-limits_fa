@@ -28,11 +28,21 @@ async function Fixtures(props: {
     monthParam
   );
 
+  const date = new Date();
+  const currentYear = date.getUTCFullYear();
+
   return (
     <CompetitionsLayout pageTitle="Fixtures">
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar
+            years={[
+              currentYear - 2,
+              currentYear - 1,
+              currentYear,
+              currentYear + 1,
+            ]}
+          />
         </Suspense>
         {!fixtures || (fixtures && fixtures.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">

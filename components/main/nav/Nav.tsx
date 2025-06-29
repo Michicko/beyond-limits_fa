@@ -8,7 +8,6 @@ import NavLink from "./NavLink";
 import Hamburger from "./Hamburger";
 import NavLogo from "./NavLogo";
 import NavSearchBtn from "./NavSearchBtn";
-import { usePathname } from "next/navigation";
 import { fetchAuthSession } from "@aws-amplify/auth";
 import { Hub } from "aws-amplify/utils";
 import Logout from "@/components/Auth/Logout";
@@ -16,8 +15,6 @@ import Logout from "@/components/Auth/Logout";
 function Nav() {
   const [authenticated, setAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const pathname = usePathname();
-  const isStatePopped = useRef(false);
 
   const [isSearchBarOpened, setIsSearchBarOpened] = useState(false);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -27,25 +24,6 @@ function Nav() {
   const openSearchBar = () => {
     setIsSearchBarOpened(true);
   };
-
-  // Handling the scroll position to ensure clicking on the links
-  // scrolls the page to the top with the sticky positioned navbar.
-  useEffect(() => {
-    const onPopState = () => (isStatePopped.current = true);
-
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, []);
-
-  useEffect(() => {
-    if (!isStatePopped.current) {
-      // navigation occurred without pressing
-      // the browser's back or forward buttons
-      window.scrollTo(0, 0);
-    } else {
-      isStatePopped.current = false;
-    }
-  }, [pathname]);
 
   const controlNavbar = () => {
     const lastScrollY = lastScrollYRef.current;
@@ -77,9 +55,9 @@ function Nav() {
         const { tokens } = await fetchAuthSession();
         const isAuthenticated = !!tokens;
         setAuthenticated(isAuthenticated);
-        const rawGroups = tokens?.accessToken.payload['cognito:groups'];
+        const rawGroups = tokens?.accessToken.payload["cognito:groups"];
         const groups = Array.isArray(rawGroups) ? rawGroups : [];
-        const isAdmin = groups.includes('Admin') || groups.includes('Writer');
+        const isAdmin = groups.includes("Admin") || groups.includes("Writer");
         setIsAdmin(isAdmin);
       } catch (error) {
         setAuthenticated(false);
@@ -94,7 +72,7 @@ function Nav() {
       if (payload.event === "signedIn") {
         setAuthenticated(true);
       }
-      if(payload.event === 'signedOut'){
+      if (payload.event === "signedOut") {
         setAuthenticated(false);
       }
     });
@@ -102,7 +80,7 @@ function Nav() {
     return () => {
       hubListenerCancel();
     };
-  }, [])
+  }, []);
 
   return (
     <>
@@ -121,20 +99,13 @@ function Nav() {
           </div>
           <p className={clsx(styles["nav-text"])}>No Limits</p>
           <div className={clsx(styles.right)}>
-          
-            {
-              authenticated && isAdmin ? 
-              <NavLink
-                link={{ href: "/cp/dashboard", name: "Dashboard" }}
-              /> 
-              : authenticated ?
-               <Logout isMain={true} />
-              :
-              <NavLink
-                link={{ href: "/login", name: "Login" }}
-              />
-            }
-            
+            {authenticated && isAdmin ? (
+              <NavLink link={{ href: "/cp/dashboard", name: "Dashboard" }} />
+            ) : authenticated ? (
+              <Logout isMain={true} />
+            ) : (
+              <NavLink link={{ href: "/login", name: "Login" }} />
+            )}
           </div>
         </div>
         <div className={clsx(styles["nav-main"])}>

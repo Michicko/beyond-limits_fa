@@ -23,9 +23,17 @@ type DeleteBtnProps = {
     | "CompetitionSeason";
   images?: Nullable<string>[];
   type?: "menu" | "btn" | "iconBtn";
+  position?: "relative" | "absolute";
 };
 
-function DeleteBtn({ id, name, type, images, module }: DeleteBtnProps) {
+function DeleteBtn({
+  id,
+  name,
+  type,
+  images,
+  module,
+  position,
+}: DeleteBtnProps) {
   const styles = {
     p: "0 10px",
     h: "40px",
@@ -90,9 +98,9 @@ function DeleteBtn({ id, name, type, images, module }: DeleteBtnProps) {
       <IconButton
         size={"sm"}
         color={"red"}
-        position={"absolute"}
-        top={"2"}
-        right={"2"}
+        position={position || "absolute"}
+        top={position ? "unset" : "2"}
+        right={position ? "unset" : "2"}
         zIndex={"100"}
         variant={"plain"}
         disabled={isPending}

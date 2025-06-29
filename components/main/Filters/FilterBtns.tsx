@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import clsx from "clsx";
 import styles from "./Filters.module.css";
 import FilterBtn from "./FilterBtn";
@@ -7,14 +7,16 @@ import FilterBtn from "./FilterBtn";
 function FilterBtns({
   list,
   name,
-  initial,
+  noUrl,
+  currentIndex,
+  setCurrentIndex,
 }: {
   list: string[];
   name: string;
-  initial: number;
+  noUrl?: boolean;
+  currentIndex?: number;
+  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [currentIndex, setCurrentIndex] = useState(initial);
-
   return (
     <div className={clsx(styles["filter__btns-container"])}>
       <div className={clsx(styles.filter__btns)}>
@@ -27,6 +29,7 @@ function FilterBtns({
               currentIndex={currentIndex}
               setCurrentIndex={setCurrentIndex}
               key={item}
+              noUrl={noUrl}
             />
           );
         })}

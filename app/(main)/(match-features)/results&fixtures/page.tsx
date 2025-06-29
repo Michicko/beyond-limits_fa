@@ -37,11 +37,14 @@ async function resultsFixtures(props: {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
   });
 
+  const date = new Date();
+  const year = date.getUTCFullYear();
+
   return (
     <CompetitionsLayout pageTitle="Results & Fixtures">
       <>
         <Suspense fallback={null}>
-          <Calendar />
+          <Calendar years={[year - 2, year - 1, year, year + 1]} />
         </Suspense>
         {!matches || (matches && matches.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
