@@ -274,7 +274,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                       <Text
                         color="secondary"
                         size="sm"
-                        letterCase={"upper"}
+                        letterCase="capitalize"
                         weight="semibold"
                       >
                         Location
@@ -282,7 +282,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                       <Text
                         color="white"
                         size="base"
-                        letterCase={"upper"}
+                        letterCase={"capitalize"}
                         weight="semibold"
                       >
                         {match.venue}

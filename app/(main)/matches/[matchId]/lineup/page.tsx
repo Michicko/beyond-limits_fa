@@ -135,7 +135,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                               weight="bold"
                               letterCase="capitalize"
                             >
-                              {`${lineup_obj.position}s`}
+                              {`${lineup_obj.position}s`.toLowerCase()}
                             </Text>
 
                             {lineup_obj.players.map((el, i) => {
@@ -147,7 +147,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                                   letterCase="capitalize"
                                   key={el.squadNo}
                                 >
-                                  {`${el.squadNo}. ${el.firstname} ${el.lastname}`}
+                                  {`${el.squadNo}. ${el.firstname} ${el.lastname}`.toLowerCase()}
                                 </Text>
                               );
                             })}

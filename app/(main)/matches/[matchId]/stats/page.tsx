@@ -155,27 +155,30 @@ async function Stats({ params }: { params: { matchId: string } }) {
                     <>
                       {hstats &&
                         hstats.map(([key, val], i) => {
-                          return (
-                            <li
-                              className={clsx(
-                                styles["preview-item"],
-                                styles["no-border"]
-                              )}
-                              key={(i + 2) * (i * 10)}
-                            >
-                              {val && match.awayTeam && (
+                          const awayVal =
+                            match.awayTeam?.[
+                              key as keyof typeof match.awayTeam
+                            ];
+
+                          if (val && awayVal) {
+                            return (
+                              <li
+                                className={clsx(
+                                  styles["preview-item"],
+                                  styles["no-border"]
+                                )}
+                                key={(i + 2) * (i * 10)}
+                              >
                                 <MatchStat
                                   stat={key}
                                   home={val}
-                                  away={
-                                    match.awayTeam[
-                                      key as keyof typeof match.awayTeam
-                                    ] ?? 0
-                                  }
+                                  away={awayVal}
                                 />
-                              )}
-                            </li>
-                          );
+                              </li>
+                            );
+                          }
+
+                          return null;
                         })}
                     </>
                   </ul>
