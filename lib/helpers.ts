@@ -237,11 +237,7 @@ export const getMatches = (
 
 export const sortMatchesByStatusAndDate = (matches: IMatch[]) => {
   return matches.sort((a, b) => {
-    // Sort UPCOMING before COMPLETED
-    if (a.status !== b.status) {
-      return a.status === "UPCOMING" ? -1 : 1;
-    }
-    // If same status, sort by date
+    // sort by date
     return new Date(a.date).getTime() - new Date(b.date).getTime();
   });
 };
