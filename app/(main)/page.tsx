@@ -1,4 +1,3 @@
-import Button from "@/components/main/Button/Button";
 import Container from "@/components/main/Container/Container";
 import Flex from "@/components/main/Container/Flex";
 import Grid from "@/components/main/Container/Grid";
@@ -13,7 +12,7 @@ import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
-import { appendMonthToLink } from "@/lib/helpers";
+import { appendMonthToLink, sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import AllCompetitionMatches from "@/components/main/AllCompetitionMatches/AllCompetitionMatches";
 
@@ -104,7 +103,7 @@ export default async function Home() {
             <PlayerList players={homepageContent.players.slice(0, 3)} />
           </Container>
         )}
-        {homepageContent?.fixtures && homepageContent.fixtures.length > 0 && (
+        {/* {homepageContent?.fixtures && homepageContent.fixtures.length > 0 && (
           <Container as="section" size="md">
             <Heading
               level={2}
@@ -138,10 +137,12 @@ export default async function Home() {
               />
             </Flex>
           </Container>
-        )}
+        )} */}
         {homepageContent?.matches && (
           <Container as="section" size="md">
-            <AllCompetitionMatches matches={homepageContent?.matches} />
+            <AllCompetitionMatches
+              matches={sortMatchesByStatusAndDate(homepageContent.matches)}
+            />
           </Container>
         )}
         {homepageContent && (

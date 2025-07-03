@@ -4,6 +4,7 @@ import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
+import { sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { months } from "@/lib/placeholder-data";
 import { isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
@@ -58,7 +59,7 @@ async function resultsFixtures(props: {
             gap="sm"
             my="lg"
           >
-            {matches.map((match) => {
+            {sortMatchesByStatusAndDate(matches).map((match) => {
               return (
                 <MatchCard
                   match={match}

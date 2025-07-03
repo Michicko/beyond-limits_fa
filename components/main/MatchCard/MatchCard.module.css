@@ -287,24 +287,20 @@
   align-items: center;
 }
 
-.team-form.w p {
-  color: var(--green-400);
+.team-form.w {
+  background: var(--green-500);
 }
 
 .team-form.l {
   background: var(--red-500);
 }
 
-.team-form.l p {
-  color: var(--white);
-}
-
 .team-form.d {
   background: var(--secondary-light);
 }
 
-.team-form.d p {
-  color: var(--primary-dark);
+.team-form p {
+  color: var(--white);
 }
 
 .matchdate p {
@@ -345,7 +341,7 @@
 .match-stat > *:last-child::before {
   width: 100%;
   height: 6px;
-  background: rgba(204, 204, 204, 0.5);
+  background: rgba(0, 0, 0, 0.35);
   position: absolute;
   bottom: 0;
   content: "";
@@ -358,18 +354,18 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  background: var(--red-400);
   z-index: 3;
   width: 1rem;
+  background: #ff7c1f;
 }
 
 .line.greater {
-  background: var(--red-400);
+  background: #ff7c1f;
 }
 
 .line.equal,
 .line.less {
-  background: var(--black);
+  background: #b4b4b4;
 }
 
 .line.away {
@@ -402,15 +398,15 @@
   }
 
   .match-team .logo-bg img {
-    height: auto;
-    width: 100%;
+    height: 3rem;
+    width: 3rem;
   }
 }
 
 @media only screen and (min-width: 48rem) {
   .match-team.show-name .team-name {
     display: block;
-    text-transform: capitalize;
+    text-transform: uppercase;
     color: var(--white);
     font-size: var(--base);
     font-weight: 500;

@@ -81,7 +81,7 @@ function MatchLayout({
         </div>
         <Heading
           level={2}
-          letterCase="capitalize"
+          letterCase="upper"
           center={true}
           type="section"
         >{`${match.homeTeam?.longName.toLowerCase()} vs ${match.awayTeam?.longName.toLowerCase()}`}</Heading>

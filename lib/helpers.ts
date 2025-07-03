@@ -1,5 +1,5 @@
 import moment from "moment";
-import { IMatch, Nullable } from "./definitions";
+import { Nullable } from "./definitions";
 import { months } from "./placeholder-data";
 
 interface IPlayer {
@@ -12,6 +12,12 @@ interface IPlayer {
     longName: string;
     shortName: string;
   };
+}
+
+interface ICompetition {
+  logo: string;
+  longName: string;
+  id: string;
 }
 
 interface IPos {
@@ -29,6 +35,38 @@ type Honor = {
     status: "PENDING" | "COMPLETED" | null;
   }[];
 };
+
+interface ICompetitionSeason {
+  id?: string;
+  logo: string;
+  name: string;
+  shortName?: string;
+}
+
+interface IMatch {
+  id?: string;
+  competitionSeasonId?: Nullable<string>;
+  competitionSeason?: ICompetitionSeason;
+  date: string;
+  time: string;
+  status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
+  result?: "WIN" | "DRAW" | "LOSE" | null;
+  homeTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  awayTeam: {
+    id: string;
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  review: string | number | boolean | object | any[] | null;
+}
 
 export const getObjectValue = <T extends Object>(
   obj: T,
@@ -197,14 +235,25 @@ export const getMatches = (
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
+export const sortMatchesByStatusAndDate = (matches: IMatch[]) => {
+  return matches.sort((a, b) => {
+    // Sort UPCOMING before COMPLETED
+    if (a.status !== b.status) {
+      return a.status === "UPCOMING" ? -1 : 1;
+    }
+    // If same status, sort by date
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  });
+};
+
 export const getFixturesResults = (
   matches: IMatch[],
   statuses: ("UPCOMING" | "COMPLETED")[] = ["UPCOMING", "COMPLETED"],
   monthParam?: string,
   yearParam?: number
 ) => {
-  return matches
-    .filter((el) => {
+  return sortMatchesByStatusAndDate(
+    matches.filter((el) => {
       const date = new Date(el.date);
       const matchStatus = statuses.includes(
         el.status as "UPCOMING" | "COMPLETED"
@@ -215,14 +264,7 @@ export const getFixturesResults = (
       const matchYear = yearParam ? date.getUTCFullYear() === yearParam : true;
       return matchStatus && matchMonth && matchYear;
     })
-    .sort((a, b) => {
-      // Sort UPCOMING before COMPLETED
-      if (a.status !== b.status) {
-        return a.status === "UPCOMING" ? -1 : 1;
-      }
-      // If same status, sort by date
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
+  );
 };
 
 export const getMatchesByDateRange = (
@@ -479,3 +521,17 @@ export function capitalize(str: string) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export const sortCompetitions = (competitions: ICompetition[]) =>
+  competitions.sort((a, b) => {
+    const nameA = a.longName.toUpperCase();
+    const nameB = b.longName.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
