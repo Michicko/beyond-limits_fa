@@ -81,9 +81,15 @@ async function Players({ params }: { params: { playersSlug: string } }) {
     });
   };
 
+  const bg = params.playersSlug === "under_19" ? "u-19.JPG" : "under-17.jpg";
+
   return (
     <>
-      <Header bg={"/images/u-19.jpg"} alt="under 19 players" overlay={true}>
+      <Header
+        bg={`/images/${bg}`}
+        alt={`${params.playersSlug} players`}
+        overlay={true}
+      >
         <LayoutHeader>
           <>
             <Heading

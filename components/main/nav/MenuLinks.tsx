@@ -112,7 +112,7 @@ const MenuLinks = [
         id: 321,
         link: "/players/under_19",
         name: "under-19",
-        image: "/images/u-19.jpg",
+        image: "/images/u-19.JPG",
       },
       {
         id: 322,
@@ -147,7 +147,7 @@ const MenuLinks = [
         id: 331,
         link: `/stats/team-stats`,
         name: "team stats",
-        image: "/images/team-stats.jpg",
+        image: "/images/team-stats.JPG",
       },
       {
         id: 332,
