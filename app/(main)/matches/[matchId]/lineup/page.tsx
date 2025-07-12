@@ -171,7 +171,7 @@ async function Lineup({ params }: { params: { matchId: string } }) {
                         weight="regular"
                         letterCase="capitalize"
                       >
-                        {match.coach && match.coach.name}
+                        {match.coach && match.coach.name.toLowerCase()}
                       </Text>
                     </li>
                     <li className={clsx(styles["preview-item"], styles.col)}>

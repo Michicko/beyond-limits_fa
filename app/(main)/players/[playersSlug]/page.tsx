@@ -83,11 +83,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
 
   return (
     <>
-      <Header
-        bg={"/images/under-19-bg.png"}
-        alt="2024 / 2025 ongoing campaign"
-        overlay={true}
-      >
+      <Header bg={"/images/u-19.jpg"} alt="under 19 players" overlay={true}>
         <LayoutHeader>
           <>
             <Heading

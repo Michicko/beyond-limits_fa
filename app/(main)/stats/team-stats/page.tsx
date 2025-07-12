@@ -138,11 +138,7 @@ async function TeamStats() {
 
   return (
     <>
-      <Header
-        bg={"/images/teamstats.jpg"}
-        alt="2024 / 2025 Stats"
-        overlay={true}
-      >
+      <Header bg={"/images/team-stats.jpg"} alt="Team Stats" overlay={true}>
         <LayoutHeader>
           <>
             <Heading

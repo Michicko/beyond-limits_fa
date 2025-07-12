@@ -404,6 +404,10 @@
 }
 
 @media only screen and (min-width: 48rem) {
+  .match-team.show-name {
+    width: 100%;
+    justify-content: space-between;
+  }
   .match-team.show-name .team-name {
     display: block;
     text-transform: uppercase;

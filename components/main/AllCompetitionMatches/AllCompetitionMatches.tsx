@@ -57,6 +57,7 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
     const date = new Date(match.date);
     return date.getUTCFullYear() === year && date.getUTCMonth() === month;
   });
+  const [showAllMatches, setShowAllMatches] = useState(false);
 
   return (
     <div className={clsx(styles.container)}>
@@ -74,16 +75,35 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
         </Text>
       ) : (
         <Grid gap="sm">
-          {filteredMatches.map((match) => {
-            return (
-              <MatchCard
-                match={match}
-                key={match.id}
-                showName={true}
-                theme="light"
-              />
-            );
-          })}
+          {filteredMatches
+            .slice(0, showAllMatches ? filteredMatches.length : 4)
+            .map((match) => {
+              return (
+                <MatchCard
+                  match={match}
+                  key={match.id}
+                  showName={true}
+                  theme="light"
+                />
+              );
+            })}
+
+          {filteredMatches.length > 4 && (
+            <button
+              onClick={() => setShowAllMatches((prev) => !prev)}
+              style={{
+                marginTop: "1rem",
+                background: "#ffcc00",
+                color: "#000",
+                padding: "0.5rem 1rem",
+                borderRadius: "5px",
+                cursor: "pointer",
+                border: "none",
+              }}
+            >
+              {showAllMatches ? "Show Less" : "Show All"}
+            </button>
+          )}
         </Grid>
       )}
     </div>

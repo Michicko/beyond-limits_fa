@@ -36,7 +36,7 @@ async function Honours() {
 
   return (
     <>
-      <Header bg={"/images/home-header-bg.png"} alt="honours" overlay={true}>
+      <Header bg={"/images/honors.jpg"} alt="honours" overlay={true}>
         <LayoutHeader>
           <>
             <Heading color="white" level={1} letterCase="upper" type="primary">

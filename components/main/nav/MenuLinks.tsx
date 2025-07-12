@@ -112,7 +112,7 @@ const MenuLinks = [
         id: 321,
         link: "/players/under_19",
         name: "under-19",
-        image: "/images/under19.png",
+        image: "/images/u-19.jpg",
       },
       {
         id: 322,
@@ -147,7 +147,7 @@ const MenuLinks = [
         id: 331,
         link: `/stats/team-stats`,
         name: "team stats",
-        image: "/images/teamstats.jpg",
+        image: "/images/team-stats.jpg",
       },
       {
         id: 332,
@@ -156,7 +156,8 @@ const MenuLinks = [
         image: "/images/playerstats.jpg",
       },
     ],
-    description: "Dive into in-depth team and player statistics, powered by our performance partners: Eyeball, Spiideo, and Wyscout.",
+    description:
+      "Dive into in-depth team and player statistics, powered by our performance partners: Eyeball, Spiideo, and Wyscout.",
   },
   {
     innerLinks: ["/about/history", "/about/honours"],

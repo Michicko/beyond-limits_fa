@@ -145,7 +145,7 @@ async function Report({ params }: { params: { matchId: string } }) {
                                   weight="regular"
                                   letterCase="capitalize"
                                 >
-                                  {scorer.name}
+                                  {scorer.name.toLowerCase()}
                                 </Text>
                                 <MatchScoreTime
                                   time={scorer.time}
