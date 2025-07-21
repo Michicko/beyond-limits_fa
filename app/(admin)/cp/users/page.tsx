@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import CurrentlySignedInUser from "@/components/admin/CurrentlySignedInUser/CurrentlySignedInUser";
 import DeleteUserBtn from "@/components/admin/DeleteBtn/DeleteUserBtn";

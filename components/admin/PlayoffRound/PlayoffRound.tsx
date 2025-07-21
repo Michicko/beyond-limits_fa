@@ -60,9 +60,8 @@ function PlayoffRound({
           alignItems={"center"}
           flexWrap={"wrap"}
         >
-          
           <Heading fontWeight={"700"}>Rounds</Heading>
-          {!matches || 
+          {!matches ||
           matches.length < 1 ||
           competitionStatus === "COMPLETED" ? (
             <Text>
@@ -93,6 +92,7 @@ function PlayoffRound({
                 </Table.ColumnHeader>
                 <Table.ColumnHeader css={cH}>Status</Table.ColumnHeader>
                 <Table.ColumnHeader css={cH}>Result</Table.ColumnHeader>
+                <Table.ColumnHeader css={cH}></Table.ColumnHeader>
                 <Table.ColumnHeader css={cH}></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>

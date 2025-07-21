@@ -31,6 +31,7 @@ interface IMatch {
     shortName: string;
     longName: string;
     goals: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   awayTeam: {
     id: string;
@@ -38,6 +39,7 @@ interface IMatch {
     shortName: string;
     longName: string;
     goals: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   review: string | number | boolean | object | any[] | null;
 }
@@ -96,7 +98,7 @@ function MatchCard({
           isLessThan24HoursAgo(match.date) && (
             <div className={clsx(styles["preview-box"])}>
               <Link
-                href={`/matches/${match.id}/preview`}
+                href={`/matches/${match.id}/lineup`}
                 className={clsx(styles.preview)}
               >
                 preview
@@ -115,7 +117,9 @@ function MatchCard({
           <MatchScoreBoard
             homeScore={match.homeTeam?.goals ?? ""}
             awayScore={match.awayTeam?.goals ?? ""}
-            url={`/matches/${match.id}/report`}
+            url={`/matches/${match.id}/lineup`}
+            homePenalty={match.homeTeam?.penalties}
+            awayPenalty={match.awayTeam?.penalties}
           />
         )}
         <MatchTeam

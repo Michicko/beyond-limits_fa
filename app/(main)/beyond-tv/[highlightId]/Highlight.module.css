@@ -43,6 +43,15 @@
   margin: 0 auto;
 }
 
+.highlight-main.error {
+  margin-top: 8rem;
+  min-height: 30rem;
+}
+
+.highlight-main.error p {
+  margin-bottom: 1.5rem;
+}
+
 .highlight-main > *:last-child {
   margin: 0 auto;
   margin-top: auto;

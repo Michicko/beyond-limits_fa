@@ -46,6 +46,7 @@ export type DeleteModule =
   | "Visual"
   | "CompetitionSeason"
   | "PlayerPosition"
+  | "PlayOff"
   | "ArticleCategory";
 
 const deleteConfig: Record<
@@ -82,6 +83,11 @@ const deleteConfig: Record<
   },
   LeagueRound: {
     modelName: "LeagueRound",
+    pathToRevalidate:
+      "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]",
+  },
+  PlayOff: {
+    modelName: "PlayOff",
     pathToRevalidate:
       "/cp/competitions/[competitionId]/competition-seasons/[competitionSeasonId]",
   },

@@ -1,20 +1,30 @@
+export const dynamic = "force-dynamic";
+
 import Container from "@/components/main/Container/Container";
 import Flex from "@/components/main/Container/Flex";
 import Grid from "@/components/main/Container/Grid";
-import PlayerList from "@/components/main/Player/PlayerList";
 import Slider from "@/components/main/Slider/Slider";
 import Standing from "@/components/main/Standing/Standing";
 import CustomLink from "@/components/main/Typography/CustomLink";
 import Heading from "@/components/main/Typography/Heading";
-import VideoCards from "@/components/main/VideoCard/VideoCards";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
 import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
-import { appendMonthToLink, sortMatchesByStatusAndDate } from "@/lib/helpers";
+import { sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
-import AllCompetitionMatches from "@/components/main/AllCompetitionMatches/AllCompetitionMatches";
+import loadDynamic from "next/dynamic";
+
+const PlayerList = loadDynamic(
+  () => import("@/components/main/Player/PlayerList")
+);
+const AllCompetitionMatches = loadDynamic(
+  () => import("@/components/main/AllCompetitionMatches/AllCompetitionMatches")
+);
+const VideoCards = loadDynamic(
+  () => import("@/components/main/VideoCard/VideoCards")
+);
 
 export default async function Home() {
   const { data: homepageContent } = await fetchHomepageData();
@@ -103,41 +113,6 @@ export default async function Home() {
             <PlayerList players={homepageContent.players.slice(0, 3)} />
           </Container>
         )}
-        {/* {homepageContent?.fixtures && homepageContent.fixtures.length > 0 && (
-          <Container as="section" size="md">
-            <Heading
-              level={2}
-              type="section"
-              letterCase="upper"
-              mb="xxl"
-              align={"center"}
-            >
-              Upcoming matches
-            </Heading>
-            <Grid col="3" gap="sm">
-              <>
-                {homepageContent.fixtures.slice(1, 4).map((match, i) => {
-                  return (
-                    <MatchCard
-                      match={match}
-                      theme={i === 0 ? "dark" : i === 1 ? "light" : "dark"}
-                      key={match.id}
-                    />
-                  );
-                })}
-              </>
-            </Grid>
-            <Flex justify="center" align="center" my={"iv"}>
-              <Button
-                type="secondary"
-                isLink={true}
-                size={"md"}
-                text={"View more matches"}
-                url={appendMonthToLink("/fixtures")}
-              />
-            </Flex>
-          </Container>
-        )} */}
         {homepageContent?.matches && (
           <Container as="section" size="md">
             <AllCompetitionMatches

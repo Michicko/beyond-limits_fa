@@ -13,11 +13,10 @@ import Analytics from "@/components/main/Analytics/Analytics";
 
 export const metadata: Metadata = {
   title: {
-    default: "Beyond Limits Fa | Youth Development Program of Remo Stars FC",
+    default: "Beyond Limits Fa | Nigerian Youth Development Program",
     template: "%s | Beyond Limits Fa",
   },
-  description:
-    "Beyond Limits Fa is the web app for the Youth Development Program of Remo Stars FC",
+  description: "Beyond Limits Fa is Nigerian Youth Development Program",
   icons: {
     icon: [
       {
@@ -69,7 +68,7 @@ export default function RootLayout({
       lang="en"
       className={`${formula_condensed.variable} ${roboto.variable}`}
     >
-       <head>
+      <head>
         {/* Google Analytics */}
         <Script
           strategy="afterInteractive"

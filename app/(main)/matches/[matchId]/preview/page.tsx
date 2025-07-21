@@ -46,20 +46,20 @@ async function Review({ params }: { params: { matchId: string } }) {
     );
 
   const match = matchData && matchData;
-  const keyPlayer =
-    (match &&
-      match.keyPlayerId &&
-      (
-        await cookiesClient.models.Player.get(
-          {
-            id: match.keyPlayerId,
-          },
-          {
-            authMode,
-          }
-        )
-      ).data) ||
-    null;
+  // const keyPlayer =
+  //   (match &&
+  //     match.keyPlayerId &&
+  //     (
+  //       await cookiesClient.models.Player.get(
+  //         {
+  //           id: match.keyPlayerId,
+  //         },
+  //         {
+  //           authMode,
+  //         }
+  //       )
+  //     ).data) ||
+  //   null;
 
   if (!match)
     return (
@@ -203,7 +203,7 @@ async function Review({ params }: { params: { matchId: string } }) {
               </CardBody>
             </>
           </Card>
-          <Card theme={"trans"}>
+          {/* <Card theme={"trans"}>
             <>
               <CardHeader theme={"dark"} border={true} as="div">
                 <div className={clsx(styles.preview__heading)}>
@@ -234,7 +234,7 @@ async function Review({ params }: { params: { matchId: string } }) {
                 </div>
               </CardBody>
             </>
-          </Card>
+          </Card> */}
           <Card theme={"trans"}>
             <>
               <CardHeader theme={"dark"} border={true} as="div">

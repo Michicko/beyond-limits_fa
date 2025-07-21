@@ -68,11 +68,7 @@ function CompetitionsLayout({
 
   return (
     <>
-      <Header
-        bg={"/images/fixtures-layout-header-bg.png"}
-        alt="2024 / 2025 ongoing campaign"
-        overlay={true}
-      >
+      <Header bg={"/images/competitions.png"} alt="competitions" overlay={true}>
         <LayoutHeader>
           <>
             <Heading

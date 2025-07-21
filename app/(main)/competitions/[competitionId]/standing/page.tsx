@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MixedCup from "@/components/main/MixedCup/MixedCup";
 import Standing from "@/components/main/Standing/Standing";
@@ -6,7 +8,7 @@ import clsx from "clsx";
 import styles from "../../Competitions.module.css";
 import Knockout from "@/components/main/Knockout/Knockout";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
-import { findCurrentSeason, getFirstLetter, capitalize } from "@/lib/helpers";
+import { findCurrentSeason, capitalize } from "@/lib/helpers";
 import Text from "@/components/main/Typography/Text";
 
 export async function generateMetadata({
@@ -96,6 +98,7 @@ async function CompetitionStanding({
           ...el,
           match: {
             id: match.id,
+            status: match.status,
             homeTeam: match.homeTeam,
             awayTeam: match.awayTeam,
           },

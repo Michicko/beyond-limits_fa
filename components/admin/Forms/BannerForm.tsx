@@ -65,11 +65,15 @@ function BannerForm() {
           label="Banner"
           onClearImage={() => setUrl("")}
           onUploaded={onUploaded}
-          filename="Banner"
+          filename={`banner-${Math.floor(Math.random() * 1000)}`}
           type="drag-drop"
         />
-        <FormBtn loading={isPending} loadingText="Uploading banner...">
-          {isPending ? "Uploading banner..." : "Upload Banner"}
+        <FormBtn
+          disabled={!url}
+          loading={isPending}
+          loadingText="Uploading banner..."
+        >
+          {isPending ? "saving banner..." : "Save Banner"}
         </FormBtn>
       </form>
     </FormDialog>

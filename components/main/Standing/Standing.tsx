@@ -99,11 +99,6 @@ function Standing({
               </>
             </CardBody>
           </table>
-          {/* {!showFull && (
-            <Link href="/standing" className={clsx(styles["standing-btn"])}>
-              view full table
-            </Link>
-          )} */}
         </div>
       </Card>
     </div>

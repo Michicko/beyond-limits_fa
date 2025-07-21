@@ -21,6 +21,15 @@ export const getHighlights = async (nextToken?: string | null) => {
   });
 };
 
+export const getHighlightsSwr = async (isAuthenticated: boolean) => {
+  return cookiesClient.models.Highlight.list({
+    selectionSet: ["id", "coverImage", "title", "createdAt"],
+    limit: 3,
+    authMode: isAuthenticated ? "userPool" : "iam",
+    sortDirection: "DESC",
+  });
+};
+
 export const createHighlight = async (formData: FormData) => {
   const base = formDataToObject<Highlight>(formData);
   const highlightCreator = createEntityFactory<Highlight, Highlight>();

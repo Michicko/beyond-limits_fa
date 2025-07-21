@@ -34,6 +34,7 @@ interface IMatch {
     shortName: string;
     longName: string;
     goals: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   awayTeam: {
     id: string;
@@ -41,6 +42,7 @@ interface IMatch {
     shortName: string;
     longName: string;
     goals: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   scorers: any;
   review: string | number | boolean | object | any[] | null;
@@ -314,11 +316,13 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.homeTeam.shortName",
         "matches.homeTeam.longName",
         "matches.homeTeam.goals",
+        "matches.homeTeam.penalties",
         "matches.awayTeam.id",
         "matches.awayTeam.logo",
         "matches.awayTeam.shortName",
         "matches.awayTeam.longName",
         "matches.awayTeam.goals",
+        "matches.awayTeam.penalties",
         "matches.scorers",
         "matches.review",
         "matches.competitionSeason.id",
@@ -636,73 +640,72 @@ export async function fetchHomepageData() {
   const auth = await isLoggedIn();
 
   try {
-    const { lastMatch, fixtures, matches } = await getPrevNextMatch(
-      auth ? "auth" : "guest"
-    );
-
-    const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
-    const { data: articles } = await cookiesClient.models.Article.list({
-      limit: 4,
-      authMode: auth ? "userPool" : "iam",
-      filter: {
-        status: {
-          eq: "PUBLISHED",
+    const [
+      { lastMatch, fixtures, matches },
+      nnlStanding,
+      articlesResponse,
+      playersResponse,
+      highlightsResponse,
+    ] = await Promise.all([
+      getPrevNextMatch(auth ? "auth" : "guest"),
+      getCurrentNnlStanding(auth ? "auth" : "guest"),
+      cookiesClient.models.Article.list({
+        limit: 4,
+        authMode: auth ? "userPool" : "iam",
+        filter: {
+          status: { eq: "PUBLISHED" },
         },
-      },
-      sortDirection: "ASC",
-      selectionSet: [
-        "id",
-        "category",
-        "content",
-        "tags",
-        "title",
-        "coverImage",
-        "status",
-        "createdAt",
-        "matchId",
-        "matchHomeTeamLogo",
-        "matchAwayTeamLogo",
-      ],
-    });
-
-    const { data: players } = await cookiesClient.models.Player.list({
-      filter: {
-        status: {
-          ne: "INACTIVE",
+        sortDirection: "ASC",
+        selectionSet: [
+          "id",
+          "category",
+          "content",
+          "tags",
+          "title",
+          "coverImage",
+          "status",
+          "createdAt",
+          "matchId",
+          "matchHomeTeamLogo",
+          "matchAwayTeamLogo",
+        ],
+      }),
+      cookiesClient.models.Player.list({
+        filter: {
+          status: { ne: "INACTIVE" },
         },
-      },
-      limit: 3,
-      authMode: auth ? "userPool" : "iam",
-      selectionSet: [
-        "id",
-        "firstname",
-        "lastname",
-        "awayKit",
-        "homeKit",
-        "dob",
-        "dominantFoot",
-        "squadNo",
-        "height",
-        "weight",
-        "isTwoFooted",
-        "playerPosition.shortName",
-        "playerPosition.longName",
-      ],
-    });
-
-    const { data: highlights } = await cookiesClient.models.Highlight.list({
-      authMode: auth ? "userPool" : "iam",
-      selectionSet: ["id", "coverImage", "title", "createdAt"],
-      limit: 3,
-    });
+        limit: 3,
+        authMode: auth ? "userPool" : "iam",
+        selectionSet: [
+          "id",
+          "firstname",
+          "lastname",
+          "awayKit",
+          "homeKit",
+          "dob",
+          "dominantFoot",
+          "squadNo",
+          "height",
+          "weight",
+          "isTwoFooted",
+          "playerPosition.shortName",
+          "playerPosition.longName",
+        ],
+      }),
+      cookiesClient.models.Highlight.list({
+        authMode: auth ? "userPool" : "iam",
+        selectionSet: ["id", "coverImage", "title", "createdAt"],
+        limit: 3,
+      }),
+    ]);
 
     const homepageContent = {
       lastMatch,
       nnlStanding,
-      articles,
-      players,
+      articles: articlesResponse.data,
+      players: playersResponse.data,
       fixtures: fixtures.slice(0, 4),
-      highlights,
+      highlights: highlightsResponse.data,
       matches,
     };
 
@@ -921,7 +924,6 @@ export async function globalSearch(keyword: string, client: "guest" | "auth") {
 
     const keywordLower = keyword.toLowerCase();
 
-    // Assuming each fetch function is fetching from the respective data sources
     const [competitions, players, articles, highlights] = await Promise.all([
       fetchCompetitions(keywordLower, client),
       fetchPlayers(keywordLower, client),

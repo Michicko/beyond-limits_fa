@@ -6,21 +6,24 @@ import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { Nullable } from "@/lib/definitions";
 import SocialShareLinks from "@/components/main/Social/SocialShareLinks";
 import Text from "@/components/main/Typography/Text";
-import { Metadata } from 'next';
+import { Metadata } from "next";
 import { capitalize } from "@/lib/helpers";
 
-export async function generateMetadata({ params }: { params: { highlightId: string } }): Promise<Metadata>  {
-  const auth = await isAuthenticated()
+export async function generateMetadata({
+  params,
+}: {
+  params: { highlightId: string };
+}): Promise<Metadata> {
+  const auth = await isAuthenticated();
   const authMode = auth ? "userPool" : "iam";
 
- const { data: highlight} =
-  await cookiesClient.models.Highlight.get(
+  const { data: highlight } = await cookiesClient.models.Highlight.get(
     { id: params.highlightId },
     {
       authMode,
-      selectionSet: ["id", "description", "tags", "title", 'coverImage'],
+      selectionSet: ["id", "description", "tags", "title", "coverImage"],
     }
-  )
+  );
 
   return {
     title: highlight?.title && capitalize(highlight?.title),
@@ -29,13 +32,13 @@ export async function generateMetadata({ params }: { params: { highlightId: stri
     openGraph: {
       title: highlight?.title && capitalize(highlight?.title),
       description: highlight?.title,
-      images: [{ url: highlight?.coverImage ?? '' }],
+      images: [{ url: highlight?.coverImage ?? "" }],
     },
   };
 }
 
 async function Highlight({ params }: { params: { highlightId: string } }) {
-  const auth = await isAuthenticated()
+  const auth = await isAuthenticated();
   const authMode = auth ? "userPool" : "iam";
 
   const { data: highlightsData, errors } =
@@ -51,11 +54,16 @@ async function Highlight({ params }: { params: { highlightId: string } }) {
 
   if (errors) {
     return (
-      <main className={clsx(styles["highlight-main"])}>
-        <Text color="white" letterCase={"lower"} size="base" weight="regular">
-          {`Something went wrong, ${errors[0].message}`}
-        </Text>
-      </main>
+      <>
+        <main className={clsx(styles["highlight-main"], styles.error)}>
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            Something went wrong
+          </Text>
+          <Text color="white" letterCase={"lower"} size="base" weight="regular">
+            {errors[0].message}
+          </Text>
+        </main>
+      </>
     );
   }
 

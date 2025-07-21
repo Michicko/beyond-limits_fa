@@ -18,6 +18,7 @@ function MatchStat({
     <div className={clsx(styles["match-stat"])}>
       <p className={clsx(styles[scale], +home > +away && styles.greater)}>
         {home}
+        {stat === "possession" && "%"}
         <span
           className={clsx(
             styles.line,
@@ -36,6 +37,7 @@ function MatchStat({
       <p>{stat}</p>
       <p className={clsx(styles[scale])}>
         {away}
+        {stat === "possession" && "%"}
         <span
           className={clsx(
             styles.line,

@@ -87,7 +87,7 @@ function VisualForm() {
           label="visual"
           onClearImage={() => setFormData({ ...formData, url: "" })}
           onUploaded={onUploaded}
-          filename="Visual"
+          filename={`visual-${Math.floor(Math.random() * 1000)}`}
           type="drag-drop"
         />
         <FormBtn loading={isPending} loadingText="Uploading visual...">

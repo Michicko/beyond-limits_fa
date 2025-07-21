@@ -5,6 +5,7 @@ import ResultSelector from "../ResultSelector/ResultSelector";
 import { Nullable } from "@/lib/definitions";
 import useToast from "@/hooks/useToast";
 import { updatePlayOff } from "@/app/_actions/actions";
+import DeleteBtn from "../DeleteBtn/DeleteBtn";
 
 interface IMatch {
   id: string;
@@ -108,7 +109,6 @@ function PlayOffRoundRow({
                   {round.match.awayTeam.shortName}
                 </Text>
               </HStack>
-
             </>
           )}
         </HStack>
@@ -122,7 +122,8 @@ function PlayOffRoundRow({
           disabled={
             (round.result && round.status === "COMPLETED" && true) ||
             isPending ||
-            competitionStatus === "COMPLETED"}
+            competitionStatus === "COMPLETED"
+          }
           fixedWidth={true}
         />
       </Table.Cell>
@@ -140,6 +141,15 @@ function PlayOffRoundRow({
         >
           {getButtonStatus(round, "Round", isPending)}
         </Button>
+      </Table.Cell>
+      <Table.Cell css={tC} position={"relative"} minW={"45px"}>
+        <DeleteBtn
+          id={round.id}
+          type="iconBtn"
+          module="PlayOff"
+          name={`Round ${round.round}`}
+          position={"relative"}
+        />
       </Table.Cell>
     </Table.Row>
   );

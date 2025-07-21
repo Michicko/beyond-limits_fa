@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Calendar from "@/components/main/Calendar/Calendar";
 import Grid from "@/components/main/Container/Grid";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";

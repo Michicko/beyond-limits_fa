@@ -23,6 +23,7 @@ export interface IPlayOff {
   matchId: Nullable<string>;
   match: {
     id: string;
+    status: string;
     homeTeam: IMatchTeam | null;
     awayTeam: IMatchTeam | null;
   };
@@ -52,7 +53,7 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                 {getPlayOffRoundName(playoff.round)}
               </h3>
               <Link
-                href={`/matches/${playoff.match?.id}/report`}
+                href={`/matches/${playoff.match?.id}/lineup`}
                 className={clsx(styles["knockout-match"])}
               >
                 {playoff.match?.homeTeam && (
@@ -62,13 +63,15 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                     logo={playoff.match?.homeTeam.logo}
                     goals={playoff.match?.homeTeam.goals || ""}
                     match_winner={homeTeamWinner}
-                    // win_by_penalties={
-                    //   playoff.match?.home.penalties &&
-                    //   playoff.match?.away.penalties
-                    //     ? playoff.match?.home.penalties >
-                    //       playoff.match?.away.penalties
-                    //     : false
-                    // }
+                    win_by_penalties={
+                      playoff.match?.homeTeam?.penalties &&
+                      playoff.match?.awayTeam?.penalties
+                        ? +playoff.match?.homeTeam.penalties >
+                          +playoff.match?.awayTeam.penalties
+                        : false
+                    }
+                    status={playoff.match.status}
+                    penalty={playoff.match?.homeTeam?.penalties}
                   />
                 )}
                 {playoff.match?.homeTeam && playoff.match.awayTeam && (
@@ -81,11 +84,15 @@ function Knockout({ playOffs }: { playOffs: IPlayOff[] }) {
                     logo={playoff.match.awayTeam.logo}
                     goals={playoff.match?.awayTeam.goals || ""}
                     match_winner={awayTeamWinner}
-                    // win_by_penalties={
-                    //   match.home.penalties && match.away.penalties
-                    //     ? match.away.penalties > match.home.penalties
-                    //     : false
-                    // }
+                    win_by_penalties={
+                      playoff.match?.homeTeam?.penalties &&
+                      playoff.match?.awayTeam?.penalties
+                        ? +playoff.match.awayTeam.penalties >
+                          +playoff.match?.homeTeam.penalties
+                        : false
+                    }
+                    status={playoff.match.status}
+                    penalty={playoff.match.awayTeam.penalties}
                   />
                 )}
               </Link>

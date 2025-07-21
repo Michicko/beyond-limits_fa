@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getCurrentNnlStanding } from "@/app/_actions/actions";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import StandingComp from "@/components/main/Standing/Standing";
@@ -6,17 +7,14 @@ import { isAuthenticated } from "@/utils/amplify-utils";
 import React from "react";
 
 export const metadata = {
-  title: 'Standing',
-  description: "Find the current standing for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
+  title: "Standing",
+  description:
+    "Find the current standing for Beyond Limits Fa. First team on the official website, Beyondlimitsfa.com.",
 };
 
-
 async function Standing() {
-  const auth = await isAuthenticated()
-  const nnlStanding = await getCurrentNnlStanding(
-    auth ? "auth" : "guest"
-  );
-  
+  const auth = await isAuthenticated();
+  const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
 
   return (
     <CompetitionsLayout pageTitle="Nigerian National League">

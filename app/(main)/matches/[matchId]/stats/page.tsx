@@ -68,7 +68,9 @@ async function Stats({ params }: { params: { matchId: string } }) {
     );
 
   const reqStats = [
+    "possession",
     "passes",
+    "successful_passes",
     "offsides",
     "corners",
     "shots",
@@ -170,7 +172,7 @@ async function Stats({ params }: { params: { matchId: string } }) {
                                 key={(i + 2) * (i * 10)}
                               >
                                 <MatchStat
-                                  stat={key}
+                                  stat={key.replace("_", " ")}
                                   home={val}
                                   away={awayVal}
                                 />

@@ -25,6 +25,7 @@ export interface IPlayOff {
   matchId: Nullable<string>;
   match: {
     id: string;
+    status: string;
     homeTeam: IMatchTeam | null;
     awayTeam: IMatchTeam | null;
   };
@@ -43,7 +44,7 @@ function MixedCup({
 }) {
   const mixedTabs = [{ name: "group stage" }, { name: "knockout" }];
 
-  const [index, setIndex] = useState(league_status === "completed" ? 1 : 0);
+  const [index, setIndex] = useState(league_status === "COMPLETED" ? 1 : 0);
 
   return (
     <>

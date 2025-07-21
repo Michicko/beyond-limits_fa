@@ -65,8 +65,20 @@ function MatchStats({
             <StatInput
               team="home"
               onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.possession || ""}
+              name="possession"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
               value={matchForm.homeTeam.passes || ""}
               name="passes"
+            />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.successful_passes || ""}
+              name="successful_passes"
             />
             <StatInput
               team="home"
@@ -98,6 +110,12 @@ function MatchStats({
               value={matchForm.homeTeam.reds || ""}
               name="reds"
             />
+            <StatInput
+              team="home"
+              onChange={(e) => handleTeam(e, "home")}
+              value={matchForm.homeTeam.penalties || ""}
+              name="penalties"
+            />
           </SimpleGrid>
         )}
       </Box>
@@ -119,8 +137,20 @@ function MatchStats({
             <StatInput
               team="away"
               onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.possession || ""}
+              name="possession"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
               value={matchForm.awayTeam.passes || ""}
               name="passes"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.successful_passes || ""}
+              name="successful_passes"
             />
             <StatInput
               team="away"
@@ -151,6 +181,12 @@ function MatchStats({
               onChange={(e) => handleTeam(e, "away")}
               value={matchForm.awayTeam.reds || ""}
               name="reds"
+            />
+            <StatInput
+              team="away"
+              onChange={(e) => handleTeam(e, "away")}
+              value={matchForm.awayTeam.penalties || ""}
+              name="penalties"
             />
           </SimpleGrid>
         )}

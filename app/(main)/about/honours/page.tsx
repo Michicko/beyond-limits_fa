@@ -6,10 +6,9 @@ import clsx from "clsx";
 import styles from "./Honors.module.css";
 import Text from "@/components/main/Typography/Text";
 import LayoutMain from "@/components/main/Layouts/CompetitionsLayout/LayoutMain";
-import ImageComp from "@/components/ImageComp/ImageComp";
-import Button from "@/components/main/Button/Button";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import { getHonorsStats } from "@/lib/helpers";
+import Honour from "./Honour";
 
 export const metadata = {
   title: "Beyond Limits Fa. Trophy Room | Club Honors, Silverware & Trophies",
@@ -36,7 +35,7 @@ async function Honours() {
 
   return (
     <>
-      <Header bg={"/images/honors.jpg"} alt="honours" overlay={true}>
+      <Header bg={"/images/honours.png"} alt="honours" overlay={true}>
         <LayoutHeader>
           <>
             <Heading color="white" level={1} letterCase="upper" type="primary">
@@ -48,13 +47,6 @@ async function Honours() {
       <LayoutMain>
         <>
           <div className={clsx(styles["honours-container"])}>
-            <div className={clsx(styles["honours-intro"])}>
-              <Text color="white" size="base" cssStyles={{ lineHeight: "1.5" }}>
-                At Beyond the Limits, we pride ourselves on our accomplishments.
-                Our devotion to developing young, talented players and pushing
-                the boundaries has earned us numerous prestigious honours.
-              </Text>
-            </div>
             {errors && (
               <Text
                 color="white"
@@ -69,59 +61,9 @@ async function Honours() {
               {honors &&
                 honors.map((honor) => {
                   const stats = getHonorsStats([honor]);
-                  return (
-                    <div key={honor.longName} className={clsx(styles.honor)}>
-                      <div className={clsx(styles["honor-img__box"])}>
-                        <div className={clsx(styles["honor-img"])}>
-                          <ImageComp
-                            alt={honor.longName}
-                            image={honor.trophyImage}
-                            placeholder={honor.trophyImage}
-                            priority={false}
-                          />
-                        </div>
-                        <h3 className={clsx(styles["honors-won"])}>
-                          {stats.numbersWon + (honor.trophiesWon || 0)}
-                        </h3>
-                      </div>
-                      {stats && (
-                        <div className={clsx(styles["honor-details"])}>
-                          <h3 className={clsx(styles["honor-name"])}>
-                            {honor.longName}
-                          </h3>
-                          <ul className={clsx(styles["honors-years"])}>
-                            {Array.from(
-                              new Set([
-                                ...(honor.yearsWon?.trim().split(",") || []),
-                                ...stats.seasonsWon,
-                              ])
-                            ).map((season, i) => {
-                              return (
-                                <li
-                                  className={clsx(styles["honor-year"])}
-                                  key={season}
-                                >
-                                  {season}
-                                  {i < stats.seasonsWon.length - 1 ? "," : ""}
-                                </li>
-                              );
-                            })}
-                          </ul>
-                          <Button
-                            isLink={true}
-                            text={"Learn more"}
-                            url={
-                              !honor.trophyArticleId
-                                ? "#"
-                                : `/news/${honor.trophyArticleId}`
-                            }
-                            type="secondary"
-                            size="lg"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  );
+                  if (stats.numbersWon + (honor.trophiesWon || 0) === 0)
+                    return null;
+                  return <Honour honor={honor} stats={stats} key={honor.id} />;
                 })}
             </div>
           </div>

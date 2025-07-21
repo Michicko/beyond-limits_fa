@@ -63,7 +63,7 @@ const MenuLinks = [
   {
     innerLinks: [`/competitions`],
     id: 31,
-    name: "COMPETITION",
+    name: "COMPETITIONS",
     icon: (
       <svg
         width="29"
@@ -82,8 +82,8 @@ const MenuLinks = [
       {
         id: 311,
         link: `/competitions`,
-        name: "season overview",
-        image: "/images/fixtures.jpg",
+        name: "",
+        image: "/images/competitions.png",
       },
     ],
     description:

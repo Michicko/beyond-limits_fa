@@ -109,6 +109,21 @@
   font-size: var(--xl);
   font-weight: 600;
   color: var(--white);
+  position: relative;
+}
+
+.score .penalty {
+  font-size: 0.8rem;
+  position: absolute;
+  top: -0.15rem;
+}
+
+.penalty.home {
+  left: -0.25rem;
+}
+
+.penalty.away {
+  right: -0.25rem;
 }
 
 .match-team .logo-bg {
@@ -301,6 +316,7 @@
 
 .team-form p {
   color: var(--white);
+  text-transform: uppercase;
 }
 
 .matchdate p {
@@ -414,6 +430,23 @@
     color: var(--white);
     font-size: var(--base);
     font-weight: 500;
+  }
+
+  .score .penalty {
+    font-size: 0.9rem;
+    top: 0.65rem;
+  }
+
+  .score .penalty.score-pena {
+    top: -0.15rem;
+  }
+
+  .penalty.home {
+    left: -0.45rem;
+  }
+
+  .penalty.away {
+    right: -0.45rem;
   }
 
   .team-form p {

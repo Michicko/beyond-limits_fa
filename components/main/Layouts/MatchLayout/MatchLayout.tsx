@@ -67,6 +67,8 @@ function MatchLayout({
                 home_score={match.homeTeam.goals ? match.homeTeam.goals : ""}
                 away_score={match.awayTeam.goals ? match.awayTeam.goals : ""}
                 size="iv"
+                home_penalty={match.homeTeam?.penalties}
+                away_penalty={match.awayTeam?.penalties}
               />
             )}
             <MatchLocation hightlight={true} location={match.venue} size="sm" />

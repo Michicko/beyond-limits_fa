@@ -76,7 +76,7 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
       ) : (
         <Grid gap="sm">
           {filteredMatches
-            .slice(0, showAllMatches ? filteredMatches.length : 4)
+            .slice(0, showAllMatches ? filteredMatches.length : 3)
             .map((match) => {
               return (
                 <MatchCard
@@ -88,7 +88,7 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
               );
             })}
 
-          {filteredMatches.length > 4 && (
+          {filteredMatches.length > 3 && (
             <button
               onClick={() => setShowAllMatches((prev) => !prev)}
               style={{

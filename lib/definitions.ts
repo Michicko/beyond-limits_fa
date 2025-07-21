@@ -410,6 +410,7 @@ export interface IMatch {
     shots: Nullable<string>;
     yellows: Nullable<string>;
     reds: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   awayTeam: {
     id: string;
@@ -423,6 +424,7 @@ export interface IMatch {
     shots: Nullable<string>;
     yellows: Nullable<string>;
     reds: Nullable<string>;
+    penalties?: Nullable<string>;
   } | null;
   scorers: any;
   createdAt: string;

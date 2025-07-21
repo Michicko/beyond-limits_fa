@@ -149,12 +149,16 @@ function MatchForm({
       shortName: teamData?.shortName || "",
       longName: teamData?.longName || "",
       goals: teamData?.goals || ("" as Nullable<string>),
+      possession: teamData?.possession || ("" as Nullable<string>),
       passes: teamData?.passes || ("" as Nullable<string>),
+      successful_passes:
+        teamData?.successful_passes || ("" as Nullable<string>),
       offsides: teamData?.offsides || ("" as Nullable<string>),
       corners: teamData?.corners || ("" as Nullable<string>),
       shots: teamData?.shots || ("" as Nullable<string>),
       yellows: teamData?.yellows || ("" as Nullable<string>),
       reds: teamData?.reds || ("" as Nullable<string>),
+      penalties: teamData?.penalties || ("" as Nullable<string>),
     };
   };
 
