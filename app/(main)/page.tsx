@@ -10,7 +10,7 @@ import Heading from "@/components/main/Typography/Heading";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
-import ArticleList from "@/components/Article/ArticleList";
+// import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
@@ -18,6 +18,10 @@ import loadDynamic from "next/dynamic";
 
 const PlayerList = loadDynamic(
   () => import("@/components/main/Player/PlayerList")
+);
+
+const ArticleList = loadDynamic(
+  () => import("@/components/Article/ArticleList")
 );
 const AllCompetitionMatches = loadDynamic(
   () => import("@/components/main/AllCompetitionMatches/AllCompetitionMatches")

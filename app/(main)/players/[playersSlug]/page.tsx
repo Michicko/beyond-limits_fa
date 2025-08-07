@@ -81,7 +81,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
     });
   };
 
-  const bg = params.playersSlug === "under_19" ? "u-19.JPG" : "under-17.jpg";
+  const bg = params.playersSlug === "under_19" ? "u-19.JPG" : "under_17.jpg";
 
   return (
     <>

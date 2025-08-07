@@ -15,13 +15,23 @@ import useSearchFilter from "@/hooks/useSearchFilter";
 import useCursorPaginate from "@/hooks/useCursorPaginate";
 
 function Articles() {
-  const {currentPageIndex, currentToken, setCurrentPageIndex, setPageTokens, pageTokens} = useCursorPaginate();
-  const { data, error, isLoading } = useSWR(["articles", currentPageIndex], () => getLazyLoadedArticles(currentToken), {
-    keepPreviousData: true
-  });
+  const {
+    currentPageIndex,
+    currentToken,
+    setCurrentPageIndex,
+    setPageTokens,
+    pageTokens,
+  } = useCursorPaginate();
+  const { data, error, isLoading } = useSWR(
+    ["articles", currentPageIndex],
+    () => getLazyLoadedArticles(currentToken),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   const articles = data?.data || [];
-  
+
   const sortedArticles = sortByCreatedAt([...articles]);
 
   const { search, setSearch, filteredList } = useSearchFilter(
@@ -37,11 +47,11 @@ function Articles() {
       error={error}
       columns={["Title", "Category", "Status", "Created At", ""]}
       createUrl="/cp/articles/create"
-      nextToken={data?.nextToken} 
-      currentPageIndex={currentPageIndex} 
-      pageTokens={pageTokens} 
-      setCurrentPageIndex={setCurrentPageIndex} 
-      setPageTokens={setPageTokens} 
+      nextToken={data?.nextToken}
+      currentPageIndex={currentPageIndex}
+      pageTokens={pageTokens}
+      setCurrentPageIndex={setCurrentPageIndex}
+      setPageTokens={setPageTokens}
       topContent={
         <AdminSearchInput
           search={search}

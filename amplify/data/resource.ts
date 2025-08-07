@@ -311,7 +311,9 @@ const schema = a.schema({
       matchAwayTeamLogo: a.string(),
       tags: a.string().array(),
       status: a.ref("ArticleStatus"),
+      createdAt: a.datetime(),
     })
+    .secondaryIndexes((index) => [index("status").sortKeys(["createdAt"])])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),

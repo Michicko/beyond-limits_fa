@@ -1,8 +1,8 @@
-'use client';
+"use client";
 import { IPlayer } from "@/lib/definitions";
 import clsx from "clsx";
 import styles from "./Player.module.css";
-import { CldImage } from 'next-cloudinary';
+import { CldImage } from "next-cloudinary";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -21,8 +21,9 @@ const Player = ({
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.4, ease: "easeOut" }} 
-      className={clsx(styles.player)}>
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className={clsx(styles.player)}
+    >
       <div className={clsx(styles["player__img-box"])}>
         {player.homeKit && (
           <CldImage

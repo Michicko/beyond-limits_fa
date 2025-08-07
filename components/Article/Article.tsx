@@ -1,5 +1,5 @@
 "use client";
-import { IArticle } from "@/lib/definitions";
+import { IHomeArticle } from "@/lib/definitions";
 import styles from "./Article.module.css";
 import clsx from "clsx";
 import ArticleCategory from "./ArticleCategory";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import { formatDate } from "@/lib/helpers";
 
-const Article = ({ article }: { article: IArticle }) => {
+const Article = ({ article }: { article: IHomeArticle }) => {
   const bg = `linear-gradient(
     to top,
     rgba(4, 48, 91, 0.75),
@@ -15,13 +15,11 @@ const Article = ({ article }: { article: IArticle }) => {
   ), url(${article.coverImage})`;
 
   const cardStyles =
-    article.matchId &&
-    article.category.toUpperCase() === "MATCH PREVIEW"
+    article.matchId && article.category.toUpperCase() === "MATCH PREVIEW"
       ? {
           background: "#30353B",
         }
-      : article.matchId &&
-        article.category.toUpperCase() === "MATCH REPORT"
+      : article.matchId && article.category.toUpperCase() === "MATCH REPORT"
       ? {
           background: "#01305b",
         }
@@ -39,9 +37,7 @@ const Article = ({ article }: { article: IArticle }) => {
       className={clsx(styles.news__article, {
         [styles["with-bg"]]:
           article.category &&
-          !selected_categories.includes(
-            article.category.toLowerCase()
-          ),
+          !selected_categories.includes(article.category.toLowerCase()),
       })}
       style={cardStyles}
     >
@@ -49,20 +45,20 @@ const Article = ({ article }: { article: IArticle }) => {
         article.matchHomeTeamLogo &&
         article.matchAwayTeamLogo &&
         article.category &&
-        selected_categories.includes(
-          article.category.toLowerCase()
-        ) && (
+        selected_categories.includes(article.category.toLowerCase()) && (
           <div className={styles.match__teams}>
             <div className={styles["team__img-box"]}>
               <ImageComp
                 image={article.matchHomeTeamLogo ?? ""}
                 alt={article.title}
+                priority={false}
               />
             </div>
             <div className={styles["team__img-box"]}>
               <ImageComp
                 image={article.matchAwayTeamLogo ?? ""}
                 alt={article.title}
+                priority={false}
               />
             </div>
           </div>

@@ -112,7 +112,7 @@ export const getButtonStatus = (
     : `${isPending ? `Creating ${entityName}` : `Create ${entityName}`}`;
 };
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: Nullable<string>) => {
   const dateStr = moment(date); // or moment(date) if already local
 
   if (
@@ -434,11 +434,13 @@ export const getCloudinaryFilename = (url: string): string | null => {
   return match ? match[1] : null;
 };
 
-export function sortByCreatedAt<T extends { createdAt: string | Date }>(
+export function sortByCreatedAt<T extends { createdAt: string | Date | null }>(
   list: T[]
 ): T[] {
   return [...list].sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bTime - aTime;
   });
 }
 

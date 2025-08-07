@@ -68,7 +68,8 @@ export const createArticle = async (formData: FormData) => {
     }),
     validate: async (input) => {
       if (
-        (await checkUniqueField("Article", 'title', input.title.toLowerCase() )).length > 0
+        (await checkUniqueField("Article", "title", input.title.toLowerCase()))
+          .length > 0
       ) {
         return {
           status: "error",
@@ -93,7 +94,7 @@ export const updateArticle = async (
     modelName: "Article",
     id,
     input: base,
-    selectionSet: ["id", "title", "content","description", "coverImage"],
+    selectionSet: ["id", "title", "content", "description", "coverImage"],
     pathToRevalidate: "/cp/articles",
     preprocess: (input) => ({
       ...input,
@@ -102,7 +103,13 @@ export const updateArticle = async (
     validate: async (input) => {
       if (input.title !== currentUniqueValue) {
         if (
-          (await checkUniqueField("Article", 'title', input.title.toLowerCase())).length > 0
+          (
+            await checkUniqueField(
+              "Article",
+              "title",
+              input.title.toLowerCase()
+            )
+          ).length > 0
         ) {
           return {
             status: "error",

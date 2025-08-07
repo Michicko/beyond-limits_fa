@@ -24,7 +24,6 @@ async function News({
   const token = "";
 
   const filter = {
-    status: { eq: "PUBLISHED" },
     ...(searchParams.category && {
       category: {
         eq: searchParams.category.toLowerCase(),
@@ -36,26 +35,29 @@ async function News({
     data: articleList,
     errors,
     nextToken,
-  } = await cookiesClient.models.Article.list({
-    limit,
-    authMode: (await isAuthenticated()) ? "userPool" : "iam",
-    filter,
-    nextToken: token,
-    sortDirection: "DESC",
-    selectionSet: [
-      "id",
-      "category",
-      "content",
-      "tags",
-      "title",
-      "coverImage",
-      "status",
-      "createdAt",
-      "matchId",
-      "matchHomeTeamLogo",
-      "matchAwayTeamLogo",
-    ],
-  });
+  } = await cookiesClient.models.Article.listArticleByStatusAndCreatedAt(
+    { status: "PUBLISHED" },
+    {
+      limit,
+      authMode: (await isAuthenticated()) ? "userPool" : "iam",
+      filter,
+      nextToken: token,
+      sortDirection: "DESC",
+      selectionSet: [
+        "id",
+        "category",
+        "content",
+        "tags",
+        "title",
+        "coverImage",
+        "status",
+        "createdAt",
+        "matchId",
+        "matchHomeTeamLogo",
+        "matchAwayTeamLogo",
+      ],
+    }
+  );
 
   const articles = articleList ?? [];
 

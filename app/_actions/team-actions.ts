@@ -138,6 +138,31 @@ export const updateTeam = async (
   });
 };
 
+export async function updateTeamInAllStanding(
+  teamId: string,
+  newLogo: string,
+  auth: boolean
+) {
+  try {
+    const { data } = await cookiesClient.models.Standing.list({
+      filter: {
+        teamId: {
+          eq: teamId,
+        },
+      },
+      authMode: auth ? "userPool" : "iam",
+    });
+
+    if (data.length > 0) {
+    }
+  } catch (error) {
+    return {
+      status: "error",
+      message: `${(error as Error).message}`,
+    };
+  }
+}
+
 export async function deleteTeam(id: string) {
   return await deleteEntity({
     id,

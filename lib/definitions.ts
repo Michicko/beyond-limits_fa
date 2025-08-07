@@ -163,13 +163,24 @@ export interface IArticleCategory {
 export interface IArticle {
   id: string;
   title: string;
-  createdAt: string;
+  createdAt: Nullable<string>;
   articleCategoryId?: Nullable<string>;
   coverImage: Nullable<string>;
   matchId?: Nullable<string>;
   match?: IMatch;
   tags?: Nullable<string>[] | null;
   content?: any;
+  category: string;
+  matchHomeTeamLogo?: Nullable<string>;
+  matchAwayTeamLogo?: Nullable<string>;
+}
+
+export interface IHomeArticle {
+  id: string;
+  title: string;
+  coverImage: Nullable<string>;
+  matchId?: Nullable<string>;
+  createdAt: Nullable<string>;
   category: string;
   matchHomeTeamLogo?: Nullable<string>;
   matchAwayTeamLogo?: Nullable<string>;

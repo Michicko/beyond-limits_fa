@@ -54,7 +54,7 @@ const MenuLinks = [
         id: 302,
         link: "/beyond-tv",
         name: "beyond tv",
-        image: "/images/beyondtv.jpg",
+        image: "/images/beyond_tv.jpg",
       },
     ],
     description:
@@ -118,7 +118,7 @@ const MenuLinks = [
         id: 322,
         link: "/players/under_17",
         name: "under-17",
-        image: "/images/under17.png",
+        image: "/images/under_17.jpg",
       },
     ],
     description:

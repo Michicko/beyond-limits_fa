@@ -649,27 +649,26 @@ export async function fetchHomepageData() {
     ] = await Promise.all([
       getPrevNextMatch(auth ? "auth" : "guest"),
       getCurrentNnlStanding(auth ? "auth" : "guest"),
-      cookiesClient.models.Article.list({
-        limit: 4,
-        authMode: auth ? "userPool" : "iam",
-        filter: {
-          status: { eq: "PUBLISHED" },
+      cookiesClient.models.Article.listArticleByStatusAndCreatedAt(
+        {
+          status: "PUBLISHED",
         },
-        sortDirection: "ASC",
-        selectionSet: [
-          "id",
-          "category",
-          "content",
-          "tags",
-          "title",
-          "coverImage",
-          "status",
-          "createdAt",
-          "matchId",
-          "matchHomeTeamLogo",
-          "matchAwayTeamLogo",
-        ],
-      }),
+        {
+          limit: 4,
+          authMode: auth ? "userPool" : "iam",
+          sortDirection: "DESC",
+          selectionSet: [
+            "id",
+            "category",
+            "title",
+            "createdAt",
+            "coverImage",
+            "matchId",
+            "matchHomeTeamLogo",
+            "matchAwayTeamLogo",
+          ],
+        }
+      ),
       cookiesClient.models.Player.list({
         filter: {
           status: { ne: "INACTIVE" },
@@ -851,33 +850,38 @@ export async function fetchPlayers(keyword: string, client: "guest" | "auth") {
 
 export async function fetchArticles(keyword: string, client: "guest" | "auth") {
   try {
-    const result = await cookiesClient.models.Article.list({
-      filter: {
-        or: [
-          { title: { contains: keyword } },
-          {
-            category: { contains: keyword },
-            description: { contains: keyword },
+    const result =
+      await cookiesClient.models.Article.listArticleByStatusAndCreatedAt(
+        { status: "PUBLISHED" },
+        {
+          filter: {
+            or: [
+              { title: { contains: keyword } },
+              {
+                category: { contains: keyword },
+                description: { contains: keyword },
+              },
+            ],
           },
-        ],
-      },
-      limit: 15,
-      authMode: client === "guest" ? "iam" : "userPool",
-      selectionSet: [
-        "id",
-        "title",
-        "category",
-        "createdAt",
-        "articleCategoryId",
-        "coverImage",
-        "matchId",
-        "tags",
-        "category",
-        "matchHomeTeamLogo",
-        "matchAwayTeamLogo",
-        "createdAt",
-      ],
-    });
+          limit: 15,
+          authMode: client === "guest" ? "iam" : "userPool",
+          sortDirection: "DESC",
+          selectionSet: [
+            "id",
+            "title",
+            "category",
+            "createdAt",
+            "articleCategoryId",
+            "coverImage",
+            "matchId",
+            "tags",
+            "category",
+            "matchHomeTeamLogo",
+            "matchAwayTeamLogo",
+            "createdAt",
+          ],
+        }
+      );
     return result.data;
   } catch (error) {
     throw new Error("Failed to fetch teams");
@@ -954,7 +958,6 @@ export async function fetchArticlesServer(
   token?: string | null
 ) {
   const filter = {
-    status: { eq: "PUBLISHED" },
     ...(category && {
       category: {
         eq: category.toLowerCase(),
@@ -964,26 +967,29 @@ export async function fetchArticlesServer(
 
   try {
     const { data: articles, nextToken } =
-      await cookiesClient.models.Article.list({
-        limit: 15,
-        authMode: auth ? "userPool" : "iam",
-        filter,
-        nextToken: token,
-        sortDirection: "DESC",
-        selectionSet: [
-          "id",
-          "category",
-          "content",
-          "tags",
-          "title",
-          "coverImage",
-          "status",
-          "createdAt",
-          "matchId",
-          "matchHomeTeamLogo",
-          "matchAwayTeamLogo",
-        ],
-      });
+      await cookiesClient.models.Article.listArticleByStatusAndCreatedAt(
+        { status: "PUBLISHED" },
+        {
+          limit: 15,
+          authMode: auth ? "userPool" : "iam",
+          filter,
+          nextToken: token,
+          sortDirection: "DESC",
+          selectionSet: [
+            "id",
+            "category",
+            "content",
+            "tags",
+            "title",
+            "coverImage",
+            "status",
+            "createdAt",
+            "matchId",
+            "matchHomeTeamLogo",
+            "matchAwayTeamLogo",
+          ],
+        }
+      );
 
     return {
       status: "success",
