@@ -20,7 +20,7 @@ function History() {
   return (
     <>
       <Header
-        bg={"/images/ourhistory.jpg"}
+        bg={"/images/blfa-logo-scattered.png"}
         alt="2024 / 2025 ongoing campaign"
         overlay={true}
       >

@@ -68,6 +68,7 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
         setCurrentYear={setYear}
         currentIndex={month}
         setCurrentIndex={setMonth}
+        size="sm"
       />
       {!filteredMatches || (filteredMatches && filteredMatches.length < 1) ? (
         <Text color="white" letterCase={"lower"} size="base" weight="regular">

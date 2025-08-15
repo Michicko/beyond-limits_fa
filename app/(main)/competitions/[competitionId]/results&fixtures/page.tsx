@@ -98,7 +98,7 @@ async function resultsFixtures({
     >
       <>
         <Suspense fallback={null}>
-          <Calendar years={years} />
+          <Calendar years={years} size="sm" />
         </Suspense>
         {errors ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">

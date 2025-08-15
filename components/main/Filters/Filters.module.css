@@ -48,6 +48,10 @@
   color: "#000";
 }
 
+.season.sm {
+  min-width: 6rem;
+}
+
 .season.year {
   /* padding: 0.25rem; */
   padding-right: 1.5em;

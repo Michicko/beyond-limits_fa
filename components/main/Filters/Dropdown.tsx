@@ -9,11 +9,13 @@ function Dropdown({
   currentYear,
   noUrl,
   setCurrentYear,
+  size,
 }: {
   years: number[];
   currentYear: number;
   noUrl?: boolean;
   setCurrentYear?: React.Dispatch<React.SetStateAction<number>>;
+  size?: "sm" | "lg";
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -43,7 +45,7 @@ function Dropdown({
     <select
       name="year"
       id="year"
-      className={clsx(styles.season, styles.year)}
+      className={clsx(styles.season, styles.year, size && styles[size])}
       value={noUrl ? currentYear : selected}
       onChange={onChange}
     >

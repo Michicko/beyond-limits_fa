@@ -11,6 +11,7 @@ function Calendar({
   setCurrentYear,
   currentIndex,
   setCurrentIndex,
+  size,
 }: {
   slice?: number;
   years: number[];
@@ -19,6 +20,7 @@ function Calendar({
   currentIndex?: number;
   setCurrentYear?: React.Dispatch<React.SetStateAction<number>>;
   setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>;
+  size?: "sm" | "lg";
 }) {
   const date = new Date();
   const year = date.getUTCFullYear();
@@ -31,6 +33,7 @@ function Calendar({
         currentYear={currentYear ?? year}
         noUrl={noUrl}
         setCurrentYear={setCurrentYear}
+        size={size}
       />
       <FilterBtns
         list={months}

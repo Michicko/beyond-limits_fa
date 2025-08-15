@@ -45,7 +45,7 @@ async function resultsFixtures(props: {
     <CompetitionsLayout pageTitle="Results & Fixtures">
       <>
         <Suspense fallback={null}>
-          <Calendar years={[year - 2, year - 1, year, year + 1]} />
+          <Calendar years={[year - 2, year - 1, year, year + 1]} size="sm" />
         </Suspense>
         {!matches || (matches && matches.length < 1) ? (
           <Text color="white" letterCase={"lower"} size="base" weight="regular">
