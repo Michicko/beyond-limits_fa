@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./Player.module.css";
 import clsx from "clsx";
 import PlayerInfo from "./PlayerInfo";
-import { CldImage } from 'next-cloudinary';
+import { CldImage } from "next-cloudinary";
 
 function PlayerModal({ player }: { player: IPlayer }) {
   return (
@@ -13,7 +13,7 @@ function PlayerModal({ player }: { player: IPlayer }) {
           <CldImage
             fill
             src={player.homeKit}
-            removeBackground
+            // removeBackground
             sizes="(max-width: 768px) 100vw, 33vw"
             alt={`${player.firstname} ${player.lastname}`}
           />
@@ -22,7 +22,7 @@ function PlayerModal({ player }: { player: IPlayer }) {
           <CldImage
             fill
             src={player.awayKit}
-            removeBackground
+            // removeBackground
             sizes="(max-width: 768px) 100vw, 33vw"
             alt={`${player.firstname} ${player.lastname}`}
           />

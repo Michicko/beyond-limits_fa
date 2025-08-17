@@ -188,7 +188,7 @@ const MenuLinks = [
         id: 342,
         link: "/about/honours",
         name: "honours",
-        image: "/images/honors.jpg",
+        image: "/images/honours.png",
       },
     ],
     description:

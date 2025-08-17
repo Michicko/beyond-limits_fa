@@ -278,7 +278,8 @@ body {
   font-weight: 500;
 }
 
-.tiptap p {
+.tiptap p,
+.tiptap a {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.4;
@@ -307,6 +308,10 @@ body {
 .tiptap hr {
   height: 1px;
   background: gray;
+}
+
+.tiptap a {
+  color: var(--secondary-light);
 }
 
 /* Code and preformatted text styles */

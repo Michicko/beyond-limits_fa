@@ -88,7 +88,9 @@ function CompetitionSeason({
                       matches={matches}
                       leagueStatus={league.status}
                       leagueId={league.id}
-                      selectedTeams={league.teams}
+                      selectedTeams={league.teams?.filter(
+                        (id): id is string => !!id
+                      )}
                       standings={league.standings}
                       competitionStatus={competitionSeason.status}
                       type={competitionSeason.type}
@@ -124,7 +126,10 @@ function CompetitionSeason({
                           matches={matches}
                           leagueStatus={league.status}
                           leagueId={league.id}
-                          selectedTeams={league.teams}
+                          selectedTeams={(league.teams ?? []).filter(
+                            (teamId): teamId is string =>
+                              typeof teamId === "string"
+                          )}
                           standings={league.standings}
                           competitionStatus={competitionSeason.status}
                           type={competitionSeason.type}

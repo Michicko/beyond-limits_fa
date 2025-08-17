@@ -8,6 +8,8 @@ import TextStyle, { TextStyleOptions } from "@tiptap/extension-text-style";
 import { EditorContent, JSONContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import MenuBar from "./MenuBar";
+import { CustomLink } from "./CustomLink";
+import Image from "@tiptap/extension-image";
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -22,6 +24,16 @@ const extensions = [
       keepAttributes: false,
     },
   }),
+  CustomLink.configure({
+    openOnClick: false,
+    autolink: true,
+    linkOnPaste: true,
+    HTMLAttributes: {
+      rel: "noopener noreferrer",
+      target: null,
+    },
+  }),
+  Image.configure({ inline: false, allowBase64: false }),
 ];
 
 function TextEditor({
@@ -37,7 +49,6 @@ function TextEditor({
   readOnly?: boolean;
   editorKey?: number;
 }) {
-  
   const editor = useEditor({
     extensions,
     content: Object.keys(content).length > 0 ? content : ``,
@@ -54,7 +65,7 @@ function TextEditor({
 
   useEffect(() => {
     editor?.commands.clearContent();
-  }, [editorKey])
+  }, [editorKey]);
 
   if (!editor) {
     return <div className={clsx(styles["editor-dummy"])}></div>;
@@ -65,9 +76,7 @@ function TextEditor({
   }
 
   return (
-    <div
-      className={clsx(styles.editor, readOnly && styles["read-only"])}
-    >
+    <div className={clsx(styles.editor, readOnly && styles["read-only"])}>
       {!readOnly && <MenuBar editor={editor} />}
       <EditorContent editor={editor} key={editorKey} />
     </div>

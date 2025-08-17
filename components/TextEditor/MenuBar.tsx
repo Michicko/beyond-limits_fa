@@ -5,6 +5,20 @@ import { getIcon } from "@/lib/icons";
 import styles from "./TextEditor.module.css";
 import clsx from "clsx";
 import { Flex, IconButton, Menu, Portal } from "@chakra-ui/react";
+import CustomFileUpload from "../admin/CustomFileUpload/CustomFileUpload";
+import Modal from "../Modal/Modal";
+import UploadImage from "../admin/CustomFileUpload/UploadImage";
+import EditorImageUpload from "../admin/CustomFileUpload/EditorImageUpload";
+
+const generateRandomString = (length = 12): string => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
 
 const colors = [
   "rgb(97,189,109)",
@@ -39,10 +53,76 @@ const colors = [
 
 function MenuBar({ editor }: { editor: Editor }) {
   const [textColor, setTextColor] = useState("#000000");
+  const [showModal, setShowModal] = useState(false);
 
   if (!editor) {
     return null;
   }
+
+  const setLink = () => {
+    const { from, to } = editor.state.selection;
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("Enter the URL", previousUrl || "");
+
+    if (url === null) return; // cancelled
+
+    if (url === "") {
+      editor.chain().focus().unsetLink().run();
+      return;
+    }
+
+    let finalUrl = url;
+    let target: "_blank" | null = null;
+
+    try {
+      // Case 1: User typed "/about" → internal
+      if (url.startsWith("/")) {
+        finalUrl = url;
+        target = null;
+      }
+      // Case 2: Full http(s) URL
+      else if (/^https?:\/\//i.test(url)) {
+        const parsed = new URL(url);
+
+        if (
+          parsed.hostname.replace(/^www\./, "") ===
+          window.location.hostname.replace(/^www\./, "")
+        ) {
+          finalUrl = parsed.pathname + parsed.search + parsed.hash;
+          target = null; // internal
+        } else {
+          finalUrl = parsed.href;
+          target = "_blank"; // external
+        }
+      }
+      // Case 3: Bare domain like "google.com"
+      else {
+        finalUrl = "https://" + url;
+        target = "_blank"; // external
+      }
+    } catch {
+      finalUrl = url;
+      target = null;
+    }
+
+    editor
+      .chain()
+      .focus()
+      .setTextSelection({ from, to })
+      .setLink({ href: finalUrl, target })
+      .run();
+  };
+
+  const unsetLink = () => {
+    editor.chain().focus().unsetLink().run();
+  };
+
+  const handleUpload = (path: string) => {
+    if (path) {
+      editor.commands.setImage({ src: path });
+      setShowModal(false);
+    }
+  };
 
   const handleColor = (color: string) => {
     setTextColor(color);
@@ -160,6 +240,25 @@ function MenuBar({ editor }: { editor: Editor }) {
         >
           {getIcon("h6")}
         </button>
+        <button type="button" onClick={() => setShowModal(true)}>
+          {getIcon("image")}
+        </button>
+        <button
+          type="button"
+          onClick={setLink}
+          className={editor.isActive("link") ? styles["is-active"] : ""}
+          title="Add/Edit link"
+        >
+          {getIcon("link")}
+        </button>
+        <button
+          type="button"
+          onClick={unsetLink}
+          disabled={!editor.isActive("link")}
+          title="Unlink"
+        >
+          {getIcon("unlink")}
+        </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -214,6 +313,15 @@ function MenuBar({ editor }: { editor: Editor }) {
         >
           {getIcon("redo")}
         </button>
+        {showModal && (
+          <Modal isModalShown={showModal} setIsModalShown={setShowModal}>
+            <EditorImageUpload
+              filename={generateRandomString()}
+              onUploaded={handleUpload}
+              setIsModalShown={setShowModal}
+            />
+          </Modal>
+        )}
         <Menu.Root>
           <Menu.Trigger asChild title="color picker">
             <IconButton

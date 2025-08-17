@@ -1,24 +1,22 @@
+"use client";
+import useToast from "@/hooks/useToast";
 import { getIcon } from "@/lib/icons";
 import { Box, Button, FileUpload, Icon } from "@chakra-ui/react";
 import React, { useState } from "react";
-import useToast from "@/hooks/useToast";
 import slugify from "slugify";
 
-function CustomFileUpload({
-  description,
-  id,
-  onUploaded,
+function EditorImageUpload({
   filename,
-  type,
+  onUploaded,
+  setIsModalShown,
 }: {
-  description: string;
-  id?: string;
-  onUploaded: (path: string) => void;
   filename: string;
-  type?: "drag-drop" | "select";
+  onUploaded: (path: string) => void;
+  setIsModalShown: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { mutationPromiseToast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
+
   const success = {
     title: "image Uploaded",
     desc: `${filename} uploaded successfully!`,
@@ -85,41 +83,18 @@ function CustomFileUpload({
   };
 
   return (
-    <>
-      {type === "drag-drop" ? (
-        <FileUpload.Root
-          alignItems="stretch"
-          maxFiles={1}
-          border={"2px dashed gray"}
-          borderRadius={"sm"}
-          accept={["image/jpeg", "image/webp", "image/png"]}
-          mb={"5"}
-          id={id}
-          onChange={handleFileUpload}
-          w={"100%"}
-          h={"100%"}
-        >
-          <FileUpload.HiddenInput />
-          <FileUpload.Dropzone>
-            <Icon size="md" color="fg.muted">
-              {getIcon("upload")}
-            </Icon>
-            <FileUpload.DropzoneContent>
-              <Box>Drag and drop a {description} here</Box>
-              <Box color="fg.muted">.png, .webp, .jpg up to 5MB</Box>
-            </FileUpload.DropzoneContent>
-          </FileUpload.Dropzone>
-          <FileUpload.List />
-        </FileUpload.Root>
-      ) : (
+    <Box position={"relative"} height={"10rem"} w={"100%"} bg={"#fff"}>
+      <Box display={"flex"} alignItems={"center"} gap={"6"} w={"full"}>
         <FileUpload.Root
           accept={["image/png", "image/jpeg", "image/webp"]}
           w={"full"}
+          maxW={"20rem"}
           maxFiles={1}
-          p={"10px"}
+          p={"2px"}
           mt={"5px"}
-          id={id}
+          id={"editor-img"}
           onChange={handleFileUpload}
+          border={"1px solid gray"}
         >
           <FileUpload.HiddenInput />
           <FileUpload.Trigger asChild>
@@ -133,14 +108,17 @@ function CustomFileUpload({
               <Icon size="md" color="fg.muted">
                 {getIcon("upload")}
               </Icon>
-              Select {description}
+              Select image
             </Button>
           </FileUpload.Trigger>
           <FileUpload.List />
         </FileUpload.Root>
-      )}
-    </>
+        <Icon size="md" color="fg.muted" onClick={() => setIsModalShown(false)}>
+          {getIcon("close")}
+        </Icon>
+      </Box>
+    </Box>
   );
 }
 
-export default CustomFileUpload;
+export default EditorImageUpload;
