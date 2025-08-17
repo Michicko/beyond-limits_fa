@@ -21,7 +21,7 @@ const ImageComp = ({
       alt={alt || ""}
       priority={priority}
       loading={priority ? "eager" : "lazy"}
-      loader={() => imageLoader({ src: image, width: 100, quality: 75 })}
+      loader={imageLoader}
       placeholder={"blur"}
       blurDataURL={
         placeholder ||
