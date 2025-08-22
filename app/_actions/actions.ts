@@ -669,28 +669,30 @@ export async function fetchHomepageData() {
           ],
         }
       ),
-      cookiesClient.models.Player.list({
-        filter: {
-          status: { ne: "INACTIVE" },
+      cookiesClient.models.Player.listPlayerByStatus(
+        {
+          status: "ACTIVE",
         },
-        limit: 3,
-        authMode: auth ? "userPool" : "iam",
-        selectionSet: [
-          "id",
-          "firstname",
-          "lastname",
-          "awayKit",
-          "homeKit",
-          "dob",
-          "dominantFoot",
-          "squadNo",
-          "height",
-          "weight",
-          "isTwoFooted",
-          "playerPosition.shortName",
-          "playerPosition.longName",
-        ],
-      }),
+        {
+          limit: 3,
+          authMode: auth ? "userPool" : "iam",
+          selectionSet: [
+            "id",
+            "firstname",
+            "lastname",
+            "awayKit",
+            "homeKit",
+            "dob",
+            "dominantFoot",
+            "squadNo",
+            "height",
+            "weight",
+            "isTwoFooted",
+            "playerPosition.shortName",
+            "playerPosition.longName",
+          ],
+        }
+      ),
       cookiesClient.models.Highlight.list({
         authMode: auth ? "userPool" : "iam",
         selectionSet: ["id", "coverImage", "title", "createdAt"],

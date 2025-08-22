@@ -1,8 +1,8 @@
 import { getIcon } from "@/lib/icons";
 import { Box, Button, FileUpload, Icon } from "@chakra-ui/react";
 import React, { useState } from "react";
-import useToast from "@/hooks/useToast";
 import slugify from "slugify";
+import toast from "react-hot-toast";
 
 function CustomFileUpload({
   description,
@@ -17,70 +17,62 @@ function CustomFileUpload({
   filename: string;
   type?: "drag-drop" | "select";
 }) {
-  const { mutationPromiseToast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
-  const success = {
-    title: "image Uploaded",
-    desc: `${filename} uploaded successfully!`,
-  };
-  const err = {
-    title: "Error uploading image",
-    desc: `Failed to upload image`,
-  };
-  const loading = {
-    title: "uploading image",
-    desc: `uploading ${filename}, please wait...`,
-  };
 
-  const handleFileUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const target = e.target as HTMLInputElement;
-    if (!target.files) return;
-
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (isUploading) return;
+    if (!event.target.files || event.target.files.length === 0) return;
+    setIsUploading(true);
+    const file = event.target.files[0];
     const formData = new FormData();
-    formData.append("file", target.files[0]);
+    formData.append("file", file);
 
-    // sign upload
-    const result = await fetch("/api/image-upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        public_id: slugify(filename, { lower: true }),
-      }),
-    });
+    try {
+      const result = await fetch("/api/image-upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          public_id: slugify(filename, { lower: true }),
+        }),
+      });
 
-    const res = await result.json();
+      const res = await result.json();
+      if (!res) throw new Error("Failed to get upload signature");
 
-    // upload file
-    if (res) {
       formData.append("api_key", res.API_KEY);
       formData.append("timestamp", res.timestamp);
       formData.append("signature", res.signature);
       formData.append("folder", "beyondlimitsfa");
       formData.append("public_id", slugify(filename, { lower: true }));
+
       const url = `https://api.cloudinary.com/v1_1/${res.CLOUD_NAME}/auto/upload`;
 
-      const promise = fetch(url, {
-        method: "POST",
-        body: formData,
-      }).then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error?.message || "Upload failed");
-        }
-        return data;
-      });
+      await toast
+        .promise(
+          fetch(url, { method: "POST", body: formData }).then(async (res) => {
+            const data = await res.json();
+            if (!res.ok)
+              throw new Error(data.error?.message || "Upload failed");
+            return data;
+          }),
+          {
+            loading: `Uploading ${filename}...`,
+            success: `${filename} uploaded successfully!`,
+            error: (err) => err.message || "Upload failed",
+          }
+        )
+        .then((data) => {
+          setIsUploading(false);
+          onUploaded(data);
+        });
+    } catch (error) {
+      setIsUploading(false);
 
-      mutationPromiseToast(
-        promise,
-        success,
-        err,
-        loading,
-        setIsUploading,
-        onUploaded
-      );
+      toast.error((error as Error).message || "Something went wrong");
+    } finally {
+      setIsUploading(false);
     }
   };
 

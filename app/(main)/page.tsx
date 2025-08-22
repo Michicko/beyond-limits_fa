@@ -114,7 +114,7 @@ export default async function Home() {
                 type="section"
               />
             </Flex>
-            <PlayerList players={homepageContent.players.slice(0, 3)} />
+            <PlayerList players={homepageContent.players} />
           </Container>
         )}
         {homepageContent?.matches && (

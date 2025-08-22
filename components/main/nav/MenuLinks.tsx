@@ -182,7 +182,7 @@ const MenuLinks = [
         id: 341,
         link: "/about/history",
         name: "our history",
-        image: "/images/blfa-logo-scattered.png",
+        image: "/images/history-blfa.png",
       },
       {
         id: 342,

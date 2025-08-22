@@ -27,7 +27,7 @@ const Player = ({
       <div className={clsx(styles["player__img-box"])}>
         {player.homeKit && (
           <CldImage
-            // fill
+            fill
             src={player.homeKit}
             sizes="(max-width: 768px) 100vw, 33vw"
             alt={player.firstname}

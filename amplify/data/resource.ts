@@ -267,7 +267,7 @@ const schema = a.schema({
       dominantFoot: a.ref("DominantFoot"),
       isTwoFooted: a.boolean().default(false),
     })
-    .secondaryIndexes((index) => [index("ageGroup")])
+    .secondaryIndexes((index) => [index("ageGroup"), index("status")])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
