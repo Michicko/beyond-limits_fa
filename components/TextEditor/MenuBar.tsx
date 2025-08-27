@@ -5,9 +5,7 @@ import { getIcon } from "@/lib/icons";
 import styles from "./TextEditor.module.css";
 import clsx from "clsx";
 import { Flex, IconButton, Menu, Portal } from "@chakra-ui/react";
-import CustomFileUpload from "../admin/CustomFileUpload/CustomFileUpload";
 import Modal from "../Modal/Modal";
-import UploadImage from "../admin/CustomFileUpload/UploadImage";
 import EditorImageUpload from "../admin/CustomFileUpload/EditorImageUpload";
 
 const generateRandomString = (length = 12): string => {
@@ -117,9 +115,9 @@ function MenuBar({ editor }: { editor: Editor }) {
     editor.chain().focus().unsetLink().run();
   };
 
-  const handleUpload = (path: string) => {
-    if (path) {
-      editor.commands.setImage({ src: path });
+  const handleUpload = (data: any) => {
+    if (data) {
+      editor.commands.setImage({ src: data.secure_url });
       setShowModal(false);
     }
   };

@@ -238,6 +238,12 @@ body {
   margin-bottom: 0.25em;
 }
 
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+}
+
 /* Heading styles */
 .tiptap h1,
 .tiptap h2,

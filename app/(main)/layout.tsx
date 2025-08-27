@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Beyond Limits Fa",
   },
   description:
-    "Beyond Limits F.A. is a professional football club based in Ikenne, Ogun State, Nigeria. It serves as the youth development team of Remo Stars F.C. and competes in the Nigeria National League (NNL), the second tier of professional football in the country.",
+    "Beyond Limits Football Academy is a youth development programme based in Ikenne-Remo, Ogun State, Nigeria, focused on nurturing talent, creating opportunities, and empowering the next generation of footballers on and off the pitch.",
   icons: {
     icon: [
       {
