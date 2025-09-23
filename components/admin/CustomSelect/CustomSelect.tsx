@@ -38,8 +38,8 @@ function CustomSelect({
         pl={"10px"}
         lineHeight={1.5}
         name={name}
-        value={selectedValue}
         flexShrink={0}
+        value={selectedValue}
         onChange={handleOnChange}
         id={id}
       >

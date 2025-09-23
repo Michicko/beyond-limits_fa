@@ -8,12 +8,13 @@ import styles from "./NewsClient.module.css";
 import useCursorPaginate from "@/hooks/useCursorPaginate";
 import useSWR from "swr";
 import { fetchHighlightsServer } from "@/app/_actions/actions";
+import { Nullable } from "@/lib/definitions";
 
 type IHighlight = {
   id: string;
   title: string;
   coverImage: string;
-  createdAt: string;
+  createdAt: Nullable<string>;
 };
 
 type Props = {

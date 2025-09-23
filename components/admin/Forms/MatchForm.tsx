@@ -19,10 +19,11 @@ import MatchPreview from "./MatchPreview";
 import MatchReport from "./MatchReport";
 import Lineup from "./Lineup";
 import MatchStats from "./MatchStats";
-import { Nullable } from "@/lib/definitions";
+import { IMatchFormData, Nullable } from "@/lib/definitions";
 import FormBtn from "./FormBtn";
 import FormLabel from "./FormLabel";
 import {
+  formDataToObject,
   getButtonStatus,
   objectToFormData,
   updateFormDataWithJSON,
@@ -92,6 +93,7 @@ type IMatchI = Pick<
   | "competitionSeasonId"
   | "homeForm"
   | "awayForm"
+  | "constantKey"
 >;
 
 // if competition is league type, make available teams teams selected in the competition season
@@ -104,7 +106,7 @@ function MatchForm({
   method,
   statuses,
 }: {
-  match?: IMatchI;
+  match?: IMatchFormData;
   competitions: ICompetition[];
   teams: { id: string; shortName: string; longName: string; logo: string }[];
   players: IPlayer[];
@@ -162,7 +164,7 @@ function MatchForm({
     };
   };
 
-  const [data, setData] = useState<IMatchI>({
+  const [data, setData] = useState<IMatchFormData>({
     id: match?.id || "",
     competitionSeasonId: match?.competitionSeasonId || "",
     date: match?.date || "",
@@ -193,6 +195,7 @@ function MatchForm({
     scorers: match?.scorers ? JSON.parse(match.scorers as string) : [],
     homeForm: match?.homeForm || "",
     awayForm: match?.awayForm || "",
+    constantKey: "all",
   });
 
   const resetForm = () => {
@@ -218,6 +221,7 @@ function MatchForm({
       scorers: [],
       homeForm: "",
       awayForm: "",
+      constantKey: "all",
     });
     setEditorKey((prev) => prev + 4);
   };
@@ -231,7 +235,7 @@ function MatchForm({
       })
     : null;
 
-  const [result, setResult] = useState((match && match.result) || "");
+  const [result, setResult] = useState(match?.result ?? "");
 
   const [competition, setCompetition] = useState<ICompetition | null>(
     selectedCompetition || null
@@ -336,16 +340,10 @@ function MatchForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = objectToFormData(data);
-    updateFormDataWithJSON(formData, data);
-    formData.delete("result");
 
     if (match && method === "UPDATE") {
-      if (result) {
-        formData.append("result", result);
-      }
       startTransition(async () => {
-        const res = await updateMatch(match.id, formData);
+        const res = await updateMatch(data);
         if (res.status === "success" && res.data) {
           mutationToast(
             "Match",
@@ -358,9 +356,9 @@ function MatchForm({
         }
       });
     } else {
-      formData.delete("id");
+      // formData.delete("id");
       startTransition(async () => {
-        const res = await createMatch(formData);
+        const res = await createMatch(data);
 
         if (res.status === "success" && res.data) {
           mutationToast(
@@ -371,6 +369,7 @@ function MatchForm({
           formRef.current?.reset();
           resetForm();
         }
+
         if (res.status === "error") {
           errorToast(res.message);
         }
@@ -629,6 +628,7 @@ function MatchForm({
                   players={players}
                   result={result}
                   setResult={setResult}
+                  statuses={statuses}
                 />
               </CustomTabContent>
               <CustomTabContent value={"lineup"}>

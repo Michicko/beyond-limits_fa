@@ -1,4 +1,9 @@
-import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
+import {
+  IMatch,
+  IMatchFormData,
+  IStackStyles,
+  Nullable,
+} from "@/lib/definitions";
 import {
   Box,
   Field,
@@ -31,28 +36,6 @@ interface IPlayer {
   };
 }
 
-type IMatchI = Pick<
-  Schema["Match"]["type"],
-  | "id"
-  | "aboutKeyPlayer"
-  | "aboutMvp"
-  | "awayTeam"
-  | "homeTeam"
-  | "coach"
-  | "date"
-  | "lineup"
-  | "keyPlayerId"
-  | "mvpId"
-  | "report"
-  | "review"
-  | "venue"
-  | "scorers"
-  | "substitutes"
-  | "time"
-  | "status"
-  | "competitionSeasonId"
->;
-
 function Lineup({
   stackStyles,
   matchForm,
@@ -61,8 +44,8 @@ function Lineup({
   players,
 }: {
   stackStyles: IStackStyles;
-  matchForm: IMatchI;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
+  matchForm: IMatchFormData;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchFormData>>;
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
   players: IPlayer[];
 }) {

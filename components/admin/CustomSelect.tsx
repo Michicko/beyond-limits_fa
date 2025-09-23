@@ -10,7 +10,7 @@ function CustomSelect({
   fixedWidth,
 }: {
   id: string;
-  defaultValue: string;
+  defaultValue: string | null | undefined;
   options: { label: string; value: string }[];
   handleOnChange: (value: string, id: string) => void;
   disabled: boolean;
@@ -20,10 +20,10 @@ function CustomSelect({
     return option === "win"
       ? "green"
       : option === "draw"
-      ? "yellow"
-      : option === "lose"
-      ? "red"
-      : "text_lg";
+        ? "yellow"
+        : option === "lose"
+          ? "red"
+          : "text_lg";
   };
 
   return (
@@ -38,7 +38,7 @@ function CustomSelect({
         placeholder="Select result"
         pl={"10px"}
         lineHeight={1.5}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue ?? ""}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
           const { value } = e.target;
           handleOnChange(value, id);

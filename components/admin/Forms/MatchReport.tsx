@@ -4,10 +4,9 @@ import React from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { JSONContent } from "@tiptap/react";
-import { IStackStyles, Nullable } from "@/lib/definitions";
+import { IMatchFormData, IStackStyles, Nullable } from "@/lib/definitions";
 import GoalScorers from "./GoalScorers";
 import FormLabel from "./FormLabel";
-import { Schema } from "@/amplify/data/resource";
 import ResultSelector from "../ResultSelector/ResultSelector";
 
 interface IPlayer {
@@ -17,32 +16,9 @@ interface IPlayer {
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
   playerPosition: {
-    shortName: string
-  }
+    shortName: string;
+  };
 }
-
-type IMatchI = Pick<
-  Schema["Match"]["type"],
-  | "id"
-  | "aboutKeyPlayer"
-  | "aboutMvp"
-  | "awayTeam"
-  | "homeTeam"
-  | "coach"
-  | "date"
-  | "lineup"
-  | "keyPlayerId"
-  | "mvpId"
-  | "report"
-  | "review"
-  | "venue"
-  | "scorers"
-  | "substitutes"
-  | "time"
-  | "status"
-  | "result"
-  | "competitionSeasonId"
->;
 
 function MatchReport({
   matchForm,
@@ -52,21 +28,29 @@ function MatchReport({
   players,
   result,
   setResult,
+  statuses,
 }: {
-  matchForm: IMatchI;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
+  matchForm: IMatchFormData;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchFormData>>;
   stackStyles: IStackStyles;
   handleOnChange: (e: { target: { name: string; value: any } }) => void;
   players: IPlayer[];
   result: string;
   setResult: React.Dispatch<React.SetStateAction<string>>;
+  statuses: string[];
 }) {
-  const playerOptions = players.map((player) => {
-    return {
-      label: `${player.firstname} ${player.lastname}`,
-      value: player.id,
-    };
-  });
+  const playerOptions = players
+    .filter(
+      (player) =>
+        matchForm.lineup?.includes(player.id) ||
+        matchForm.substitutes?.includes(player.id)
+    )
+    .map((player) => {
+      return {
+        label: `${player.firstname} ${player.lastname}`,
+        value: player.id,
+      };
+    });
 
   const handleReportContext = (json: JSONContent) => {
     setMatchForm({
@@ -77,7 +61,23 @@ function MatchReport({
 
   return (
     <Box css={stackStyles} my={"5"}>
-      <FormLabel as="Text">Report</FormLabel>
+      <Field.Root mb={"5"} w={"full"}>
+        <FormLabel>Status</FormLabel>
+        <CustomSelect
+          name="status"
+          description="status"
+          options={statuses.map((el) => {
+            return {
+              label: el,
+              value: el,
+            };
+          })}
+          selectedValue={matchForm.status || ""}
+          handleOnChange={handleOnChange}
+        />
+      </Field.Root>
+
+      <FormLabel as="Text">Result</FormLabel>
       <Field.Root mb={"5"} w={"full"}>
         <ResultSelector
           id={matchForm.id}

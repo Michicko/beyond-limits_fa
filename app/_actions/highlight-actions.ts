@@ -1,24 +1,26 @@
 "use server";
-import { Schema } from "@/amplify/data/resource";
-import {
-  checkUniqueField,
-  createEntityFactory,
-  deleteEntity,
-  updateEntityFactory,
-} from "@/lib/factoryFunctions";
-import { formDataToObject } from "@/lib/helpers";
+import { IHighlightFormData } from "@/lib/definitions";
+import { deleteEntity, processPromise } from "@/lib/factoryFunctions";
 import { cookiesClient } from "@/utils/amplify-utils";
 
-type Highlight = Schema["Highlight"]["type"];
-
 export const getHighlights = async (nextToken?: string | null) => {
-  return cookiesClient.models.Highlight.list({
-    selectionSet: ["id", "title", "coverImage", "createdAt", "videoId", "tags"],
-    nextToken,
-    limit: 25,
-    authMode: "userPool",
-    sortDirection: "DESC",
-  });
+  return cookiesClient.models.Highlight.listHighlightByConstantKeyAndCreatedAt(
+    { constantKey: "all" },
+    {
+      selectionSet: [
+        "id",
+        "title",
+        "coverImage",
+        "createdAt",
+        "videoId",
+        "tags",
+      ],
+      nextToken,
+      limit: 25,
+      authMode: "userPool",
+      sortDirection: "DESC",
+    }
+  );
 };
 
 export const getHighlightsSwr = async (isAuthenticated: boolean) => {
@@ -30,82 +32,81 @@ export const getHighlightsSwr = async (isAuthenticated: boolean) => {
   });
 };
 
-export const createHighlight = async (formData: FormData) => {
-  const base = formDataToObject<Highlight>(formData);
-  const highlightCreator = createEntityFactory<Highlight, Highlight>();
+export const createHighlight = async (
+  highlightFormData: IHighlightFormData
+) => {
+  if (
+    (
+      await cookiesClient.models.Highlight.list({
+        filter: {
+          videoId: {
+            eq: highlightFormData.videoId,
+          },
+        },
+      })
+    ).data.length > 0
+  ) {
+    return {
+      status: "error",
+      message: `videoId "${highlightFormData.videoId}" already exists.`,
+    };
+  }
 
-  return await highlightCreator({
-    modelName: "Highlight",
-    input: base,
-    selectionSet: ["id", "title", "coverImage"],
-    pathToRevalidate: "/cp/highlights",
-    preprocess: (input) => ({
-      ...input,
-      title: input.title.toLowerCase(),
-      tags: JSON.parse(formData.get("tags") as string),
-    }),
-    validate: async (input) => {
-      if (
-        (
-          await checkUniqueField(
-            "Highlight",
-            "title",
-            input.title.toLowerCase()
-          )
-        ).length > 0
-      ) {
-        return {
-          status: "error",
-          valid: false,
-          message: `title "${input.title}" already exists.`,
-        };
-      }
-      return { valid: true };
+  const createHighlightPromise = cookiesClient.models.Highlight.create(
+    {
+      ...highlightFormData,
+      id: undefined,
+      title: highlightFormData.title.toLowerCase(),
+      tags: highlightFormData.tags,
+      description: JSON.stringify(highlightFormData.description),
     },
-  });
+    {
+      selectionSet: ["title"],
+      authMode: "userPool",
+    }
+  );
+
+  return await processPromise(createHighlightPromise);
 };
 
 export const updateHighlight = async (
-  id: string,
-  formData: FormData,
-  currentUniqueValue: string
+  highlightFormData: IHighlightFormData
 ) => {
-  const base = formDataToObject<Highlight>(formData);
-  const highlightUpdater = updateEntityFactory<Highlight, Highlight>();
+  if (
+    (
+      await cookiesClient.models.Highlight.list({
+        filter: {
+          id: {
+            ne: highlightFormData.id,
+          },
+          videoId: {
+            eq: highlightFormData.videoId,
+          },
+        },
+      })
+    ).data.length > 0
+  ) {
+    return {
+      status: "error",
+      message: `videoId "${highlightFormData.videoId}" already exists.`,
+    };
+  }
 
-  return await highlightUpdater({
-    modelName: "Highlight",
-    id,
-    input: base,
-    selectionSet: ["id", "title", "coverImage"],
-    pathToRevalidate: "/cp/highlights",
-    preprocess: (input) => ({
-      ...input,
-      title: input.title.toLowerCase(),
-      tags: JSON.parse(formData.get("tags") as string),
-    }),
-    validate: async (input) => {
-      if (input.title !== currentUniqueValue) {
-        if (
-          (
-            await checkUniqueField(
-              "Highlight",
-              "title",
-              input.title.toLowerCase()
-            )
-          ).length > 0
-        ) {
-          return {
-            status: "error",
-            valid: false,
-            message: `title "${input.title}" already exists.`,
-          };
-        }
-      }
-
-      return { valid: true };
+  const updateHighlightPromise = cookiesClient.models.Highlight.update(
+    {
+      ...highlightFormData,
+      id: highlightFormData.id,
+      title: highlightFormData.title.toLowerCase(),
+      tags: highlightFormData.tags,
+      description: JSON.stringify(highlightFormData.description),
     },
-  });
+    {
+      selectionSet: ["title"],
+      authMode: "userPool",
+    }
+  );
+
+  return await processPromise(updateHighlightPromise);
 };
 
 export async function deleteHighlight(id: string) {

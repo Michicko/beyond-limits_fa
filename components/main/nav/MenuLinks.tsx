@@ -124,41 +124,41 @@ const MenuLinks = [
     description:
       "Meet the next generation of football talent. Explore detailed profiles of our U17 and U19 players—future stars shaping the game with skill, discipline, and ambition.",
   },
-  {
-    innerLinks: [`/stats/team-stats`, "/stats/player-stats"],
-    id: 33,
-    name: "STATS",
-    icon: (
-      <svg
-        width="29"
-        height="30"
-        viewBox="0 0 29 30"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M14.9351 7.75L15.4184 10.1667H21.7501V17.4167H17.6901L17.2067 15H8.45841V7.75H14.9351ZM16.9167 5.33334H6.04175V25.875H8.45841V17.4167H15.2251L15.7084 19.8333H24.1667V7.75H17.4001L16.9167 5.33334Z"
-          fill="white"
-        />
-      </svg>
-    ),
-    subMenu: [
-      {
-        id: 331,
-        link: `/stats/team-stats`,
-        name: "team stats",
-        image: "/images/team-stats.JPG",
-      },
-      {
-        id: 332,
-        link: "/stats/player-stats",
-        name: "player stats",
-        image: "/images/playerstats.jpg",
-      },
-    ],
-    description:
-      "Dive into in-depth team and player statistics, powered by our performance partners: Eyeball, Spiideo, and Wyscout.",
-  },
+  // {
+  //   innerLinks: [`/stats/team-stats`, "/stats/player-stats"],
+  //   id: 33,
+  //   name: "STATS",
+  //   icon: (
+  //     <svg
+  //       width="29"
+  //       height="30"
+  //       viewBox="0 0 29 30"
+  //       fill="none"
+  //       xmlns="http://www.w3.org/2000/svg"
+  //     >
+  //       <path
+  //         d="M14.9351 7.75L15.4184 10.1667H21.7501V17.4167H17.6901L17.2067 15H8.45841V7.75H14.9351ZM16.9167 5.33334H6.04175V25.875H8.45841V17.4167H15.2251L15.7084 19.8333H24.1667V7.75H17.4001L16.9167 5.33334Z"
+  //         fill="white"
+  //       />
+  //     </svg>
+  //   ),
+  //   subMenu: [
+  //     {
+  //       id: 331,
+  //       link: `/stats/team-stats`,
+  //       name: "team stats",
+  //       image: "/images/team-stats.JPG",
+  //     },
+  //     {
+  //       id: 332,
+  //       link: "/stats/player-stats",
+  //       name: "player stats",
+  //       image: "/images/playerstats.jpg",
+  //     },
+  //   ],
+  //   description:
+  //     "Dive into in-depth team and player statistics, powered by our performance partners: Eyeball, Spiideo, and Wyscout.",
+  // },
   {
     innerLinks: ["/about/history", "/about/honours"],
     id: 34,

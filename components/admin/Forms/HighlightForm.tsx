@@ -1,30 +1,18 @@
 "use client";
-import React, { useRef, useState } from "react";
-import {
-  Box,
-  Field,
-  HStack,
-  IconButton,
-  Image,
-  Input,
-  Stack,
-} from "@chakra-ui/react";
+import React, { useRef, useState, useTransition } from "react";
+import { Box, Field, Input, Stack } from "@chakra-ui/react";
 import FormBtn from "./FormBtn";
 import { getButtonStatus } from "@/lib/helpers";
 import FormLabel from "./FormLabel";
-import { getIcon } from "@/lib/icons";
 import slugify from "slugify";
-import CustomFileUpload from "../CustomFileUpload/CustomFileUpload";
 import { Schema } from "@/amplify/data/resource";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import { JSONContent } from "@tiptap/react";
 import ListItemAdd from "../ListItemAdd/ListItemAdd";
-import { toast } from "react-hot-toast";
 import {
   createHighlight,
   updateHighlight,
 } from "@/app/_actions/highlight-actions";
-import { Nullable } from "@/lib/definitions";
 import FormContainer from "./FormContainer";
 import useToast from "@/hooks/useToast";
 import UploadImage from "../CustomFileUpload/UploadImage";
@@ -54,14 +42,19 @@ function HighlightForm({
   });
 
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>(highlight?.tags as string[] || []);
-  const [isLoading, setIsLoading] = useState(false);
+  const [tags, setTags] = useState<string[]>(
+    (highlight?.tags as string[]) || []
+  );
+
   const [editorKey, setEditorKey] = useState(101);
-  const {mutationToast, errorToast} = useToast();
+
+  const [isPending, startTransition] = useTransition();
+  const { mutationToast, errorToast } = useToast();
 
   const handleHighlightDescription = (json: JSONContent) => {
     setTempData({ ...tempData, description: json });
   };
+
   const resetForm = () => {
     setTempData({
       title: "",
@@ -77,49 +70,37 @@ function HighlightForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", tempData.title);
-    formData.append("coverImage", tempData.coverImage);
-    formData.append("videoId", tempData.videoId);
-    formData.append("tags", JSON.stringify(tags));
-    formData.append("description", JSON.stringify(tempData.description));
 
     if (method === "CREATE") {
-      setIsLoading(true);
-      try {
-        const res = await createHighlight(formData);
+      const data = { ...tempData, id: "", tags, constantKey: "all" };
+      startTransition(async () => {
+        const res = await createHighlight(data);
+
         if (res.status === "success" && res.data) {
-          mutationToast("highlight", res.data.title, "create");
+          mutationToast("Highlight", res.data.title, "create");
+          formRef.current?.reset();
+          resetForm();
         }
-        setIsLoading(false);
-        resetForm();
-      } catch (error) {
-        setIsLoading(false);
-        const message = (error as Error).message;
-        toast.error(`Failed to create, ${message}`, {
-          duration: 8000,
-        });
-      }
+
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
     }
 
     if (method === "UPDATE" && highlight) {
-      formData.append("id", highlight.id);
-      try {
-        setIsLoading(true);
-        const res = await updateHighlight(
-          highlight.id,
-          formData,
-          highlight.title,
-        );
+      const data = { ...tempData, tags, id: highlight.id, constantKey: "all" };
+      startTransition(async () => {
+        const res = await updateHighlight(data);
+
         if (res.status === "success" && res.data) {
-          mutationToast("highlight", res.data.title, "update");
+          mutationToast("Highlight", res.data.title, "update");
         }
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        const message = (error as Error).message;
-        errorToast(message);
-      }
+
+        if (res.status === "error") {
+          errorToast(res.message);
+        }
+      });
     }
   };
 
@@ -128,7 +109,10 @@ function HighlightForm({
       <form ref={formRef} onSubmit={handleSubmit}>
         <Stack gap="2">
           <Field.Root required mb={"5"}>
-            <FormLabel>Title <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Title
+              <RequiredLabel />
+            </FormLabel>
             <Input
               name="title"
               placeholder="Title"
@@ -140,7 +124,10 @@ function HighlightForm({
             />
           </Field.Root>
           <Field.Root required mb={"5"}>
-          <FormLabel>Youtube Video ID <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Youtube Video ID
+              <RequiredLabel />
+            </FormLabel>
             <Input
               name="videoId"
               placeholder="Youtube video Id"
@@ -150,15 +137,15 @@ function HighlightForm({
                 setTempData({ ...tempData, videoId: e.target.value })
               }
             />
-            <Field.HelperText>Enter Youtube Id e.g: k-SvlnHFA6c</Field.HelperText>
+            <Field.HelperText>
+              Enter Youtube Id e.g: k-SvlnHFA6c
+            </Field.HelperText>
           </Field.Root>
 
-          <Box mb={5} w={'full'}>
+          <Box mb={5} w={"full"}>
             <UploadImage
               image={tempData.coverImage}
-              onClearImage={() =>
-                setTempData({ ...tempData, coverImage: "" })
-              }
+              onClearImage={() => setTempData({ ...tempData, coverImage: "" })}
               imageSize={200}
               filename={slugify(`${tempData.title}`, {
                 lower: true,
@@ -172,7 +159,10 @@ function HighlightForm({
           </Box>
 
           <Field.Root required mb={"5"} border={"transparent"}>
-            <FormLabel>Description <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Description
+              <RequiredLabel />
+            </FormLabel>
             <TextEditor
               content={tempData.description}
               handleOnUpdate={handleHighlightDescription}
@@ -186,8 +176,8 @@ function HighlightForm({
             setNames={setTags}
             desc={"Tag"}
           />
-          <FormBtn disabled={isLoading}>
-            {getButtonStatus(highlight, "Highlight", isLoading)}
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(highlight, "Highlight", isPending)}
           </FormBtn>
         </Stack>
       </form>

@@ -24,13 +24,16 @@ async function BeyondTv() {
     data: highlightsData,
     errors,
     nextToken,
-  } = await cookiesClient.models.Highlight.list({
-    authMode: auth ? "userPool" : "iam",
-    selectionSet: ["id", "coverImage", "title", "createdAt"],
-    limit,
-    nextToken: token,
-    sortDirection: "DESC",
-  });
+  } = await cookiesClient.models.Highlight.listHighlightByConstantKeyAndCreatedAt(
+    { constantKey: "all" },
+    {
+      authMode: auth ? "userPool" : "iam",
+      selectionSet: ["id", "coverImage", "title", "createdAt"],
+      limit,
+      nextToken: token,
+      sortDirection: "DESC",
+    }
+  );
 
   const highlights = highlightsData ?? [];
 

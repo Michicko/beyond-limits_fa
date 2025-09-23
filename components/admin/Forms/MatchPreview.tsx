@@ -4,7 +4,12 @@ import React from "react";
 import TextEditor from "@/components/TextEditor/TextEditor";
 import CustomSelect from "@/components/admin/CustomSelect/CustomSelect";
 import { JSONContent } from "@tiptap/react";
-import { IMatch, IStackStyles, Nullable } from "@/lib/definitions";
+import {
+  IMatch,
+  IMatchFormData,
+  IStackStyles,
+  Nullable,
+} from "@/lib/definitions";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
 
@@ -15,30 +20,9 @@ interface IPlayer {
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
   playerPosition: {
-    shortName: string
-  }
+    shortName: string;
+  };
 }
-type IMatchI = Pick<
-  Schema["Match"]["type"],
-  | "id"
-  | "aboutKeyPlayer"
-  | "aboutMvp"
-  | "awayTeam"
-  | "homeTeam"
-  | "coach"
-  | "date"
-  | "lineup"
-  | "keyPlayerId"
-  | "mvpId"
-  | "report"
-  | "review"
-  | "venue"
-  | "scorers"
-  | "substitutes"
-  | "time"
-  | "status"
-  | "competitionSeasonId"
->;
 
 function MatchPreview({
   matchForm,
@@ -47,8 +31,8 @@ function MatchPreview({
   handleOnChange,
   players,
 }: {
-  matchForm: IMatchI;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
+  matchForm: IMatchFormData;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchFormData>>;
   stackStyles: IStackStyles;
   players: IPlayer[];
   handleOnChange: (e: { target: { name: string; value: any } }) => void;

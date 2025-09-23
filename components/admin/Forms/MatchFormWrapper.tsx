@@ -3,6 +3,7 @@ import MatchForm from "./MatchForm";
 import { cookiesClient } from "@/utils/amplify-utils";
 import CustomAlert from "../Alert/CustomAlert";
 import { Schema } from "@/amplify/data/resource";
+import { IMatchFormData } from "@/lib/definitions";
 
 type IMatchI = Pick<
   Schema["Match"]["type"],
@@ -30,7 +31,7 @@ async function MatchFormWrapper({
   match,
   method,
 }: {
-  match?: IMatchI;
+  match?: IMatchFormData;
   method: "UPDATE" | "CREATE";
 }) {
   const { data: competitions, errors } =

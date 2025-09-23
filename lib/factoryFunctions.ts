@@ -43,6 +43,42 @@ const validatePath = (pathToRevalidate: string) => {
   }
 };
 
+export const processPromise = async (promise: Promise<any>) => {
+  try {
+    const result = await promise;
+    let errorMessage = "";
+
+    if (result.errors) {
+      result.errors.forEach((err: any) => {
+        errorMessage += `${err.message}`;
+      });
+
+      return {
+        status: "error",
+        message: errorMessage,
+      };
+    }
+
+    return {
+      status: "success",
+      data: result.data,
+    };
+  } catch (error) {
+    // console.error("Error creating match:", error);
+
+    if (cookiesClient.isCancelError(error)) {
+      // console.warn("Request cancelled:", (error as any).message);
+
+      cookiesClient.cancel(promise);
+    }
+
+    return {
+      status: "error",
+      message: (error as any).message,
+    };
+  }
+};
+
 export const checkUniqueField = async (
   modelName: keyof typeof cookiesClient.models,
   field: string,

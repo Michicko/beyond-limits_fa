@@ -243,8 +243,13 @@ const schema = a.schema({
       scorers: a.json(),
       homeForm: a.string(),
       awayForm: a.string(),
+      constantKey: a.string().required().default("all"),
+      createdAt: a.datetime(),
     })
-    .secondaryIndexes((index) => [index("date").sortKeys(["status"])])
+    .secondaryIndexes((index) => [
+      index("date").sortKeys(["status"]),
+      index("constantKey").sortKeys(["createdAt"]),
+    ])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),
@@ -329,7 +334,10 @@ const schema = a.schema({
       videoId: a.string().required(),
       description: a.json(),
       tags: a.string().array(),
+      constantKey: a.string().required().default("all"),
+      createdAt: a.datetime(),
     })
+    .secondaryIndexes((index) => [index("constantKey").sortKeys(["createdAt"])])
     .authorization((allow) => [
       allow.guest().to(["read"]),
       allow.authenticated().to(["read"]),

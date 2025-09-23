@@ -438,39 +438,34 @@ export interface IMatch {
     penalties?: Nullable<string>;
   } | null;
   scorers: any;
-  createdAt: string;
+  createdAt: Nullable<string>;
 }
 
-// export interface IMatch {
-//   id?: string;
-//   round: string;
-//   competition_id: string;
-//   competition?: ICompetition;
-//   home: IMatchTeam;
-//   away: IMatchTeam;
-//   date: string;
-//   time: string;
-//   venue: string;
-//   status: MatchStatus;
-//   result?: MatchResult;
-//   lineup: string[];
-//   substitutes: string[];
-//   coach: {
-//     name: string;
-//     role: string;
-//   };
-//   preview: {
-//     context: JSONContent | string;
-//     keyPlayer?: string;
-//     aboutKeyPlayer: string;
-//   };
-//   report: {
-//     context: JSONContent | string;
-//     mvp?: string;
-//     aboutMvp: string;
-//   };
-//   scorers: IMatchScorer[];
-// }
+export type IMatchFormData = Pick<
+  Schema["Match"]["type"],
+  | "id"
+  | "aboutKeyPlayer"
+  | "aboutMvp"
+  | "awayTeam"
+  | "homeTeam"
+  | "coach"
+  | "date"
+  | "lineup"
+  | "keyPlayerId"
+  | "mvpId"
+  | "report"
+  | "review"
+  | "result"
+  | "venue"
+  | "scorers"
+  | "substitutes"
+  | "time"
+  | "status"
+  | "competitionSeasonId"
+  | "homeForm"
+  | "awayForm"
+  | "constantKey"
+>;
 
 export interface IMatchTeamForm {
   team: string;
@@ -486,3 +481,45 @@ export interface IMatchTeamForm {
   form: string;
   penalties: string;
 }
+
+interface IMatchCardCompetitionSeason {
+  id: string;
+  logo: string;
+  shortName?: string;
+  name?: string;
+}
+
+export interface IMatchCard {
+  id?: string;
+  competitionSeasonId?: Nullable<string>;
+  competitionSeason?: IMatchCardCompetitionSeason;
+  date: string;
+  time: string;
+  venue: string;
+  status: Nullable<string>;
+  homeTeam: {
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  awayTeam: {
+    logo: string;
+    shortName: string;
+    longName: string;
+    goals: Nullable<string>;
+  } | null;
+  createdAt?: Nullable<string>;
+}
+
+export type IHighlightFormData = Pick<
+  Schema["Highlight"]["type"],
+  | "id"
+  | "coverImage"
+  | "createdAt"
+  | "description"
+  | "title"
+  | "tags"
+  | "videoId"
+  | "constantKey"
+>;

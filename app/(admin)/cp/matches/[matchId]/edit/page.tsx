@@ -39,8 +39,9 @@ async function page({ params }: { params: { matchId: string } }) {
         "awayTeam.*",
         "coach.*",
         "scorers",
+        "constantKey",
       ],
-    },
+    }
   );
 
   return (

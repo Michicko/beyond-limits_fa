@@ -67,7 +67,10 @@ function MatchCard({
             width={200}
             alt={match.competitionSeason?.name ?? ""}
           />
-          <p className={clsx(styles["header-text"])}>
+          <p
+            className={clsx(styles["header-text"])}
+            style={{ textTransform: "uppercase" }}
+          >
             {(match.competitionSeason?.shortName ?? "").toUpperCase()}
           </p>
         </div>

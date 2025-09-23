@@ -1,39 +1,18 @@
-import { IMatch, IStackStyles } from "@/lib/definitions";
+import { IMatch, IMatchFormData, IStackStyles } from "@/lib/definitions";
 import { Box, Separator, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
 import StatInput from "./StatInput";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
 
-type IMatchI = Pick<
-  Schema["Match"]["type"],
-  | "id"
-  | "aboutKeyPlayer"
-  | "aboutMvp"
-  | "awayTeam"
-  | "homeTeam"
-  | "coach"
-  | "date"
-  | "lineup"
-  | "keyPlayerId"
-  | "mvpId"
-  | "report"
-  | "review"
-  | "venue"
-  | "scorers"
-  | "substitutes"
-  | "time"
-  | "status"
-  | "competitionSeasonId"
->;
 function MatchStats({
   stackStyles,
   matchForm,
   setMatchForm,
 }: {
   stackStyles: IStackStyles;
-  matchForm: IMatchI;
-  setMatchForm: React.Dispatch<React.SetStateAction<IMatchI>>;
+  matchForm: IMatchFormData;
+  setMatchForm: React.Dispatch<React.SetStateAction<IMatchFormData>>;
 }) {
   const handleTeam = (
     e: { target: { name: string; value: any } },

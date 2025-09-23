@@ -3,12 +3,13 @@ import styles from "./VideoCard.module.css";
 import clsx from "clsx";
 import VideoCard from "./VideoCard";
 import { sortByCreatedAt } from "@/lib/helpers";
+import { Nullable } from "@/lib/definitions";
 
 interface IHighlight {
   id: string;
   title: string;
   coverImage: string;
-  createdAt: string;
+  createdAt: Nullable<string>;
 }
 
 function VideoCards({ videos }: { videos: IHighlight[] }) {

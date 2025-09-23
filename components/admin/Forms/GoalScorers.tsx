@@ -19,7 +19,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
 
@@ -82,11 +82,22 @@ function GoalScorers({
     });
   };
 
+  const getSelectedPlayer = (id: string) => {
+    const selectedPlayer = players.find((el) => el.id === id);
+    return selectedPlayer;
+  };
+
   const handleScorerOnChange = (e: {
     target: { name: string; value: string };
   }) => {
     const { name, value } = e.target;
-    setScorer({ ...scorer, [name]: value });
+    if (name === "playerId") {
+      const player = getSelectedPlayer(value);
+      const name = `${player?.firstname} ${player?.lastname}`;
+      setScorer({ ...scorer, name, playerId: value });
+    } else {
+      setScorer({ ...scorer, [name]: value });
+    }
   };
 
   const addScorer = () => {
@@ -104,6 +115,19 @@ function GoalScorers({
     );
     setMatchForm({ ...matchForm, scorers: tempScorers });
   };
+
+  const playerOptions = players
+    .filter(
+      (player) =>
+        matchForm.lineup?.includes(player.id) ||
+        matchForm.substitutes?.includes(player.id)
+    )
+    .map((player) => {
+      return {
+        label: player.firstname + " " + player.lastname,
+        value: player.id,
+      };
+    });
 
   return (
     <Box mb={"5"} w={"full"}>
@@ -139,12 +163,7 @@ function GoalScorers({
               name={"playerId"}
               description={"Player"}
               selectedValue={scorer.playerId || ""}
-              options={players.map((player) => {
-                return {
-                  label: player.firstname + " " + player.lastname,
-                  value: player.id,
-                };
-              })}
+              options={playerOptions}
               handleOnChange={handleScorerOnChange}
               id={"match"}
             />

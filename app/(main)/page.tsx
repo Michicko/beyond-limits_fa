@@ -10,7 +10,6 @@ import Heading from "@/components/main/Typography/Heading";
 import "@aws-amplify/ui-react/styles.css";
 import clsx from "clsx";
 import { fetchHomepageData } from "../_actions/actions";
-// import ArticleList from "@/components/Article/ArticleList";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
@@ -124,13 +123,28 @@ export default async function Home() {
             />
           </Container>
         )}
-        {homepageContent && (
-          <Container as="section" size="md">
-            {homepageContent?.highlights && (
-              <VideoCards videos={homepageContent.highlights.slice(0, 3)} />
-            )}
-          </Container>
-        )}
+        {homepageContent &&
+          homepageContent?.highlights &&
+          homepageContent?.highlights.length > 0 && (
+            <Container as="section" size="lg">
+              <Flex
+                align="center"
+                justify="between"
+                wrap={true}
+                gap="xxs"
+                mb={"sm"}
+              >
+                <Heading level={2} type="section" letterCase="upper">
+                  Our Highlights
+                </Heading>
+                <CustomLink
+                  link={{ name: "View More Highlights", href: "/beyond-tv" }}
+                  type="section"
+                />
+              </Flex>
+              <VideoCards videos={homepageContent.highlights} />
+            </Container>
+          )}
       </main>
     </>
   );

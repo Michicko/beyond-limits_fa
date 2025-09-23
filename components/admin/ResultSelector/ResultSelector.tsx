@@ -25,7 +25,7 @@ function ResultSelector({
         };
       })}
       disabled={!!disabled}
-      handleOnChange={(value: string, id: string) => setValue(value)}
+      handleOnChange={(value: string) => setValue(value)}
       fixedWidth={fixedWidth}
     />
   );

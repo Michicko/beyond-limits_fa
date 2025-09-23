@@ -325,6 +325,7 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.awayTeam.penalties",
         "matches.scorers",
         "matches.review",
+        "matches.createdAt",
         "matches.competitionSeason.id",
         "matches.result",
         "matches.competitionSeasonId",
@@ -669,6 +670,7 @@ export async function fetchHomepageData() {
           ],
         }
       ),
+
       cookiesClient.models.Player.listPlayerByStatus(
         {
           status: "ACTIVE",
@@ -693,11 +695,17 @@ export async function fetchHomepageData() {
           ],
         }
       ),
-      cookiesClient.models.Highlight.list({
-        authMode: auth ? "userPool" : "iam",
-        selectionSet: ["id", "coverImage", "title", "createdAt"],
-        limit: 3,
-      }),
+      cookiesClient.models.Highlight.listHighlightByConstantKeyAndCreatedAt(
+        {
+          constantKey: "all",
+        },
+        {
+          authMode: auth ? "userPool" : "iam",
+          selectionSet: ["id", "coverImage", "title", "createdAt"],
+          limit: 3,
+          sortDirection: "DESC",
+        }
+      ),
     ]);
 
     const homepageContent = {
@@ -1015,13 +1023,16 @@ export async function fetchHighlightsServer(
 ) {
   try {
     const { data: highlights, nextToken } =
-      await cookiesClient.models.Highlight.list({
-        limit: 15,
-        authMode: auth ? "userPool" : "iam",
-        nextToken: token,
-        sortDirection: "DESC",
-        selectionSet: ["id", "coverImage", "title", "createdAt"],
-      });
+      await cookiesClient.models.Highlight.listHighlightByConstantKeyAndCreatedAt(
+        { constantKey: "all" },
+        {
+          limit: 15,
+          authMode: auth ? "userPool" : "iam",
+          nextToken: token,
+          sortDirection: "DESC",
+          selectionSet: ["id", "coverImage", "title", "createdAt"],
+        }
+      );
 
     return {
       status: "success",

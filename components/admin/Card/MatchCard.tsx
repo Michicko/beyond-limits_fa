@@ -7,44 +7,17 @@ import MatchDetails from "./MatchDetails";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
-import { Nullable } from "@/lib/definitions";
+import { IMatchCard } from "@/lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
 import moment from "moment";
 
-interface ICompetitionSeason {
-  id: string;
-  logo: string;
-  name: string;
-  shortName?: string;
-}
-
-interface IMatch {
-  id?: string;
-  competitionSeasonId?: Nullable<string>;
-  competitionSeason?: ICompetitionSeason;
-  date: string;
-  time: string;
-  venue: string;
-  status: "UPCOMING" | "COMPLETED" | "CANCELED" | "ABANDONED" | null;
-  result?: "WIN" | "DRAW" | "LOSE" | null;
-  homeTeam: {
-    id: string;
-    logo: string;
-    shortName: string;
-    longName: string;
-    goals: Nullable<string>;
-  } | null;
-  awayTeam: {
-    id: string;
-    logo: string;
-    shortName: string;
-    longName: string;
-    goals: Nullable<string>;
-  } | null;
-  scorers: any;
-}
-
-function MatchCard({ match, showMenu }: { match: IMatch; showMenu?: boolean }) {
+function MatchCard({
+  match,
+  showMenu,
+}: {
+  match: IMatchCard;
+  showMenu?: boolean;
+}) {
   return (
     <Card.Root border={"1px solid"} borderColor={"gray.200"} w={"full"}>
       <Card.Header
