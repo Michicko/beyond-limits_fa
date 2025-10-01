@@ -41,6 +41,7 @@ interface ICompetitionSeason {
   logo: string;
   name: string;
   shortName?: string;
+  competitionId?: Nullable<string>;
 }
 
 interface IMatch {
@@ -281,7 +282,7 @@ export function formDataToObject<T = Record<string, any>>(
   const obj: Record<string, any> = {};
 
   Array.from(formData.entries()).forEach(([key, value]) => {
-    obj[key] = typeof value === "string" ? value : value.name ?? value;
+    obj[key] = typeof value === "string" ? value : (value.name ?? value);
   });
 
   return obj as T;

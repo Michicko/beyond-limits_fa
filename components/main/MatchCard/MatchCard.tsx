@@ -15,6 +15,7 @@ interface ICompetitionSeason {
   logo: string;
   name: string;
   shortName?: string;
+  competitionId?: Nullable<string>;
 }
 
 interface IMatch {
@@ -67,12 +68,22 @@ function MatchCard({
             width={200}
             alt={match.competitionSeason?.name ?? ""}
           />
-          <p
+          {/* <p
             className={clsx(styles["header-text"])}
             style={{ textTransform: "uppercase" }}
           >
             {(match.competitionSeason?.shortName ?? "").toUpperCase()}
-          </p>
+          </p> */}
+          <Link
+            href={`/competitions/${match.competitionSeason?.competitionId}`}
+            className={clsx(
+              styles["header-text"],
+              styles["match-compeition--name"]
+            )}
+            style={{ textTransform: "uppercase" }}
+          >
+            {(match.competitionSeason?.shortName ?? "").toUpperCase()}
+          </Link>
         </div>
         <div className={styles["header-box"]}>
           <p className={clsx(styles["header-text"], styles.date)}>

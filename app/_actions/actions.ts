@@ -327,6 +327,7 @@ async function getCurrentCompetitionSeasons(client: "guest" | "auth") {
         "matches.review",
         "matches.createdAt",
         "matches.competitionSeason.id",
+        "matches.competitionSeason.competitionId",
         "matches.result",
         "matches.competitionSeasonId",
         "matches.competitionSeason.season",

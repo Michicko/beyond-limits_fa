@@ -21,10 +21,16 @@
   gap: 0.5rem;
 }
 
-.header-box p {
+.header-box p,
+.header-box .header-text,
+.header-box .header-text:visited {
   font-size: var(--sm);
   font-weight: 500;
   color: var(--white);
+}
+
+.header-box .header-text.match-compeition--name:hover {
+  color: var(--secondary-light);
 }
 
 .header-box p.venue {
