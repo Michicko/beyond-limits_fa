@@ -7,44 +7,45 @@ import clsx from "clsx";
 import styles from "./Contact.module.css";
 
 export const metadata = {
-	title: 'Contact Us | Beyond Limits Fa. Phone Numbers & Email Addresses',
-	description: 'Useful club contact information to help with fan queries for ticketing and stadium events, Beyond Limits Fa. Store and general club enquiries',
+  title: "Contact Us | Beyond Limits Fa. Phone Numbers & Email Addresses",
+  description:
+    "Useful club contact information to help with fan queries for ticketing and stadium events, Beyond Limits Fa. Store and general club enquiries",
 };
 
 function Contact() {
-	return (
-		<>
-			<>
-				<Header
-					bg={"/images/contact.jpg"}
-					alt="2024 / 2025 Stats"
-					overlay={true}
-				>
-					<LayoutHeader>
-						<Heading level={1} letterCase="upper" type="primary">
-							Contact us
-						</Heading>
-					</LayoutHeader>
-				</Header>
-				<LayoutMain>
-					<div className={clsx(styles["contact-container"])}>
-						<div className={clsx(styles["contact-card"])}>
-							<h2>WRITE TO US</h2>
-							<p>
-								Please send an email to:{" "}
-								<a
-									href="mailto:info@beyondlimitsfa.com"
-									className={clsx(styles["contact-link"])}
-								>
-									info@beyondlimitsfa.com
-								</a>
-							</p>
-						</div>
-					</div>
-				</LayoutMain>
-			</>
-		</>
-	);
+  return (
+    <>
+      <>
+        <Header
+          bg={"/images/contact.jpg"}
+          alt="2024 / 2025 Stats"
+          overlay={true}
+        >
+          <LayoutHeader>
+            <Heading level={1} letterCase="upper" type="primary">
+              Contact us
+            </Heading>
+          </LayoutHeader>
+        </Header>
+        <LayoutMain>
+          <div className={clsx(styles["contact-container"])}>
+            <div className={clsx(styles["contact-card"])}>
+              <h2>WRITE TO US</h2>
+              <p>
+                Please send an email to:{" "}
+                <a
+                  href="mailto:contact@beyondlimitsfa.com"
+                  className={clsx(styles["contact-link"])}
+                >
+                  contact@beyondlimitsfa.com
+                </a>
+              </p>
+            </div>
+          </div>
+        </LayoutMain>
+      </>
+    </>
+  );
 }
 
 export default Contact;

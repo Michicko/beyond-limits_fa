@@ -30,7 +30,7 @@ const confi = {
     },
   ],
   endNote:
-    "By using our site, you're cool with how we handle your info. Got questions? Hit us up at info@beyondlimitsfa.com",
+    "By using our site, you're cool with how we handle your info. Got questions? Hit us up at contact@beyondlimitsfa.com",
 };
 
 function Confidential() {

@@ -1,12 +1,12 @@
-import clsx from 'clsx'
-import Link from 'next/link'
-import React from 'react'
-import styles from './Search.module.css';
-import { appendMonthToLink } from '@/lib/helpers';
+import clsx from "clsx";
+import Link from "next/link";
+import React from "react";
+import styles from "./Search.module.css";
+import { appendMonthToLink } from "@/lib/helpers";
 
-function EmptyResult({keyword}: {keyword: string}) {
+function EmptyResult({ keyword }: { keyword: string }) {
   return (
-    <div className={clsx(styles['search-box'])}>
+    <div className={clsx(styles["search-box"])}>
       <div className={clsx(styles["error-search"])}>
         <h2>
           No results were found matching your search request for "
@@ -46,15 +46,15 @@ function EmptyResult({keyword}: {keyword: string}) {
       <p>
         If you can't find what you're looking for,{" "}
         <a
-          href="mailto:info@beyondlimitsfa.com"
+          href="mailto:contact@beyondlimitsfa.com"
           className={clsx(styles["contact-link"])}
         >
           Send feedback
         </a>{" "}
         to help improve our site.
       </p>
-  </div>
-  )
+    </div>
+  );
 }
 
-export default EmptyResult
+export default EmptyResult;

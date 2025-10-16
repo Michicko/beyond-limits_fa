@@ -39,7 +39,7 @@ const terms = {
     },
   ],
   endNote:
-    "Got questions? Want to report an issue? Reach out at info@beyondlimitsfa.com",
+    "Got questions? Want to report an issue? Reach out at contact@beyondlimitsfa.com",
 };
 
 function TermsConditions() {

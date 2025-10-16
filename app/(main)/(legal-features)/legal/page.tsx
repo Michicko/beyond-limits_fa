@@ -17,7 +17,7 @@ const legalDoc = {
     },
   ],
   endNote:
-    "For further inquiries, please contact us at info@beyondlimitsfa.com",
+    "For further inquiries, please contact us at contact@beyondlimitsfa.com",
 };
 
 function legal() {
