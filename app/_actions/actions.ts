@@ -867,7 +867,7 @@ export async function fetchArticles(keyword: string, client: "guest" | "auth") {
         {
           filter: {
             or: [
-              { title: { contains: keyword } },
+              { lowerCaseTitle: { contains: keyword } },
               {
                 category: { contains: keyword },
                 description: { contains: keyword },
@@ -907,7 +907,7 @@ export async function fetchHighlights(
     const result = await cookiesClient.models.Highlight.list({
       filter: {
         or: [
-          { title: { contains: keyword } },
+          { lowerCaseTitle: { contains: keyword } },
           { videoId: { contains: keyword } },
         ],
       },

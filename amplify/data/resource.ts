@@ -308,6 +308,7 @@ const schema = a.schema({
       articleCategoryId: a.id(),
       category: a.string().required(),
       title: a.string().required(),
+      lowerCaseTitle: a.string(),
       coverImage: a.string(),
       description: a.string(),
       content: a.json(),
@@ -330,6 +331,7 @@ const schema = a.schema({
   Highlight: a
     .model({
       title: a.string().required(),
+      lowerCaseTitle: a.string(),
       coverImage: a.string().required(),
       videoId: a.string().required(),
       description: a.json(),

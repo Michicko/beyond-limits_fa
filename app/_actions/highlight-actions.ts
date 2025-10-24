@@ -56,7 +56,8 @@ export const createHighlight = async (
     {
       ...highlightFormData,
       id: undefined,
-      title: highlightFormData.title.toLowerCase(),
+      title: highlightFormData.title,
+      lowerCaseTitle: highlightFormData.title.toLowerCase(),
       tags: highlightFormData.tags,
       description: JSON.stringify(highlightFormData.description),
     },
@@ -96,7 +97,8 @@ export const updateHighlight = async (
     {
       ...highlightFormData,
       id: highlightFormData.id,
-      title: highlightFormData.title.toLowerCase(),
+      title: highlightFormData.title,
+      lowerCaseTitle: highlightFormData.title.toLowerCase(),
       tags: highlightFormData.tags,
       description: JSON.stringify(highlightFormData.description),
     },
