@@ -11,7 +11,7 @@ function Dropdown({
   setCurrentYear,
   size,
 }: {
-  years: number[];
+  years: string[];
   currentYear: number;
   noUrl?: boolean;
   setCurrentYear?: React.Dispatch<React.SetStateAction<number>>;

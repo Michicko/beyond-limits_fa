@@ -14,7 +14,7 @@ function Calendar({
   size,
 }: {
   slice?: number;
-  years: number[];
+  years: string[];
   currentYear?: number;
   noUrl?: boolean;
   currentIndex?: number;

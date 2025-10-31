@@ -1,6 +1,5 @@
 import Calendar from "@/components/main/Calendar/Calendar";
 import Grid from "@/components/main/Container/Grid";
-import Seasons from "@/components/main/Filters/Seasons";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
@@ -66,6 +65,7 @@ async function resultsFixtures({
       selectionSet: [
         "id",
         "season",
+        "status",
         "seasonStartMonth",
         "matches.*",
         "name",

@@ -345,6 +345,7 @@ export async function getCurrentCompetitionSeasonsMatches(
   client: "guest" | "auth"
 ) {
   const competitionSeasons = await getCurrentCompetitionSeasons(client);
+
   let matches: IMatch[] = [];
 
   for (const season of competitionSeasons) {
@@ -493,9 +494,12 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
         name: {
           contains: "nigerian national league",
         },
-        season: {
-          contains: `${year}`,
+        status: {
+          eq: "PENDING",
         },
+        // season: {
+        //   contains: `${year}`,
+        // },
       },
       authMode: client === "guest" ? "iam" : "userPool",
       selectionSet: [
@@ -505,6 +509,8 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
         "status",
         "logo",
         "type",
+        "competitionId",
+        "league.*",
         "league.standings.*",
       ],
     })
@@ -512,10 +518,18 @@ export async function getCurrentNnlStanding(client: "guest" | "auth") {
 
   if (currentNNlSeasons.length > 1) {
     const curr = currentNNlSeasons.find((el) => el.status === "PENDING");
-    return curr?.league.standings;
+    return {
+      standings: curr?.league.standings,
+      competitionId: curr?.competitionId,
+    };
   }
 
-  return currentNNlSeasons[0] ? currentNNlSeasons[0].league.standings : [];
+  return currentNNlSeasons[0]
+    ? {
+        standings: currentNNlSeasons[0].league.standings,
+        competitionId: currentNNlSeasons[0].competitionId,
+      }
+    : { standings: [], competitionId: null };
 }
 
 export async function fetchDashboardData() {
@@ -578,7 +592,7 @@ export async function fetchDashboardData() {
       { wins: 0, losses: 0, draws: 0 }
     );
 
-    const nnlStanding = await getCurrentNnlStanding("auth");
+    const { standings: nnlStanding } = await getCurrentNnlStanding("auth");
     const { upcomingMatch, lastMatch } = await getPrevNextMatch("auth");
 
     const upcomingCompetitionSeasonRounds = upcomingMatch
@@ -644,7 +658,7 @@ export async function fetchHomepageData() {
   try {
     const [
       { lastMatch, fixtures, matches },
-      nnlStanding,
+      nnl,
       articlesResponse,
       playersResponse,
       highlightsResponse,
@@ -711,7 +725,7 @@ export async function fetchHomepageData() {
 
     const homepageContent = {
       lastMatch,
-      nnlStanding,
+      nnl,
       articles: articlesResponse.data,
       players: playersResponse.data,
       fixtures: fixtures.slice(0, 4),

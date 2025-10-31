@@ -14,18 +14,19 @@ export const metadata = {
 
 async function Standing() {
   const auth = await isAuthenticated();
-  const nnlStanding = await getCurrentNnlStanding(auth ? "auth" : "guest");
+  const nnl = await getCurrentNnlStanding(auth ? "auth" : "guest");
+  const { standings } = nnl;
 
   return (
     <CompetitionsLayout pageTitle="Nigerian National League">
-      {!nnlStanding || (nnlStanding && nnlStanding.length < 1) ? (
+      {!standings || standings.length < 1 ? (
         <Text color="white" letterCase={"lower"} size="base" weight="regular">
           No Standing available at the moment.
         </Text>
       ) : (
         <StandingComp
           name={"NNL"}
-          standings={nnlStanding}
+          standings={standings}
           showFull={true}
           showLongName={true}
         />

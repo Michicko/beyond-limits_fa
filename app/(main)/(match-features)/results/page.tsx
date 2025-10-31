@@ -36,10 +36,9 @@ async function Results(props: {
         <Suspense fallback={null}>
           <Calendar
             years={[
-              currentYear - 2,
-              currentYear - 1,
-              currentYear,
-              currentYear + 1,
+              `${currentYear - 1}`,
+              `${currentYear}`,
+              `${currentYear + 1}`,
             ]}
           />
         </Suspense>

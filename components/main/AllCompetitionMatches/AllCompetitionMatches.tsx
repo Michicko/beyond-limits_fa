@@ -44,19 +44,16 @@ function AllCompetitionMatches({ matches }: { matches: IMatch[] }) {
   const date = new Date();
   const currentYear = date.getUTCFullYear();
   const currentMonth = date.getMonth();
-  const years = [
-    currentYear - 2,
-    currentYear - 1,
-    currentYear,
-    currentYear + 1,
-  ];
+  const years = [`${currentYear - 1}`, `${currentYear}`, `${currentYear + 1}`];
 
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
+
   const filteredMatches = matches.filter((match) => {
     const date = new Date(match.date);
     return date.getUTCFullYear() === year && date.getUTCMonth() === month;
   });
+
   const [showAllMatches, setShowAllMatches] = useState(false);
 
   return (

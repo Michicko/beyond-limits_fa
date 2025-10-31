@@ -4,7 +4,7 @@ import clsx from "clsx";
 import Card from "../Card/Card";
 import CardHeader from "../Card/CardHeader";
 import CardBody from "../Card/CardBody";
-import { IStandingRow } from "@/lib/definitions";
+import { IStandingRow, Nullable } from "@/lib/definitions";
 import StandingRow from "./StandingRow";
 import Link from "next/link";
 
@@ -13,11 +13,13 @@ function Standing({
   standings,
   showFull,
   showLongName,
+  competitionId,
 }: {
   name: string;
   standings: IStandingRow[];
   showFull: boolean;
   showLongName: boolean;
+  competitionId?: Nullable<string>;
 }) {
   const sortedStandings = standings.sort((a, b) => a.position - b.position);
 
@@ -49,7 +51,11 @@ function Standing({
       <Card theme="light">
         {!showFull ? (
           <Link
-            href="/standing"
+            href={
+              competitionId
+                ? `/competitions/${competitionId}/standing`
+                : "/standing"
+            }
             className={clsx(styles["standing-title"], styles["link"])}
           >
             {name} Standing

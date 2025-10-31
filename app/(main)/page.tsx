@@ -36,7 +36,10 @@ export default async function Home() {
     authMode: auth ? "userPool" : "iam",
     selectionSet: ["url"],
   });
+
   const images = data?.data ? data.data.map((el) => el.url) : [];
+  const { standings: nnlStandings, competitionId: nnlId } =
+    homepageContent?.nnl || {};
 
   return (
     <>
@@ -64,15 +67,15 @@ export default async function Home() {
                     )}
                 </>
               </Grid>
-              {homepageContent?.nnlStanding &&
-                homepageContent.nnlStanding.length > 0 && (
-                  <Standing
-                    name={"NNL"}
-                    showFull={false}
-                    standings={homepageContent.nnlStanding}
-                    showLongName={false}
-                  />
-                )}
+              {nnlStandings && nnlId && (
+                <Standing
+                  name={"NNL"}
+                  showFull={false}
+                  competitionId={nnlId}
+                  standings={nnlStandings}
+                  showLongName={false}
+                />
+              )}
             </div>
           </Container>
         )}

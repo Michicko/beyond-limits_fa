@@ -68,6 +68,7 @@ async function CompetitionStanding({
         "leagueId",
         "cupId",
         "name",
+        "status",
         "shortName",
         "type",
         "league.status",
@@ -82,6 +83,7 @@ async function CompetitionStanding({
   const currentSeason =
     competitionSeasons &&
     findCurrentSeason(competitionSeasons, new Date(), searchParam.season);
+
   let standing;
   let playoffs;
 

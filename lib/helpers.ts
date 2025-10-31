@@ -466,6 +466,7 @@ export const findCurrentSeason = (
 ) => {
   if (!competitionSeasons) return undefined;
 
+  // if season in search param
   if (selectedSeasonLabel) {
     return competitionSeasons.find(
       (season) => season.season === selectedSeasonLabel
@@ -477,16 +478,19 @@ export const findCurrentSeason = (
     return competitionSeasons[0];
   }
 
-  return competitionSeasons?.find((season) => {
-    const startMonthIndex = months.indexOf(season.seasonStartMonth); // assumes seasonStartMonth is a string
-    if (startMonthIndex === -1) return false;
+  return competitionSeasons.find((season) => season.status === "PENDING");
 
-    const expectedLabel = getExpectedSeasonLabel(
-      startMonthIndex,
-      referenceDate
-    );
-    return season.season === expectedLabel;
-  });
+  // return competitionSeasons?.find((season) => {
+  //   const startMonthIndex = months.indexOf(season.seasonStartMonth); // assumes seasonStartMonth is a string
+  //   if (startMonthIndex === -1) return false;
+
+  //   const expectedLabel = getExpectedSeasonLabel(
+  //     startMonthIndex,
+  //     referenceDate
+  //   );
+
+  //   return season.season === expectedLabel;
+  // });
 };
 
 export function filterGroupedSeasonsByCurrent(
