@@ -88,7 +88,7 @@ const schema = a.schema({
       competitionSeasonId: a.id(),
       CompetitionSeason: a.belongsTo(
         "CompetitionSeason",
-        "competitionSeasonId"
+        "competitionSeasonId",
       ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
@@ -156,7 +156,7 @@ const schema = a.schema({
       competitionSeasonId: a.id(),
       CompetitionSeason: a.belongsTo(
         "CompetitionSeason",
-        "competitionSeasonId"
+        "competitionSeasonId",
       ),
       competitionNameSeason: a.string().required(),
       status: a.ref("CompetitionStatus"),
@@ -189,7 +189,7 @@ const schema = a.schema({
       competitionSeasonId: a.id(),
       competitionSeason: a.belongsTo(
         "CompetitionSeason",
-        "competitionSeasonId"
+        "competitionSeasonId",
       ),
       date: a.date().required(),
       time: a.time().required(),
@@ -431,9 +431,9 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: "apiKey",
-    apiKeyAuthorizationMode: {
-      expiresInDays: 30,
-    },
+    defaultAuthorizationMode: "userPool",
+    // apiKeyAuthorizationMode: {
+    //   expiresInDays: 30,
+    // },
   },
 });
