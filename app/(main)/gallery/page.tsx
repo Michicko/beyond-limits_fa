@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Text from "@/components/main/Typography/Text";
 import GalleryClient from "@/components/main/NewsClient/GalleryClient";
+import Album from "@/components/main/Gallery/Album";
 
 export const metadata = {
   title: "Gallery",
@@ -11,27 +12,50 @@ export const metadata = {
 };
 
 async function Gallery() {
-  const limit = 15;
-  const token = "";
-  const auth = await isAuthenticated();
+  // const limit = 15;
+  // const token = "";
+  // const auth = await isAuthenticated();
 
-  const {
-    data: visualsData,
-    errors,
-    nextToken,
-  } = await cookiesClient.models.Visual.list({
-    authMode: auth ? "userPool" : "iam",
-    selectionSet: ["id", "url", "alt", "createdAt"],
-    limit,
-    nextToken: token,
-    sortDirection: "DESC",
-  });
+  // const {
+  //   data: visualsData,
+  //   errors,
+  //   nextToken,
+  // } = await cookiesClient.models.Visual.list({
+  //   authMode: auth ? "userPool" : "iam",
+  //   selectionSet: ["id", "url", "alt", "createdAt"],
+  //   limit,
+  //   nextToken: token,
+  //   sortDirection: "DESC",
+  // });
 
-  const visuals = visualsData ?? [];
+  // const visuals = visualsData ?? [];
+
+  const albums = [
+    {
+      id: 1,
+      coverImage: "academy-news.JPG",
+      title: "NNL 2024 campaign",
+    },
+    {
+      id: 2,
+      coverImage: "academy-news.JPG",
+      title: "TCC 2024 campaign",
+    },
+    {
+      id: 3,
+      coverImage: "academy-news.JPG",
+      title: "TCCL 2024 campaign",
+    },
+    {
+      id: 4,
+      coverImage: "academy-news.JPG",
+      title: "Viareggio cup 2024 campaign",
+    },
+  ];
 
   return (
     <div className={clsx(styles["main-container"])}>
-      {errors ? (
+      {/* {errors ? (
         <Text color="white" letterCase={"lower"} size="base" weight="regular">
           {`Something went wrong, ${errors[0].message}`}
         </Text>
@@ -48,7 +72,12 @@ async function Gallery() {
             initialNextToken={nextToken}
           />
         )
-      )}
+      )} */}
+      <div className={clsx(styles.albums)}>
+        {albums.map((album) => {
+          return <Album album={album} key={album.id} />;
+        })}
+      </div>
     </div>
   );
 }
