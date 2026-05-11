@@ -31,11 +31,11 @@ async function Gallery() {
   // const visuals = visualsData ?? [];
 
   const albums = [
-    // {
-    //   id: 1,
-    //   coverImage: "academy-news.JPG",
-    //   title: "NNL 2024 campaign",
-    // },
+    {
+      id: 1,
+      coverImage: "academy-news.JPG",
+      title: "NNL 2024 campaign",
+    },
     // {
     //   id: 2,
     //   coverImage: "academy-news.JPG",
