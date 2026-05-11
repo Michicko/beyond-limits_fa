@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import { cookies } from "next/headers";
 import Container from "@/components/main/Container/Container";
 import Flex from "@/components/main/Container/Flex";
 import Grid from "@/components/main/Container/Grid";
@@ -14,19 +14,20 @@ import MatchCard from "@/components/main/MatchCard/MatchCard";
 import { sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import loadDynamic from "next/dynamic";
+import { image } from "@/components/imageHelper";
 
 const PlayerList = loadDynamic(
-  () => import("@/components/main/Player/PlayerList")
+  () => import("@/components/main/Player/PlayerList"),
 );
 
 const ArticleList = loadDynamic(
-  () => import("@/components/Article/ArticleList")
+  () => import("@/components/Article/ArticleList"),
 );
 const AllCompetitionMatches = loadDynamic(
-  () => import("@/components/main/AllCompetitionMatches/AllCompetitionMatches")
+  () => import("@/components/main/AllCompetitionMatches/AllCompetitionMatches"),
 );
 const VideoCards = loadDynamic(
-  () => import("@/components/main/VideoCard/VideoCards")
+  () => import("@/components/main/VideoCard/VideoCards"),
 );
 
 export default async function Home() {
@@ -38,6 +39,15 @@ export default async function Home() {
   });
 
   const images = data?.data ? data.data.map((el) => el.url) : [];
+
+  // const images = data?.data
+  //   ? data.data.map((el) => {
+  //       console.log(el);
+  //       const file = el.url.split("beyondlimitsfa")[1];
+  //       return image(`images${file}`);
+  //     })
+  //   : [];
+
   const { standings: nnlStandings, competitionId: nnlId } =
     homepageContent?.nnl || {};
 
