@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRole } from "@/utils/amplify-utils";
-import { isInAuthorizedGroup } from "./lib/helpers";
-import { months } from "./lib/placeholder-data";
+import { isInAuthorizedGroup, months } from "./lib/helpers";
 
 const unAuthenticatedRoutes = [
   "/login",
@@ -36,7 +35,7 @@ export async function middleware(request: NextRequest) {
   const isCpRoute = request.nextUrl.pathname.startsWith("/cp");
 
   const isUnAuthenticatedRoute = unAuthenticatedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
+    request.nextUrl.pathname.startsWith(route),
   );
 
   const isProtectedRoute = isCpRoute && !isUnAuthenticatedRoute;

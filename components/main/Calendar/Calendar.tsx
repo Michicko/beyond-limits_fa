@@ -1,7 +1,7 @@
 import React from "react";
 import FilterBtns from "../Filters/FilterBtns";
-import { months } from "@/lib/placeholder-data";
 import Dropdown from "../Filters/Dropdown";
+import { months } from "@/lib/helpers";
 
 function Calendar({
   slice,

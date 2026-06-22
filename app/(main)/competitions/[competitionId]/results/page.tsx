@@ -7,8 +7,8 @@ import {
   capitalize,
   findCurrentSeason,
   getMatchesByDateRange,
+  months,
 } from "@/lib/helpers";
-import { months } from "@/lib/placeholder-data";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
@@ -94,7 +94,7 @@ async function CompetitionResults({
       currentSeason?.matches,
       "COMPLETED",
       startDate,
-      endDate
+      endDate,
     );
   }
 

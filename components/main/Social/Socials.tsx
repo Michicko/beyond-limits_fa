@@ -1,5 +1,5 @@
+import { socials } from "@/lib/helpers";
 import Social from "./Social";
-import { socials } from "@/lib/placeholder-data";
 import styles from "./socials.module.css";
 
 const Socials = () => {

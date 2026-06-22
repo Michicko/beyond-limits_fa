@@ -4,8 +4,7 @@ import Flex from "@/components/main/Container/Flex";
 import CompetitionsLayout from "@/components/main/Layouts/CompetitionsLayout/CompetitionsLayout";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
 import Text from "@/components/main/Typography/Text";
-import { sortMatchesByStatusAndDate } from "@/lib/helpers";
-import { months } from "@/lib/placeholder-data";
+import { months, sortMatchesByStatusAndDate } from "@/lib/helpers";
 import { isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 
@@ -26,7 +25,7 @@ async function resultsFixtures(props: {
 
   const { results, fixtures } = await getCurrentSeasonMatches(
     auth ? "auth" : "guest",
-    monthParam
+    monthParam,
   );
 
   const matches = [...results, ...fixtures].sort((a, b) => {

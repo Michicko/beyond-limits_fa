@@ -2,15 +2,15 @@ import { Button, Field, HStack, Input, Steps, Text } from "@chakra-ui/react";
 import React from "react";
 import CompetitionSeasonCard from "./CompetitionSeasonCard";
 import FormLabel from "../Forms/FormLabel";
-import { months } from "@/lib/placeholder-data";
 import CustomSelect from "../CustomSelect/CustomSelect";
+import { months } from "@/lib/helpers";
 
 function CompetitionSeasonSelector({
   goToNextStep,
   season,
   setSeason,
   seasonStartMonth,
-  setSeasonStartMonth
+  setSeasonStartMonth,
 }: {
   goToNextStep: () => void;
   season: string;
@@ -31,15 +31,15 @@ function CompetitionSeasonSelector({
               selectedValue={seasonStartMonth}
               options={months.map((month) => {
                 return {
-                  label:month,
+                  label: month,
                   value: month,
                 };
               })}
               handleOnChange={(e) => {
                 setSeasonStartMonth(e.target.value);
               }}
-            id={"month"}
-          />
+              id={"month"}
+            />
           </Field.Root>
           <Field.Root required>
             <FormLabel>Season</FormLabel>

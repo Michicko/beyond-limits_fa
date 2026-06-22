@@ -1,6 +1,5 @@
 import moment from "moment";
 import { Nullable } from "./definitions";
-import { months } from "./placeholder-data";
 
 interface IPlayer {
   id: string;
@@ -69,9 +68,24 @@ interface IMatch {
   review: string | number | boolean | object | any[] | null;
 }
 
+export const months = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+
 export const getObjectValue = <T extends Object>(
   obj: T,
-  key: string | number | symbol
+  key: string | number | symbol,
 ) => {
   return obj[key as keyof typeof obj];
 };
@@ -88,14 +102,14 @@ export const getDefaultSeason = (seasons: { id: string; season: string }[]) => {
   const date = new Date();
   const currentYear = date.getFullYear();
   const defaultSeason = seasons.find((el) =>
-    el.season.includes(String(currentYear))
+    el.season.includes(String(currentYear)),
   )?.season;
   return defaultSeason || currentYear - 1 + "/" + currentYear;
 };
 
 export const isInAuthorizedGroup = (
   userGroups: any,
-  authorizedGroups: string[]
+  authorizedGroups: string[],
 ) => {
   if (!userGroups || !authorizedGroups) return;
   const includesAny = (arr: any, values: string[]) =>
@@ -106,7 +120,7 @@ export const isInAuthorizedGroup = (
 export const getButtonStatus = (
   entity: any,
   entityName: string,
-  isPending: boolean
+  isPending: boolean,
 ) => {
   return entity
     ? `${isPending ? `Updating ${entityName}` : `Update ${entityName}`}`
@@ -168,7 +182,7 @@ type SortableObject = { [key: string]: any };
 
 export const sortArray = <T extends SortableObject>(
   array: T[],
-  key: keyof T
+  key: keyof T,
 ): T[] => {
   return array.sort((a, b) => {
     // Check if the key exists in both objects
@@ -199,7 +213,7 @@ export const objectToFormData = (obj: Record<string, any>): FormData => {
 
 export function updateFormDataWithJSON(
   formData: FormData,
-  data: Record<string, any>
+  data: Record<string, any>,
 ) {
   const keys = [
     "review",
@@ -221,7 +235,7 @@ export function updateFormDataWithJSON(
 export const getMatches = (
   matches: IMatch[],
   status: "UPCOMING" | "COMPLETED",
-  param?: string
+  param?: string,
 ) => {
   return matches
     .filter((el) => {
@@ -247,20 +261,20 @@ export const getFixturesResults = (
   matches: IMatch[],
   statuses: ("UPCOMING" | "COMPLETED")[] = ["UPCOMING", "COMPLETED"],
   monthParam?: string,
-  yearParam?: number
+  yearParam?: number,
 ) => {
   return sortMatchesByStatusAndDate(
     matches.filter((el) => {
       const date = new Date(el.date);
       const matchStatus = statuses.includes(
-        el.status as "UPCOMING" | "COMPLETED"
+        el.status as "UPCOMING" | "COMPLETED",
       );
       const matchMonth = monthParam
         ? months.indexOf(monthParam) === date.getUTCMonth()
         : true;
       const matchYear = yearParam ? date.getUTCFullYear() === yearParam : true;
       return matchStatus && matchMonth && matchYear;
-    })
+    }),
   );
 };
 
@@ -268,7 +282,7 @@ export const getMatchesByDateRange = (
   matches: IMatch[],
   status: "UPCOMING" | "COMPLETED",
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) => {
   return matches.filter((el) => {
     const date = new Date(el.date);
@@ -277,7 +291,7 @@ export const getMatchesByDateRange = (
 };
 
 export function formDataToObject<T = Record<string, any>>(
-  formData: FormData
+  formData: FormData,
 ): T {
   const obj: Record<string, any> = {};
 
@@ -291,7 +305,7 @@ export function formDataToObject<T = Record<string, any>>(
 export function clientPaginate<T>(
   items: T[],
   currentPage: number,
-  limit: number
+  limit: number,
 ) {
   const start = (currentPage - 1) * limit;
   const end = start + limit;
@@ -329,7 +343,7 @@ export const groupPlayersByPositions = (players: IPlayer[]) => {
     const pos = position_rows.find(
       (role) =>
         role.position.replace(/\s+/g, "").toLowerCase() ===
-        player.playerPosition.longName.replace(/\s+/g, "").toLowerCase()
+        player.playerPosition.longName.replace(/\s+/g, "").toLowerCase(),
     );
 
     if (player.playerPosition) {
@@ -395,7 +409,7 @@ export const getHonorsStats = (honors: Honor[]) => {
     {
       numbersWon: 0,
       seasonsWon: [] as string[],
-    }
+    },
   );
 };
 
@@ -436,7 +450,7 @@ export const getCloudinaryFilename = (url: string): string | null => {
 };
 
 export function sortByCreatedAt<T extends { createdAt: string | Date | null }>(
-  list: T[]
+  list: T[],
 ): T[] {
   return [...list].sort((a, b) => {
     const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -447,7 +461,7 @@ export function sortByCreatedAt<T extends { createdAt: string | Date | null }>(
 
 export const getExpectedSeasonLabel = (
   seasonStartMonth: number,
-  date: Date = new Date()
+  date: Date = new Date(),
 ): string => {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -462,14 +476,14 @@ export const getExpectedSeasonLabel = (
 export const findCurrentSeason = (
   competitionSeasons: any[],
   referenceDate: Date = new Date(),
-  selectedSeasonLabel?: string
+  selectedSeasonLabel?: string,
 ) => {
   if (!competitionSeasons) return undefined;
 
   // if season in search param
   if (selectedSeasonLabel) {
     return competitionSeasons.find(
-      (season) => season.season === selectedSeasonLabel
+      (season) => season.season === selectedSeasonLabel,
     );
   }
 
@@ -494,7 +508,7 @@ export const findCurrentSeason = (
 };
 
 export function filterGroupedSeasonsByCurrent(
-  competitionSeasons: any[]
+  competitionSeasons: any[],
 ): any[] {
   if (!competitionSeasons || competitionSeasons.length === 0) return [];
 
@@ -538,3 +552,30 @@ export const sortCompetitions = (competitions: ICompetition[]) =>
     }
     return 0;
   });
+
+export const socials = [
+  {
+    id: 21,
+    link: "https://x.com/beyond_limitsfa?s=11&t=a_AA_bkBcHWDpD2WBldopQ",
+    icon: "/images/pajamas_twitter.svg",
+    name: "Twitter",
+  },
+  {
+    id: 22,
+    link: "https://www.instagram.com/beyondlimits_fa?igsh=MXdiM3gwaTBkNGd5Yg==",
+    icon: "/images/bi_instagram.svg",
+    name: "Twitter",
+  },
+  {
+    id: 23,
+    link: "https://x.com/beyond_limitsfa?s=11&t=a_AA_bkBcHWDpD2WBldopQ",
+    icon: "/images/ph_tiktok-logo.svg",
+    name: "Tiktok",
+  },
+  {
+    id: 24,
+    link: "https://youtube.com/@beyondlimitsfootballacadem7276?si=UrDiLOAy9c6j8jDM",
+    icon: "/images/ant-design_youtube-outlined.svg",
+    name: "Youtube",
+  },
+];

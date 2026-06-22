@@ -5,8 +5,8 @@ import { isAuthenticated } from "@/utils/amplify-utils";
 import React, { Suspense } from "react";
 import Text from "@/components/main/Typography/Text";
 import MatchCard from "@/components/main/MatchCard/MatchCard";
-import { months } from "@/lib/placeholder-data";
 import { getCurrentSeasonMatches } from "@/app/_actions/actions";
+import { months } from "@/lib/helpers";
 
 export const metadata = {
   title: "Fixtures & Results",
@@ -27,7 +27,7 @@ async function Results(props: {
 
   const { results } = await getCurrentSeasonMatches(
     auth ? "auth" : "guest",
-    monthParam
+    monthParam,
   );
 
   return (
