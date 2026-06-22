@@ -1,5 +1,5 @@
 export function image(path?: string) {
-  if (!path) return "/placeholder.png";
+  if (!path) return "/images/beyondimitslogo.png";
 
   // already full URL (Cloudinary or external)
   if (path.startsWith("http")) {
@@ -8,7 +8,7 @@ export function image(path?: string) {
 
       return fileName
         ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/images/${fileName}`
-        : "/placeholder.png";
+        : "/images/beyondimitslogo.png";
     }
 
     return path;
