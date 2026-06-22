@@ -2,6 +2,7 @@ import { Box, Field, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import CheckBox from "../CheckBox/CheckBox";
 import { Nullable } from "@/lib/definitions";
+import { image } from "@/components/imageHelper";
 
 interface IPlayer {
   id: string;
@@ -33,7 +34,7 @@ function PlayersLineup({
   onCheckedChange: (
     playerId: string,
     selectedPlayers: Nullable<string>[],
-    field: "lineup" | "substitutes"
+    field: "lineup" | "substitutes",
   ) => void;
   field: "lineup" | "substitutes";
 }) {
@@ -71,7 +72,11 @@ function PlayersLineup({
                 </Field.Root>
               )}
               {player.homeKit && (
-                <Image src={player.homeKit} width={"25px"} height={"25px"} />
+                <Image
+                  src={image(player.homeKit)}
+                  width={"25px"}
+                  height={"25px"}
+                />
               )}
               <Text whiteSpace={"nowrap"} textTransform={"capitalize"}>
                 <Box

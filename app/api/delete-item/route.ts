@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
         message: "Deletion failed",
         error: (error as Error).message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

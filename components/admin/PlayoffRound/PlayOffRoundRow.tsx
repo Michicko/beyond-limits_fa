@@ -6,6 +6,7 @@ import { Nullable } from "@/lib/definitions";
 import useToast from "@/hooks/useToast";
 import { updatePlayOff } from "@/app/_actions/actions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { image } from "@/components/imageHelper";
 
 interface IMatch {
   id: string;
@@ -84,7 +85,7 @@ function PlayOffRoundRow({
             <>
               <HStack alignItems={"center"} gap={"2"}>
                 <Image
-                  src={round.match.homeTeam.logo}
+                  src={image(round.match.homeTeam.logo)}
                   boxSize="30px"
                   borderRadius="full"
                   fit="cover"
@@ -98,7 +99,7 @@ function PlayOffRoundRow({
               <Text fontWeight={"700"}>VS</Text>
               <HStack alignItems={"center"} gap={"2"}>
                 <Image
-                  src={round.match.awayTeam.logo}
+                  src={image(round.match.awayTeam.logo)}
                   boxSize="30px"
                   borderRadius="full"
                   fit="cover"

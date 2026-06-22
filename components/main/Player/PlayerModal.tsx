@@ -3,27 +3,23 @@ import React from "react";
 import styles from "./Player.module.css";
 import clsx from "clsx";
 import PlayerInfo from "./PlayerInfo";
-import { CldImage } from "next-cloudinary";
+import ImageComp from "@/components/ImageComp/ImageComp";
 
 function PlayerModal({ player }: { player: IPlayer }) {
   return (
     <div className={clsx(styles["player-modal__box"])}>
       <div className={clsx(styles["player-kit"])}>
         {player.homeKit && (
-          <CldImage
-            fill
-            src={player.homeKit}
-            // removeBackground
-            sizes="(max-width: 768px) 100vw, 33vw"
+          <ImageComp
+            image={player.homeKit}
+            priority={false}
             alt={`${player.firstname} ${player.lastname}`}
           />
         )}
         {player.awayKit && (
-          <CldImage
-            fill
-            src={player.awayKit}
-            // removeBackground
-            sizes="(max-width: 768px) 100vw, 33vw"
+          <ImageComp
+            image={player.awayKit}
+            priority={false}
             alt={`${player.firstname} ${player.lastname}`}
           />
         )}

@@ -4,6 +4,7 @@ import { Box, Field, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import FormLabel from "./FormLabel";
 import { Schema } from "@/amplify/data/resource";
+import { image } from "@/components/imageHelper";
 
 interface IPlayer {
   id: string;
@@ -12,8 +13,8 @@ interface IPlayer {
   squadNo: Nullable<number>;
   homeKit: Nullable<string>;
   playerPosition: {
-    shortName: string
-  }
+    shortName: string;
+  };
 }
 
 type IMatchI = Pick<
@@ -48,11 +49,13 @@ function Substitutes({
 }) {
   return (
     <Box>
-      <HStack justifyContent={'space-between'} alignItems={'center'}>
+      <HStack justifyContent={"space-between"} alignItems={"center"}>
         <FormLabel as="Text">Substitutes</FormLabel>
-        <FormLabel as="Text">{matchForm?.substitutes?.length ?? 0} Selected</FormLabel>
+        <FormLabel as="Text">
+          {matchForm?.substitutes?.length ?? 0} Selected
+        </FormLabel>
       </HStack>
-      
+
       <Flex flexWrap={"wrap"} gap={"4"} alignItems={"center"}>
         {players.map((player) => {
           return (
@@ -63,7 +66,7 @@ function Substitutes({
               bg={"card_bg"}
               p={"2"}
               borderRadius={"xs"}
-              maxH={'40px'}
+              maxH={"40px"}
             >
               {matchForm.substitutes && (
                 <Field.Root>
@@ -78,11 +81,11 @@ function Substitutes({
                         : [];
                       let substitutes = subs;
                       const currPlayer = substitutes.find(
-                        (el) => el === player.id
+                        (el) => el === player.id,
                       );
                       if (currPlayer) {
                         substitutes = substitutes.filter(
-                          (el) => el !== currPlayer
+                          (el) => el !== currPlayer,
                         );
                       } else {
                         substitutes = [...substitutes, player.id];
@@ -96,9 +99,12 @@ function Substitutes({
                   />
                 </Field.Root>
               )}
-              {player.homeKit && <Image src={player.homeKit} width={"25px"} />}
+              {player.homeKit && (
+                <Image src={image(player.homeKit)} width={"25px"} />
+              )}
               <Text whiteSpace={"nowrap"}>
-                {player.playerPosition.shortName}. {player.squadNo}. {player.firstname} {player.lastname}
+                {player.playerPosition.shortName}. {player.squadNo}.{" "}
+                {player.firstname} {player.lastname}
               </Text>
             </Flex>
           );

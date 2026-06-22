@@ -2,9 +2,9 @@
 import { IPlayer } from "@/lib/definitions";
 import clsx from "clsx";
 import styles from "./Player.module.css";
-import { CldImage } from "next-cloudinary";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import ImageComp from "@/components/ImageComp/ImageComp";
 
 const Player = ({
   player,
@@ -26,10 +26,9 @@ const Player = ({
     >
       <div className={clsx(styles["player__img-box"])}>
         {player.homeKit && (
-          <CldImage
-            fill
-            src={player.homeKit}
-            sizes="(max-width: 768px) 100vw, 33vw"
+          <ImageComp
+            image={player.homeKit}
+            priority={true}
             alt={player.firstname}
           />
         )}

@@ -6,13 +6,14 @@ import ArticleCategory from "./ArticleCategory";
 import Link from "next/link";
 import ImageComp from "@/components/ImageComp/ImageComp";
 import { formatDate } from "@/lib/helpers";
+import { image } from "../imageHelper";
 
 const Article = ({ article }: { article: IHomeArticle }) => {
   const bg = `linear-gradient(
     to top,
     rgba(4, 48, 91, 0.75),
     rgba(64, 84, 102, 0.02)
-  ), url(${article.coverImage})`;
+  ), url(${article.coverImage ? image(article.coverImage) : ""})`;
 
   const cardStyles =
     article.matchId && article.category.toUpperCase() === "MATCH PREVIEW"
@@ -20,15 +21,15 @@ const Article = ({ article }: { article: IHomeArticle }) => {
           background: "#30353B",
         }
       : article.matchId && article.category.toUpperCase() === "MATCH REPORT"
-      ? {
-          background: "#01305b",
-        }
-      : {
-          background: bg,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        };
+        ? {
+            background: "#01305b",
+          }
+        : {
+            background: bg,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          };
 
   const selected_categories = ["match preview", "match report"];
 

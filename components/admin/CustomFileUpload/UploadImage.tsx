@@ -4,6 +4,7 @@ import FormLabel from "../Forms/FormLabel";
 import CustomFileUpload from "./CustomFileUpload";
 import { getIcon } from "@/lib/icons";
 import RequiredLabel from "../Forms/RequiredLabel";
+import { image as imageHelp } from "@/components/imageHelper";
 
 function UploadImage({
   image,
@@ -33,7 +34,12 @@ function UploadImage({
       </FormLabel>
       {image && (
         <HStack gap={4} position={"relative"}>
-          <Image src={image} width={imageSize} height={imageSize} alt={label} />
+          <Image
+            src={imageHelp(image)}
+            width={imageSize}
+            height={imageSize}
+            alt={label}
+          />
           <IconButton
             position={"absolute"}
             top={"10px"}

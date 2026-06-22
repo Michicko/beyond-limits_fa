@@ -20,15 +20,22 @@ import { createTeam, updateTeam } from "@/app/_actions/team-actions";
 import { getIcon } from "@/lib/icons";
 import FormContainer from "./FormContainer";
 import RequiredLabel from "./RequiredLabel";
+import { image } from "@/components/imageHelper";
 
 type ITeam = Pick<
   Schema["Team"]["type"],
   "id" | "logo" | "shortName" | "longName" | "stadium" | "isBeyondLimits"
 >;
 
-function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLimitsExists?: boolean }) {
+function TeamForm({
+  team,
+  beyondLimitsExists,
+}: {
+  team?: ITeam | null;
+  beyondLimitsExists?: boolean;
+}) {
   const [isBeyondLimits, setIsBeyondLimits] = useState<boolean>(
-    team?.isBeyondLimits || false
+    team?.isBeyondLimits || false,
   );
   const [shortName, setShortName] = useState(team?.shortName || "");
   const [logo, setLogo] = useState(team?.logo || "");
@@ -74,119 +81,130 @@ function TeamForm({ team, beyondLimitsExists }: { team?: ITeam | null; beyondLim
   };
 
   return (
-   <FormContainer>
-     <form onSubmit={handleSubmit} ref={formRef}>
-      <Stack gap="4">
-        <Field.Root required>
-          <FormLabel>short name <RequiredLabel /></FormLabel>
-          <Input
-            name={"shortName"}
-            type={"text"}
-            placeholder="Enter Short name"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            defaultValue={shortName}
-            onChange={(e) => setShortName(e.target.value)}
-          />
-          <Field.HelperText
-            fontSize={"sm"}
-            fontWeight={"normal"}
-            color={"text_md"}
-          >
-            Enter short name e.g BLFA
-          </Field.HelperText>
-        </Field.Root>
-        <Field.Root required>
-          <FormLabel>long name <RequiredLabel /></FormLabel>
-          <Input
-            name={"longName"}
-            type={"text"}
-            placeholder="Enter long name"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            defaultValue={team?.longName || ""}
-          />
-          <Field.HelperText
-            fontSize={"sm"}
-            fontWeight={"normal"}
-            color={"text_md"}
-          >
-            Enter long name e.g Beyond Limits Fa
-          </Field.HelperText>
-        </Field.Root>
-        <Field.Root>
-          <FormLabel>stadium</FormLabel>
-          <Input
-            name={"stadium"}
-            type={"text"}
-            placeholder="Enter stadium"
-            px={"2"}
-            color={"text_lg"}
-            fontSize={"sm"}
-            fontWeight={"medium"}
-            mb={"5px"}
-            defaultValue={team?.stadium || ""}
-          />
-          <Field.HelperText
-            fontSize={"sm"}
-            fontWeight={"normal"}
-            color={"text_md"}
-          >
-            Enter stadium e.g Remo stars stadium
-          </Field.HelperText>
-        </Field.Root>
-        <Field.Root required>
-          <FormLabel>Team Logo <RequiredLabel /></FormLabel>
-          {logo && (
-            <HStack gap={4} position={"relative"}>
-              <Image src={logo} width="75" height="75" alt={shortName} />
-              <IconButton
-                size={"2xs"}
-                title="delete"
-                colorPalette={"red"}
-                onClick={() => setLogo("")}
-                position={"absolute"}
-                top={"10px"}
-                right={"10px"}
-              >
-                {getIcon("close")}
-              </IconButton>
-            </HStack>
-          )}
-          {!logo && shortName && (
-            <CustomFileUpload
-              description="team logo"
-              onUploaded={(res: any) => {
-                setLogo(res.secure_url);
-              }}
-              id="team-logo"
-              filename={slugify(shortName, { lower: true })}
+    <FormContainer>
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <Stack gap="4">
+          <Field.Root required>
+            <FormLabel>
+              short name <RequiredLabel />
+            </FormLabel>
+            <Input
+              name={"shortName"}
+              type={"text"}
+              placeholder="Enter Short name"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              defaultValue={shortName}
+              onChange={(e) => setShortName(e.target.value)}
             />
-          )}
-        </Field.Root>
-        <CheckBox
-          checked={isBeyondLimits}
-          name="isBeyondLimits"
-          size="xs"
-          label="Is BeyonLimits Fa"
-          disabled={beyondLimitsExists}
-          onCheckedChange={(e) => {
-            setIsBeyondLimits(e.checked);
-          }}
-          showLabel={true}
-        />
-        <FormBtn disabled={isPending}>
-          {getButtonStatus(team, "Team", isPending)}
-        </FormBtn>
-      </Stack>
-    </form>
-   </FormContainer>
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter short name e.g BLFA
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root required>
+            <FormLabel>
+              long name <RequiredLabel />
+            </FormLabel>
+            <Input
+              name={"longName"}
+              type={"text"}
+              placeholder="Enter long name"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              defaultValue={team?.longName || ""}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter long name e.g Beyond Limits Fa
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root>
+            <FormLabel>stadium</FormLabel>
+            <Input
+              name={"stadium"}
+              type={"text"}
+              placeholder="Enter stadium"
+              px={"2"}
+              color={"text_lg"}
+              fontSize={"sm"}
+              fontWeight={"medium"}
+              mb={"5px"}
+              defaultValue={team?.stadium || ""}
+            />
+            <Field.HelperText
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"text_md"}
+            >
+              Enter stadium e.g Remo stars stadium
+            </Field.HelperText>
+          </Field.Root>
+          <Field.Root required>
+            <FormLabel>
+              Team Logo <RequiredLabel />
+            </FormLabel>
+            {logo && (
+              <HStack gap={4} position={"relative"}>
+                <Image
+                  src={image(logo)}
+                  width="75"
+                  height="75"
+                  alt={shortName}
+                />
+                <IconButton
+                  size={"2xs"}
+                  title="delete"
+                  colorPalette={"red"}
+                  onClick={() => setLogo("")}
+                  position={"absolute"}
+                  top={"10px"}
+                  right={"10px"}
+                >
+                  {getIcon("close")}
+                </IconButton>
+              </HStack>
+            )}
+            {!logo && shortName && (
+              <CustomFileUpload
+                description="team logo"
+                onUploaded={(path: string) => {
+                  setLogo(path);
+                }}
+                id="team-logo"
+                filename={slugify(shortName, { lower: true })}
+              />
+            )}
+          </Field.Root>
+          <CheckBox
+            checked={isBeyondLimits}
+            name="isBeyondLimits"
+            size="xs"
+            label="Is BeyonLimits Fa"
+            disabled={beyondLimitsExists}
+            onCheckedChange={(e) => {
+              setIsBeyondLimits(e.checked);
+            }}
+            showLabel={true}
+          />
+          <FormBtn disabled={isPending}>
+            {getButtonStatus(team, "Team", isPending)}
+          </FormBtn>
+        </Stack>
+      </form>
+    </FormContainer>
   );
 }
 

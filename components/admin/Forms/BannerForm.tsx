@@ -13,8 +13,8 @@ function BannerForm() {
   const { mutationToast, errorToast } = useToast();
   const [isPending, startTransition] = useTransition();
 
-  const onUploaded = (res: any) => {
-    setUrl(res.secure_url);
+  const onUploaded = (path: string) => {
+    setUrl(path);
   };
 
   const resetForm = () => {

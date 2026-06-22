@@ -3,6 +3,7 @@ import { Box, Button, FileUpload, Icon } from "@chakra-ui/react";
 import React, { useState } from "react";
 import slugify from "slugify";
 import toast from "react-hot-toast";
+import { uploadData } from "aws-amplify/storage";
 
 function CustomFileUpload({
   description,
@@ -20,56 +21,51 @@ function CustomFileUpload({
   const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    const bucketName = process.env.NEXT_PUBLIC_BUCKET_NAME;
+    const region = process.env.NEXT_PUBLIC_REGION;
+
     if (isUploading) return;
     if (!event.target.files || event.target.files.length === 0) return;
-    setIsUploading(true);
+    if (!bucketName || !region) return;
+
     const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
+
+    if (!file) return;
+
+    const ext = file.name.split(".").pop();
+    const key = `images/${slugify(filename, {
+      lower: true,
+    })}.${ext}`;
+
+    setIsUploading(true);
 
     try {
-      const result = await fetch("/api/image-upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          public_id: slugify(filename, { lower: true }),
-        }),
-      });
-
-      const res = await result.json();
-      if (!res) throw new Error("Failed to get upload signature");
-
-      formData.append("api_key", res.API_KEY);
-      formData.append("timestamp", res.timestamp);
-      formData.append("signature", res.signature);
-      formData.append("folder", "beyondlimitsfa");
-      formData.append("public_id", slugify(filename, { lower: true }));
-
-      const url = `https://api.cloudinary.com/v1_1/${res.CLOUD_NAME}/auto/upload`;
-
       await toast
         .promise(
-          fetch(url, { method: "POST", body: formData }).then(async (res) => {
-            const data = await res.json();
-            if (!res.ok)
-              throw new Error(data.error?.message || "Upload failed");
-            return data;
-          }),
+          uploadData({
+            path: key,
+            data: file,
+            options: {
+              contentType: file.type,
+              bucket: {
+                bucketName,
+                region,
+              },
+            },
+          }).result,
           {
             loading: `Uploading ${filename}...`,
             success: `${filename} uploaded successfully!`,
             error: (err) => err.message || "Upload failed",
-          }
+          },
         )
-        .then((data) => {
-          setIsUploading(false);
-          onUploaded(data);
+        .then((result) => {
+          onUploaded(result.path);
         });
     } catch (error) {
       setIsUploading(false);
-
       toast.error((error as Error).message || "Something went wrong");
     } finally {
       setIsUploading(false);

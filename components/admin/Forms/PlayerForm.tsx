@@ -23,6 +23,7 @@ import { Schema } from "@/amplify/data/resource";
 import { getIcon } from "@/lib/icons";
 import FormContainer from "./FormContainer";
 import RequiredLabel from "./RequiredLabel";
+import { image } from "@/components/imageHelper";
 
 function PlayerForm({
   player,
@@ -86,7 +87,7 @@ function PlayerForm({
           mutationToast(
             "player",
             `${res.data.firstname} ${res.data.lastname}`,
-            "update"
+            "update",
           );
         }
         if (res.status === "error") {
@@ -101,7 +102,7 @@ function PlayerForm({
           mutationToast(
             "player",
             `${res.data.firstname} ${res.data.lastname}`,
-            "create"
+            "create",
           );
           formRef.current?.reset();
           setTempData({
@@ -128,7 +129,9 @@ function PlayerForm({
       <form onSubmit={handleSubmit} ref={formRef}>
         <Stack gap="4">
           <Field.Root required>
-            <FormLabel>Position <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Position <RequiredLabel />
+            </FormLabel>
             <CustomSelect
               options={positionOptions}
               name="playerPositionId"
@@ -138,7 +141,9 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>firstname <RequiredLabel /></FormLabel>
+            <FormLabel>
+              firstname <RequiredLabel />
+            </FormLabel>
             <Input
               name={"firstname"}
               type={"text"}
@@ -153,7 +158,9 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>lastname <RequiredLabel /></FormLabel>
+            <FormLabel>
+              lastname <RequiredLabel />
+            </FormLabel>
             <Input
               name={"lastname"}
               type={"text"}
@@ -180,7 +187,7 @@ function PlayerForm({
               {tempData.homeKit && (
                 <HStack gap={4} position={"relative"}>
                   <Image
-                    src={tempData.homeKit}
+                    src={image(tempData.homeKit)}
                     width="600"
                     height="600"
                     alt=""
@@ -207,10 +214,10 @@ function PlayerForm({
                     `${tempData.firstname} ${tempData.lastname} homekit`,
                     {
                       lower: true,
-                    }
+                    },
                   )}
-                  onUploaded={(res: any) => {
-                    setTempData({ ...tempData, homeKit: res.secure_url });
+                  onUploaded={(path: string) => {
+                    setTempData({ ...tempData, homeKit: path });
                   }}
                 />
               )}
@@ -220,7 +227,7 @@ function PlayerForm({
               {tempData.awayKit && (
                 <HStack gap={4} position={"relative"}>
                   <Image
-                    src={tempData.awayKit}
+                    src={image(tempData.awayKit)}
                     width="600"
                     height="600"
                     alt=""
@@ -247,17 +254,19 @@ function PlayerForm({
                     `${tempData.firstname} ${tempData.lastname} awaykit`,
                     {
                       lower: true,
-                    }
+                    },
                   )}
-                  onUploaded={(res: any) => {
-                    setTempData({ ...tempData, awayKit: res.secure_url });
+                  onUploaded={(path: string) => {
+                    setTempData({ ...tempData, awayKit: path });
                   }}
                 />
               )}
             </Field.Root>
           </SimpleGrid>
           <Field.Root required>
-            <FormLabel>Dob <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Dob <RequiredLabel />
+            </FormLabel>
             <Input
               name={"dob"}
               type={"date"}
@@ -277,7 +286,9 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>
-            <FormLabel>squad number <RequiredLabel /></FormLabel>
+            <FormLabel>
+              squad number <RequiredLabel />
+            </FormLabel>
             <Input
               name={"squadNo"}
               type={"number"}
@@ -298,7 +309,9 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Weight <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Weight <RequiredLabel />
+            </FormLabel>
             <Input
               name={"weight"}
               type={"number"}
@@ -320,7 +333,9 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Height <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Height <RequiredLabel />
+            </FormLabel>
             <Input
               name={"height"}
               type={"number"}
@@ -342,7 +357,9 @@ function PlayerForm({
             </Field.HelperText>
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Age Group <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Age Group <RequiredLabel />
+            </FormLabel>
             <CustomSelect
               options={ageGroups.map((el) => {
                 return {
@@ -357,7 +374,9 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Player status <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Player status <RequiredLabel />
+            </FormLabel>
             <CustomSelect
               options={statuses.map((el) => {
                 return {
@@ -372,7 +391,9 @@ function PlayerForm({
             />
           </Field.Root>
           <Field.Root required>
-            <FormLabel>Dominant Foot <RequiredLabel /></FormLabel>
+            <FormLabel>
+              Dominant Foot <RequiredLabel />
+            </FormLabel>
             <CustomSelect
               options={dominantFoots.map((el) => {
                 return {

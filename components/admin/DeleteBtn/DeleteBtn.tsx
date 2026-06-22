@@ -4,6 +4,7 @@ import { Nullable } from "@/lib/definitions";
 import { getIcon } from "@/lib/icons";
 import { Button, IconButton, Menu } from "@chakra-ui/react";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 type DeleteBtnProps = {
   id: string;
@@ -42,55 +43,42 @@ function DeleteBtn({
     position: "relative",
   };
 
-  const [isPending, setIsPending] = useState(false);
-  const { mutationPromiseToast } = useToast();
-
-  const success = {
-    title: `${module.slice(0, 1).toUpperCase() + module.slice(1)} Deleted`,
-    desc: `${
-      module.slice(0, 1).toUpperCase() + module.slice(1)
-    } "${name}" deleted successfully!`,
-  };
-  const error = {
-    title: `Error deleting ${
-      module.slice(0, 1).toUpperCase() + module.slice(1)
-    }`,
-    desc: `Failed to delete ${
-      module.slice(0, 1).toUpperCase() + module.slice(1)
-    } "${name}"`,
-  };
-  const loading = {
-    title: `Deleting ${module.slice(0, 1).toUpperCase() + module.slice(1)}`,
-    desc: `Deleting ${
-      module.slice(0, 1).toUpperCase() + module.slice(1)
-    } "${name}", please wait...`,
-  };
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
+    const moduleName = module.charAt(0).toUpperCase() + module.slice(1);
+
+    if (isDeleting) return;
     if (!confirm("Are you sure?")) return;
 
-    if (type === "btn") setIsPending(true);
+    setIsDeleting(true);
 
-    const promise = fetch("/api/delete-item", {
-      method: "POST",
-      body: JSON.stringify({ id, module, images }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          throw new Error(res.error);
+    try {
+      const deletePromise = fetch("/api/delete-item", {
+        method: "POST",
+        body: JSON.stringify({ id, module, images }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(async (res) => {
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(
+            data.error || data.message || `Error deleting ${module}`,
+          );
         }
 
-        return res.data ?? res;
+        return data;
       });
 
-    mutationPromiseToast(promise, success, error, loading, setIsPending);
-
-    if (type === "btn") {
-      promise.finally(() => setIsPending(false));
+      await toast.promise(deletePromise, {
+        loading: `Deleting ${moduleName}`,
+        success: `${moduleName} Deleted`,
+        error: (err) => err.message || `Error deleting ${moduleName}`,
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -104,7 +92,7 @@ function DeleteBtn({
         right={position ? "unset" : "2"}
         zIndex={"100"}
         variant={"plain"}
-        disabled={isPending}
+        disabled={isDeleting}
         onClick={handleDelete}
       >
         {getIcon("trash")}
@@ -117,10 +105,10 @@ function DeleteBtn({
       color={"fg.error"}
       variant={"outline"}
       colorPalette={"red"}
-      disabled={isPending}
+      disabled={isDeleting}
       onClick={handleDelete}
     >
-      {isPending ? "Deleting" : "Delete"}
+      {isDeleting ? "Deleting" : "Delete"}
     </Button>
   ) : (
     <Menu.Item

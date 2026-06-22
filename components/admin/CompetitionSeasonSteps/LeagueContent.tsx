@@ -10,6 +10,7 @@ import { Schema } from "@/amplify/data/resource";
 import useToast from "@/hooks/useToast";
 import { createLeague } from "@/app/_actions/league-actions";
 import { getButtonStatus } from "@/lib/helpers";
+import { image } from "@/components/imageHelper";
 
 function LeagueContent({
   index,
@@ -107,7 +108,7 @@ function LeagueContent({
                         showLabel={false}
                       />
                     </Box>
-                    <Image src={team.logo} width={"25px"} />
+                    <Image src={image(team.logo)} width={"25px"} />
                     <Text whiteSpace={"nowrap"} textTransform={"capitalize"}>
                       {team.longName}
                     </Text>

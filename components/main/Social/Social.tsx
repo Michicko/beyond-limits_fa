@@ -2,6 +2,7 @@ import { ISocial } from "@/lib/definitions";
 import Image from "next/image";
 import styles from "./socials.module.css";
 import clsx from "clsx";
+import { image } from "@/components/imageHelper";
 
 const Social = ({ social }: { social: ISocial }) => {
   return (

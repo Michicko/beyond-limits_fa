@@ -76,7 +76,7 @@ function ArticleForm({
   });
 
   const articleCategory = articleCategories.find(
-    (el) => el.id === tempData.articleCategoryId
+    (el) => el.id === tempData.articleCategoryId,
   );
 
   const handleArticleContent = (json: JSONContent) => {
@@ -176,7 +176,7 @@ function ArticleForm({
           success,
           err,
           loading,
-          setIsTrashing
+          setIsTrashing,
         );
       }
     }
@@ -208,7 +208,7 @@ function ArticleForm({
         success,
         err,
         loading,
-        setIsPublishing
+        setIsPublishing,
       );
     }
   };
@@ -342,10 +342,10 @@ function ArticleForm({
               imageSize={200}
               filename={slugify(tempData.title, { lower: true })}
               id={"coverImage"}
-              onUploaded={(res: any) =>
+              onUploaded={(path: string) =>
                 setTempData({
                   ...tempData,
-                  coverImage: res.secure_url,
+                  coverImage: path,
                 })
               }
               label={"coverImage"}

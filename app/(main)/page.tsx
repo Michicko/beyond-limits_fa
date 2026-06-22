@@ -40,14 +40,6 @@ export default async function Home() {
 
   const images = data?.data ? data.data.map((el) => el.url) : [];
 
-  // const images = data?.data
-  //   ? data.data.map((el) => {
-  //       console.log(el);
-  //       const file = el.url.split("beyondlimitsfa")[1];
-  //       return image(`images${file}`);
-  //     })
-  //   : [];
-
   const { standings: nnlStandings, competitionId: nnlId } =
     homepageContent?.nnl || {};
 

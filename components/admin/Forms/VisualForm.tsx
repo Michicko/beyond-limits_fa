@@ -23,8 +23,8 @@ function VisualForm() {
     setFormData({ url: "", alt: "" });
   };
 
-  const onUploaded = (res: any) => {
-    setFormData({ ...formData, url: res.secure_url });
+  const onUploaded = (path: string) => {
+    setFormData({ ...formData, url: path });
   };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {

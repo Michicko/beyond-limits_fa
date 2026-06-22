@@ -2,6 +2,7 @@
 import Image from "next/image";
 import imageLoader from "@/lib/imageLoader";
 import React from "react";
+import { image as imageHelper } from "@/components/imageHelper";
 
 const ImageComp = ({
   image,
@@ -16,7 +17,7 @@ const ImageComp = ({
 }) => {
   return (
     <Image
-      src={image}
+      src={imageHelper(image)}
       fill={true}
       alt={alt || ""}
       priority={priority}

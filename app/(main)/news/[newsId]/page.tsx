@@ -12,10 +12,15 @@ import TextEditor from "@/components/TextEditor/TextEditor";
 import { cookiesClient, isAuthenticated } from "@/utils/amplify-utils";
 import Article from "@/components/Article/Article";
 import { capitalize, formatDate } from "@/lib/helpers";
-import { Metadata } from 'next';
+import { Metadata } from "next";
+import { image } from "@/components/imageHelper";
 
-export async function generateMetadata({ params }: { params: { newsId: string } }): Promise<Metadata>  {
-  const auth = await isAuthenticated()
+export async function generateMetadata({
+  params,
+}: {
+  params: { newsId: string };
+}): Promise<Metadata> {
+  const auth = await isAuthenticated();
 
   const { data: article } = await cookiesClient.models.Article.get(
     {
@@ -29,9 +34,9 @@ export async function generateMetadata({ params }: { params: { newsId: string } 
         "tags",
         "title",
         "coverImage",
-        "description"
+        "description",
       ],
-    }
+    },
   );
 
   return {
@@ -40,8 +45,8 @@ export async function generateMetadata({ params }: { params: { newsId: string } 
     keywords: article?.tags as string[],
     openGraph: {
       title: article?.title && capitalize(article?.title),
-      description: article?.description || '',
-      images: [{ url: article?.coverImage ?? '' }],
+      description: article?.description || "",
+      images: [{ url: article?.coverImage ?? "" }],
     },
   };
 }
@@ -66,16 +71,16 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
         "status",
         "createdAt",
       ],
-    }
+    },
   );
 
   if (article && article.articleCategoryId) {
     const { data: articles } = await cookiesClient.models.Article.list({
       filter: {
         id: {
-          ne: article.id
+          ne: article.id,
         },
-        category: {eq: article.category}
+        category: { eq: article.category },
       },
       authMode: auth ? "userPool" : "iam",
       limit: 4,
@@ -97,7 +102,11 @@ async function NewsArticle({ params }: { params: { newsId: string } }) {
   return (
     <>
       <Header
-        bg={article?.coverImage ?? "/images/under-19-bg.png"}
+        bg={
+          article?.coverImage
+            ? image(article.coverImage)
+            : "/images/under-19-bg.png"
+        }
         alt="ongoing campaign"
         overlay={true}
       >

@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Header.module.css";
 import clsx from "clsx";
-import ImageComp from "@/components/ImageComp/ImageComp";
+import Image from "next/image";
 
 function Header({
   bg,
@@ -21,11 +21,22 @@ function Header({
       className={clsx(
         styles.header,
         overlay && styles.overlay,
-        loadingScreen && styles.loading
+        loadingScreen && styles.loading,
       )}
     >
       {!loadingScreen && bg && (
-        <ImageComp image={bg} alt={alt} priority={true} />
+        <Image
+          src={bg}
+          alt={alt}
+          fill
+          priority
+          quality={100}
+          sizes="100vw"
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
       )}
       <div className={clsx(styles["header-content"])}>{children}</div>
     </header>

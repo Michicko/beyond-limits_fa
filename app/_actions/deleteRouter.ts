@@ -1,34 +1,44 @@
 "use server";
 
-import { getCloudinaryPublicId } from "@/lib/helpers";
-import { cookiesClient } from "@/utils/amplify-utils";
-import { deleteCloudinaryImage } from "./actions";
+import {
+  cookiesClient,
+  runWithAmplifyServerContext,
+} from "@/utils/amplify-utils";
+import { cookies } from "next/headers";
+import { remove } from "aws-amplify/storage/server";
 import { deleteEntity } from "@/lib/factoryFunctions";
 
-async function retryDeleteCloudinaryImage(
-  publicId: string,
+export async function retryDeleteS3Image(
+  path: string,
   retries = 3,
   delay = 1000,
-  logs?: string[]
+  logs?: string[],
 ): Promise<void> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await deleteCloudinaryImage(publicId);
-      const successMsg = `Successfully deleted Cloudinary image: ${publicId}`;
-      logs?.push(successMsg);
+      await runWithAmplifyServerContext({
+        nextServerContext: { cookies },
+        operation: async (contextSpec) => {
+          await remove(contextSpec, {
+            path: path,
+          });
+        },
+      });
+
+      logs?.push(`Successfully deleted S3 image: ${path}`);
       return;
     } catch (err) {
-      const msg = `Failed to delete Cloudinary image ${publicId} (attempt ${attempt}): ${
-        (err as Error)?.message || JSON.stringify(err)
-      }`;
-      logs?.push(msg);
+      logs?.push(
+        `Failed to delete S3 image ${path} (attempt ${attempt}): ${
+          (err as Error)?.message || JSON.stringify(err)
+        }`,
+      );
 
       if (attempt < retries) {
         await new Promise((res) => setTimeout(res, delay));
       } else {
-        const giveUpMsg = `Giving up on deleting image ${publicId}`;
-        logs?.push(giveUpMsg);
-        return; // do not throw
+        logs?.push(`Giving up on deleting image ${path}`);
+        return;
       }
     }
   }
@@ -182,7 +192,7 @@ const deleteConfig: Record<
           }) => Promise<{ data: { id: string }[] }>;
           delete: (
             input: { id: string },
-            options: { authMode: "userPool" }
+            options: { authMode: "userPool" },
           ) => Promise<any>;
         };
 
@@ -202,8 +212,8 @@ const deleteConfig: Record<
           if (records.length > 0) {
             await Promise.all(
               records.map((item) =>
-                model.delete({ id: item.id }, { authMode: "userPool" })
-              )
+                model.delete({ id: item.id }, { authMode: "userPool" }),
+              ),
             );
             const msg = `Deleted ${records.length} ${modelName} records for CompetitionSeason ${id}`;
             logs?.push(msg);
@@ -242,15 +252,10 @@ export async function deleteRouter({
     }
   }
 
-  const publicIds =
-    images
-      ?.map((img) => getCloudinaryPublicId(img))
-      .filter((pid): pid is string => Boolean(pid)) ?? [];
-
   const postDelete = async (id: string) => {
-    if (publicIds.length > 0) {
+    if (images && images.length > 0) {
       await Promise.all(
-        publicIds.map((pid) => retryDeleteCloudinaryImage(pid, 3, 1000, logs))
+        images.map((path) => retryDeleteS3Image(path, 3, 1000, logs)),
       );
     }
 

@@ -14,6 +14,7 @@ import React from "react";
 import CustomMenu from "../CustomMenu/CustomMenu";
 import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { image } from "@/components/imageHelper";
 
 type IHighlight = Pick<
   Schema["Highlight"]["type"],
@@ -36,7 +37,7 @@ function HighlightCard({ highlight }: { highlight: IHighlight }) {
         overflow={"hidden"}
       >
         <Image
-          src={highlight.coverImage}
+          src={image(highlight.coverImage)}
           height={500}
           w={500}
           maxW={"100%"}

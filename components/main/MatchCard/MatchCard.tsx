@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { Nullable } from "@/lib/definitions";
 import Link from "next/link";
 import moment from "moment";
+import { image } from "@/components/imageHelper";
 
 interface ICompetitionSeason {
   id?: string;
@@ -62,12 +63,15 @@ function MatchCard({
     >
       <div className={styles.header}>
         <div className={styles["header-box"]}>
-          <Image
-            src={match.competitionSeason?.logo ?? ""}
-            height={200}
-            width={200}
-            alt={match.competitionSeason?.name ?? ""}
-          />
+          {match.competitionSeason?.logo && (
+            <Image
+              src={image(match.competitionSeason.logo)}
+              height={200}
+              width={200}
+              alt={match.competitionSeason?.name ?? ""}
+            />
+          )}
+
           {/* <p
             className={clsx(styles["header-text"])}
             style={{ textTransform: "uppercase" }}
@@ -78,7 +82,7 @@ function MatchCard({
             href={`/competitions/${match.competitionSeason?.competitionId}`}
             className={clsx(
               styles["header-text"],
-              styles["match-compeition--name"]
+              styles["match-compeition--name"],
             )}
             style={{ textTransform: "uppercase" }}
           >

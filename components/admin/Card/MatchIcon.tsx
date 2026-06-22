@@ -1,4 +1,5 @@
 "use client";
+import { image } from "@/components/imageHelper";
 import { Box, Image, Icon } from "@chakra-ui/react";
 import React from "react";
 
@@ -20,7 +21,7 @@ function MatchIcon({
       bg={radius ? "fg.muted" : "transparent"}
       order={order}
     >
-      <Image src={src} width="250" height="250" alt="" />
+      <Image src={image(src)} width="250" height="250" alt="" />
     </Icon>
   );
 }

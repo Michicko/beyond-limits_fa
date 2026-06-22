@@ -1,4 +1,5 @@
 import { updateStandingRow } from "@/app/_actions/actions";
+import { image } from "@/components/imageHelper";
 import useToast from "@/hooks/useToast";
 import { IDBStandings, IDTeam } from "@/lib/definitions";
 import { getButtonStatus, objectToFormData } from "@/lib/helpers";
@@ -81,7 +82,7 @@ function LeagueStandingRow({
       <Table.Cell columnCount={4} verticalAlign={"middle"}>
         <HStack alignItems={"center"} gap={"2"}>
           <Image
-            src={team.logo}
+            src={image(team.logo)}
             boxSize="30px"
             borderRadius="full"
             fit="cover"

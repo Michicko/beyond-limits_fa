@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { Flex, IconButton, Menu, Portal } from "@chakra-ui/react";
 import Modal from "../Modal/Modal";
 import EditorImageUpload from "../admin/CustomFileUpload/EditorImageUpload";
+import { image } from "@/components/imageHelper";
 
 const generateRandomString = (length = 12): string => {
   const chars =
@@ -115,9 +116,9 @@ function MenuBar({ editor }: { editor: Editor }) {
     editor.chain().focus().unsetLink().run();
   };
 
-  const handleUpload = (data: any) => {
-    if (data) {
-      editor.commands.setImage({ src: data.secure_url });
+  const handleUpload = (path: string) => {
+    if (path) {
+      editor.commands.setImage({ src: image(path) });
       setShowModal(false);
     }
   };

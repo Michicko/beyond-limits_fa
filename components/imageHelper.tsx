@@ -1,3 +1,3 @@
 export function image(path: string) {
-  return `https://d2ek1gmlhr2slr.cloudfront.net/${path}`;
+  return `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/${path}`;
 }

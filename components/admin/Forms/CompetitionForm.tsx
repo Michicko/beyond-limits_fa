@@ -91,7 +91,7 @@ function CompetitionForm({
         const res = await updateCompetition(
           competition.id,
           formData,
-          competition.longName
+          competition.longName,
         );
         if (res.status === "success" && res.data) {
           mutationToast("competition", res.data.longName, "update");
@@ -244,10 +244,10 @@ function CompetitionForm({
                 imageSize={70}
                 filename={slugify(competitionData.longName, { lower: true })}
                 id={"logo"}
-                onUploaded={(res: any) =>
+                onUploaded={(path: string) =>
                   setCompetitionData({
                     ...competitionData,
-                    logo: res.secure_url,
+                    logo: path,
                   })
                 }
                 label={"Logo"}
@@ -262,10 +262,10 @@ function CompetitionForm({
                   lower: true,
                 })}
                 id={"trophy-image"}
-                onUploaded={(res: any) =>
+                onUploaded={(path: string) =>
                   setCompetitionData({
                     ...competitionData,
-                    trophyImage: res.secure_url,
+                    trophyImage: path,
                   })
                 }
                 label={"Trophy Image"}

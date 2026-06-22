@@ -16,6 +16,7 @@ import CustomMenuItem from "../CustomMenu/CustomMenuItem";
 import Link from "next/link";
 import { IPlayer } from "../../../lib/definitions";
 import DeleteBtn from "../DeleteBtn/DeleteBtn";
+import { image } from "@/components/imageHelper";
 
 function PlayerCard({ player }: { player: IPlayer }) {
   const cardStyles = {
@@ -73,7 +74,7 @@ function PlayerCard({ player }: { player: IPlayer }) {
               colSpan={1}
             >
               <Image
-                src={player.homeKit}
+                src={image(player.homeKit)}
                 width="300"
                 height="300"
                 alt={player.firstname}
@@ -144,13 +145,14 @@ function PlayerCard({ player }: { player: IPlayer }) {
           <CustomMenuItem label="Edit" showBorder={true}>
             <Link href={`/cp/players/${player.id}/edit`}>Edit</Link>
           </CustomMenuItem>
-           {player.homeKit && player.awayKit && 
+          {player.homeKit && player.awayKit && (
             <DeleteBtn
               name={`${player.firstname} ${player.lastname}`}
               id={player.id}
               module="Player"
               images={[player.homeKit, player.awayKit]}
-          />}
+            />
+          )}
         </>
       </CustomMenu>
     </Card.Root>

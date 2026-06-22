@@ -43,7 +43,7 @@ function HighlightForm({
 
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(
-    (highlight?.tags as string[]) || []
+    (highlight?.tags as string[]) || [],
   );
 
   const [editorKey, setEditorKey] = useState(101);
@@ -151,8 +151,8 @@ function HighlightForm({
                 lower: true,
               })}
               id={"highlight-cover-image"}
-              onUploaded={(res: any) => {
-                setTempData({ ...tempData, coverImage: res.secure_url });
+              onUploaded={(path: string) => {
+                setTempData({ ...tempData, coverImage: path });
               }}
               label={"Cover Image"}
             />

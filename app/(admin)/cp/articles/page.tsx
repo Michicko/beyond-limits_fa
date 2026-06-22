@@ -27,7 +27,7 @@ function Articles() {
     () => getLazyLoadedArticles(currentToken),
     {
       keepPreviousData: true,
-    }
+    },
   );
 
   const articles = data?.data || [];
@@ -36,7 +36,7 @@ function Articles() {
 
   const { search, setSearch, filteredList } = useSearchFilter(
     sortedArticles,
-    "title"
+    "title",
   );
 
   return (
