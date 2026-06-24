@@ -4,7 +4,9 @@ export function image(path?: string) {
   // already full URL (Cloudinary or external)
   if (path.startsWith("http")) {
     if (path.includes("res.cloudinary.com")) {
-      const fileName = path.split("/").pop();
+      let fileName = path.split("/").pop();
+
+      fileName = fileName?.replace(/:/g, "_");
 
       return fileName
         ? `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/images/${fileName}`
@@ -14,6 +16,8 @@ export function image(path?: string) {
     return path;
   }
 
-  // already S3 key
-  return `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/${path}`;
+  // normalize legacy filenames
+  const normalizedPath = path.replace(/:/g, "_");
+
+  return `${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}/${normalizedPath}`;
 }
