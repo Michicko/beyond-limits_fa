@@ -34,10 +34,8 @@ function CustomFileUpload({
 
     if (!file) return;
 
-    const ext = file.name.split(".").pop();
-    const key = `images/${slugify(filename, {
-      lower: true,
-    })}.${ext}`;
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    const key = `images/${crypto.randomUUID()}.${ext}`;
 
     setIsUploading(true);
 
