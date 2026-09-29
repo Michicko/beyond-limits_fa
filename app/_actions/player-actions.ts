@@ -16,6 +16,10 @@ export const getAgeGroups = () => {
   return cookiesClient.enums.AgeGroup.values();
 };
 
+export const getPlayerStatuses = () => {
+  return cookiesClient.enums.PlayerStatus.values();
+};
+
 export const getPlayersLazyLoaded = async () => {
   return cookiesClient.models.Player.list({
     selectionSet: [

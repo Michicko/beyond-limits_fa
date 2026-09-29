@@ -8,17 +8,21 @@ import CustomAlert from "@/components/admin/Alert/CustomAlert";
 import {
   getAgeGroups,
   getPlayersLazyLoaded,
+  getPlayerStatuses,
 } from "@/app/_actions/player-actions";
 import useSWR from "swr";
 import PlayersSkeleton from "@/components/admin/Skeletons/PlayersSkeleton";
+import { cookiesClient } from "@/utils/amplify-utils";
 
 function Players() {
   const { data: ageGroupsData } = useSWR("age-groups", getAgeGroups);
   const { data, error, isLoading } = useSWR("players", getPlayersLazyLoaded);
   const ageGroups = ageGroupsData;
   const players = data && data.data;
-  const mappedPositions = players && players.map((el) => el.playerPosition.longName);
+  const mappedPositions =
+    players && players.map((el) => el.playerPosition.longName);
   const positions = Array.from(new Set(mappedPositions)).map((val) => val);
+  const { data: playerStatuses } = useSWR("player-status", getPlayerStatuses);
 
   return (
     <>
@@ -55,6 +59,7 @@ function Players() {
               ageGroups={ageGroups}
               players={players}
               positions={positions}
+              statuses={playerStatuses}
             />
           )
         )}

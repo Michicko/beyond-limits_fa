@@ -52,14 +52,20 @@ function Lineup({
   const positions = [
     "gk",
     "cb",
+    "df",
+    "def",
     "rb",
     "lb",
     "dm",
     "cm",
-    "fw",
+    "md",
+    "mid",
     "w",
     "lw",
     "rw",
+    "att",
+    "fw",
+    "for",
     "st",
   ];
 
@@ -76,13 +82,13 @@ function Lineup({
     });
 
   const mainPlayers = players.filter(
-    (el) => !matchForm.substitutes?.includes(el.id)
+    (el) => !matchForm.substitutes?.includes(el.id),
   );
 
   const onCheckedChange = (
     playerId: string,
     selectedPlayers: Nullable<string>[] | null,
-    field: "lineup" | "substitutes"
+    field: "lineup" | "substitutes",
   ) => {
     const tempList = selectedPlayers ? [...selectedPlayers] : [];
     let updatedList = tempList;

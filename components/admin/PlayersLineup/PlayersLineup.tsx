@@ -18,7 +18,9 @@ interface IPlayer {
 }
 
 const groupPlayersByGroup = (ageGroup: string, players: IPlayer[]) => {
-  return players.filter((el) => el.ageGroup === ageGroup);
+  return players.filter(
+    (el) => el.ageGroup === ageGroup && el.status?.toLowerCase() === "active",
+  );
 };
 
 function PlayersLineup({

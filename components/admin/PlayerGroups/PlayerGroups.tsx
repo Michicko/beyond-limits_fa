@@ -36,7 +36,12 @@ function PlayerGroups({
           {ageGroups.map((group, i) => {
             return (
               <CustomTabContent value={group} key={group + i}>
-                <Flex my={"20px"} direction={"column"} gap={"4"}>
+                <Flex
+                  my={"20px"}
+                  direction={"column"}
+                  gap={"4"}
+                  marginTop={"12"}
+                >
                   {getGroup(group).map((player) => {
                     return <PlayerCard key={player.id} player={player} />;
                   })}

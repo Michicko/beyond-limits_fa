@@ -37,6 +37,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
     });
 
   const order = [
+    "goalkeeper",
     "goal keeper",
     "defender",
     "central back",
@@ -65,7 +66,7 @@ async function Players({ params }: { params: { playersSlug: string } }) {
       const filteredPlayers = row.players.filter(
         (player) =>
           player.ageGroup === params.playersSlug.toUpperCase() &&
-          player.status !== "INACTIVE"
+          player.status?.toLowerCase() !== "inactive",
       );
 
       return filteredPlayers.length < 1 ? (

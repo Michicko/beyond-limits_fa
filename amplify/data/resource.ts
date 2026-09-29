@@ -10,7 +10,7 @@ const schema = a.schema({
   CompetitionStatus: a.enum(["PENDING", "COMPLETED"]),
   ArticleStatus: a.enum(["UNPUBLISHED", "PUBLISHED"]),
   RoundResult: a.enum(["WIN", "DRAW", "LOSE"]),
-  AgeGroup: a.enum(["UNDER_17", "UNDER_19"]),
+  AgeGroup: a.enum(["UNDER_17", "UNDER_19", "GRADUATE"]),
   GoalType: a.enum(["NORMAL", "OWNGOAL", "PENALTY"]),
   CompetitionType: a.enum(["LEAGUE", "CUP", "MIXED"]),
   DominantFoot: a.enum(["RIGHT", "LEFT"]),
@@ -433,7 +433,7 @@ export const data = defineData({
   authorizationModes: {
     defaultAuthorizationMode: "apiKey",
     apiKeyAuthorizationMode: {
-      expiresInDays: 60,
+      expiresInDays: 180,
     },
   },
 });
