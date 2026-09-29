@@ -10,6 +10,6 @@ const backend = defineBackend({
 });
 
 // Add this temporary block to rotate the key
-backend.data.resources.cfnResources.cfnApiKey?.overrideLogicalId(
-  `recoverApiKey${new Date().getTime()}`,
-);
+// backend.data.resources.cfnResources.cfnApiKey?.overrideLogicalId(
+//   `recoverApiKey${new Date().getTime()}`,
+// );
