@@ -14,6 +14,7 @@ import Text from "@/components/main/Typography/Text";
 const links = [
   { name: "Under-19", href: "/players/under_19" },
   { name: "Under-17", href: "/players/under_17" },
+  { name: "Graduate", href: "/players/graduate" },
 ];
 
 export const metadata = {
@@ -82,7 +83,12 @@ async function Players({ params }: { params: { playersSlug: string } }) {
     });
   };
 
-  const bg = params.playersSlug === "under_19" ? "u-19.JPG" : "under_17.jpg";
+  const bg =
+    params.playersSlug === "under_19"
+      ? "u-19.JPG"
+      : params.playersSlug === "graduate"
+        ? "graduates_bg.JPG"
+        : "under_17.jpg";
 
   return (
     <>
